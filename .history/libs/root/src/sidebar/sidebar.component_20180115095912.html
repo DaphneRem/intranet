@@ -1,0 +1,7 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
+  <div class="list-group">
+    <a *ngFor="let link of links" class="list-group-item" [ngClass]="link.name==title ? 'active' : ''" [href]="sanitize(link.url)">
+      <i [ngClass]="link.icon"></i> {{link.name}}
+    </a>
+  </div>
+</nav>

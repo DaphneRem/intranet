@@ -1,0 +1,44 @@
+[{
+		"titreSeg": "Le Souffle de Cupidon",
+		"id": "20713900",
+		"noseg": 0,
+		"nomfichier": "0_20713900.mxf",
+		"stockage": "Storage OK",
+		"idSuppSuivant": "20714822",
+		"noSegSuivant": 0,
+		"commentaires": "",
+		"statutSupport": "EN COURS",
+		"typeSupport": "PAD-PIVOT",
+		"processname": "RAPPROCHEMENT",
+		"refname": "INGESTFILE",
+		"tstamp": "2018-01-25T11:22:12"
+	}, {
+		"titreSeg": "Predator",
+		"id": "20713885",
+		"noseg": 0,
+		"nomfichier": "0_20713885.mxf",
+		"stockage": "Storage OK",
+		"idSuppSuivant": "20714813",
+		"noSegSuivant": 0,
+		"commentaires": "",
+		"statutSupport": "EN COURS",
+		"typeSupport": "PAD-PIVOT",
+		"processname": "RAPPROCHEMENT",
+		"refname": "INGESTFILE",
+		"tstamp": "2018-01-25T11:22:02"
+	}, {
+		"titreSeg": "Pavillon noir",
+		"id": "20713876",
+		"noseg": 0,
+		"nomfichier": "0_20713876.mxf",
+		"stockage": "Storage OK",
+		"idSuppSuivant": "20714309",
+		"noSegSuivant": 0,
+		"commentaires": "",
+		"statutSupport": "EN COURS",
+		"typeSupport": "PAD-PIVOT",
+		"processname": "RAPPROCHEMENT",
+		"refname": "INGESTFILE",
+		"tstamp": "2018-01-25T10:48:30"
+	}
+]

@@ -1,0 +1,18 @@
+<root-header 
+  class="ng-tns-c2-0 ng-star-inserted"
+  [headerTitle]="title" 
+  [logo]="logo"  
+  (headerNav)="checkHeaderNav($event)"
+  >
+</root-header>
+<div class="pcoded-main-container" 
+  [style.margin-left]="marginLeft" 
+  [style.margin-top]="marginTop" 
+  [style.padding-top]="headerNav ? '56px' : '0px'" 
+  [ngClass]="onClick()" 
+  (window:resize)="onResize($event)">
+  <div class="pcoded-wrapper">
+    <div>{{title}}</div>
+      <root-footer></root-footer>
+  </div>
+</div>

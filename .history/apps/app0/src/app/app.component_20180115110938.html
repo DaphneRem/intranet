@@ -1,0 +1,37 @@
+<root-header [headerTitle]="title"></root-header>
+<div class="root">
+  <!-- <div class="root" (window:resize)="onResize($event)" [ngStyle]="{'height': wHeight-140 +'px'}"> -->
+  <div class="body row">
+    <div class="content col-md-2">
+      <root-sidebar [links]="links" [title]="title"></root-sidebar>
+    </div>
+    <div class="content core-page col-md-10">
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+              {{ title }}
+            </a>
+          </div>
+
+
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a class="navbar-brand" routerLink="/">Accueil</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                <a class="navbar-brand" routerLink="/users">Utilisateurs</a>
+              </li>
+            </ol>
+          </nav>
+
+        </div>
+      </nav>
+      <div class="router">
+        <router-outlet></router-outlet>
+      </div>
+      <root-footer [footerTitle]="title"></root-footer>
+    </div>
+  </div>
+</div>

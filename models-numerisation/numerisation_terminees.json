@@ -1,0 +1,44 @@
+﻿[{
+		"titreSeg": "Raisins de la colere eps : 14",
+		"id": "20713937",
+		"noseg": 0,
+		"nomfichier": "0_20713937.mxf",
+		"stockage": "Storage OK",
+		"idSuppSuivant": "20714372",
+		"noSegSuivant": 0,
+		"commentaires": "",
+		"statutSupport": "EXPLOITABLE",
+		"typeSupport": "PAD-PIVOT",
+		"processname": "RAPPROCHEMENT",
+		"refname": "INGESTFILE",
+		"tstamp": "2018-01-25T10:53:48"
+	}, {
+		"titreSeg": "Souffle de cupidon eps : 13",
+		"id": "20713919",
+		"noseg": 0,
+		"nomfichier": "0_20713919.mxf",
+		"stockage": "Storage OK",
+		"idSuppSuivant": "20714363",
+		"noSegSuivant": 0,
+		"commentaires": "",
+		"statutSupport": "EXPLOITABLE",
+		"typeSupport": "PAD-PIVOT",
+		"processname": "RAPPROCHEMENT",
+		"refname": "INGESTFILE",
+		"tstamp": "2018-01-25T10:53:35"
+	}, {
+		"titreSeg": "Pavillon noir eps : 12",
+		"id": "20713894",
+		"noseg": 0,
+		"nomfichier": "0_20713894.mxf",
+		"stockage": "Storage OK",
+		"idSuppSuivant": "20714354",
+		"noSegSuivant": 0,
+		"commentaires": "",
+		"statutSupport": "EXPLOITABLE",
+		"typeSupport": "PAD-PIVOT",
+		"processname": "RAPPROCHEMENT",
+		"refname": "INGESTFILE",
+		"tstamp": "2018-01-25T10:53:19"
+	}
+]

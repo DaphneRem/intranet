@@ -1,0 +1,50 @@
+/****** Custom Colors *******/
+
+$backgroundHeader : #fff;
+$searchInputColor : rgb(224, 224, 224);
+$iconsHeader : rgb(141, 140, 140);
+
+/***************************/
+
+i {
+    color : $iconsHeader;
+}
+
+.header-navbar {
+    background-color: $backgroundHeader;
+    .navbar-wrapper {
+        .navbar-logo {
+            img {
+                height : 40px;
+            }
+        }
+        .nav-left {
+            .header-search {
+                height : 56px;
+                .main-search {
+                    padding : 0;
+                    .input-group {
+                        height : 40px;
+                        .input-group-addon {
+                            i {
+                                margin-bottom : 5px;
+                            }
+                        }
+                        .input-group-addon.search-close {
+                            padding : 0 0 0 10px;
+                        }
+                    }
+                }
+                .main-search.open {
+                    margin-top : 10px;
+                    .input-group {
+                        background-color: $searchInputColor;
+                        .input-group-addon.search-btn {
+                            padding : 0 10px 0 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
