@@ -7,7 +7,7 @@ import { Store, StateObservable, StoreModule } from '@ngrx/store';
 
 // Components
 import { HeaderComponent } from './header.component';
-import { NavbarComponent } from '@app0/root/src/navbar/navbar.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 // navbarState
 import { navbarInitialState } from '../+state/navbar.init';

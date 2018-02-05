@@ -2,7 +2,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { NavbarComponent } from './navbar.component';
-import { MenuItems } from '..//menu-items/menu-items.service';
+import { MenuItems } from '../menu-items/menu-items.service';
+import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { AccordionAnchorDirective, AccordionLinkDirective, AccordionDirective } from '../accordion/index';
@@ -13,6 +14,9 @@ describe('NavbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports : [
+        RouterModule
+      ],
       declarations: [
         NavbarComponent,
         TestHostComponent,
