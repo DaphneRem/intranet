@@ -6,7 +6,7 @@
     "latestMigration": "20171213-update-tsconfig-spec-to-exclude-e2e"
   },
   "apps": [
-    {      
+    {
       "name": "app0",
       "root": "apps/app0/src",
       "outDir": "dist/apps/app0",
@@ -47,6 +47,18 @@
     {
       "name": "router-state",
       "root": "libs/router-state/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "sub-header",
+      "root": "libs/sub-header/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "widgets",
+      "root": "libs/widgets/src",
       "test": "../../../test.js",
       "appRoot": ""
     }

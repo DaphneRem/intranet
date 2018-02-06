@@ -13,16 +13,23 @@ import { AppRoutingModule } from './app-routing.module';
 
 // components :
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
+import { ScanComponent } from './scan/scan.component';
 import { UsersListComponent } from './users-list/users-list.component';
 
 /*********** from Libs **********/
 
 import { RootModule, navbarReducer } from '@ab/root';
 import { RouterStateModule } from '@ab/router-state';
+import { WidgetsModule } from '@ab/widgets';
+import { SubHeaderModule } from '@ab/sub-header';
+
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, UsersListComponent],
+  declarations: [
+    AppComponent,
+    ScanComponent,
+    UsersListComponent
+  ],
   imports: [
     AppRoutingModule,
     BrowserModule,
@@ -35,7 +42,9 @@ import { RouterStateModule } from '@ab/router-state';
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25 // Retains last 25 states
-    })
+    }),
+    SubHeaderModule,
+    WidgetsModule
   ],
   providers: [
     {
