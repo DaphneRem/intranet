@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 import { MenuItems } from '../menu-items/menu-items.service';
 import { Navbar } from '../+state/navbar.interfaces';
 import { navbarInitialState } from '../+state/navbar.init';
-import { OpenNavbar, CloseNavbar, ShowNavbarState } from '../+state/navbar.actions';
 
 @Component({
   selector: 'root-header',

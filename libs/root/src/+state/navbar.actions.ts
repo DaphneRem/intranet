@@ -8,9 +8,5 @@ export interface CloseNavbar {
   payload: {};
 }
 
-export interface ShowNavbarState {
-  type: 'SHOW_NAVBAR_STATE';
-  payload: {};
-}
 
-export type NavbarAction = OpenNavbar | CloseNavbar | ShowNavbarState;
+export type NavbarAction = OpenNavbar | CloseNavbar;

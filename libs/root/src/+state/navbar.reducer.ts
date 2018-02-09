@@ -15,10 +15,6 @@ export function navbarReducer(
       console.log('close');
       return state = { open: false };
     }
-    case 'SHOW_NAVBAR_STATE': {
-      console.log(state);
-      return state;
-    }
     default: {
       return state;
     }

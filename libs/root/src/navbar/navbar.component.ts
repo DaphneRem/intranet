@@ -5,19 +5,16 @@ import { MenuItems } from '..//menu-items/menu-items.service';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-
-import {
-  OpenNavbar,
-  CloseNavbar,
-  ShowNavbarState
-} from '../+state/navbar.actions';
 import { Navbar } from '../+state/navbar.interfaces';
 import { navbarInitialState } from '../+state/navbar.init';
 
 @Component({
   selector: 'root-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss'],
+  styleUrls: [
+    './navbar.component.scss',
+    '../../../../assets/icon/icofont/css/icofont.scss'
+  ],
   providers: [
     MenuItems,
     Store
