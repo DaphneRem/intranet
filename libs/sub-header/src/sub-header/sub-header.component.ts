@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { isUndefined } from 'util';
@@ -9,15 +9,17 @@ import { isUndefined } from 'util';
   styleUrls: ['./sub-header.component.scss']
 })
 export class SubHeaderComponent implements OnInit {
+  @Input() tableView;
+  @Input() link;
 
-public subTitle = '';
+  public changeView = false;
+  public subTitle = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private titleService: Title,
+    private titleService: Title
   ) {
-
     this.router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe(() => {
@@ -32,13 +34,15 @@ public subTitle = '';
             }
           });
         } while (currentRoute);
-        if (this.subTitle !== undefined ) {
+        if (this.subTitle !== undefined) {
           this.titleService.setTitle(this.subTitle);
         }
       });
   }
 
   ngOnInit() {
+    if (this.subTitle === 'Numérisation') {
+      this.changeView = true;
+    }
   }
-
 }
