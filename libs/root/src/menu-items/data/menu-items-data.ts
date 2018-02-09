@@ -2,7 +2,7 @@ const distUrl = 'http://127.0.0.1/edsa-Angular/ng-nx-project/dist/apps/';
 
 export const MENUITEMS = [
     {
-        label: 'App0',
+        label: 'Ingests',
         url: `${this.distUrl}app0/`,
         main: [
             {
@@ -10,7 +10,7 @@ export const MENUITEMS = [
                 short_label: 'T',
                 name: 'Technique',
                 type: 'sub',
-                icon: 'icon-home',
+                icon: 'icofont icofont-repair',
                 children: [
                     {
                         state: 'numerisation',
