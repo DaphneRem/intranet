@@ -4,8 +4,13 @@
   [logo]="logo"  
   (headerNav)="checkHeaderNav($event)">
 </root-header>
-  <div class="pcoded-main-container app" [style.margin-left]="marginLeft" [style.margin-top]="marginTop" [style.padding-top]="headerNav ? '56px' : '0px'"
-    [ngClass]="onClick()" (window:resize)="onResize($event)">
+  <div 
+    class="pcoded-main-container app" 
+    [style.margin-left]="marginLeft" 
+    [style.margin-top]="marginTop" 
+    [style.padding-top]="headerNav ? '56px' : '0px'"
+    [ngClass]="onClick()" 
+    (window:resize)="onResize($event)">
     <div class="pcoded-content">
       <div class="pcoded-wrapper">
         <div class="main-body">
