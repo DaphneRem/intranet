@@ -12,7 +12,7 @@
       "outDir": "dist/apps/app0",
       "assets": [
         "assets",
-        "favicon.ico"
+        "../../../assets"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -47,6 +47,12 @@
     {
       "name": "router-state",
       "root": "libs/router-state/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "scan",
+      "root": "libs/scan/src",
       "test": "../../../test.js",
       "appRoot": ""
     },
