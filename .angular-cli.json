@@ -51,6 +51,12 @@
       "appRoot": ""
     },
     {
+      "name": "ingests",
+      "root": "libs/ingests/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "scan",
       "root": "libs/scan/src",
       "test": "../../../test.js",

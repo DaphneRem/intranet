@@ -7,4 +7,4 @@ export { RootModule } from './src/root.module';
 export { Navbar } from './src/+state/navbar.interfaces';
 export { navbarInitialState } from './src/+state/navbar.init';
 export { navbarReducer } from './src/+state/navbar.reducer';
-export { OpenNavbar, CloseNavbar, ShowNavbarState } from './src/+state/navbar.actions';
+export { OpenNavbar, CloseNavbar } from './src/+state/navbar.actions';

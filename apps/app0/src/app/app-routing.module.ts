@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UsersListComponent } from './users-list/users-list.component';
 
-import { IngestsWidgetsViewComponent, IngestsTablesViewComponent } from '@ab/ingests';
+import { IngestsWidgetsViewComponent, IngestsTablesViewComponent, IngestsTablePurgeComponent } from '@ab/ingests';
 
 const routes: Routes = [
   { path: '*', component: IngestsWidgetsViewComponent },
@@ -59,7 +59,7 @@ const routes: Routes = [
   },
   {
     path: 'purged',
-    component: UsersListComponent,
+    component: IngestsTablePurgeComponent,
     data: { title : 'Fichiers purgés' }
   }
 

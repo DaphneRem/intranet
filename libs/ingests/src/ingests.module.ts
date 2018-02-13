@@ -6,7 +6,9 @@ import { WidgetsModule } from '@ab/widgets';
 
 import { IngestsWidgetsViewComponent } from './ingests-widgets-view/ingests-widgets-view.component';
 import { IngestsTablesViewComponent } from './ingests-tables-view/ingests-tables-view.component';
+import { IngestsTablePurgeComponent } from './ingests-table-purge/ingests-table-purge.component';
 
+import { IngestPurgeService } from './services/ingest-purge.service';
 
 @NgModule({
   imports: [
@@ -16,11 +18,15 @@ import { IngestsTablesViewComponent } from './ingests-tables-view/ingests-tables
   ],
   declarations: [
     IngestsWidgetsViewComponent,
-    IngestsTablesViewComponent
+    IngestsTablesViewComponent,
+    IngestsTablePurgeComponent
   ],
   exports : [
     IngestsWidgetsViewComponent,
     IngestsTablesViewComponent
+  ],
+  providers : [
+    IngestPurgeService
   ]
 })
 export class IngestsModule {
