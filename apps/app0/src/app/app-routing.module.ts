@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UsersListComponent } from './users-list/users-list.component';
 
-import { IngestsWidgetsViewComponent, IngestsTablesViewComponent, IngestsTablePurgeComponent } from '@ab/ingests';
+import { IngestsWidgetsViewComponent, IngestsTablesViewComponent, IngestsTablePurgeComponent, IngestsInProgressDetailsComponent } from '@ab/ingests';
 
 const routes: Routes = [
   { path: '*', component: IngestsWidgetsViewComponent },
@@ -31,7 +31,7 @@ const routes: Routes = [
       },
       {
         path: 'in-progress',
-        component: UsersListComponent,
+        component: IngestsInProgressDetailsComponent,
         data: { title : 'En cours de traitement' }
       },
       {

@@ -1,0 +1,47 @@
+<div class= "custom-datatables row">
+  <div *ngIf="data.length" class="card">
+
+
+    <div class="header-buttons">
+      <button *ngIf="renderOption" type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
+        Rerender
+      </button>
+      <a *ngIf="headerTableLinkExist" class="btn btn-primary btn-outline-primary" [routerLink]="headerTableLink">
+        Voir plus...
+      </a>
+    </div>
+    <div 
+      class="datatables-header text-center middle" 
+      [ngStyle]="headerColor"
+      [ngClass]="paging || search ? 'down-header' : ''">
+      <div class="header-title text-uppercase">
+        {{tableTitle}}
+      </div>
+    </div>
+    <table datatable 
+      [dtOptions]="dtOptions" 
+      [dtTrigger]="dtTrigger"
+      class="table table-styling row-border hover"
+      [ngStyle]="firstColumnColor">
+    </table>
+
+
+  </div>
+  <div *ngIf="!data.length" class="card no-data">
+      <div class="header-buttons">
+          <a *ngIf="headerTableLinkExist" class="btn btn-primary btn-outline-primary" [routerLink]="headerTableLink">
+            Voir plus...
+          </a>
+      </div>
+    <div 
+      class="datatables-header text-center middle"
+      [ngStyle]="headerColor">
+      <div class="header-title text-uppercase">
+         {{tableTitle}}
+      </div>
+    </div>
+    <div class="alert alert-warning text-center">
+      <strong> Il n'y a pas de fichiers {{tableTitle}}</strong>
+    </div>
+  </div>
+</div>
