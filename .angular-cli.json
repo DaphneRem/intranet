@@ -39,6 +39,50 @@
       }
     },
     {
+      "name": "diffusions-dates",
+      "root": "apps/diffusions-dates/src",
+      "outDir": "dist/apps/diffusions-dates",
+      "assets": [
+        "assets",
+        "../../../assets"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "../../../test.js",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "../../../tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.scss",
+        "../../../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+        "../../../node_modules/font-awesome-scss/scss/font-awesome.scss",
+        "./../../../styles/style.scss"
+      ],
+      "scripts": [
+        "../../../node_modules/jquery/dist/jquery.min.js",
+        "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+        "../../../node_modules/datatables.net/js/jquery.dataTables.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    },
+    {
+      "name": "diffusions-dates-lib",
+      "root": "libs/diffusions-dates/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "ingests",
+      "root": "libs/ingests/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "root",
       "root": "libs/root/src",
       "test": "../../../test.ts",
@@ -47,12 +91,6 @@
     {
       "name": "router-state",
       "root": "libs/router-state/src",
-      "test": "../../../test.js",
-      "appRoot": ""
-    },
-    {
-      "name": "ingests",
-      "root": "libs/ingests/src",
       "test": "../../../test.js",
       "appRoot": ""
     },
@@ -91,6 +129,14 @@
     },
     {
       "project": "apps/app0/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/diffusions-dates/src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/diffusions-dates/e2e/tsconfig.e2e.json",
       "exclude": "**/node_modules/**"
     }
   ],

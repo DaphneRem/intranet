@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders} from '@angular/common/http';
-import { IngestPurge } from 'libs/ingests/src/modules/ingests-purge.class';
+import { IngestPurge } from 'libs/ingests/src/models/ingests-purge';
 
 
 const httpOptions = {
@@ -14,6 +14,6 @@ export class IngestPurgeService {
 
   getPurgeList(days) {
     console.log('getPurgeList');
-    return this.http.get<IngestPurge>();
+    return this.http.get<IngestPurge>('http://vm-angular-rc:9080/api/SuiviIngestKai/nbjours/' + days + '/statut/purges');
   }
 }

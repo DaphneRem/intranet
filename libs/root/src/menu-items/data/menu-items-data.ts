@@ -33,31 +33,20 @@ export const MENUITEMS = [
         ]
     },
     {
-        label: 'App1',
-        url: `${this.distUrl}app1/`,
+        label: 'Dates diffusions',
+        url: `${this.distUrl}diffusions-dates/`,
         main: [
             {
-                state: 'menu lorem ipsum',
+                state: 'dates diffusions',
                 short_label: 'm',
-                name: 'Menu lorem ipsum',
+                name: 'DatesDiffusions',
                 type: 'sub',
                 icon: 'icon-home',
                 children: [
                     {
-                        state: 'm1',
-                        name: 'Menu lorem ipsum1',
-                        routerLink: 'xxx'
-                    },
-                    {
-                        state: 'm2',
-                        name: 'Menu lorem ipsum2',
-                        routerLink: 'xxx'
-
-                    },
-                    {
-                        state: 'm3',
-                        name: 'Menu lorem ipsum3',
-                        routerLink: 'xxx'
+                        state: 'dates-de-diffusions',
+                        name: 'Dates de diffusions',
+                        route: 'diffusions-dates'
                     }
                 ]
             }

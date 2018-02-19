@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { IngestPurgeService } from './ingest-purge.service';
+import { IngestPurgeService } from './ingest-purge';
 
 describe('IngestPurgeService', () => {
   beforeEach(() => {

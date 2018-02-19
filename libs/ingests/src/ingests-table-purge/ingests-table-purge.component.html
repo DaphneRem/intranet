@@ -1,4 +1,5 @@
-<p>
-  ingest table purge
-</p>
-<div>{{datas}}</div>
+<div *ngIf="loading">LOADING</div>
+<div *ngIf="!loading">
+  <table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
+
+ </div>
