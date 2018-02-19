@@ -35,7 +35,7 @@ export class DatesDiffusionsService {
   }
 
   getChanelsDiffusions() {
-    this.currentRequest = this.http.get('http://vm-angular-rc:9081/api/LibChaine')
+    this.currentRequest = this.http.get('')
               .map((res: Response) => res.json())
               .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     return this.currentRequest;
@@ -43,7 +43,7 @@ export class DatesDiffusionsService {
 
   getDiffusionsDates(datasForm) {
     const bodyString = JSON.stringify(datasForm);
-    this.currentRequest = this.http.post('http://vm-angular-rc:9081/api/DateDiffusions', bodyString, this.options)
+    this.currentRequest = this.http.post('', bodyString, this.options)
               .map((res: Response) => res.json())
               .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     return this.currentRequest;
