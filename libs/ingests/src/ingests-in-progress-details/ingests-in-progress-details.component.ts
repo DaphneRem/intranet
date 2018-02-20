@@ -8,8 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class IngestsInProgressDetailsComponent implements OnInit {
   public link = '/';
   public daysTableView = 1;
-  public headerTableLinkExist = true;
-  public headerTableLink = '../in-progress';
+  public headerTableLinkExist = false;
   public goBack = true;
 
   constructor() { }

@@ -4,6 +4,16 @@
 </sub-header>
 <ingests-in-progress 
   [headerTableLinkExist]="headerTableLinkExist"
-  [headerTableLink]="headerTableLink"
+  [headerTableLink]="inProgressTableLink"
   [daysTableView]="daysTableView">
 </ingests-in-progress>
+<kai-waiting
+   [headerTableLinkExist]="headerTableLinkExist" 
+   [headerTableLink]="kaiTableLink" 
+   [daysTableView]="daysTableView">
+  </kai-waiting>
+<ingests-completed
+   [headerTableLinkExist]="headerTableLinkExist" 
+   [headerTableLink]="completedTableLink" 
+   [daysTableView]="daysTableView">
+</ingests-completed>

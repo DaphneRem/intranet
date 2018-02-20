@@ -1,31 +1,29 @@
 import { Component, OnInit, Input } from '@angular/core';
-
-import { IngestsInProgressService } from '../services/ingests-in-progress.service';
-import { IngestsInProgress } from '../models/ingests-in-progress';
+import { KaiWaitingService } from '../services/kai-waiting.service';
+import { KaiWaiting } from '../models/kai-waiting';
 
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 @Component({
-  selector: 'ingests-in-progress',
-  templateUrl: './ingests-in-progress.component.html',
-  styleUrls: ['./ingests-in-progress.component.scss'],
-  providers: [
-    IngestsInProgressService,
-    CustomDatatablesOptions
+  selector: 'kai-waiting',
+  templateUrl: './kai-waiting.component.html',
+  styleUrls: ['./kai-waiting.component.scss'],
+  providers : [
+    KaiWaitingService
   ]
 })
-export class IngestsInProgressComponent implements OnInit {
+export class KaiWaitingComponent implements OnInit {
 
   @Input() daysTableView: number;
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
 
-  public render: boolean;
+public render: boolean;
 
   public dataReady = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
 
-    tableTitle: 'en cours de traitement',
+    tableTitle: 'en attente Kai',
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
@@ -34,7 +32,7 @@ export class IngestsInProgressComponent implements OnInit {
     search: true,
     rowsMax: 5,
     lenghtMenu: [5, 10, 15],
-    theme : 'blue theme',
+    theme : 'red theme',
     renderOption : true,
     buttons: {
       buttons: true,
@@ -46,7 +44,7 @@ export class IngestsInProgressComponent implements OnInit {
     }
   };
 
-  constructor(private ingestsInProgressService: IngestsInProgressService) {}
+  constructor(private kaiWaitingService: KaiWaitingService) {}
 
   ngOnInit() {
     this.getIngestsInProgress(this.daysTableView);
@@ -80,14 +78,14 @@ export class IngestsInProgressComponent implements OnInit {
   checkDataReady() {
     return this.dataReady;
   }
-  
+
   getIngestsInProgress(number) {
-    this.ingestsInProgressService
-      .getIngestsInProgress(number)
-      .subscribe(data => {
-        this.customdatatablesOptions.data = data;
-        this.dataReady = true;
-        console.log(this.customdatatablesOptions.data);
-      });
+    this.kaiWaitingService.getIngestsInProgress(number).subscribe(data => {
+      this.customdatatablesOptions.data = data;
+      this.dataReady = true;
+      console.log(this.customdatatablesOptions.data);
+    });
   }
 }
+
+
