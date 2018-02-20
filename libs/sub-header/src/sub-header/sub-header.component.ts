@@ -9,8 +9,9 @@ import { isUndefined } from 'util';
   styleUrls: ['./sub-header.component.scss']
 })
 export class SubHeaderComponent implements OnInit {
-  @Input() tableView;
-  @Input() link;
+  @Input() tableView: boolean;
+  @Input() link: string;
+  @Input() goBack: boolean;
 
   public changeView = false;
   public subTitle = '';
@@ -45,4 +46,5 @@ export class SubHeaderComponent implements OnInit {
       this.changeView = true;
     }
   }
+
 }

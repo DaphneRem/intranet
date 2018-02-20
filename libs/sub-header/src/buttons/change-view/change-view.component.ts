@@ -5,7 +5,7 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './change-view.component.html',
   styleUrls: [
     './change-view.component.scss',
-    '../../../../assets/icon/icofont/css/icofont.scss'
+    '../../../../../assets/icon/icofont/css/icofont.scss'
   ]
 })
 export class ChangeViewComponent implements OnInit {

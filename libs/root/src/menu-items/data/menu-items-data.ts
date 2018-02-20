@@ -15,7 +15,7 @@ export const MENUITEMS = [
                     {
                         state: 'numerisation',
                         name: 'Numérisation',
-                        route: 'scan'
+                        route: 'ingests'
                     },
                     {
                         state: 'detail-fichier',

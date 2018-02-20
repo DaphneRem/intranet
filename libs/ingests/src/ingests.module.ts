@@ -5,31 +5,45 @@ import { SubHeaderModule } from '@ab/sub-header';
 import { WidgetsModule } from '@ab/widgets';
 import { DataTablesModule } from 'angular-datatables';
 
+import { CustomDatatablesModule } from '@ab/custom-datatables';
+
 import { IngestsWidgetsViewComponent } from './ingests-widgets-view/ingests-widgets-view.component';
 import { IngestsTablesViewComponent } from './ingests-tables-view/ingests-tables-view.component';
-import { IngestsTablePurgeComponent } from './ingests-table-purge/ingests-table-purge.component';
+import { IngestsPurgedComponent } from './ingests-purged/ingests-purged.component';
 
-import { IngestPurgeService } from './services/ingest-purge';
+import { IngestsInProgressComponent } from './ingests-in-progress/ingests-in-progress.component';
+import { IngestsInProgressDetailsComponent } from './ingests-in-progress-details/ingests-in-progress-details.component';
+import { IngestsCompletedComponent } from './ingests-completed/ingests-completed.component';
+import { IngestsCompletedDetailsComponent } from './ingests-completed-details/ingests-completed-details.component';
+import { KaiWaitingComponent } from './ingests-kai/kai-waiting/kai-waiting.component';
+import { IngestsKaiComponent } from './ingests-kai/ingests-kai.component';
+import { KaiEchecComponent } from './ingests-kai/kai-echec/kai-echec.component';
 
 @NgModule({
   imports: [
     CommonModule,
+    CustomDatatablesModule,
     SubHeaderModule,
     WidgetsModule,
     DataTablesModule
   ],
   declarations: [
+    IngestsInProgressComponent,
     IngestsWidgetsViewComponent,
     IngestsTablesViewComponent,
-    IngestsTablePurgeComponent
+    IngestsInProgressDetailsComponent,
+    IngestsPurgedComponent,
+    IngestsCompletedComponent,
+    IngestsCompletedDetailsComponent,
+    KaiWaitingComponent,
+    IngestsKaiComponent,
+    KaiEchecComponent
   ],
   exports : [
     IngestsWidgetsViewComponent,
     IngestsTablesViewComponent
-  ],
-  providers : [
-    IngestPurgeService
   ]
 })
+
 export class IngestsModule {
 }

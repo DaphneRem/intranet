@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IngestsTablePurgeComponent } from './ingests-table-purge.component';
+import { IngestsPurgedComponent } from './ingests-purged.component';
 
 describe('IngestsTablePurgeComponent', () => {
-  let component: IngestsTablePurgeComponent;
-  let fixture: ComponentFixture<IngestsTablePurgeComponent>;
+  let component: IngestsPurgedComponent;
+  let fixture: ComponentFixture<IngestsPurgedComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IngestsTablePurgeComponent ]
+      declarations: [ IngestsPurgedComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IngestsTablePurgeComponent);
+    fixture = TestBed.createComponent(IngestsPurgedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

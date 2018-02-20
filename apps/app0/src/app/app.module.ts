@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from '@ngrx/effects';
 // import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { NxModule } from '@nrwl/nx';
 import { StoreModule } from '@ngrx/store';
@@ -15,6 +16,8 @@ import { AppComponent } from './app.component';
 import { UsersListComponent } from './users-list/users-list.component';
 
 /*********** from Libs **********/
+import { CustomDatatablesModule } from '@ab/custom-datatables';
+
 import { RootModule, navbarReducer } from '@ab/root';
 import { RouterStateModule } from '@ab/router-state';
 import { IngestsModule } from '@ab/ingests';
@@ -30,7 +33,9 @@ import { WidgetsModule } from '@ab/widgets';
   imports: [
     AppRoutingModule,
     BrowserModule,
+    CustomDatatablesModule,
     EffectsModule.forRoot([]),
+    HttpClientModule,
     NxModule.forRoot(),
     RootModule,
     RouterStateModule.forRoot(),

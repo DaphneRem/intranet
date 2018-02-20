@@ -3,7 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UsersListComponent } from './users-list/users-list.component';
 
-import { IngestsWidgetsViewComponent, IngestsTablesViewComponent, IngestsTablePurgeComponent } from '@ab/ingests';
+import {
+  IngestsWidgetsViewComponent,
+  IngestsTablesViewComponent,
+  IngestsPurgedComponent,
+  IngestsInProgressDetailsComponent,
+  IngestsCompletedDetailsComponent,
+  IngestsKaiComponent
+} from '@ab/ingests';
 
 const routes: Routes = [
   { path: '*', component: IngestsWidgetsViewComponent },
@@ -31,18 +38,18 @@ const routes: Routes = [
       },
       {
         path: 'in-progress',
-        component: UsersListComponent,
-        data: { title : 'En cours de traitement' }
+        component: IngestsInProgressDetailsComponent,
+        data: { title : 'Fichiers en cours de traitement' }
       },
       {
         path: 'completed',
-        component: UsersListComponent,
-        data: { title : 'Terminés' }
+        component: IngestsCompletedDetailsComponent,
+        data: { title : 'Fichiers Terminés' }
       },
       {
         path: 'kai-waiting',
-        component: UsersListComponent,
-        data: { title : 'En attente KAI' }
+        component:  IngestsKaiComponent,
+        data: { title : 'Numérisation KAI' }
       },
       {
         path: 'karina-waiting',
@@ -59,7 +66,7 @@ const routes: Routes = [
   },
   {
     path: 'purged',
-    component: IngestsTablePurgeComponent,
+    component: IngestsPurgedComponent,
     data: { title : 'Fichiers purgés' }
   }
 

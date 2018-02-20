@@ -2,8 +2,18 @@
   [tableView]="true" 
   [link]="link">
 </sub-header>
-<div class="page-body">
-  <div class="row">
-    <p>Datatables components</p>
-  </div>
-</div>
+<ingests-in-progress 
+  [headerTableLinkExist]="headerTableLinkExist"
+  [headerTableLink]="inProgressTableLink"
+  [daysTableView]="daysTableView">
+</ingests-in-progress>
+<kai-waiting
+   [headerTableLinkExist]="headerTableLinkExist" 
+   [headerTableLink]="kaiTableLink" 
+   [daysTableView]="daysTableView">
+  </kai-waiting>
+<ingests-completed
+   [headerTableLinkExist]="headerTableLinkExist" 
+   [headerTableLink]="completedTableLink" 
+   [daysTableView]="daysTableView">
+</ingests-completed>
