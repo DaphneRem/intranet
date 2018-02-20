@@ -17,22 +17,21 @@
                     </div>
                     <div class="col-sm-12">
 
-                      <input name="programName" required [(ngModel)]="datasForm.programName"
-                        class="form-control ng-pristine ng-invalid ng-touched"
-                        minlength="4"
-                        [ngModelOptions]="{standalone: true}"
-                        formcontrolname="name" id="programName"
-                        type="text">
+                      <input name="programName" required [(ngModel)]="datasForm.programName" class="form-control ng-pristine ng-invalid ng-touched"
+                        minlength="4" [ngModelOptions]="{standalone: true}" formcontrolname="name" id="programName" type="text">
                       <div *ngIf="(!datasForm.programName || datasForm.programName=='') && submitted==1 " class="messages text-danger ng-star-inserted">Champ vide</div>
 
                     </div>
                     <div class="col-sm-12">
                       <br>
+                      <br>
                       <button type="submit" class="btn btn-primary" mat-raised-button color="primary">
                         Rechercher
                         <i class="icon-search"></i>
                       </button>
-                      <button type="button" class="btn btn-primary" mat-raised-button (click)="clearSearch()">Annuler</button>
+                      <button type="button" class="btn btn-primary" mat-raised-button (click)="clearSearch()">
+                        Annuler
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -42,11 +41,8 @@
                       <h5>Période de diffusion</h5>
                     </div>
                     <div class="col-sm-12">
-                      <my-date-range-picker
-                      (dateRangeChanged)="onDateRangeChanged($event)"
-                      name="mydateRange" id="mydateRange"
-                      [options]="myDateRangePickerOptions"
-                      [(ngModel)]="datasForm.datesRange" required>
+                      <my-date-range-picker (dateRangeChanged)="onDateRangeChanged($event)" name="mydateRange" id="mydateRange" [options]="myDateRangePickerOptions"
+                        [(ngModel)]="datasForm.datesRange" required>
                       </my-date-range-picker>
                       <div *ngIf="(!datasForm.datesRange || datasForm.datesRange=='') && submitted==1" class="messages text-danger ng-star-inserted">
                         DATE vide
@@ -56,11 +52,10 @@
                   </div>
                   <div class="row wrap">
                     <div class="col-sm-12">
-                      Type de diffusion
+                      <br>
+                      <h5>Type de diffusion</h5>
                     </div>
                     <div class="col-sm-12">
-                      <br>
-
                       <div class="form-radio data-table-timeFilter">
                         <div class="ng-untouched ng-pristine">
                           <div class="radio radio-inline">

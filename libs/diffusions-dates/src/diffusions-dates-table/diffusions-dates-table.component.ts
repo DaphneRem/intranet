@@ -31,7 +31,8 @@ export class DiffusionsDatesTableComponent implements OnInit {
   public formLoading = false;
 
   public myDateRangePickerOptions: IMyDrpOptions = {
-    dateFormat: 'dd.mm.yyyy'
+    dateFormat: 'dd.mm.yyyy',
+    width: '100%',
   };
 
   constructor(private diffService: DatesDiffusionsService) {}

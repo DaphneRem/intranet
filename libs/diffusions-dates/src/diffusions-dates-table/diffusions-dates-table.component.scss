@@ -22,7 +22,10 @@
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 
 }
-
+h5 {
+  margin: 0 0 8px 0;
+}
 /deep/ angular2-multiselect .selected-list[_ngcontent-c7] .c-btn[_ngcontent-c7]{
   box-shadow: none;
+  padding: 7px;
 }
