@@ -23,28 +23,28 @@ export class IngestsWidgetsViewComponent implements OnInit {
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-6 ',
       link: './in-progress',
-      color: '#3498DB'
+      color: 'linear-gradient(45deg, #4099ff, #73b4ff)'
     },
     {
       title: 'Terminés',
       icon: 'icofont icofont-check-alt',
       size: 'col-md-12 col-lg-6 ',
       link: './completed',
-      color: '#2ECC71'
+      color: 'linear-gradient(45deg, #2ed8b6, #59e0c5)'
     },
     {
       title: 'En attente KAI',
       icon: 'icofont icofont-wall-clock',
       size: 'col-md-12 col-lg-6 ',
       link: './kai-waiting',
-      color: '#E74C3C'
+      color: 'linear-gradient(45deg, #FF5370, #ff869a)'
     },
     {
       title: 'En attente KARINA',
       icon: 'icofont icofont-wall-clock',
       size: 'col-md-12 col-lg-6 ',
       link: './karina-waiting',
-      color: '#F1C40F'
+      color: 'linear-gradient(45deg, #FFB64D, #ffcb80)'
     }
   ];
 
