@@ -80,7 +80,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-sm-4" style="z-index:99999">
+                <div class="col-sm-4">
                   <div class="row wrap">
                     <div class="col-sm-12">
                       <h5>Chaines</h5>
@@ -101,7 +101,7 @@
       </div>
       <hr>
       <div class="row">
-        <div *ngIf="submitted === 0 && diffdatas.length === 0 && !dataloading" class="col-sm-12">
+        <div *ngIf="submitted === 0 && diffdatas.length ===0" class="col-sm-12">
           <div class="row">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
@@ -112,18 +112,23 @@
         </div>
       </div>
       <div class="row">
-        <div *ngIf="dataloading" class="col-sm-12">
+        <div *ngIf="submitted==2" class="col-sm-12">
           <div class="row">
             <div class="col-sm-4"></div>
-            <div class="col-sm-4">
+            <div class="col-sm-4" align="center">
               CHARGEMENT EN COURS ...
+              <br>
+              <br>
+              <button type="button" class="btn btn-primary" mat-raised-button (click)="clearSearch()">
+                Annuler
+              </button>
             </div>
             <div class="col-sm-4"></div>
           </div>
         </div>
       </div>
       <div class="row">
-        <div *ngIf="submitted === 0 && diffdatas.length !==0 && !dataloading" class="col-sm-12">
+        <div *ngIf="submitted === 0 && diffdatas.length !==0" class="col-sm-12">
           <table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
           <span>NBR HEURES : {{nbrHours}}</span>
         </div>

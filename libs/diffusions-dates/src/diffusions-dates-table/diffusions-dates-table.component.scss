@@ -1,4 +1,3 @@
-
 .custom-day {
   text-align: center;
   padding: 0.185rem 0.25rem;
@@ -9,23 +8,25 @@
 .custom-day.focused {
   background-color: #e6e6e6;
 }
-.custom-day.range, .custom-day:hover {
+.custom-day.range,
+.custom-day:hover {
   background-color: rgb(2, 117, 216);
   color: white;
 }
 .custom-day.faded {
   background-color: rgba(2, 117, 216, 0.5);
 }
-/deep/ #mydateRange .selectiongroup:focus-within{
-
+/deep/ #mydateRange .selectiongroup:focus-within {
   border: 1px solid #4099ff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-
 }
 h5 {
   margin: 0 0 8px 0;
 }
-/deep/ angular2-multiselect .selected-list[_ngcontent-c7] .c-btn[_ngcontent-c7]{
+/deep/
+  angular2-multiselect
+  .selected-list[_ngcontent-c7]
+  .c-btn[_ngcontent-c7] {
   box-shadow: none;
   padding: 7px;
 }

@@ -7,6 +7,7 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'diffusions-dates-table',
@@ -19,7 +20,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
   public chanelsList: any = [];
   public datasForm: any = { channels: [], type: 'Grille' };
   public dropdownSettings = {};
-  public submitted = 0;
+  public submitted = 0; // 0 = pas soumis / 1 = Soumise et retour erreur / 2 = soumis sans erreur detectées avant envoi.
 
   public jsonResults = {};
   public nbrHours = '0';
@@ -35,7 +36,21 @@ export class DiffusionsDatesTableComponent implements OnInit {
     width: '100%',
   };
 
-  constructor(private diffService: DatesDiffusionsService) {}
+  constructor(
+    private diffService: DatesDiffusionsService,
+    private formBuilder: FormBuilder
+    ) {
+
+    }
+
+  // les modales
+
+  modalMessage(title, message) {
+    swal({
+      title: title,
+      text: message
+    }).catch(swal.noop);
+  }
 
   //  GESTION DE LA SELECTION DES DATES
 
@@ -54,7 +69,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
     const hoursDiff = time / (3600 * 1000);
     if (hoursDiff > 8760) {
       this.clearDateRange();
-      alert('Vous ne pouvez pas définir une période suppérieure à 1 an.');
+      this.modalMessage('', 'Vous ne pouvez pas définir une période suppérieure à 1 an.');
       this.clearDateRange();
     }
   }
@@ -140,18 +155,18 @@ export class DiffusionsDatesTableComponent implements OnInit {
                 console.log('Error calcul nbr heures totales ' + err);
               }
             } else {
-              alert('Aucuns résultats');
+              this.modalMessage('', 'Aucuns résultats');
             }
             this.submitted = 0;
             this.dataloading = false;
           });
       } else {
         this.submitted = 1;
-        alert('Il y\'a une erreur dans vos parametres de recherche.');
+        this.modalMessage('', 'Il y\'a une erreur dans vos parametres de recherche.');
       }
     } else {
       this.submitted = 1;
-      alert('Il y\'a une erreur dans vos parametres de recherche.');
+      this.modalMessage('', 'Il y\'a une erreur dans vos parametres de recherche.');
     }
   }
 
@@ -295,6 +310,9 @@ export class DiffusionsDatesTableComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.myForm = this.formBuilder.group({
+        myDateRange: ['', Validators.required]
+    });
     this.searchFormInit();
   }
 
