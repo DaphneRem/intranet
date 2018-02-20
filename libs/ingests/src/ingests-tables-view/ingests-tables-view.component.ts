@@ -9,8 +9,10 @@ export class IngestsTablesViewComponent implements OnInit {
   public link = '/';
   public daysTableView = 1;
   public headerTableLinkExist = true;
-  public headerTableLink = '../in-progress';
-
+  public inProgressTableLink = '../in-progress';
+  public completedTableLink = '../completed';
+  public kaiTableLink = '../kai-waiting';
+  
   constructor() { }
 
   ngOnInit() {
