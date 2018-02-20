@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from '@ngrx/effects';
 // import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { NxModule } from '@nrwl/nx';
 import { StoreModule } from '@ngrx/store';
@@ -35,7 +35,7 @@ import { WidgetsModule } from '@ab/widgets';
     BrowserModule,
     CustomDatatablesModule,
     EffectsModule.forRoot([]),
-    HttpModule,
+    HttpClientModule,
     NxModule.forRoot(),
     RootModule,
     RouterStateModule.forRoot(),
