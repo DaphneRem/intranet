@@ -11,6 +11,7 @@ export class CustomDatatablesOptions {
   lenghtMenu: any;
   buttons: Buttons;
   theme: string;
+  renderOption: boolean;
 }
 
 export class Columns {

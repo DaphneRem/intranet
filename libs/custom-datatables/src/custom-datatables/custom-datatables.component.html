@@ -3,8 +3,11 @@
 
 
     <div class="header-buttons">
+      <!-- <button type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
+        Rafraichir
+      </button> -->
       <button *ngIf="renderOption" type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
-        Rerender
+        Rafraichir
       </button>
       <a *ngIf="headerTableLinkExist" class="btn btn-primary btn-outline-primary" [routerLink]="headerTableLink">
         Voir plus...
@@ -36,7 +39,7 @@
     <div 
       class="datatables-header text-center middle"
       [ngStyle]="headerColor">
-      <div class="header-title text-uppercase">
+      <div class="header-title no-data-alert text-uppercase">
          {{tableTitle}}
       </div>
     </div>

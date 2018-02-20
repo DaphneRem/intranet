@@ -21,7 +21,6 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   dtTrigger: Subject<any> = new Subject();
   public render: boolean;
 
-  public renderOption = true;
 
 
   @Output()
@@ -31,7 +30,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   @Input() customdatatablesOptions: CustomDatatablesOptions;
 
 
-
+  public renderOption: boolean;
   public finalData: any = [];
   public dtOptions: any = {};
 
@@ -39,7 +38,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   public themeName: string;
   public theme: any;
 
-  public data: any;
+  public data: any = [] ;
   public headerColor: string;
   public firstColumnColor: string;
   public paging: boolean;
@@ -49,10 +48,29 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   public headerTableLink: string;
   public buttons: any;
 
-  public colvisButton = 'colvis';
-  public copyButton = 'copy';
-  public printButton = 'print';
-  public excelButton = 'excel';
+  // public colvisButton = 'colvis';
+  // public copyButton = 'copy';
+  // public printButton = 'print';
+  // public excelButton = 'excel';
+
+  public colvisButton =  {
+            extend: 'colvis',
+            text: 'Colonnes'
+        };
+  public copyButton = {
+            extend: 'copy',
+            text: 'Copier'
+        };
+  public printButton =  {
+            extend: 'print',
+            text: 'Imprimer'
+        };
+  public excelButton =  {
+            extend: 'excel',
+            text: 'Excel'
+        };
+
+
   public frenchLanguage = {
       processing: 'Traitement en cours...',
       search: 'Rechercher&nbsp;:',
@@ -113,9 +131,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         select : 'single',
         pageLength : options.rowsMax,
         lengthMenu : options.lenghtMenu,
-        // Declare the use of the extension in the dom parameter
         dom: 'Bfrtip',
-        // Configure the buttons
         buttons: [],
         rowCallback: (row: Node, data: any[] | Object, index: number) => {
             const self = this;
@@ -128,6 +144,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
       };
       console.log(options.data);
       this.displayButtons();
+      console.log(this.dtOptions.buttons);
     }
   }
 
@@ -135,12 +152,35 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
     const options = this.customdatatablesOptions;
     if (options.buttons.buttons) {
       if (options.buttons.allButtons) {
+                    console.log('ok1');
+
         return this.dtOptions.buttons
-            .push(this.colvisButton, this.copyButton, this.printButton, this.excelButton);
+            .push(
+              {
+                extend: 'collection',
+                text: 'Options',
+                buttons: [
+                  this.colvisButton,
+                  this.copyButton,
+                  this.printButton,
+                  this.excelButton
+                ]
+              }
+            );
       } else {
         this.buttons.map(item => {
           if (item.exist) {
-            this.dtOptions.buttons.push(item.name);
+            console.log('ok');
+            this.dtOptions.buttons
+            .push(
+              {
+                extend: 'collection',
+                text: 'Options',
+                buttons: [
+                  item.name
+                ]
+              }
+            );
           }
         });
       }
@@ -156,6 +196,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
       this.tableTitle = options.tableTitle;
       this.headerTableLinkExist = options.headerTableLinkExist;
       this.headerTableLink = options.headerTableLink;
+      this.renderOption = options.renderOption;
       this.buttons = [
             {
               name : this.colvisButton,
