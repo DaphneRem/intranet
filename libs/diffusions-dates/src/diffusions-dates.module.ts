@@ -8,7 +8,6 @@ import { DataTablesModule } from 'angular-datatables';
 
 import {FormsModule} from '@angular/forms';
 import {SelectModule} from 'ng-select';
-import { FormMultipleSelectComponent } from './form-multiple-select/form-multiple-select.component';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 
@@ -24,7 +23,7 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2
     MyDateRangePickerModule,
     AngularMultiSelectModule
   ],
-  declarations: [DiffusionsDatesTableComponent, FormMultipleSelectComponent],
+  declarations: [DiffusionsDatesTableComponent],
   providers: [DatesDiffusionsService]
 })
 export class DiffusionsDatesModule {

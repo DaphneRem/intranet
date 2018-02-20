@@ -1,127 +1,138 @@
-<div class="page-body">
-  <div class="row">
-    <div class="col-sm-12">
-      <div *ngIf="formLoading">
-        Loading ...
-      </div>
-      <div *ngIf="!formLoading">
-        <form class="example-form" #myForm="ngForm" (ngSubmit)="searchSubmit(myForm)">
-          <div class="row">
+<div class="page-wrapper">
+  <div class="card">
+    <div class="card-block">
+      <div class="row">
+        <div class="col-sm-12">
+          <div *ngIf="formLoading">
+            Loading ...
+          </div>
+          <div *ngIf="!formLoading">
+            <form class="example-form" #myForm="ngForm" (ngSubmit)="searchSubmit(myForm)">
+              <div class="row">
 
-            <div class="col-sm-4">
-              <div class="row wrap">
-                <div class="col-sm-12">
-                  Nom ou numéro de programme
-                </div>
-                <div class="col-sm-12">
+                <div class="col-sm-4">
+                  <div class="row wrap">
+                    <div class="col-sm-12">
+                      <h5>Nom ou numéro de programme</h5>
+                    </div>
+                    <div class="col-sm-12">
 
-                  <input name="programName" required [(ngModel)]="datasForm.programName" class="form-control ng-pristine ng-invalid ng-touched"
-                    minlength="4" [ngModelOptions]="{standalone: true}" formcontrolname="name" id="programName" placeholder="Text Input Validation"
-                    type="text">
-                  <div *ngIf="(!datasForm.programName || datasForm.programName=='') && submitted==1 " class="messages text-danger ng-star-inserted">Champ vide</div>
+                      <input name="programName" required [(ngModel)]="datasForm.programName"
+                        class="form-control ng-pristine ng-invalid ng-touched"
+                        minlength="4"
+                        [ngModelOptions]="{standalone: true}"
+                        formcontrolname="name" id="programName"
+                        type="text">
+                      <div *ngIf="(!datasForm.programName || datasForm.programName=='') && submitted==1 " class="messages text-danger ng-star-inserted">Champ vide</div>
 
-                </div>
-                <div class="col-sm-12">
-                  <br>
-                  <button type="submit" mat-raised-button color="primary">
-                    Rechercher
-                    <i class="icon-search"></i>
-                  </button>
-                  <button type="button" mat-raised-button (click)="clearSearch()">Annuler</button>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="row wrap">
-                <div class="col-sm-12">
-                  Période de diffusion
-                </div>
-                <div class="col-sm-12">
-                  <my-date-range-picker (dateRangeChanged)="onDateRangeChanged($event)" name="mydateRange" id="mydateRange" [options]="myDateRangePickerOptions"
-                    [(ngModel)]="datasForm.datesRange" required>
-                  </my-date-range-picker>
-                  <div *ngIf="(!datasForm.datesRange || datasForm.datesRange=='') && submitted==1" class="alert alert-danger">
-                    DATE vide
+                    </div>
+                    <div class="col-sm-12">
+                      <br>
+                      <button type="submit" class="btn btn-primary" mat-raised-button color="primary">
+                        Rechercher
+                        <i class="icon-search"></i>
+                      </button>
+                      <button type="button" class="btn btn-primary" mat-raised-button (click)="clearSearch()">Annuler</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="row wrap">
-                <div class="col-sm-12">
-                  Type de diffusion
-                </div>
-                <div class="col-sm-12">
-                  <br>
-
-                  <div class="form-radio data-table-timeFilter">
-                    <div class="ng-untouched ng-pristine">
-                      <div class="radio radio-inline">
-                        <label>
-                          <input name="radio" type="radio" (click)="datasForm.type='Conducteur'">
-                          <i class="helper"></i>Conducteur
-                        </label>
+                <div class="col-sm-4">
+                  <div class="row wrap">
+                    <div class="col-sm-12">
+                      <h5>Période de diffusion</h5>
+                    </div>
+                    <div class="col-sm-12">
+                      <my-date-range-picker
+                      (dateRangeChanged)="onDateRangeChanged($event)"
+                      name="mydateRange" id="mydateRange"
+                      [options]="myDateRangePickerOptions"
+                      [(ngModel)]="datasForm.datesRange" required>
+                      </my-date-range-picker>
+                      <div *ngIf="(!datasForm.datesRange || datasForm.datesRange=='') && submitted==1" class="messages text-danger ng-star-inserted">
+                        DATE vide
                       </div>
-                      <div class="radio radio-inline">
-                        <label>
-                          <input name="radio" checked="checked" type="radio" (click)="datasForm.type='Grille'">
-                          <i class="helper"></i>Grille
-                        </label>
+
+                    </div>
+                  </div>
+                  <div class="row wrap">
+                    <div class="col-sm-12">
+                      Type de diffusion
+                    </div>
+                    <div class="col-sm-12">
+                      <br>
+
+                      <div class="form-radio data-table-timeFilter">
+                        <div class="ng-untouched ng-pristine">
+                          <div class="radio radio-inline">
+                            <label>
+                              <input name="radio" type="radio" (click)="datasForm.type='Conducteur'">
+                              <i class="helper"></i>Conducteur
+                            </label>
+                          </div>
+                          <div class="radio radio-inline">
+                            <label>
+                              <input name="radio" checked="checked" type="radio" (click)="datasForm.type='Grille'">
+                              <i class="helper"></i>Grille
+                            </label>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div *ngIf="(datasForm.type=='' || !datasForm.type) && submitted==1 " class="messages text-danger ng-star-inserted">
+                        Pas de Type
                       </div>
                     </div>
-
                   </div>
-
-                  <div *ngIf="(datasForm.type=='' || !datasForm.type) && submitted==1 " class="alert alert-danger">
-                    Pas de Type
+                </div>
+                <div class="col-sm-4" style="z-index:99999">
+                  <div class="row wrap">
+                    <div class="col-sm-12">
+                      <h5>Chaines</h5>
+                    </div>
+                    <div class="col-sm-12 chanelsList">
+                      <angular2-multiselect [ngModelOptions]="{standalone: true}" [data]="chanelsList" [(ngModel)]="datasForm.channels" [settings]="dropdownSettings">
+                      </angular2-multiselect>
+                      <div *ngIf="datasForm.channels.length==0 && submitted===1" class="messages text-danger ng-star-inserted">
+                        Selectionnez au moins une chaine
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-4" style="z-index:99999">
-              <div class="row wrap">
-                <div class="col-sm-12">
-                  Chaines
-                </div>
-                <div class="col-sm-12 chanelsList">
-                  <angular2-multiselect [ngModelOptions]="{standalone: true}" [data]="chanelsList" [(ngModel)]="datasForm.channels" [settings]="dropdownSettings">
-                  </angular2-multiselect>
-                </div>
-                <div *ngIf="datasForm.channels.length==0 && submitted===1" class="alert alert-danger">
-                  Selectionnez au moins une chaine
-                </div>
-              </div>
-            </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <hr>
-  <div class="row">
-    <div *ngIf="submitted === 0 && diffdatas.length === 0 && !dataloading" class="col-sm-12">
-      <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4">
-          Aucuns resultats à afficher pour le moment
         </div>
-        <div class="col-sm-4"></div>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div *ngIf="dataloading" class="col-sm-12">
+      <hr>
       <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4">
-          CHARGEMENT EN COURS ...
+        <div *ngIf="submitted === 0 && diffdatas.length === 0 && !dataloading" class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+              Aucuns resultats à afficher pour le moment
+            </div>
+            <div class="col-sm-4"></div>
+          </div>
         </div>
-        <div class="col-sm-4"></div>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div *ngIf="submitted === 0 && diffdatas.length !==0 && !dataloading" class="col-sm-12">
-      <table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
-      <span>NBR HEURES : {{nbrHours}}</span>
+      <div class="row">
+        <div *ngIf="dataloading" class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+              CHARGEMENT EN COURS ...
+            </div>
+            <div class="col-sm-4"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div *ngIf="submitted === 0 && diffdatas.length !==0 && !dataloading" class="col-sm-12">
+          <table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
+          <span>NBR HEURES : {{nbrHours}}</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

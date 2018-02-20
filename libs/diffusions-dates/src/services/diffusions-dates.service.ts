@@ -35,7 +35,7 @@ export class DatesDiffusionsService {
   }
 
   getChanelsDiffusions() {
-    this.currentRequest = this.http.get('')
+    this.currentRequest = this.http.get('http://vm-angular-rc:9081/api/LibChaine')
               .map((res: Response) => res.json())
               .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     return this.currentRequest;
