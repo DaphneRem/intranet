@@ -33,15 +33,13 @@ export class DiffusionsDatesTableComponent implements OnInit {
 
   public myDateRangePickerOptions: IMyDrpOptions = {
     dateFormat: 'dd.mm.yyyy',
-    width: '100%',
+    width: '100%'
   };
 
   constructor(
     private diffService: DatesDiffusionsService,
     private formBuilder: FormBuilder
-    ) {
-
-    }
+  ) {}
 
   // les modales
 
@@ -69,7 +67,10 @@ export class DiffusionsDatesTableComponent implements OnInit {
     const hoursDiff = time / (3600 * 1000);
     if (hoursDiff > 8760) {
       this.clearDateRange();
-      this.modalMessage('', 'Vous ne pouvez pas définir une période suppérieure à 1 an.');
+      this.modalMessage(
+        '',
+        'Vous ne pouvez pas définir une période suppérieure à 1 an.'
+      );
       this.clearDateRange();
     }
   }
@@ -122,7 +123,8 @@ export class DiffusionsDatesTableComponent implements OnInit {
         //  envoyer recherche au serveur si parametres formulaire ok
         this.submitted = 2;
 
-        // JSON d'exemple qui marche :  this.datasForm= {'channels': [ { 'id': 0, 'itemName': 'LIBRE' }, { 'id': 1, 'itemName': 'AB 1' } ], 'type': 'Grille', 'datesRange': { 'date1': '2017-12-01T23:00:00.000Z', 'date2': '2017-12-15T23:00:00.000Z' }, 'programName': 'Recherche Texte' }
+        // JSON d'exemple qui marche :
+        // this.datasForm= {'channels': [ { 'id': 0, 'itemName': 'LIBRE' }, { 'id': 1, 'itemName': 'AB 1' } ], 'type': 'Grille', 'datesRange': { 'date1': '2017-12-01T23:00:00.000Z', 'date2': '2017-12-15T23:00:00.000Z' }, 'programName': 'Recherche Texte' };
 
         const bodyString = JSON.stringify(this.datasForm).replace(/"/g, "'");
         // console.log('bodyString  > ' + bodyString);
@@ -162,11 +164,17 @@ export class DiffusionsDatesTableComponent implements OnInit {
           });
       } else {
         this.submitted = 1;
-        this.modalMessage('', 'Il y\'a une erreur dans vos parametres de recherche.');
+        this.modalMessage(
+          '',
+          'Il y\'a une erreur dans vos parametres de recherche'
+        );
       }
     } else {
       this.submitted = 1;
-      this.modalMessage('', 'Il y\'a une erreur dans vos parametres de recherche.');
+      this.modalMessage(
+        '',
+        'Il y\'a une erreur dans vos parametres de recherche.'
+      );
     }
   }
 
@@ -311,7 +319,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
 
   ngOnInit() {
     this.myForm = this.formBuilder.group({
-        myDateRange: ['', Validators.required]
+      myDateRange: ['', Validators.required]
     });
     this.searchFormInit();
   }

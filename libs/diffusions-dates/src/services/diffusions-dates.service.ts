@@ -5,7 +5,7 @@ import { DiffusionsDates } from '../models/diffusions-dates';
 import { Observable } from 'rxjs/rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/Rx';
-
+import {urlDiffDates, urlDiffDates_chanels } from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -35,7 +35,7 @@ export class DatesDiffusionsService {
   }
 
   getChanelsDiffusions() {
-    this.currentRequest = this.http.get('http://vm-angular-rc:9081/api/LibChaine')
+    this.currentRequest = this.http.get(urlDiffDates)
               .map((res: Response) => res.json())
               .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     return this.currentRequest;
@@ -43,7 +43,7 @@ export class DatesDiffusionsService {
 
   getDiffusionsDates(datasForm) {
     const bodyString = JSON.stringify(datasForm);
-    this.currentRequest = this.http.post('', bodyString, this.options)
+    this.currentRequest = this.http.post(urlDiffDates_chanels, bodyString, this.options)
               .map((res: Response) => res.json())
               .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     return this.currentRequest;
