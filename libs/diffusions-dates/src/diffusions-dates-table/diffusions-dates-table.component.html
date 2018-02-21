@@ -3,13 +3,19 @@
     <div class="card-block">
       <div class="row">
         <div class="col-sm-12">
-          <div *ngIf="formLoading">
-            Loading ...
+          <div *ngIf="formLoaded" class="loader animation-start">
+            <span class="circle delay-1 size-2"></span>
+            <span class="circle delay-2 size-4"></span>
+            <span class="circle delay-3 size-6"></span>
+            <span class="circle delay-4 size-7"></span>
+            <span class="circle delay-5 size-7"></span>
+            <span class="circle delay-6 size-6"></span>
+            <span class="circle delay-7 size-4"></span>
+            <span class="circle delay-8 size-2"></span>
           </div>
-          <div *ngIf="!formLoading">
+          <div *ngIf="!formLoaded">
             <form class="example-form" #myForm="ngForm" (ngSubmit)="searchSubmit(myForm)">
               <div class="row">
-
                 <div class="col-sm-4">
                   <div class="row wrap">
                     <div class="col-sm-12">
@@ -47,7 +53,6 @@
                       <div *ngIf="(!datasForm.datesRange || datasForm.datesRange=='') && submitted==1" class="messages text-danger ng-star-inserted">
                         DATE vide
                       </div>
-
                     </div>
                   </div>
                   <div class="row wrap">
@@ -71,9 +76,7 @@
                             </label>
                           </div>
                         </div>
-
                       </div>
-
                       <div *ngIf="(datasForm.type=='' || !datasForm.type) && submitted==1 " class="messages text-danger ng-star-inserted">
                         Pas de Type
                       </div>
@@ -101,7 +104,7 @@
       </div>
       <hr>
       <div class="row">
-        <div *ngIf="submitted === 0 && diffdatas.length ===0" class="col-sm-12">
+        <div *ngIf="dataloaded ===0" class="col-sm-12">
           <div class="row">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
@@ -110,27 +113,20 @@
             <div class="col-sm-4"></div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div *ngIf="submitted==2" class="col-sm-12">
-          <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4" align="center">
-              CHARGEMENT EN COURS ...
-              <br>
-              <br>
-              <button type="button" class="btn btn-primary" mat-raised-button (click)="clearSearch()">
-                Annuler
-              </button>
-            </div>
-            <div class="col-sm-4"></div>
-          </div>
+        <div *ngIf="dataloaded === 1" class="loader animation-start">
+          <span class="circle delay-1 size-2"></span>
+          <span class="circle delay-2 size-4"></span>
+          <span class="circle delay-3 size-6"></span>
+          <span class="circle delay-4 size-7"></span>
+          <span class="circle delay-5 size-7"></span>
+          <span class="circle delay-6 size-6"></span>
+          <span class="circle delay-7 size-4"></span>
+          <span class="circle delay-8 size-2"></span>
         </div>
-      </div>
-      <div class="row">
-        <div *ngIf="submitted === 0 && diffdatas.length !==0" class="col-sm-12">
-          <table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
-          <span>NBR HEURES : {{nbrHours}}</span>
+        <div *ngIf="dataloaded===2" class="col-sm-12">
+          <custom-datatables [customdatatablesOptions]="customdatatablesOptions">
+          </custom-datatables>
+          <span>TIMECODE TOTAL HEURES : {{nbrHours}}</span>
         </div>
       </div>
     </div>

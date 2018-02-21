@@ -10,6 +10,7 @@ import {SelectModule} from 'ng-select';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 
+import { CustomDatatablesModule } from '@ab/custom-datatables';
 @NgModule({
   imports: [
     CommonModule,
@@ -18,7 +19,8 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2
     FormsModule,
     SelectModule,
     MyDateRangePickerModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    CustomDatatablesModule
   ],
   declarations: [DiffusionsDatesTableComponent],
   providers: [

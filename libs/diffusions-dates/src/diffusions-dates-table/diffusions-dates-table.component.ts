@@ -8,6 +8,9 @@ import {
   Validators
 } from '@angular/forms';
 import swal from 'sweetalert2';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 @Component({
   selector: 'diffusions-dates-table',
@@ -20,16 +23,40 @@ export class DiffusionsDatesTableComponent implements OnInit {
   public chanelsList: any = [];
   public datasForm: any = { channels: [], type: 'Grille' };
   public dropdownSettings = {};
-  public submitted = 0; // 0 = pas soumis / 1 = Soumise et retour erreur / 2 = soumis sans erreur detectées avant envoi.
-
-  public jsonResults = {};
   public nbrHours = '0';
-
   public myForm: FormGroup;
   public form: FormGroup;
+  public currentQuery: any;
 
-  public dataloading = false;
-  public formLoading = false;
+  /*
+  0 = requette non soumise
+  1 = requette soumise
+  2 = data chargée et ok
+  */
+  public dataloaded = 0;
+  public formLoaded = false;
+
+  public customdatatablesOptions: CustomDatatablesOptions = {
+    tableTitle: 'Dates de diffusions',
+    data: [],
+    headerTableLinkExist: false,
+    headerTableLink: '',
+    customColumn: false,
+    paging: true,
+    search: true,
+    rowsMax: 20,
+    lenghtMenu: [5, 10, 15],
+    theme: 'blue theme',
+    renderOption: false,
+    buttons: {
+      buttons: true,
+      allButtons: true,
+      colvisButtonExiste: true,
+      copyButtonExiste: true,
+      printButtonExiste: true,
+      excelButtonExiste: true
+    }
+  };
 
   public myDateRangePickerOptions: IMyDrpOptions = {
     dateFormat: 'dd.mm.yyyy',
@@ -41,7 +68,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {}
 
-  // les modales
+  // les modales de messages d'alertes.
 
   modalMessage(title, message) {
     swal({
@@ -106,8 +133,8 @@ export class DiffusionsDatesTableComponent implements OnInit {
   //  TABLEAU RESULTATS DIFFS
 
   searchSubmit() {
-    // on active le mode chargement et on verifie les donnees saisies.
-    this.dataloading = true;
+    this.dataloaded = 1;
+
     if (
       this.datasForm.programName &&
       this.datasForm.type &&
@@ -120,8 +147,6 @@ export class DiffusionsDatesTableComponent implements OnInit {
             date2: this.datasForm.datesRange.endJsDate
           };
         }
-        //  envoyer recherche au serveur si parametres formulaire ok
-        this.submitted = 2;
 
         // JSON d'exemple qui marche :
         // this.datasForm= {'channels': [ { 'id': 0, 'itemName': 'LIBRE' }, { 'id': 1, 'itemName': 'AB 1' } ], 'type': 'Grille', 'datesRange': { 'date1': '2017-12-01T23:00:00.000Z', 'date2': '2017-12-15T23:00:00.000Z' }, 'programName': 'Recherche Texte' };
@@ -129,48 +154,27 @@ export class DiffusionsDatesTableComponent implements OnInit {
         const bodyString = JSON.stringify(this.datasForm).replace(/"/g, "'");
         // console.log('bodyString  > ' + bodyString);
 
-        this.diffService
-          .getDiffusionsDates(this.datasForm)
-          .subscribe((data: any) => {
-            // on vérifie si le résultat n'est pas VIDE
+        this.currentQuery = this.diffService.getDiffusionsDates(this.datasForm).subscribe(data => {
+          // on vérifie si le résultat n'est pas VIDE
+          // console.log(' DATA ? ' + JSON.stringify(data));
 
-            if (data && data.length > 0 && JSON.stringify(data) !== '{}') {
-              this.diffdatas = data;
-              this.diffdatas = JSON.parse(this.diffdatas);
-              this.jsonResults = this.diffdatas;
-              this.tableInit(this.diffdatas);
-
-              // calcul de la durée totale des éléments de la liste
-              try {
-                const frameRat = '30'; // fps
-                let secondes = 0;
-                for (let i = 0; i < this.diffdatas.length; i++) {
-                  const secs = this.convertTimeCodeToSeconds(
-                    this.diffdatas[i].Duree,
-                    frameRat
-                  );
-                  secondes = Number(secondes) + Number(secs);
-                  // countHours+=data[i].duree;
-                }
-                this.nbrHours = this.convertTime(secondes, frameRat);
-              } catch (err) {
-                console.log('Error calcul nbr heures totales ' + err);
-              }
-            } else {
-              this.modalMessage('', 'Aucuns résultats');
-            }
-            this.submitted = 0;
-            this.dataloading = false;
-          });
+          if (data && data.length > 0 && JSON.stringify(data) !== '{}') {
+            this.customdatatablesOptions.data = this.diffdatas = data;
+            // calcul de la durée totale des éléments de la liste
+            this.calculateTotalHours();
+            this.dataloaded = 2;
+          } else {
+            this.modalMessage('', 'Aucuns résultats');
+            this.dataloaded = 0;
+          }
+        });
       } else {
-        this.submitted = 1;
         this.modalMessage(
           '',
           'Il y\'a une erreur dans vos parametres de recherche'
         );
       }
     } else {
-      this.submitted = 1;
       this.modalMessage(
         '',
         'Il y\'a une erreur dans vos parametres de recherche.'
@@ -181,19 +185,17 @@ export class DiffusionsDatesTableComponent implements OnInit {
   clearSearch() {
     this.datasForm = { channels: [], type: 'Grille' };
     this.clearDateRange();
-    this.submitted = 0;
-    this.jsonResults = {};
     this.nbrHours = '0';
+    this.dataloaded = 0;
+    this.diffdatas = [];
+    this.currentQuery.unsubscribe();
   }
   searchFormInit() {
-    this.formLoading = true;
+    this.formLoaded = true;
     // chargement de la liste des chaines dans l'input de selection
     this.diffService.getChanelsDiffusions().subscribe(data => {
-      this.chanelsList = data;
-      this.chanelsList = JSON.parse(this.chanelsList);
-
       // créer un nouvel objet JSON au FORMAT compatible avec le module multi select installé
-      const channels = JSON.parse(data);
+      const channels = data;
       const newList = [];
       for (let i = 0; i < channels.length; i++) {
         const newItem = { id: channels[i].Code, itemName: channels[i].Libelle };
@@ -209,112 +211,8 @@ export class DiffusionsDatesTableComponent implements OnInit {
         enableSearchFilter: false,
         classes: 'myclass custom-class'
       };
-      this.formLoading = false;
+      this.formLoaded = false;
     });
-  }
-
-  tableInit(datas) {
-    this.dtOptions = {
-      data: datas,
-      columns: [
-        {
-          title: 'TypeProduit',
-          data: 'TypeProduit'
-        },
-        {
-          title: 'Chaine',
-          data: 'Chaine'
-        },
-        {
-          title: 'datediff',
-          data: 'datediff'
-        },
-        {
-          title: 'NumProgram',
-          data: 'NumProgram'
-        },
-        {
-          title: 'NumEpisode',
-          data: 'NumEpisode'
-        },
-        {
-          title: 'Duree',
-          data: 'Duree'
-        },
-        {
-          title: 'Support',
-          data: 'Support'
-        },
-        {
-          title: 'segment',
-          data: 'segment'
-        },
-        {
-          title: 'ModFrais',
-          data: 'ModFrais'
-        },
-        {
-          title: 'GenrePrin',
-          data: 'GenrePrin'
-        },
-        {
-          title: 'GenreTertiare',
-          data: 'GenreTertiare'
-        },
-        {
-          title: 'TitreLongFran',
-          data: 'TitreLongFran'
-        },
-        {
-          title: 'TitreEpisFra',
-          data: 'TitreEpisFra'
-        },
-        {
-          title: 'producteur',
-          data: 'producteur'
-        },
-        {
-          title: 'distributeur',
-          data: 'distributeur'
-        },
-        {
-          title: 'realisateur',
-          data: 'realisateur'
-        },
-        {
-          title: 'AnneeProd',
-          data: 'AnneeProd'
-        },
-        {
-          title: 'Europe',
-          data: 'Europe'
-        },
-        {
-          title: 'Moralite',
-          data: 'Moralite'
-        },
-        {
-          title: 'HD_Natif',
-          data: 'HD_Natif'
-        },
-        {
-          title: 'LibQualiteSup',
-          data: 'LibQualiteSup'
-        },
-        {
-          title: 'id_grille',
-          data: 'id_grille'
-        },
-        {
-          title: 'DureeSec',
-          data: 'DureeSec'
-        },
-        {
-          title: 'OrigineTable',
-          data: 'OrigineTable'
-        }
-      ]
-    };
   }
 
   ngOnInit() {
@@ -322,6 +220,23 @@ export class DiffusionsDatesTableComponent implements OnInit {
       myDateRange: ['', Validators.required]
     });
     this.searchFormInit();
+  }
+
+  calculateTotalHours() {
+    try {
+      const frameRat = '30'; // fps
+      let secondes = 0;
+      for (let i = 0; i < this.diffdatas.length; i++) {
+        const secs = this.convertTimeCodeToSeconds(
+          this.diffdatas[i].Duree,
+          frameRat
+        );
+        secondes = Number(secondes) + Number(secs);
+      }
+      this.nbrHours = this.convertTime(secondes, frameRat);
+    } catch (err) {
+      console.log('Error calcul nbr heures totales ' + err);
+    }
   }
 
   convertTimeCodeToSeconds(timeString, framerate) {
@@ -332,7 +247,6 @@ export class DiffusionsDatesTableComponent implements OnInit {
     const frames = timeArray[3] * (1 / framerate);
     const str =
       'h:' + hours + '\nm:' + minutes + '\ns:' + seconds + '\f:' + frames;
-
     const totalTime = hours + minutes + seconds + frames;
     return totalTime;
   }
@@ -341,6 +255,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
     const secs = this.convertTimeCodeToSeconds(timeString, framerate);
     return secs * framerate;
   }
+
   convertTime(frames, fps) {
     fps = typeof fps !== 'undefined' ? fps : 30;
     const pad = function(input) {
