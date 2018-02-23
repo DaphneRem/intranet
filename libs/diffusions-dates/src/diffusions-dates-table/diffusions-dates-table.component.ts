@@ -19,7 +19,6 @@ import { CustomDatatablesOptions } from '@ab/custom-datatables';
 })
 export class DiffusionsDatesTableComponent implements OnInit {
   public dtOptions: DataTables.Settings = {};
-  public diffdatas: any = [];
   public chanelsList: any = [];
   public datasForm: any = { channels: [], type: 'Grille' };
   public dropdownSettings = {};
@@ -29,9 +28,10 @@ export class DiffusionsDatesTableComponent implements OnInit {
   public currentQuery: any;
 
   /*
-  0 = requette non soumise
+  0 = initialisation
   1 = requette soumise
   2 = data chargée et ok
+  3 = erreur de saisie formulaire
   */
   public dataloaded = 0;
   public formLoaded = false;
@@ -76,6 +76,12 @@ export class DiffusionsDatesTableComponent implements OnInit {
       text: message
     }).catch(swal.noop);
   }
+  modalMessageHtml(title, message) {
+    swal({
+      title: title,
+      html: message
+    }).catch(swal.noop);
+  }
 
   //  GESTION DE LA SELECTION DES DATES
 
@@ -92,11 +98,11 @@ export class DiffusionsDatesTableComponent implements OnInit {
     const date2 = new Date(date2A).getTime();
     const time = date1 - date2; // msec
     const hoursDiff = time / (3600 * 1000);
-    if (hoursDiff > 8760) {
+    if (hoursDiff > 17520) {
       this.clearDateRange();
       this.modalMessage(
         '',
-        'Vous ne pouvez pas définir une période suppérieure à 1 an.'
+        'Vous ne pouvez pas définir une période suppérieure à 2 ans.'
       );
       this.clearDateRange();
     }
@@ -152,33 +158,33 @@ export class DiffusionsDatesTableComponent implements OnInit {
         // this.datasForm= {'channels': [ { 'id': 0, 'itemName': 'LIBRE' }, { 'id': 1, 'itemName': 'AB 1' } ], 'type': 'Grille', 'datesRange': { 'date1': '2017-12-01T23:00:00.000Z', 'date2': '2017-12-15T23:00:00.000Z' }, 'programName': 'Recherche Texte' };
 
         const bodyString = JSON.stringify(this.datasForm).replace(/"/g, "'");
-        // console.log('bodyString  > ' + bodyString);
-
-        this.currentQuery = this.diffService.getDiffusionsDates(this.datasForm).subscribe(data => {
-          // on vérifie si le résultat n'est pas VIDE
-          // console.log(' DATA ? ' + JSON.stringify(data));
-
-          if (data && data.length > 0 && JSON.stringify(data) !== '{}') {
-            this.customdatatablesOptions.data = this.diffdatas = data;
-            // calcul de la durée totale des éléments de la liste
-            this.calculateTotalHours();
-            this.dataloaded = 2;
-          } else {
-            this.modalMessage('', 'Aucuns résultats');
-            this.dataloaded = 0;
-          }
-        });
+        this.currentQuery = this.diffService
+          .getDiffusionsDates(this.datasForm)
+          .subscribe(data => {
+            // on vérifie si le résultat n'est pas VIDE
+            if (data && data.length > 0 && JSON.stringify(data) !== '{}') {
+              this.customdatatablesOptions.data = data;
+              // calcul de la durée totale des éléments de la liste
+              this.calculateTotalHours(data);
+              this.dataloaded = 2;
+            } else {
+              this.modalMessage('', 'Aucuns résultats');
+              this.dataloaded = 3;
+            }
+          });
       } else {
         this.modalMessage(
           '',
           'Il y\'a une erreur dans vos parametres de recherche'
         );
+        this.dataloaded = 3;
       }
     } else {
       this.modalMessage(
         '',
         'Il y\'a une erreur dans vos parametres de recherche.'
       );
+      this.dataloaded = 3;
     }
   }
 
@@ -186,9 +192,8 @@ export class DiffusionsDatesTableComponent implements OnInit {
     this.datasForm = { channels: [], type: 'Grille' };
     this.clearDateRange();
     this.nbrHours = '0';
-    this.dataloaded = 0;
-    this.diffdatas = [];
     this.currentQuery.unsubscribe();
+    this.dataloaded = 0;
   }
   searchFormInit() {
     this.formLoaded = true;
@@ -202,7 +207,6 @@ export class DiffusionsDatesTableComponent implements OnInit {
         newList.push(newItem);
       }
       this.chanelsList = newList;
-
       this.dropdownSettings = {
         singleSelection: false,
         text: 'Selection de chaines',
@@ -222,15 +226,12 @@ export class DiffusionsDatesTableComponent implements OnInit {
     this.searchFormInit();
   }
 
-  calculateTotalHours() {
+  calculateTotalHours(data) {
     try {
       const frameRat = '30'; // fps
       let secondes = 0;
-      for (let i = 0; i < this.diffdatas.length; i++) {
-        const secs = this.convertTimeCodeToSeconds(
-          this.diffdatas[i].Duree,
-          frameRat
-        );
+      for (let i = 0; i < data.length; i++) {
+        const secs = this.convertTimeCodeToSeconds(data[i].Duree, frameRat);
         secondes = Number(secondes) + Number(secs);
       }
       this.nbrHours = this.convertTime(secondes, frameRat);
@@ -239,6 +240,19 @@ export class DiffusionsDatesTableComponent implements OnInit {
     }
   }
 
+  datasExport() {
+    let htmlPopin = '<button type="button" class="btn btn-primary" mat-raised-button (click)="exportCSV()">Export CSV</button><br><br>';
+    htmlPopin += '<button type="button" class="btn btn-primary" mat-raised-button (click)="exportExcel()">Export Excel</button>';
+    this.modalMessageHtml('Exporter résultats', htmlPopin);
+  }
+
+  exportCSV() {
+    console.log('exportCSV');
+  }
+
+  exportExcel() {
+    console.log('exportExcel');
+  }
   convertTimeCodeToSeconds(timeString, framerate) {
     const timeArray = timeString.split(':');
     const hours = timeArray[0] * 60 * 60;

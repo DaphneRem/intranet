@@ -1,4 +1,4 @@
-const distUrl = 'http://127.0.0.1/edsa-Angular/ng-nx-project/dist/apps/';
+const distUrl = 'http://vm-angular-rc:8082';
 
 export const MENUITEMS = [
     {

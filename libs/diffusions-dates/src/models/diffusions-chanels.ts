@@ -49,6 +49,6 @@ export class DiffusionsChanel {
     NwMultidiff: Boolean;
     Date_Modif: String;
     User_Modif: String;
-    Droits.zzz: String;
-	  BloquerSiPasDeDroit: String;
+    Droits_zzz: String;
+BloquerSiPasDeDroit: String;
 }

@@ -1,3 +1,5 @@
+<sub-header></sub-header>
+
 <div class="page-wrapper">
   <div class="card">
     <div class="card-block">
@@ -25,7 +27,7 @@
 
                       <input name="programName" required [(ngModel)]="datasForm.programName" class="form-control ng-pristine ng-invalid ng-touched"
                         minlength="4" [ngModelOptions]="{standalone: true}" formcontrolname="name" id="programName" type="text">
-                      <div *ngIf="(!datasForm.programName || datasForm.programName=='') && submitted==1 " class="messages text-danger ng-star-inserted">Champ vide</div>
+                      <div *ngIf="(!datasForm.programName || datasForm.programName=='') && dataloaded==3 " class="messages text-danger ng-star-inserted">Champ vide</div>
 
                     </div>
                     <div class="col-sm-12">
@@ -50,7 +52,7 @@
                       <my-date-range-picker (dateRangeChanged)="onDateRangeChanged($event)" name="mydateRange" id="mydateRange" [options]="myDateRangePickerOptions"
                         [(ngModel)]="datasForm.datesRange" required>
                       </my-date-range-picker>
-                      <div *ngIf="(!datasForm.datesRange || datasForm.datesRange=='') && submitted==1" class="messages text-danger ng-star-inserted">
+                      <div *ngIf="(!datasForm.datesRange || datasForm.datesRange=='') && dataloaded==3" class="messages text-danger ng-star-inserted">
                         DATE vide
                       </div>
                     </div>
@@ -77,7 +79,7 @@
                           </div>
                         </div>
                       </div>
-                      <div *ngIf="(datasForm.type=='' || !datasForm.type) && submitted==1 " class="messages text-danger ng-star-inserted">
+                      <div *ngIf="(datasForm.type=='' || !datasForm.type) && dataloaded==3 " class="messages text-danger ng-star-inserted">
                         Pas de Type
                       </div>
                     </div>
@@ -91,7 +93,7 @@
                     <div class="col-sm-12 chanelsList">
                       <angular2-multiselect [ngModelOptions]="{standalone: true}" [data]="chanelsList" [(ngModel)]="datasForm.channels" [settings]="dropdownSettings">
                       </angular2-multiselect>
-                      <div *ngIf="datasForm.channels.length==0 && submitted===1" class="messages text-danger ng-star-inserted">
+                      <div *ngIf="datasForm.channels.length==0 && dataloaded===3" class="messages text-danger ng-star-inserted">
                         Selectionnez au moins une chaine
                       </div>
                     </div>
@@ -104,15 +106,6 @@
       </div>
       <hr>
       <div class="row">
-        <div *ngIf="dataloaded ===0" class="col-sm-12">
-          <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-              Aucuns resultats à afficher pour le moment
-            </div>
-            <div class="col-sm-4"></div>
-          </div>
-        </div>
         <div *ngIf="dataloaded === 1" class="loader animation-start">
           <span class="circle delay-1 size-2"></span>
           <span class="circle delay-2 size-4"></span>
@@ -123,10 +116,26 @@
           <span class="circle delay-7 size-4"></span>
           <span class="circle delay-8 size-2"></span>
         </div>
-        <div *ngIf="dataloaded===2" class="col-sm-12">
-          <custom-datatables [customdatatablesOptions]="customdatatablesOptions">
-          </custom-datatables>
-          <span>TIMECODE TOTAL HEURES : {{nbrHours}}</span>
+        <div *ngIf=" dataloaded === 2" class="col-sm-12">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <custom-datatables [customdatatablesOptions]="customdatatablesOptions">
+                    </custom-datatables>
+                  </div>
+            </div>
+              <div class="row">
+                  <div class="col-sm-5"  align="left">
+                    <span>TIMECODE TOTAL HEURES : {{nbrHours}}</span>
+                  </div>
+                  <div class="col-sm-2">
+                  </div>
+                  <div class="col-sm-5" align="right">
+                      <button type="button" class="btn btn-primary" mat-raised-button (click)="datasExport()">
+                        Export
+                      </button>
+                  </div>
+              </div>
         </div>
       </div>
     </div>

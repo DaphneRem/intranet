@@ -5,6 +5,8 @@ import { DatesDiffusionsService } from './services/diffusions-dates.service';
 import { Http, Response, RequestOptions, URLSearchParams, Headers, HttpModule} from '@angular/http';
 import { DataTablesModule } from 'angular-datatables';
 
+import { SubHeaderModule } from '@ab/sub-header';
+
 import {FormsModule, FormBuilder} from '@angular/forms';
 import {SelectModule} from 'ng-select';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
@@ -20,7 +22,8 @@ import { CustomDatatablesModule } from '@ab/custom-datatables';
     SelectModule,
     MyDateRangePickerModule,
     AngularMultiSelectModule,
-    CustomDatatablesModule
+    CustomDatatablesModule,
+    SubHeaderModule
   ],
   declarations: [DiffusionsDatesTableComponent],
   providers: [
