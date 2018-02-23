@@ -25,7 +25,7 @@ import { CustomDatatablesModule } from '@ab/custom-datatables';
     CustomDatatablesModule,
     SubHeaderModule
   ],
-  declarations: [DiffusionsDatesTableComponent],
+  declarations: [DiffusionsDatesTableComponent,],
   providers: [
     DatesDiffusionsService,
     FormBuilder

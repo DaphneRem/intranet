@@ -21,13 +21,19 @@
                 <div class="col-sm-4">
                   <div class="row wrap">
                     <div class="col-sm-12">
-                      <h5>Nom ou numéro de programme</h5>
+                      <h5>Numéro de programme</h5>
+                      <h6>Format obligatoire : 1988-12345</h6>
                     </div>
                     <div class="col-sm-12">
-
-                      <input name="programName" required [(ngModel)]="datasForm.programName" class="form-control ng-pristine ng-invalid ng-touched"
-                        minlength="4" [ngModelOptions]="{standalone: true}" formcontrolname="name" id="programName" type="text">
-                      <div *ngIf="(!datasForm.programName || datasForm.programName=='') && dataloaded==3 " class="messages text-danger ng-star-inserted">Champ vide</div>
+                      <input name="programName" id="programName" type="text" required
+                      class="form-control ng-pristine ng-invalid ng-touched"
+                      [(ngModel)]="datasForm.programName "
+                      minlength="4" [ngModelOptions]="{standalone: true}"
+                      maxlength="10"
+                      formcontrolname="name">
+                      <div *ngIf="dataloaded==3 " class="messages text-danger ng-star-inserted">
+                        {{errorMessageNumProgram}}
+                      </div>
 
                     </div>
                     <div class="col-sm-12">
