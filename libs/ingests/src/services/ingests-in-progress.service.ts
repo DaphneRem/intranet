@@ -19,7 +19,7 @@ export class IngestsInProgressService {
 
   getIngestsInProgress(days: number): Observable<IngestsInProgress[]> {
     return this.http
-      .get(urlIngests + days + urlInProgress)
+      .get<IngestsInProgress[]>(urlIngests + days + urlInProgress)
       .map((res: any) => {
         return JSON.parse(res) as IngestsInProgress[];
       })
