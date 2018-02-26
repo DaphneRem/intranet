@@ -1,0 +1,43 @@
+:host {
+    .widget-data {
+        .little-widget {
+            border : 2px solid;
+            .little-header {
+                padding :10px;
+                margin-bottom: 20px;
+                &.light-blue {
+                    background: #06DEC0;
+                }
+                h5 {
+                    font-size: 1em;
+                }
+            }
+            .table-data {
+                width: 80%;
+                min-width: auto;
+                margin: auto;
+                height : 160px;
+                table {
+                    width: 100%;
+                    .table-data-hr {
+                        width: 100%;
+                    }
+                    .th-data {
+                        font-weight: 100;
+                    }
+                    .two-points {
+                        width : 12px;
+                    }
+                }
+                .my-row {
+
+                }
+                .table-data-hr {
+                    width: 100%;
+                }
+            }
+        }
+
+    }
+   
+}
