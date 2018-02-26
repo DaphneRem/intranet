@@ -1,0 +1,77 @@
+.row {
+    margin : 0;
+    height : 400px;
+    .form-group {
+        display : inherit;
+        height: 100%;
+        .field {
+            display: flex;
+            margin : auto;
+            height: 70px;
+            label {
+                padding : 5px 10px 0 10px;
+            }
+            input {
+                width: 250px;
+                height : 35px;
+            }
+            .ng-valid[required], .ng-valid.required  {
+                border-color: #2ed8b6;
+                &.ng-untouched {
+                    border-color: #d6d6d6;
+                }
+            }
+            .ng-invalid:not(form)  {
+                border-color: #FF5370;
+                &.ng-untouched {
+                    border-color: #d6d6d6;
+                }
+            }
+        }
+
+    }
+    .submit {
+        height: auto;
+        margin : auto;
+        margin-left :0;
+        button {
+            margin-top : -35px;
+            padding : 5px 10px;
+            a {
+                color : #fff;
+                height: 100%;
+                width: 100%;
+            }
+            &:disabled {
+                background: #d6d6d6;
+                cursor :default;
+                border-color : #d6d6d6;
+            }
+        }
+    }
+}
+
+
+.no-file {
+    height : 100px;
+}
+@media only screen and (max-width: 770px) {
+    .row {
+
+        .form-group {
+            height : 70px;
+            padding :10px;
+        }
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .row {
+        display : block;
+        .submit {
+            button {
+                margin-top : 20px;
+            }
+        }
+    }
+}

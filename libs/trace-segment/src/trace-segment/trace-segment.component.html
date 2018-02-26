@@ -1,0 +1,54 @@
+<sub-header *ngIf="automaticFilling" [goBack]="true" [title]="'détails fichier'" ></sub-header>
+<sub-header *ngIf="!automaticFilling" [title]="title"></sub-header>
+
+<!-- <search-file></search-file> -->
+
+<form #searchFile="ngForm" class="row justify-content-center">
+    <div class="form-group col-lg-4 col-md-12 offset-lg-2">
+        <div class="field">
+            <label for="support">Support</label>
+            <div>
+                <input [(ngModel)]="file.idSupport" required minlength="8" id="support" name="support" class="form-control" #name="ngModel">
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="col-form-label form-txt-danger">
+                    <div *ngIf="name.errors.required">
+                        Un idSupport est requis
+                    </div>
+                    <div *ngIf="name.errors.minlength">
+                        Le support doit avoir au moins 5 caractères
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-lg-4 col-md-11">
+        <div class="field">
+            <label for="segment">Segment</label>
+            <div>
+                <input [(ngModel)]="file.numSegment" required id="segment" name="segment" class="form-control" #segment="ngModel">
+                <div *ngIf="segment.invalid && (segment.dirty || segment.touched)" class="col-form-label form-txt-danger">
+                    <div *ngIf="segment.errors.required">
+                        Un numéro de segment est requis
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-1 submit col-md-1">
+        <button *ngIf="searchFile.invalid" (click)="checkRouteExist()" type="submit" class="btn btn-primary" [disabled]="searchFile.invalid">
+             Search
+        </button>
+                <button *ngIf="!searchFile.invalid" (click)="checkRouteExist()" type="submit" class="btn btn-primary" [disabled]="searchFile.invalid">
+                    Search
+                </button>
+        <!-- <button *ngIf="!searchFile.invalid" (click)="checkRouteExist()" type="submit" class="btn btn-primary" [disabled]="searchFile.invalid">
+            <a  *ngIf="supportExist" routerLink="./support/{{file.idSupport}}/seg/{{file.numSegment}}">Search</a>
+            <a *ngIf="!supportExist && automaticFilling" routerLink=" ['../../detail-file']">Search</a>
+
+        </button> -->
+         
+    </div>
+</form>
+<div *ngIf="supportExist == false" class="no-file text-center">Aucun fichier ne correspond à votre demande</div>
+<!-- <current-step></current-step> -->
+<support-segment *ngIf="supportExist && dataReady" [data]="supportSegmentData" ></support-segment>
+
