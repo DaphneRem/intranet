@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from '@ngrx/effects';
-// import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { NxModule } from '@nrwl/nx';
@@ -8,27 +7,26 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 /*********** from app0 **********/
+
 // modules :
 import { AppRoutingModule } from './app-routing.module';
 
 // components :
 import { AppComponent } from './app.component';
-import { UsersListComponent } from './users-list/users-list.component';
 
 /*********** from Libs **********/
-import { CustomDatatablesModule } from '@ab/custom-datatables';
 
-import { RootModule, navbarReducer } from '@ab/root';
-import { RouterStateModule } from '@ab/router-state';
+import { CustomDatatablesModule } from '@ab/custom-datatables';
 import { IngestsModule } from '@ab/ingests';
+import { RouterStateModule } from '@ab/router-state';
+import { RootModule, navbarReducer } from '@ab/root';
 import { SubHeaderModule } from '@ab/sub-header';
+import { TraceSegmentModule } from '@ab/trace-segment';
 import { WidgetsModule } from '@ab/widgets';
 
 @NgModule({
-  declarations:
-  [
-    AppComponent,
-    UsersListComponent
+  declarations: [
+    AppComponent
   ],
   imports: [
     AppRoutingModule,
@@ -36,24 +34,19 @@ import { WidgetsModule } from '@ab/widgets';
     CustomDatatablesModule,
     EffectsModule.forRoot([]),
     HttpClientModule,
+    IngestsModule,
     NxModule.forRoot(),
     RootModule,
     RouterStateModule.forRoot(),
-    IngestsModule,
-    StoreModule.forRoot({
-      navbar: navbarReducer,
-    }),
     StoreDevtoolsModule.instrument({
       maxAge: 25 // Retains last 25 states
     }),
+    StoreModule.forRoot({
+      navbar: navbarReducer,
+    }),
     SubHeaderModule,
+    TraceSegmentModule,
     WidgetsModule
-  ],
-  providers: [
-    // {
-    //   provide: LocationStrategy,
-    //   useClass: HashLocationStrategy
-    // }
   ],
   bootstrap: [AppComponent]
 })

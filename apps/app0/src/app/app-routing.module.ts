@@ -1,18 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { UsersListComponent } from './users-list/users-list.component';
-
 import {
-  IngestsWidgetsViewComponent,
-  IngestsTablesViewComponent,
-  IngestsPurgedComponent,
-  IngestsInProgressDetailsComponent,
-  IngestsCompletedDetailsComponent,
-  IngestsKaiComponent
+    IngestsCompletedDetailsComponent,
+    IngestsInProgressDetailsComponent,
+    IngestsKaiComponent,
+    IngestsPurgedComponent,
+    IngestsTablesViewComponent,
+    IngestsWidgetsViewComponent,
+    KarinaWaitingDetailsComponent
 } from '@ab/ingests';
 
+import { TraceSegmentComponent } from '@ab/trace-segment';
+
 const routes: Routes = [
+
   { path: '*', component: IngestsWidgetsViewComponent },
   { path: '', redirectTo: 'ingests', pathMatch: 'full' },
   {
@@ -53,16 +55,22 @@ const routes: Routes = [
       },
       {
         path: 'karina-waiting',
-        component: UsersListComponent,
+        component: KarinaWaitingDetailsComponent,
         data: { title : 'En attente KARINA' }
       }
     ]
   },
   {
     path: 'detail-file',
-    component: UsersListComponent,
-    data: { title : 'Détails fichier' }
-
+    component: TraceSegmentComponent,
+    data: { title : 'Détails fichier' },
+    children : [
+      {
+        path: 'support/:idSupport/seg/:numSegment',
+        component: TraceSegmentComponent,
+        data: { title : 'Détails fichier' }
+      }
+    ]
   },
   {
     path: 'purged',
