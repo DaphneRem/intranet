@@ -11,15 +11,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
 // temporary imports :
-import { urlIngestsKai, urlKaiInProgress } from '../../../../../.privates-url';
+import { urlKaiWaiting } from '../../../../../.privates-url';
 
 @Injectable()
 export class KaiWaitingService {
   constructor(private http: HttpClient) {}
 
-  getIngestsInProgress(days: number): Observable<KaiWaiting[]> {
+  getIngestsInProgress(): Observable<KaiWaiting[]> {
     return this.http
-      .get(urlIngestsKai + days + urlKaiInProgress)
+      .get(urlKaiWaiting)
       .map((res: any) => {
         return JSON.parse(res) as KaiWaiting[];
       })

@@ -47,7 +47,7 @@ public render: boolean;
   constructor(private kaiEchecService: KaiEchecService) {}
 
   ngOnInit() {
-    this.getIngestsInProgress(this.daysTableView);
+    this.getIngestsKaiEchec(this.daysTableView);
     this.checkDaysViews();
     this.checkLinks();
   }
@@ -79,8 +79,8 @@ public render: boolean;
     return this.dataReady;
   }
 
-  getIngestsInProgress(number) {
-    this.kaiEchecService.getIngestsInProgress(number).subscribe(data => {
+  getIngestsKaiEchec(number) {
+    this.kaiEchecService.getIngestsKaiEchec(number).subscribe(data => {
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
       console.log(this.customdatatablesOptions.data);

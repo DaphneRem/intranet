@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IngestsKaiComponent } from './ingests-kai.component';
+import { KaiWaitingComponent } from './kai-waiting.component';
 
 describe('IngestsKaiComponent', () => {
-  let component: IngestsKaiComponent;
-  let fixture: ComponentFixture<IngestsKaiComponent>;
+  let component: KaiWaitingComponent;
+  let fixture: ComponentFixture<KaiWaitingComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IngestsKaiComponent ]
+      declarations: [ KaiWaitingComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IngestsKaiComponent);
+    fixture = TestBed.createComponent(KaiWaitingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

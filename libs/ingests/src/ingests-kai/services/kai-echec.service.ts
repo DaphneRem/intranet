@@ -17,7 +17,7 @@ import { urlIngestsKai, urlKaiEchec } from '../../../../../.privates-url';
 export class KaiEchecService {
   constructor(private http: HttpClient) {}
 
-  getIngestsInProgress(days: number): Observable<KaiEchec[]> {
+  getIngestsKaiEchec(days: number): Observable<KaiEchec[]> {
     return this.http
       .get(urlIngestsKai + days + urlKaiEchec)
       .map((res: any) => {

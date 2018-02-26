@@ -30,7 +30,7 @@ public render: boolean;
     customColumn: false,
     paging: true,
     search: true,
-    rowsMax: 5,
+    rowsMax: 10,
     lenghtMenu: [5, 10, 15],
     theme : 'red theme',
     renderOption : true,
@@ -47,7 +47,7 @@ public render: boolean;
   constructor(private kaiWaitingService: KaiWaitingService) {}
 
   ngOnInit() {
-    this.getIngestsInProgress(this.daysTableView);
+    this.getIngestsInProgress();
     this.checkDaysViews();
     this.checkLinks();
   }
@@ -79,8 +79,8 @@ public render: boolean;
     return this.dataReady;
   }
 
-  getIngestsInProgress(number) {
-    this.kaiWaitingService.getIngestsInProgress(number).subscribe(data => {
+  getIngestsInProgress() {
+    this.kaiWaitingService.getIngestsInProgress().subscribe(data => {
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
       console.log(this.customdatatablesOptions.data);
