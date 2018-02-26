@@ -1,0 +1,18 @@
+<div class="row up">
+  <div class="col-lg-12 col-xl-12 ">
+    <div class="large-widget ">
+      <div class="card transiction-card">
+        <div class="card-header large-header text-center">
+          <h5 class="text-white uppercase">SUPPPORT - SEGMENT</h5>
+        </div>
+        <div class="card-block large-card text-center">
+          <p>{{data.titreseg}}</p>
+          <hr>
+          <div class="row">
+            <widget-data class="col-lg-4 col-xl-4" *ngFor="let item of widgetsData" [data]="widgetsData[widgetsData.indexOf(item)]"></widget-data>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

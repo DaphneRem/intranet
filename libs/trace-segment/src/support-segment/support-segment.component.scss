@@ -1,0 +1,76 @@
+:host {
+    .row {
+        margin: 0;
+        padding : 0px;
+        &.up {
+        margin-top: -120px;
+        }
+        .large-widget {
+            // padding : 0 30px;
+            width : 90%;
+            margin : auto;
+            .card-header {
+                padding: 10px;
+                &.large-header {
+                    background: rgb(53, 94, 207);
+                }
+                h5 {
+                    font-size: 1.1em;
+                }
+            }
+            .card-block {
+                &.large-card {
+                border: 2px solid;
+                border-color: rgb(53, 94, 207);
+                padding : 5px;;
+                }
+                p {
+                    font-size: 1.3em;
+                    font-weight: bold;
+                    padding : 15px 0 0 0;
+                    margin: 0;
+                }
+                hr {
+                    width: 50%;
+                }
+                div.little-widget {
+                    width :100%;
+                    .little-header {
+                        padding :10px;
+                        margin-bottom: 20px;
+                        &.light-blue {
+                            background: #06DEC0;
+                        }
+                        h5 {
+                            font-size: 1em;
+                        }
+                    }
+                    .table-data {
+                        width: 90%;
+                        margin: auto;
+                        height : 160px;
+                        table {
+                            width: 100%;
+                            .table-data-hr {
+                                width: 100%;
+                            }
+                            .th-data {
+                                font-weight: 100;
+                            }
+                            .two-points {
+                                width : 12px;
+                            }
+                        }
+                        .my-row {
+
+                        }
+                        .table-data-hr {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
