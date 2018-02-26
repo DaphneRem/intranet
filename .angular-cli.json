@@ -47,6 +47,12 @@
       }
     },
     {
+      "name": "ingests",
+      "root": "libs/ingests/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "root",
       "root": "libs/root/src",
       "test": "../../../test.ts",
@@ -59,20 +65,14 @@
       "appRoot": ""
     },
     {
-      "name": "ingests",
-      "root": "libs/ingests/src",
-      "test": "../../../test.js",
-      "appRoot": ""
-    },
-    {
-      "name": "scan",
-      "root": "libs/scan/src",
-      "test": "../../../test.js",
-      "appRoot": ""
-    },
-    {
       "name": "sub-header",
       "root": "libs/sub-header/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "trace-segment",
+      "root": "libs/trace-segment/src",
       "test": "../../../test.js",
       "appRoot": ""
     },
