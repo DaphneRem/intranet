@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs/Subject';
+import { Router } from '@angular/router';
 
 import { CustomDatatablesOptions } from '../models/custom-datatables-options';
 import { CustomThemesService } from '../services/custom-datatables-themes.service';
@@ -41,13 +42,13 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   public data: any = [] ;
   public headerColor: string;
   public firstColumnColor: string;
+  public alertColor;
   public paging: boolean;
   public search: boolean;
   public tableTitle: string;
   public headerTableLinkExist: boolean;
   public headerTableLink: string;
   public buttons: any;
-
   // public colvisButton = 'colvis';
   // public copyButton = 'copy';
   // public printButton = 'print';
@@ -90,7 +91,10 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
       }
   };
 
-  constructor( private customThemesService: CustomThemesService ) {}
+  constructor(
+    private customThemesService: CustomThemesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.displayDatatables();
@@ -136,7 +140,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         rowCallback: (row: Node, data: any[] | Object, index: number) => {
             const self = this;
             $('td', row).unbind('click');
-            $('td', row).bind('click', () => {
+            $('td', row).bind('dblclick', () => {
               self.someClickHandler(data);
             });
           return row;
@@ -221,11 +225,15 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
     this.theme = this.customThemesService.getTheme(customTheme);
     this.headerColor = this.theme.headerColor;
     this.firstColumnColor = this.theme.firstColumnColor;
+    this.alertColor = this.theme.alertColor;
   }
 
   someClickHandler(dataRow: any): void {
     this.idSelectedData = dataRow.id;
-    console.log(this.idSelectedData);
+    console.log(dataRow);
+    if (dataRow.id && (dataRow.noseg >= 0)) {
+      this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    }
   }
 
   dispplayColumns() {

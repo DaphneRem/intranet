@@ -8,12 +8,18 @@
         padding-top : 20px;
         width: inherit;
         max-width: inherit;
+        min-width: 100%;
         height: 100%;
+        margin-bottom: 0;
         &.no-data {
             width: 100%;
             .alert {
                 border-top-left-radius : 0;
                 border-top-right-radius : 0;
+                p {
+                    margin: 15px;
+                    color : #8b8b8b;
+                }
             }
         }
         .header-buttons {
@@ -55,7 +61,7 @@
             color : #ffff;
             margin-top :10px;
             &.down-header {
-                margin-bottom : -42px;
+                margin-bottom : -37px;
             }
             .header-title {
                 font-size: 1.3em;
@@ -70,6 +76,14 @@
 } 
 
 /****************** dataTables style : ****************/
+
+
+/deep/ .dataTables_wrapper .dataTables_scroll {
+    background: rgb(235, 235, 235);
+    .dataTables_scrollHead {
+        background: rgb(189, 195, 199);
+    }
+}
 
 // show .. entries :
 
@@ -93,6 +107,7 @@
         margin : 0 10px 10px 0;
     }
 }
+
 
 // row columns titles :
 
@@ -132,6 +147,14 @@
 
     }
 }
+
+/deep/ .dataTables_wrapper .dataTables_scroll .dataTables_scrollHeadInner {
+        margin: 0 auto;
+}
+
+
+
+
 
 // footer
 
@@ -240,17 +263,16 @@
     }
 
     .custom-datatables {
-.card {
-    .header-buttons {
-    }
-
-    .datatables-header {
-        height: 140px;
-        .header-title {
-            margin-top : 60px;
+    .card {
+        .header-buttons {
+        }
+        .datatables-header {
+            height: 140px;
+            .header-title {
+                margin-top : 60px;
+            }
         }
     }
-}
 
     }
 

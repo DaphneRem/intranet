@@ -1,14 +1,13 @@
 <div class= "custom-datatables row">
   <div *ngIf="data.length" class="card">
 
-
     <div class="header-buttons">
       <!-- <button type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
         Rafraichir
       </button> -->
-      <button *ngIf="renderOption" type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
+      <!-- <button *ngIf="renderOption" type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
         Rafraichir
-      </button>
+      </button> -->
       <a *ngIf="headerTableLinkExist" class="btn btn-primary btn-outline-primary" [routerLink]="headerTableLink">
         Voir plus...
       </a>
@@ -43,8 +42,8 @@
          {{tableTitle}}
       </div>
     </div>
-    <div class="alert alert-warning text-center">
-      <strong> Il n'y a pas de fichiers {{tableTitle}}</strong>
+    <div class="alert text-center" [ngStyle]="alertColor" >
+      <p> Il n'y a pas de fichiers {{tableTitle}}</p>
     </div>
   </div>
 </div>

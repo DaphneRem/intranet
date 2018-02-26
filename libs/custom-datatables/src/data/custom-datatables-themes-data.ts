@@ -10,6 +10,9 @@ export const CUSTOMTHEMES = [
         buttonViewMore : {
             'color' : '#fff',
             'border-color' : '#fff'
+        },
+        alertColor :  {
+            'border-color' : '#73b4ff'
         }
     },
     {
@@ -23,9 +26,12 @@ export const CUSTOMTHEMES = [
         buttonViewMore : {
             'color' : '#fff',
             'border-color' : '#fff'
+        },
+        alertColor :  {
+            'border-color' : '#59e0c5'
         }
     },
-        {
+    {
         name : 'red theme',
         firstColumnColor: {
             'background' : '#BDC3C7'
@@ -36,6 +42,25 @@ export const CUSTOMTHEMES = [
         buttonViewMore : {
             'color' : '#fff',
             'border-color' : '#fff'
+        },
+        alertColor :  {
+            'border-color' : '#ff869a'
+        }
+    },
+        {
+        name : 'yellow theme',
+        firstColumnColor: {
+            'background' : '#BDC3C7'
+        },
+        headerColor: {
+            'background' : 'linear-gradient(45deg, #FFB64D, #ffcb80)'
+        },
+        buttonViewMore : {
+            'color' : '#fff',
+            'border-color' : '#fff'
+        },
+        alertColor :  {
+            'border-color' : ' #ffcb80'
         }
     }
 ];
