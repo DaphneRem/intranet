@@ -23,7 +23,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
-import { urlDiffDates, urlDiffDates_chanels } from '../../../../.privates-url';
+import { urlDiffDates, urlDiffDates_chanels, urlDiffDates_checkProgramNumber } from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -34,7 +34,7 @@ const httpOptions = {
 
 @Injectable()
 export class DatesDiffusionsService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   public headers: Headers;
 
@@ -47,8 +47,16 @@ export class DatesDiffusionsService {
       .catch(this.handleError);
   }
 
-  getDiffusionsDates(datasForm: any): Observable<DiffusionsDates[]> {
+  checkProgramNumber(numProg) {
+    return this.http
+      .get(urlDiffDates_checkProgramNumber + numProg)
+      .map((res: any) => {
+        return res;
+      })
+      .catch(this.handleError);
+  }
 
+  getDiffusionsDates(datasForm: any): Observable<DiffusionsDates[]> {
     const bodyString = JSON.stringify(datasForm);
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const options = new RequestOptions({ headers: headers });

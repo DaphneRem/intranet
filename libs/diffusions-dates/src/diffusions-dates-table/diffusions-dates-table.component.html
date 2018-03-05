@@ -5,7 +5,7 @@
     <div class="card-block">
       <div class="row">
         <div class="col-sm-12">
-          <div *ngIf="formLoaded" class="loader animation-start">
+          <div *ngIf="!formLoaded" class="loader animation-start">
             <span class="circle delay-1 size-2"></span>
             <span class="circle delay-2 size-4"></span>
             <span class="circle delay-3 size-6"></span>
@@ -15,26 +15,29 @@
             <span class="circle delay-7 size-4"></span>
             <span class="circle delay-8 size-2"></span>
           </div>
-          <div *ngIf="!formLoaded">
-            <form class="example-form" #myForm="ngForm" (ngSubmit)="searchSubmit(myForm)">
+          <div *ngIf="formLoaded">
+            <form class="example-form" #myForm="ngForm" (ngSubmit)="numProgramValidator(myForm)">
               <div class="row">
                 <div class="col-sm-4">
                   <div class="row wrap">
                     <div class="col-sm-12">
                       <h5>Numéro de programme</h5>
-                      <h6>Format obligatoire : 1988-12345</h6>
+                      <h6>Format obligatoire : 1998-12345</h6>
                     </div>
+
                     <div class="col-sm-12">
-                      <input name="programName" id="programName" type="text" required
-                      class="form-control ng-pristine ng-invalid ng-touched"
-                      [(ngModel)]="datasForm.programName "
-                      minlength="4" [ngModelOptions]="{standalone: true}"
-                      maxlength="10"
-                      formcontrolname="name">
-                      <div *ngIf="dataloaded==3 " class="messages text-danger ng-star-inserted">
+                      <div  class="input-group input-group-warning">
+                        <input name="programName" id="programName" type="text" required class="form-control ng-pristine ng-invalid ng-touched" [(ngModel)]="datasForm.programName " minlength="4" [ngModelOptions]="{standalone: true}" maxlength="10" formcontrolname="name">
+                        <span  class="input-group-addon novalid" *ngIf="validProgramNumber==false && dataloaded!=0">
+                            <i class="icon-close"></i>
+                        </span>
+                        <span  class="input-group-addon valid" *ngIf="validProgramNumber==true && dataloaded!=0">
+                            <i class="icon-check"></i>
+                        </span>
+                      </div>
+                      <div *ngIf="dataloaded==3 && validProgramNumber== false" class="messages text-danger ng-star-inserted">
                         {{errorMessageNumProgram}}
                       </div>
-
                     </div>
                     <div class="col-sm-12">
                       <br>
@@ -52,11 +55,11 @@
                 <div class="col-sm-4">
                   <div class="row wrap">
                     <div class="col-sm-12">
+                      <br>
                       <h5>Période de diffusion</h5>
                     </div>
                     <div class="col-sm-12">
-                      <my-date-range-picker (dateRangeChanged)="onDateRangeChanged($event)" name="mydateRange" id="mydateRange" [options]="myDateRangePickerOptions"
-                        [(ngModel)]="datasForm.datesRange" required>
+                      <my-date-range-picker (dateRangeChanged)="onDateRangeChanged($event)" name="mydateRange" id="mydateRange" [options]="myDateRangePickerOptions" [(ngModel)]="datasForm.datesRange" required>
                       </my-date-range-picker>
                       <div *ngIf="(!datasForm.datesRange || datasForm.datesRange=='') && dataloaded==3" class="messages text-danger ng-star-inserted">
                         DATE vide
@@ -94,6 +97,7 @@
                 <div class="col-sm-4">
                   <div class="row wrap">
                     <div class="col-sm-12">
+                        <br>
                       <h5>Chaines</h5>
                     </div>
                     <div class="col-sm-12 chanelsList">
@@ -124,24 +128,24 @@
         </div>
         <div *ngIf=" dataloaded === 2" class="col-sm-12">
 
-            <div class="row">
-                <div class="col-sm-12">
-                    <custom-datatables [customdatatablesOptions]="customdatatablesOptions">
-                    </custom-datatables>
-                  </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <custom-datatables [customdatatablesOptions]="customdatatablesOptions">
+              </custom-datatables>
             </div>
-              <div class="row">
-                  <div class="col-sm-5"  align="left">
-                    <span>TIMECODE TOTAL HEURES : {{nbrHours}}</span>
-                  </div>
-                  <div class="col-sm-2">
-                  </div>
-                  <div class="col-sm-5" align="right">
-                      <button type="button" class="btn btn-primary" mat-raised-button (click)="datasExport()">
-                        Export
-                      </button>
-                  </div>
-              </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-5" align="left">
+              <span>TIMECODE TOTAL HEURES : {{nbrHours}}</span>
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-5" align="right">
+              <button type="button" class="btn btn-primary" mat-raised-button (click)="datasExport()">
+                Export
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

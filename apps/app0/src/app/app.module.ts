@@ -49,7 +49,7 @@ import { WidgetsModule } from '@ab/widgets';
     SubHeaderModule,
     WidgetsModule
   ],
-  providers: [
+  providers: [HttpClientModule
     // {
     //   provide: LocationStrategy,
     //   useClass: HashLocationStrategy

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 
 import { NxModule } from '@nrwl/nx';
@@ -31,8 +32,10 @@ import { SubHeaderModule } from '@ab/sub-header';
     RouterStateModule.forRoot(),
     EffectsModule.forRoot([]),
     DiffusionsDatesModule,
-    NxModule.forRoot()
+    NxModule.forRoot(),
+    HttpClientModule
   ],
+  providers: [HttpClientModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
 })

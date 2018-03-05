@@ -57,7 +57,7 @@
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",
-      "test": "../../../test.js",
+      "test": "../../../test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "../../../tsconfig.spec.json",
       "prefix": "app",
@@ -81,13 +81,13 @@
     {
       "name": "diffusions-dates-lib",
       "root": "libs/diffusions-dates/src",
-      "test": "../../../test.js",
+      "test": "../../../test.ts",
       "appRoot": ""
     },
     {
       "name": "ingests",
       "root": "libs/ingests/src",
-      "test": "../../../test.js",
+      "test": "../../../test.ts",
       "appRoot": ""
     },
     {
@@ -99,25 +99,25 @@
     {
       "name": "router-state",
       "root": "libs/router-state/src",
-      "test": "../../../test.js",
+      "test": "../../../test.ts",
       "appRoot": ""
     },
     {
       "name": "scan",
       "root": "libs/scan/src",
-      "test": "../../../test.js",
+      "test": "../../../test.ts",
       "appRoot": ""
     },
     {
       "name": "sub-header",
       "root": "libs/sub-header/src",
-      "test": "../../../test.js",
+      "test": "../../../test.ts",
       "appRoot": ""
     },
     {
       "name": "widgets",
       "root": "libs/widgets/src",
-      "test": "../../../test.js",
+      "test": "../../../test.ts",
       "appRoot": ""
     }
   ],

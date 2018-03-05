@@ -12,6 +12,13 @@ import {SelectModule} from 'ng-select';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 
+import {
+  HttpClientModule,
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse
+} from '@angular/common/http';
+
 import { CustomDatatablesModule } from '@ab/custom-datatables';
 @NgModule({
   imports: [
@@ -23,12 +30,14 @@ import { CustomDatatablesModule } from '@ab/custom-datatables';
     MyDateRangePickerModule,
     AngularMultiSelectModule,
     CustomDatatablesModule,
-    SubHeaderModule
+    SubHeaderModule,
+    HttpClientModule
   ],
-  declarations: [DiffusionsDatesTableComponent,],
+  declarations: [DiffusionsDatesTableComponent],
   providers: [
     DatesDiffusionsService,
-    FormBuilder
+    FormBuilder,
+    HttpClientModule
   ]
 })
 export class DiffusionsDatesModule {

@@ -12,12 +12,12 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
-
 @Component({
   selector: 'diffusions-dates-table',
   templateUrl: './diffusions-dates-table.component.html',
   styleUrls: ['./diffusions-dates-table.component.scss']
 })
+
 export class DiffusionsDatesTableComponent implements OnInit {
   public dtOptions: DataTables.Settings = {};
   public chanelsList: any = [];
@@ -28,6 +28,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
   public form: FormGroup;
   public currentQuery: any;
   public errorMessageNumProgram: string;
+  public validProgramNumber: boolean;
 
   /*
   0 = initialisation
@@ -141,9 +142,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
   //  TABLEAU RESULTATS DIFFS
 
   searchSubmit() {
-    this.dataloaded = 1;
-    console.log('searchSubmit')
-    if (this.formInputsTest()) {
+    console.log('searchSubmit');
 
         // JSON d'exemple qui marche :
         // this.datasForm= {'channels': [ { 'id': 0, 'itemName': 'LIBRE' }, { 'id': 1, 'itemName': 'AB 1' } ], 'type': 'Grille', 'datesRange': { 'date1': '2017-12-01T23:00:00.000Z', 'date2': '2017-12-15T23:00:00.000Z' }, 'programName': 'Recherche Texte' };
@@ -163,78 +162,87 @@ export class DiffusionsDatesTableComponent implements OnInit {
               this.dataloaded = 3;
             }
           });
-      } else {
-        this.modalMessage(
-          '',
-          'Il y\'a une erreur dans vos parametres de recherche'
-        );
-        this.dataloaded = 3;
-      }
   }
+
   // test formulaire recherche
   formInputsTest() {
     console.log('formInputsTest');
     let validator = false;
-    if (
-          this.numProgramValidator() &&
-          this.datasForm.type &&
+    if ( this.datasForm.type &&
           this.datasForm.channels.length > 0
         ) {
           if (this.datasForm.datesRange) {
             if (this.datasForm.datesRange.formatted) {
-              this.datasForm.datesRange = {
-                date1: this.datasForm.datesRange.beginJsDate,
-                date2: this.datasForm.datesRange.endJsDate
-              };
+                this.datasForm.datesRange = {
+                  date1: this.datasForm.datesRange.beginJsDate,
+                  date2: this.datasForm.datesRange.endJsDate
+                };
+              }
               validator = true;
-            } else {
-              validator = false;
-            }
+              this.searchSubmit();
       } else {
         validator = false;
+        console.log('ERROR 2');
+        this.displayErrorMessage(validator);
       }
     } else {
       validator = false;
+      console.log('ERROR 3');
+      this.displayErrorMessage(validator);
     }
-    return validator;
+    //
+  }
+
+  displayErrorMessage(state) {
+    if (state === true) {
+      this.dataloaded = 1;
+     } else {
+        this.modalMessage(
+         '',
+         'Il y\'a une erreur dans vos parametres de recherche'
+        );
+       this.dataloaded = 3;
+     }
   }
 
   // validation de la saisie du numéro de programme
   // format : 2006-12345
-  numProgramValidator(){
-    let valid = false;
+  numProgramValidator() {
+    this.dataloaded = 1;
     const numProgram = this.datasForm.programName;
-    const testProgId = false;
-
-    console.log('numProgram > ' + numProgram);
 
     if (numProgram === '' || numProgram === undefined ) {
       this.errorMessageNumProgram = 'Champ vide';
-      valid = false;
+      this.validProgramNumber = false;
+      this.displayErrorMessage(this.validProgramNumber);
     } else {
       if (numProgram.indexOf('-') === -1) {
         this.errorMessageNumProgram = 'Le numéro de programme doit contenir un tiret';
-        valid = false;
-
+        this.validProgramNumber = false;
+        this.displayErrorMessage(this.validProgramNumber);
       } else {
-      const numPrognam_date = numProgram.split('-')[0];
-      const numPrognam_id = numProgram.split('-')[1];
-      console.log('numPrognam_date ' + numPrognam_date + ' numPrognam_id > '+ numPrognam_id);
-
+        const numPrognam_date = numProgram.split('-')[0];
+        const numPrognam_id = numProgram.split('-')[1];
+        console.log('numPrognam_date ' + numPrognam_date + ' numPrognam_id > ' + numPrognam_id);
         if (numPrognam_date < '1996') {
           this.errorMessageNumProgram = 'La date ne peut pas etre inférieur à 1996';
-          valid = false;
+          this.validProgramNumber = false;
+          this.displayErrorMessage(this.validProgramNumber);
         } else {
-          if (!testProgId) {
-            this.errorMessageNumProgram = 'Le numéro de programme n\'existe pas ';
-            valid = false;
-          } else {
-            valid = true;
-          }
+          this.diffService.checkProgramNumber(numProgram)
+          .subscribe(data => {
+            if (data === true) {
+              this.validProgramNumber = true;
+              this.formInputsTest();
+            } else {
+              this.errorMessageNumProgram = 'Le numéro de programme n\'existe pas ';
+              this.validProgramNumber = false;
+              this.displayErrorMessage(this.validProgramNumber);
+            }
+          });
         }
       }
     }
-    return valid;
   }
 
   clearSearch() {
@@ -244,15 +252,17 @@ export class DiffusionsDatesTableComponent implements OnInit {
     this.currentQuery.unsubscribe();
     this.dataloaded = 0;
   }
+
+
   searchFormInit() {
-    this.formLoaded = true;
+    this.formLoaded = false;
     // chargement de la liste des chaines dans l'input de selection
     this.diffService.getChanelsDiffusions().subscribe(data => {
       // créer un nouvel objet JSON au FORMAT compatible avec le module multi select installé
       const channels = data;
       const newList = [];
       for (let i = 0; i < channels.length; i++) {
-        const newItem = { id: channels[i].Code, itemName: channels[i].Libelle };
+        const newItem = { id: channels[i].code, itemName: channels[i].libelle };
         newList.push(newItem);
       }
       this.chanelsList = newList;
@@ -264,7 +274,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
         enableSearchFilter: false,
         classes: 'myclass custom-class'
       };
-      this.formLoaded = false;
+      this.formLoaded = true;
     });
   }
 
