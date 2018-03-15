@@ -4,10 +4,10 @@ import { DiffusionsDatesTableComponent } from './diffusions-dates-table/diffusio
 import { DatesDiffusionsService } from './services/diffusions-dates.service';
 import { Http, Response, RequestOptions, URLSearchParams, Headers, HttpModule} from '@angular/http';
 import { DataTablesModule } from 'angular-datatables';
-
+import { CustomDatatablesModule } from '@ab/custom-datatables';
 import { SubHeaderModule } from '@ab/sub-header';
 
-import {FormsModule, FormBuilder} from '@angular/forms';
+import {FormsModule, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {SelectModule} from 'ng-select';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
@@ -19,7 +19,8 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 
-import { CustomDatatablesModule } from '@ab/custom-datatables';
+
+
 @NgModule({
   imports: [
     CommonModule,

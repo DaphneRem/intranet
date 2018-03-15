@@ -16,10 +16,16 @@ import { RootModule, navbarReducer } from '@ab/root';
 import { RouterStateModule } from '@ab/router-state';
 import { SubHeaderModule } from '@ab/sub-header';
 
+import { CustomDatatablesModule } from '@ab/custom-datatables';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   imports: [
     AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     RootModule,
     StoreModule.forRoot({
@@ -33,7 +39,8 @@ import { SubHeaderModule } from '@ab/sub-header';
     EffectsModule.forRoot([]),
     DiffusionsDatesModule,
     NxModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    CustomDatatablesModule
   ],
   providers: [HttpClientModule],
   declarations: [AppComponent],

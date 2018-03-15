@@ -10,7 +10,7 @@
 </div>
 
 <div *ngIf="checkDataReady()" >
-  <custom-datatables 
+  <custom-datatables
   [customdatatablesOptions]="customdatatablesOptions"
   (change)="rerender($event)">
   </custom-datatables>

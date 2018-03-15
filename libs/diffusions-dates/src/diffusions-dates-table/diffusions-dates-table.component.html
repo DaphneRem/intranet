@@ -22,18 +22,35 @@
                   <div class="row wrap">
                     <div class="col-sm-12">
                       <h5>Numéro de programme</h5>
-                      <h6>Format obligatoire : 1998-12345</h6>
+                      <h6>Format obligatoire : 2015-00953</h6>
                     </div>
 
                     <div class="col-sm-12">
-                      <div  class="input-group input-group-warning">
-                        <input name="programName" id="programName" type="text" required class="form-control ng-pristine ng-invalid ng-touched" [(ngModel)]="datasForm.programName " minlength="4" [ngModelOptions]="{standalone: true}" maxlength="10" formcontrolname="name">
-                        <span  class="input-group-addon novalid" *ngIf="validProgramNumber==false && dataloaded!=0">
+                      <div class="input-group input-group-warning">
+                        <input
+                        name="programName"
+                        id="programName"
+                        type="text"
+                        autocomplete="off"
+                        required class="form-control ng-pristine ng-invalid ng-touched"
+                        [(ngModel)]="datasForm.programName"
+                        minlength="4"
+                        [ngModelOptions]="{standalone: true}"
+                        (input)="onSearchChange($event.target.value)"
+                        formcontrolname="name">
+                        <span (click)="clearnInputSearch()"  class="input-group-addon novalid" *ngIf="validProgramNumber==false && dataloaded!=0">
                             <i class="icon-close"></i>
                         </span>
                         <span  class="input-group-addon valid" *ngIf="validProgramNumber==true && dataloaded!=0">
                             <i class="icon-check"></i>
                         </span>
+                        <div *ngIf="chanelsSearchList.length>0" id="programSearchBox">
+                          <ul>
+                            <li *ngFor="let item of chanelsSearchList" (click)="selectiProgName(item.numprogram)">
+                              {{item.numprogram}} - {{ item.TitrePresseOri}}
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                       <div *ngIf="dataloaded==3 && validProgramNumber== false" class="messages text-danger ng-star-inserted">
                         {{errorMessageNumProgram}}
@@ -114,6 +131,7 @@
           </div>
         </div>
       </div>
+      <div (click)="searchSubmit('test')" style="color:white;cursor:pointer;float:right;">TEST</div>
       <hr>
       <div class="row">
         <div *ngIf="dataloaded === 1" class="loader animation-start">
@@ -130,20 +148,14 @@
 
           <div class="row">
             <div class="col-sm-12">
-              <custom-datatables [customdatatablesOptions]="customdatatablesOptions">
+              <custom-datatables
+              [customdatatablesOptions]="customdatatablesOptions">
               </custom-datatables>
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-5" align="left">
+            <div class="col-sm-12" align="left">
               <span>TIMECODE TOTAL HEURES : {{nbrHours}}</span>
-            </div>
-            <div class="col-sm-2">
-            </div>
-            <div class="col-sm-5" align="right">
-              <button type="button" class="btn btn-primary" mat-raised-button (click)="datasExport()">
-                Export
-              </button>
             </div>
           </div>
         </div>

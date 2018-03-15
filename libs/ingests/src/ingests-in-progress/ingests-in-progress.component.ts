@@ -29,7 +29,7 @@ export class IngestsInProgressComponent implements OnInit {
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
-    customColumn: false,
+    customColumn: true,
     paging: true,
     search: true,
     rowsMax: 5,
@@ -80,7 +80,7 @@ export class IngestsInProgressComponent implements OnInit {
   checkDataReady() {
     return this.dataReady;
   }
-  
+
   getIngestsInProgress(number) {
     this.ingestsInProgressService
       .getIngestsInProgress(number)

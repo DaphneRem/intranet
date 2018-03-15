@@ -54,3 +54,21 @@ h5 {
   box-shadow: none;
   padding: 7px;
 }
+
+#programSearchBox
+{
+  position: relative;
+  top: 10px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  box-shadow: 0px 0px 4px #ccc;
+  ul{
+    li{
+      padding:2px 0 2px 0;
+      display: inline-table;
+      &:hover{
+        background:#eee;
+      }
+    }
+  }
+}

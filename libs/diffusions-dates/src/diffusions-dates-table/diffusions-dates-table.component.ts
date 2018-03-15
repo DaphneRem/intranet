@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DatesDiffusionsService } from '../services/diffusions-dates.service';
 import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import {
@@ -12,15 +12,22 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
+
 @Component({
   selector: 'diffusions-dates-table',
   templateUrl: './diffusions-dates-table.component.html',
-  styleUrls: ['./diffusions-dates-table.component.scss']
+  styleUrls: ['./diffusions-dates-table.component.scss'],
+  providers: [
+    CustomDatatablesOptions
+  ]
 })
 
 export class DiffusionsDatesTableComponent implements OnInit {
+
+  public render: boolean;
   public dtOptions: DataTables.Settings = {};
   public chanelsList: any = [];
+  public chanelsSearchList: any = [];
   public datasForm: any = { channels: [], type: 'Grille' };
   public dropdownSettings = {};
   public nbrHours = '0';
@@ -73,22 +80,15 @@ export class DiffusionsDatesTableComponent implements OnInit {
 
   // les modales de messages d'alertes.
 
-  modalMessage(title, message) {
+  public modalMessage(title, message) {
     swal({
       title: title,
       text: message
     }).catch(swal.noop);
   }
-  modalMessageHtml(title, message) {
-    swal({
-      title: title,
-      html: message
-    }).catch(swal.noop);
-  }
 
   //  GESTION DE LA SELECTION DES DATES
-
-  onDateRangeChanged(event: IMyDateRangeModel) {
+  public onDateRangeChanged(event: IMyDateRangeModel) {
     const date1A: string =
       event.endDate.year + '-' + event.endDate.month + '-' + event.endDate.day;
     const date2A: string =
@@ -111,7 +111,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
     }
   }
 
-  setDateRange(): void {
+  public setDateRange(): void {
     //  Set date range (today) using the patchValue function
     const date = new Date();
     this.myForm.patchValue({
@@ -130,7 +130,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
     });
   }
 
-  clearDateRange() {
+  public clearDateRange() {
     //  Clear the date range using the patchValue function
     this.myForm.patchValue({ myDateRange: '' });
     // ici exceptionnellement je cible le bouton dans le dom qui est généré dynamiquement par le composant pour vider l'input de date
@@ -138,24 +138,26 @@ export class DiffusionsDatesTableComponent implements OnInit {
       $('.btnclear').click();
     }, '1000');
   }
-
   //  TABLEAU RESULTATS DIFFS
-
-  searchSubmit() {
+  public searchSubmit(mode) {
     console.log('searchSubmit');
-
         // JSON d'exemple qui marche :
-        // this.datasForm= {'channels': [ { 'id': 0, 'itemName': 'LIBRE' }, { 'id': 1, 'itemName': 'AB 1' } ], 'type': 'Grille', 'datesRange': { 'date1': '2017-12-01T23:00:00.000Z', 'date2': '2017-12-15T23:00:00.000Z' }, 'programName': 'Recherche Texte' };
-
-        const bodyString = JSON.stringify(this.datasForm).replace(/"/g, "'");
+        if(mode === 'test'){
+          this.datasForm= { "channels": [ { "id": 1, "itemName": "AB 1" }, { "id": 19, "itemName": "AB 3" } ], "type": "Conducteur", "programName": "2015-00953", "datesRange": { "date1": "2017-12-31T23:00:00.000Z", "date2": "2018-03-30T22:00:00.000Z" } };
+       }
+      const bodyString = JSON.stringify(this.datasForm).replace(/"/g, "'");
         this.currentQuery = this.diffService
           .getDiffusionsDates(this.datasForm)
           .subscribe(data => {
             // on vérifie si le résultat n'est pas VIDE
-            if (data && data.length > 0 && JSON.stringify(data) !== '{}') {
+            const dataJson = JSON.stringify(data);
+            if (data && data.length > 0
+              && dataJson !== '{}'
+              && dataJson !== '""'
+              && dataJson !== '[]') {
               this.customdatatablesOptions.data = data;
               // calcul de la durée totale des éléments de la liste
-              this.calculateTotalHours(data);
+              this.nbrHours = this.diffService.calculateTotalHours(data);
               this.dataloaded = 2;
             } else {
               this.modalMessage('', 'Aucuns résultats');
@@ -165,8 +167,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
   }
 
   // test formulaire recherche
-  formInputsTest() {
-    console.log('formInputsTest');
+  public formInputsTest() {
     let validator = false;
     if ( this.datasForm.type &&
           this.datasForm.channels.length > 0
@@ -179,7 +180,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
                 };
               }
               validator = true;
-              this.searchSubmit();
+              this.searchSubmit('normal');
       } else {
         validator = false;
         console.log('ERROR 2');
@@ -193,7 +194,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
     //
   }
 
-  displayErrorMessage(state) {
+  public displayErrorMessage(state) {
     if (state === true) {
       this.dataloaded = 1;
      } else {
@@ -207,10 +208,10 @@ export class DiffusionsDatesTableComponent implements OnInit {
 
   // validation de la saisie du numéro de programme
   // format : 2006-12345
-  numProgramValidator() {
+  public numProgramValidator() {
     this.dataloaded = 1;
+    this.validProgramNumber = false;
     const numProgram = this.datasForm.programName;
-
     if (numProgram === '' || numProgram === undefined ) {
       this.errorMessageNumProgram = 'Champ vide';
       this.validProgramNumber = false;
@@ -236,7 +237,6 @@ export class DiffusionsDatesTableComponent implements OnInit {
               this.formInputsTest();
             } else {
               this.errorMessageNumProgram = 'Le numéro de programme n\'existe pas ';
-              this.validProgramNumber = false;
               this.displayErrorMessage(this.validProgramNumber);
             }
           });
@@ -244,17 +244,32 @@ export class DiffusionsDatesTableComponent implements OnInit {
       }
     }
   }
+  public selectiProgName(progNumber) {
+    this.datasForm.programName = progNumber;
+    this.chanelsSearchList = [];
+  }
+  public onSearchChange(searchValue: any) {
+    if (!isNaN(searchValue) || searchValue.indexOf('-') !== -1) {
+      console.log('IS NUMBER ');
+      this.chanelsSearchList = [];
+    } else {
+      console.log('IS NOT NUMBER ');
+      if (searchValue.length > 5 ) {
+        this.diffService.searchProgNumbersByName(searchValue).subscribe(data => { this.chanelsSearchList = data; });
+      }
 
-  clearSearch() {
+    }
+  }
+
+  public clearSearch() {
     this.datasForm = { channels: [], type: 'Grille' };
+    this.dataloaded = 0;
     this.clearDateRange();
     this.nbrHours = '0';
     this.currentQuery.unsubscribe();
-    this.dataloaded = 0;
   }
 
-
-  searchFormInit() {
+  public searchFormInit() {
     this.formLoaded = false;
     // chargement de la liste des chaines dans l'input de selection
     this.diffService.getChanelsDiffusions().subscribe(data => {
@@ -283,63 +298,12 @@ export class DiffusionsDatesTableComponent implements OnInit {
       myDateRange: ['', Validators.required]
     });
     this.searchFormInit();
+    // this.diffService.searchProgNumbersByName('friends').subscribe(data => { this.chanelsSearchList = data;});
   }
 
-  calculateTotalHours(data) {
-    try {
-      const frameRat = '30'; // fps
-      let secondes = 0;
-      for (let i = 0; i < data.length; i++) {
-        const secs = this.convertTimeCodeToSeconds(data[i].Duree, frameRat);
-        secondes = Number(secondes) + Number(secs);
-      }
-      this.nbrHours = this.convertTime(secondes, frameRat);
-    } catch (err) {
-      console.log('Error calcul nbr heures totales ' + err);
-    }
+  public clearnInputSearch() {
+    this.datasForm.programName = '';
+    this.dataloaded = 0;
   }
 
-  datasExport() {
-    let htmlPopin = '<button type="button" class="btn btn-primary" mat-raised-button (click)="exportCSV()">Export CSV</button><br><br>';
-    htmlPopin += '<button type="button" class="btn btn-primary" mat-raised-button (click)="exportExcel()">Export Excel</button>';
-    this.modalMessageHtml('Exporter résultats', htmlPopin);
-  }
-
-  exportCSV() {
-    console.log('exportCSV');
-  }
-
-  exportExcel() {
-    console.log('exportExcel');
-  }
-  convertTimeCodeToSeconds(timeString, framerate) {
-    const timeArray = timeString.split(':');
-    const hours = timeArray[0] * 60 * 60;
-    const minutes = timeArray[1] * 60;
-    const seconds = timeArray[2];
-    const frames = timeArray[3] * (1 / framerate);
-    const str =
-      'h:' + hours + '\nm:' + minutes + '\ns:' + seconds + '\f:' + frames;
-    const totalTime = hours + minutes + seconds + frames;
-    return totalTime;
-  }
-
-  convertTimeToFrames(timeString, framerate) {
-    const secs = this.convertTimeCodeToSeconds(timeString, framerate);
-    return secs * framerate;
-  }
-
-  convertTime(frames, fps) {
-    fps = typeof fps !== 'undefined' ? fps : 30;
-    const pad = function(input) {
-        return input < 10 ? '0' + input : input;
-      },
-      seconds = typeof frames !== 'undefined' ? frames / fps : 0;
-    return [
-      pad(Math.floor(seconds / 3600)),
-      pad(Math.floor((seconds % 3600) / 60)),
-      pad(Math.floor(seconds % 60)),
-      pad(Math.floor(frames % fps))
-    ].join(':');
-  }
 }
