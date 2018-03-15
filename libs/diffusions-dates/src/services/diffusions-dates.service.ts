@@ -47,9 +47,6 @@ export class DatesDiffusionsService {
   constructor(private http: HttpClient) { }
 
   public headers: Headers;
-
-  public results = [];
-
   public getChanelsDiffusions(): Observable<DiffusionsChanel[]> {
     return this.http
       .get(urlDiffDates_chanels)
@@ -59,8 +56,8 @@ export class DatesDiffusionsService {
       .catch(this.handleError);
   }
 
-/*********************** */
-  public searchProgNumbersByName(progName): Observable<any>{
+  /*********************** */
+  public searchProgNumbersByName(progName): Observable<any> {
     return this.http
       .get(urlDiffDates_searchProgNumbersByTitle + progName)
       .map((res: any) => {
@@ -69,7 +66,7 @@ export class DatesDiffusionsService {
       .catch(this.handleError);
   }
 
-/*********************** */
+  /*********************** */
 
   public getAutocompleteList() {
     return this.http
@@ -106,52 +103,32 @@ export class DatesDiffusionsService {
 
   public calculateTotalHours(data) {
     try {
-      const frameRat = '30'; // fps
-      let secondes = 0;
+      let hours: any = 0;
+      let minutes: any = 0;
+      let secondes: any = 0;
+      let frames: any = 0;
       for (let i = 0; i < data.length; i++) {
-        const secs = this.convertTimeCodeToSeconds(data[i].Duree, frameRat);
-        secondes = Number(secondes) + Number(secs);
+        const times = data[i].Duree.split(':');
+        hours += Number(times[0]);
+        minutes += Number(times[1]);
+        if (minutes > 60) { minutes = 0; hours += 1; }
+        secondes += Number(times[2]);
+        if (secondes > 60) { secondes = 0; minutes += 1; }
+        frames += Number(times[3]);
+        if (frames > 30) { frames = 0; secondes += 1; }
       }
-      return this.convertTime(secondes, frameRat);
+      if (hours < 10) { hours = '0' + hours };
+      if (minutes < 10) { minutes = '0' + minutes };
+      if (secondes < 10) { secondes = '0' + secondes };
+      if (frames < 10) { frames = '0' + frames };
+      const totalTime = hours + ':' + minutes + ':' + secondes + ':' + frames;
+
+      return totalTime;
     } catch (err) {
       console.log('Error calcul nbr heures totales ' + err);
     }
   }
 
-  public convertTimeCodeToSeconds(timeString, framerate) {
-    const timeArray = timeString.split(':');
-    const hours = timeArray[0] * 60 * 60;
-    const minutes = timeArray[1] * 60;
-    const seconds = timeArray[2];
-    const frames = timeArray[3] * (1 / framerate);
-    const str =
-      'h:' + hours + '\nm:' + minutes + '\ns:' + seconds + '\f:' + frames;
-    const totalTime = hours + minutes + seconds + frames;
-    return totalTime;
-  }
-  public convertTime(frames, fps) {
-    fps = typeof fps !== 'undefined' ? fps : 30;
-    const pad = function(input) {
-        return input < 10 ? '0' + input : input;
-      },
-      seconds = typeof frames !== 'undefined' ? frames / fps : 0;
-    return [
-      pad(Math.floor(seconds / 3600)),
-      pad(Math.floor((seconds % 3600) / 60)),
-      pad(Math.floor(seconds % 60)),
-      pad(Math.floor(frames % fps))
-    ].join(':');
-  }
-  private handleError2<T> (operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-      // TODO: better job of transforming error for user consumption
-      this.log(`${operation} failed: ${error.message}`);
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
 
   public handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

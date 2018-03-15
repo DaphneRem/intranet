@@ -244,7 +244,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
       }
     }
   }
-  public selectiProgName(progNumber) {
+  public selectProgName(progNumber) {
     this.datasForm.programName = progNumber;
     this.chanelsSearchList = [];
   }

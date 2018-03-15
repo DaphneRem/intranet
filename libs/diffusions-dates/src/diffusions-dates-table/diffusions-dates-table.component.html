@@ -46,7 +46,7 @@
                         </span>
                         <div *ngIf="chanelsSearchList.length>0" id="programSearchBox">
                           <ul>
-                            <li *ngFor="let item of chanelsSearchList" (click)="selectiProgName(item.numprogram)">
+                            <li *ngFor="let item of chanelsSearchList" (click)="selectProgName(item.numprogram)">
                               {{item.numprogram}} - {{ item.TitrePresseOri}}
                             </li>
                           </ul>

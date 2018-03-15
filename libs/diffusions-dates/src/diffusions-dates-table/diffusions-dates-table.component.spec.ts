@@ -24,11 +24,15 @@ describe('DiffusionsDatesTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('numProgramValidator test', () => {
+    expect(ser).toBeTruthy();
+  });
+/*
   it('convertTime function ', () => {
     expect(component.convertTime(3600, 30)).toBe('108000');
   });
   // test Fonction validation numero de programme
-/*
+
   const datasForm = {
     'channels': [
       { 'id': 0, 'itemName': 'LIBRE' },

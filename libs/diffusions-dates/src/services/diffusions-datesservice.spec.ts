@@ -27,6 +27,17 @@ fdescribe('DatesDiffusionsService', () => {
     httpMock = injector.get(HttpTestingController);
   });
 
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+
+  it('Calculate total of hours > 01:01:01:01 * 3 = 03:03:03:03', () => {
+    const hours = [{'Duree': '01:01:01:01'}, {'Duree': '01:01:01:01'}, {'Duree': '01:01:01:01'}];
+    expect(service.calculateTotalHours(hours)).toEqual('03:03:03:03');
+  });
+
+  /*
   describe('#getUsers', () => {
     it('should return an Observable<User[]>', () => {
       const dummyUsers = 'true';
@@ -38,11 +49,7 @@ fdescribe('DatesDiffusionsService', () => {
       mockReq.flush(dummyUsers);
     });
   });
-  /*
 
-    it('should be created', () => {
-      expect(service).toBeTruthy();
-    });
 
     it('Test récupération chaines ', () => {
       service.checkProgramNumber('1996-00001')
