@@ -9,8 +9,8 @@ import { Component, OnInit, Input } from '@angular/core';
   ]
 })
 export class ChangeViewComponent implements OnInit {
-  @Input() tableView;
   @Input() link;
+  @Input() tableView;
 
   constructor() {
   }

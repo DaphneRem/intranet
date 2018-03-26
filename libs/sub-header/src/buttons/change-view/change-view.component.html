@@ -1,7 +1,18 @@
-<button class="btn btn-primary">
-  <a [routerLink]="link">
-      <i *ngIf="tableView" class="icon-view-grid"></i>
-      <i *ngIf="!tableView" class="icon-view-list-alt"></i>
-  </a>
+<button 
+    *ngIf="tableView" 
+    [routerLink]="link" 
+    type="button" 
+    class="btn btn-primary" 
+    ngbTooltip="Changer pour la vue widgets" 
+    placement="bottom">
+    <i class="icon-view-grid"></i>
 </button>
-<!-- <i class="icon-view-list"></i> -->
+<button 
+    *ngIf="!tableView" 
+    [routerLink]="link" 
+    type="button" 
+    class="btn btn-primary" 
+    ngbTooltip="Changer pour la vue tableaux" 
+    placement="bottom">
+    <i class="icon-view-list-alt"></i>
+</button>
