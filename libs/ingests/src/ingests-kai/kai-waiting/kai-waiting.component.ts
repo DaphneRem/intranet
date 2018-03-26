@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { KaiWaitingService } from '../services/kai-waiting.service';
 import { KaiWaiting } from '../models/kai-waiting';
 
@@ -18,11 +19,9 @@ export class KaiWaitingComponent implements OnInit {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
 
-public render: boolean;
-
+  public render: boolean;
   public dataReady = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
-
     tableTitle: 'en attente Kai',
     data: [],
     headerTableLinkExist: false,
@@ -62,7 +61,6 @@ public render: boolean;
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
     if (this.headerTableLinkExist) {
       this.customdatatablesOptions.headerTableLink = this.headerTableLink;
-      console.log(this.headerTableLink);
     }
   }
 
@@ -81,9 +79,9 @@ public render: boolean;
 
   getIngestsInProgress() {
     this.kaiWaitingService.getIngestsInProgress().subscribe(data => {
+      console.log(data);
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
-      console.log(this.customdatatablesOptions.data);
     });
   }
 }

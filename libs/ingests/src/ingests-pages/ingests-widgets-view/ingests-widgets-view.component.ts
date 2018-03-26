@@ -4,14 +4,9 @@ import { Component, OnInit } from '@angular/core';
   selector: 'ingests-widgets-view',
   templateUrl: './ingests-widgets-view.component.html',
   styleUrls: ['./ingests-widgets-view.component.scss']
-
 })
 export class IngestsWidgetsViewComponent implements OnInit {
-
-  constructor() {
-
-    // this.tableViewStore = this.store;
-  }
+  constructor() {}
 
   public view;
   public tableViewStore;
@@ -23,34 +18,30 @@ export class IngestsWidgetsViewComponent implements OnInit {
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-6 ',
       link: './in-progress',
-      color: 'linear-gradient(45deg, #4099ff, #73b4ff)'
+      color: '#39ADB5'
     },
     {
       title: 'Terminés',
       icon: 'icofont icofont-check-alt',
       size: 'col-md-12 col-lg-6 ',
       link: './completed',
-      color: 'linear-gradient(45deg, #2ed8b6, #59e0c5)'
+      color: '#17B978'
     },
     {
       title: 'En attente KAI',
       icon: 'icofont icofont-wall-clock',
       size: 'col-md-12 col-lg-6 ',
       link: './kai-waiting',
-      color: 'linear-gradient(45deg, #FF5370, #ff869a)'
+      color: '#FF5F5F'
     },
     {
       title: 'En attente KARINA',
       icon: 'icofont icofont-wall-clock',
       size: 'col-md-12 col-lg-6 ',
       link: './karina-waiting',
-      color: 'linear-gradient(45deg, #FFB64D, #ffcb80)'
+      color: '#FDB44B'
     }
   ];
 
-  // http://icofont.com/icons/
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

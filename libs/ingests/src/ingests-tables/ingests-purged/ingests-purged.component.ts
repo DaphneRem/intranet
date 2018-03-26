@@ -1,23 +1,26 @@
 import { Component, OnInit } from '@angular/core';
+
+// lib imports
+import { CustomDatatablesOptions } from '@ab/custom-datatables';
+
 import { IngestsPurgedService } from '../../services/ingests-purged.service';
 import { IngestsPurged } from '../../models/ingests-purged';
-
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 @Component({
   selector: 'ingests-purged',
   templateUrl: './ingests-purged.component.html',
   styleUrls: ['./ingests-purged.component.scss'],
-  providers: [IngestsPurgedService]
+  providers: [
+    IngestsPurgedService
+  ]
 })
 export class IngestsPurgedComponent implements OnInit {
-  constructor(private ingestsPurgedService: IngestsPurgedService) {}
-  public dataReady = false;
 
-  headerTableLinkExist = false;
-  datas: any = [];
+  constructor( private ingestsPurgedService: IngestsPurgedService ) {}
+
+  public datas: any = [];
+  public dataReady = false;
+  public headerTableLinkExist = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
     tableTitle: 'Fichiers purgés',
     data: [],
@@ -41,11 +44,7 @@ export class IngestsPurgedComponent implements OnInit {
   };
 
   ngOnInit() {
-    // this.ingestsPurgedService.getIngestsPurged(3).subscribe(data => {
-    //   this.datas = data;
-    // });
-        this.getIngestsInProgress(3);
-
+    this.getIngestsInProgress(3);
   }
 
   checkDataReady() {
@@ -56,7 +55,6 @@ export class IngestsPurgedComponent implements OnInit {
     this.ingestsPurgedService.getIngestsPurged(number).subscribe(data => {
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
-      console.log(this.customdatatablesOptions.data);
     });
   }
 }

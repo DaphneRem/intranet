@@ -1,25 +1,38 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 
 import { IngestsPurgedComponent } from './ingests-purged.component';
 
-describe('IngestsTablePurgeComponent', () => {
-  let component: IngestsPurgedComponent;
-  let fixture: ComponentFixture<IngestsPurgedComponent>;
+describe('IngestsPurgedComponent', () => {
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ IngestsPurgedComponent ]
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+  let testHostComponent: TestHostComponent;
+  let component: IngestsPurgedComponent;
+
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [IngestsPurgedComponent, TestHostComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IngestsPurgedComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create component', () => {
+    expect(testHostFixture).toBeDefined();
   });
+
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test ></component-under-test>`
+  })
+  class TestHostComponent {
+    @ViewChild(IngestsPurgedComponent)
+    public IngestsPurgedComponent: IngestsPurgedComponent;
+  }
 });

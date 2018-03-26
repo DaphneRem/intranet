@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+// lib imports
+import { CustomDatatablesOptions } from '@ab/custom-datatables';
+
 import { IngestsCompletedService } from '../../services/ingests-completed.service';
 import { IngestsCompleted } from '../../models/ingests-completed';
-
-import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 @Component({
   selector: 'ingests-completed',
@@ -43,10 +44,9 @@ export class IngestsCompletedComponent implements OnInit {
     }
   };
 
-  constructor(private ingestsCompletedService: IngestsCompletedService) {}
+  constructor( private ingestsCompletedService: IngestsCompletedService ) {}
 
   ngOnInit() {
-    console.log(this.daysTableView);
     this.getIngestsInProgress(this.daysTableView);
     this.checkDaysViews();
     this.checkLinks();
@@ -56,7 +56,6 @@ export class IngestsCompletedComponent implements OnInit {
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
     if (this.headerTableLinkExist) {
       this.customdatatablesOptions.headerTableLink = this.headerTableLink;
-      console.log(this.headerTableLink);
     }
   }
 
@@ -79,8 +78,7 @@ export class IngestsCompletedComponent implements OnInit {
       .subscribe(data => {
         this.customdatatablesOptions.data = data;
         this.dataReady = true;
-        console.log(this.customdatatablesOptions.data);
-      });
+    });
   }
 }
 

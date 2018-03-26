@@ -1,25 +1,38 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 
 import { IngestsKaiComponent } from './ingests-kai.component';
 
 describe('IngestsKaiComponent', () => {
-  let component: IngestsKaiComponent;
-  let fixture: ComponentFixture<IngestsKaiComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ IngestsKaiComponent ]
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+  let testHostComponent: TestHostComponent;
+
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [IngestsKaiComponent, TestHostComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IngestsKaiComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create component', () => {
+    expect(testHostFixture).toBeDefined();
   });
+
+
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test ></component-under-test>`
+  })
+  class TestHostComponent {
+    @ViewChild(IngestsKaiComponent)
+    public IngestsKaiComponent: IngestsKaiComponent;
+  }
 });

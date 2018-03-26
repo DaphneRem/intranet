@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { KaiEchec } from '../models/kai-echec';
-
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { catchError, retry } from 'rxjs/operators';
@@ -13,8 +11,11 @@ import 'rxjs/add/observable/throw';
 // temporary imports :
 import { urlIngestsKai, urlKaiEchec } from '../../../../../.privates-url';
 
+import { KaiEchec } from '../models/kai-echec';
+
 @Injectable()
 export class KaiEchecService {
+
   constructor(private http: HttpClient) {}
 
   getIngestsKaiEchec(days: number): Observable<KaiEchec[]> {

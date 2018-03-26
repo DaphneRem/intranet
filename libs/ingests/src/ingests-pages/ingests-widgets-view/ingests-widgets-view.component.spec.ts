@@ -21,8 +21,8 @@ describe('IngestsWidgetsViewComponent', () => {
     testHostComponent = testHostFixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(testHostFixture).toBeTruthy();
+  it('should create component', () => {
+    expect(testHostFixture).toBeDefined();
   });
 
   @Component({

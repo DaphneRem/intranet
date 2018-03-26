@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./ingests-completed-details.component.scss']
 })
 export class IngestsCompletedDetailsComponent implements OnInit {
-  public link = '/';
   public daysTableView = 3;
   public headerTableLinkExist = false;
   public goBack = true;

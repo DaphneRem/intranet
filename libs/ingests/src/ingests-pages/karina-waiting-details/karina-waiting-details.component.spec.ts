@@ -1,25 +1,37 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 
 import { KarinaWaitingDetailsComponent } from './karina-waiting-details.component';
 
 describe('KarinaWaitingDetailsComponent', () => {
-  let component: KarinaWaitingDetailsComponent;
-  let fixture: ComponentFixture<KarinaWaitingDetailsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ KarinaWaitingDetailsComponent ]
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+  let testHostComponent: TestHostComponent;
+
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [KarinaWaitingDetailsComponent, TestHostComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KarinaWaitingDetailsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create component', () => {
+    expect(testHostFixture).toBeDefined();
   });
+
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test ></component-under-test>`
+  })
+  class TestHostComponent {
+    @ViewChild(KarinaWaitingDetailsComponent)
+    public IngestsPurgedComponent: KarinaWaitingDetailsComponent;
+  }
 });

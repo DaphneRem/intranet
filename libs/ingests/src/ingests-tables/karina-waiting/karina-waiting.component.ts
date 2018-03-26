@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+// lib imports
+import { CustomDatatablesOptions } from '@ab/custom-datatables';
+
 import { KarinaWaitingService } from '../../services/karina-waiting.service';
 import { KarinaWaiting } from '../../models/karina-waiting';
-
-import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 @Component({
   selector: 'karina-waiting',
@@ -17,11 +18,10 @@ export class KarinaWaitingComponent implements OnInit {
   @Input() daysTableView: number;
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
-public render: boolean;
 
+  public render: boolean;
   public dataReady = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
-
     tableTitle: 'en attente Karina',
     data: [],
     headerTableLinkExist: false,
@@ -43,7 +43,7 @@ public render: boolean;
     }
   };
 
-  constructor(private karinaWaitingService: KarinaWaitingService) {}
+  constructor( private karinaWaitingService: KarinaWaitingService ) {}
 
   ngOnInit() {
     this.getKarinaWaiting();
@@ -82,7 +82,6 @@ public render: boolean;
     this.karinaWaitingService.getKarinaWaiting().subscribe(data => {
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
-      console.log(this.customdatatablesOptions.data);
     });
   }
 

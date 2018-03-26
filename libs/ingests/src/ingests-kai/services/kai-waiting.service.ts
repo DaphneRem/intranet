@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { KaiWaiting } from '../models/kai-waiting';
 
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
@@ -13,8 +12,11 @@ import 'rxjs/add/observable/throw';
 // temporary imports :
 import { urlKaiWaiting } from '../../../../../.privates-url';
 
+import { KaiWaiting } from '../models/kai-waiting';
+
 @Injectable()
 export class KaiWaitingService {
+
   constructor(private http: HttpClient) {}
 
   getIngestsInProgress(): Observable<KaiWaiting[]> {

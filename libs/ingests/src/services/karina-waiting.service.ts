@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { KarinaWaiting } from '../models/karina-waiting';
-
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { catchError, retry } from 'rxjs/operators';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -13,9 +10,12 @@ import 'rxjs/add/observable/throw';
 // temporary imports :
 import { urlKarinaWaiting } from '../../../../.privates-url';
 
+import { KarinaWaiting } from '../models/karina-waiting';
+
 @Injectable()
 export class KarinaWaitingService {
-  constructor(private http: HttpClient) {}
+
+  constructor( private http: HttpClient ) {}
 
   getKarinaWaiting(): Observable<KarinaWaiting[]> {
     return this.http

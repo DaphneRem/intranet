@@ -1,25 +1,37 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 
 import { KaiWaitingComponent } from './kai-waiting.component';
 
-describe('IngestsKaiComponent', () => {
-  let component: KaiWaitingComponent;
-  let fixture: ComponentFixture<KaiWaitingComponent>;
+describe('KaiWaitingComponent', () => {
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ KaiWaitingComponent ]
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+  let testHostComponent: TestHostComponent;
+
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [KaiWaitingComponent, TestHostComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KaiWaitingComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create component', () => {
+    expect(testHostFixture).toBeDefined();
   });
+
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test ></component-under-test>`
+  })
+  class TestHostComponent {
+    @ViewChild(KaiWaitingComponent)
+    public KaiWaitingComponent: KaiWaitingComponent;
+  }
 });

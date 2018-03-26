@@ -13,6 +13,7 @@ export class IngestsTablesViewComponent implements OnInit {
   public completedTableLink = '../completed';
   public kaiTableLink = '../kai-waiting';
   public karinaTableLink = '../karina-waiting';
+
   constructor() { }
 
   ngOnInit() {

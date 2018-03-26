@@ -1,4 +1,5 @@
 export class KarinaWaiting {
+
     idsupport: string;
     noseg: number;
     idsupportnum: string;
@@ -10,4 +11,5 @@ export class KarinaWaiting {
     previsionaldate: string;
     demandeur: string;
     datemaj: string;
+
 }

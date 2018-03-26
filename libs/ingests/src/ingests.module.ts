@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 
 // lib Imports
 import { CustomDatatablesModule } from '@ab/custom-datatables';
+import { LoadersModule } from '@ab/loaders';
+import { ScrollToTopModule } from '@ab/scroll-to-top';
 import { SubHeaderModule } from '@ab/sub-header';
 import { WidgetsModule } from '@ab/widgets';
 
@@ -26,6 +28,8 @@ import { KarinaWaitingDetailsComponent } from './ingests-pages/karina-waiting-de
   imports: [
     CommonModule,
     CustomDatatablesModule,
+    LoadersModule,
+    ScrollToTopModule,
     SubHeaderModule,
     WidgetsModule
   ],

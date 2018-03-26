@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+// lib imports
+import { CustomDatatablesOptions } from '@ab/custom-datatables';
+
 import { IngestsInProgressService } from '../../services/ingests-in-progress.service';
 import { IngestsInProgress } from '../../models/ingests-in-progress';
-
-import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 @Component({
   selector: 'ingests-in-progress',
@@ -22,9 +23,9 @@ export class IngestsInProgressComponent implements OnInit {
 
   public render: boolean;
   public data: IngestsInProgress[];
+
   public dataReady = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
-
     tableTitle: 'en cours de traitement',
     data: [],
     headerTableLinkExist: false,
@@ -46,9 +47,7 @@ export class IngestsInProgressComponent implements OnInit {
     }
   };
 
-
-
-  constructor(private ingestsInProgressService: IngestsInProgressService) {}
+  constructor( private ingestsInProgressService: IngestsInProgressService ) {}
 
   ngOnInit() {
     this.getIngestsInProgress(this.daysTableView);
@@ -66,7 +65,6 @@ export class IngestsInProgressComponent implements OnInit {
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
     if (this.headerTableLinkExist) {
       this.customdatatablesOptions.headerTableLink = this.headerTableLink;
-      console.log(this.headerTableLink);
     }
   }
 
@@ -90,7 +88,6 @@ export class IngestsInProgressComponent implements OnInit {
         this.data = data;
         this.customdatatablesOptions.data = this.data;
         this.dataReady = true;
-        console.log(this.customdatatablesOptions.data);
       });
   }
 }

@@ -1,4 +1,5 @@
 export class IngestsCompleted {
+
     titreSeg: string;
     id: string;
     noseg: number;
@@ -12,4 +13,5 @@ export class IngestsCompleted {
     processname: string;
     refname: string;
     tstamp: string;
+
 }
