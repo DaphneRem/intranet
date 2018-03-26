@@ -10,7 +10,7 @@ import { DatesDiffusionsService } from './diffusions-dates.service';
 import { urlDiffDates_checkProgramNumber } from '.privates-url';
 
 
-fdescribe('DatesDiffusionsService', () => {
+describe('DatesDiffusionsService', () => {
 
 
   let injector: TestBed;

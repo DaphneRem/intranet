@@ -16,7 +16,7 @@
             <span class="circle delay-8 size-2"></span>
           </div>
           <div *ngIf="formLoaded">
-            <form class="example-form" #myForm="ngForm" (ngSubmit)="numProgramValidator(myForm)">
+            <form class="example-form" #myForm="ngForm" (ngSubmit)="searchValidator()">
               <div class="row">
                 <div class="col-sm-4">
                   <div class="row wrap">
@@ -38,10 +38,10 @@
                         [ngModelOptions]="{standalone: true}"
                         (input)="onSearchChange($event.target.value)"
                         formcontrolname="name">
-                        <span (click)="clearnInputSearch()"  class="input-group-addon novalid" *ngIf="validProgramNumber==false && dataloaded!=0">
+                        <span (click)="clearnInputSearch()"  class="input-group-addon novalid" *ngIf="validProgramNumber===false && dataloaded!=0">
                             <i class="icon-close"></i>
                         </span>
-                        <span  class="input-group-addon valid" *ngIf="validProgramNumber==true && dataloaded!=0">
+                        <span  class="input-group-addon valid" *ngIf="validProgramNumber===true && dataloaded!=0">
                             <i class="icon-check"></i>
                         </span>
                         <div *ngIf="chanelsSearchList.length>0" id="programSearchBox">
@@ -131,7 +131,6 @@
           </div>
         </div>
       </div>
-      <div (click)="searchSubmit('test')" style="color:white;cursor:pointer;float:right;">TEST</div>
       <hr>
       <div class="row">
         <div *ngIf="dataloaded === 1" class="loader animation-start">
@@ -155,7 +154,7 @@
           </div>
           <div class="row">
             <div class="col-sm-12" align="left">
-              <span>TIMECODE TOTAL HEURES : {{nbrHours}}</span>
+              <span>TIMECODE TOTAL HEURES : {{totalNbrHours}}</span>
             </div>
           </div>
         </div>
