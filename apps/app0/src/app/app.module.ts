@@ -1,10 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from '@ngrx/effects';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID, } from '@angular/core';
 import { NxModule } from '@nrwl/nx';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 
 /*********** from app0 **********/
 
@@ -17,25 +21,29 @@ import { AppComponent } from './app.component';
 /*********** from Libs **********/
 
 import { CustomDatatablesModule } from '@ab/custom-datatables';
+import { ErrorPagesModule } from '@ab/error-pages';
 import { IngestsModule } from '@ab/ingests';
+import { PubModule } from '@ab/pub';
 import { RouterStateModule } from '@ab/router-state';
 import { RootModule, navbarReducer } from '@ab/root';
 import { SubHeaderModule } from '@ab/sub-header';
-import { TraceSegmentModule } from '@ab/trace-segment';
+import { TraceSegmentModule, lastSearchReducer } from '@ab/trace-segment';
 import { WidgetsModule } from '@ab/widgets';
 
+registerLocaleData(localeFr, 'fr');
+
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     AppRoutingModule,
     BrowserModule,
     CustomDatatablesModule,
     EffectsModule.forRoot([]),
+    ErrorPagesModule,
     HttpClientModule,
     IngestsModule,
     NxModule.forRoot(),
+    PubModule,
     RootModule,
     RouterStateModule.forRoot(),
     StoreDevtoolsModule.instrument({
@@ -43,11 +51,13 @@ import { WidgetsModule } from '@ab/widgets';
     }),
     StoreModule.forRoot({
       navbar: navbarReducer,
+      lastSearch: lastSearchReducer
     }),
     SubHeaderModule,
     TraceSegmentModule,
     WidgetsModule
   ],
+  providers: [{ provide: LOCALE_ID, useValue: 'fr' }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
