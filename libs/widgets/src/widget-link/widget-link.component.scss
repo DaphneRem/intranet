@@ -5,8 +5,11 @@
         .card {
             height : 270px;
             color : #fff;
-            border-radius: 0;
+            // border-radius: 0;
             margin : 10px;
+            border: 1px solid;
+            border-radius: 5px;
+            
             &:hover {
                 box-shadow: 0 0px 25px 0 rgb(126, 125, 125);
             }
