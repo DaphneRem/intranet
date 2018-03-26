@@ -1,12 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser'; // permet de supprimer le 'unsafe' dans le href des liens distants
-import { MenuItems } from '..//menu-items/menu-items.service';
+import { DomSanitizer } from '@angular/platform-browser'; // allows to remove the 'unsafe' in the remote links href
 
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import { Navbar } from '../+state/navbar.interfaces';
 import { navbarInitialState } from '../+state/navbar.init';
+
+import { MenuItems } from '../menu-items/menu-items.service';
 
 @Component({
   selector: 'root-navbar',
@@ -42,7 +43,6 @@ export class NavbarComponent implements OnInit {
 
   public config: any;
 
-
   constructor(
     private sanitizer: DomSanitizer,
     public menuItems: MenuItems,
@@ -53,7 +53,8 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
   }
 
-  sanitize(url: string) { // création d'une méthode permettant d'appeler les liens sans ajout de 'unsafe' avant l'adresse url
+  // method to call the links without adding 'unsafe' before the url address
+  sanitize(url: string) {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 

@@ -1,4 +1,5 @@
-const distUrl = 'http://127.0.0.1/edsa-Angular/ng-nx-project/dist/apps/';
+// TODO : ajouter url définitive de prod (importer à partir du fichier privates-url.ts)
+const distUrl = 'url prod';
 
 export const MENUITEMS = [
     {
@@ -11,17 +12,23 @@ export const MENUITEMS = [
                 name: 'Technique',
                 type: 'sub',
                 icon: 'icofont icofont-repair',
+                iconColor: '#39ADB5',
                 children: [
+                    {
+                        state: 'publicité',
+                        name: 'Publicité',
+                        route: 'publicity'
+                    },
                     {
                         state: 'numerisation',
                         name: 'Numérisation',
-                        route: 'ingests'
+                        route: 'ingests',
                     },
                     {
                         state: 'detail-fichier',
                         name: 'Détail Fichier',
-                        route: 'detail-file'
-
+                        route: 'detail-file',
+                        tooltipText : 'Trace Segment'
                     },
                     {
                         state: 'fichiers-purges',

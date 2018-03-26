@@ -8,5 +8,4 @@ export interface CloseNavbar {
   payload: {};
 }
 
-
 export type NavbarAction = OpenNavbar | CloseNavbar;

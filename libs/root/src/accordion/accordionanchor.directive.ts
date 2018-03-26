@@ -1,3 +1,5 @@
+/******************* Template element ******************/
+
 import { Directive, HostListener, Inject } from '@angular/core';
 
 import { AccordionLinkDirective } from './accordionlink.directive';
