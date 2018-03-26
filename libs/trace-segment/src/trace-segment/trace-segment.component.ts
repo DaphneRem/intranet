@@ -1,100 +1,49 @@
 import { Component, OnInit } from '@angular/core';
-
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
-
-import { SupportSegment } from '../models/support-segment';
-import { SupportSegmentService } from '../services/support-segment.service';
+import { ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'trace-segment',
   templateUrl: './trace-segment.component.html',
-  styleUrls: ['./trace-segment.component.scss'],
-  providers: [
-    SupportSegmentService
-  ]
+  styleUrls: ['./trace-segment.component.scss']
 })
 export class TraceSegmentComponent implements OnInit {
 
   public supportSegmentData;
-  public automaticFilling;
+  public dataReady: boolean;
+
+  public title = 'details fichier';
   public file = {
     idSupport: '',
-    numSegment: 0
+    numSegment: 0,
+    exist: false,
+    autoPath : false,
+    error : false,
+    errorMessage: ''
   };
-  public title = 'details fichier';
-  public supportExist: boolean;
-  public dataReady;
-  constructor(
+  public myEvent;
+  constructor( 
     private route: ActivatedRoute,
-    private supportSegmentService: SupportSegmentService,
-    private location: Location,
     private router: Router
-  ) { }
+  ) {
 
-  ngOnInit() {
-    console.log(this.route.snapshot.children);
-    console.log(this.supportExist);
-    this.checkCurrentRoute();
   }
 
-  checkCurrentRoute() {
-  this.checkFilling();
+  ngOnInit() {
+   console.log(this.route.snapshot.children.length);
+   this.checkFilling();
+   console.log(this.file.autoPath);
   }
 
 
   checkFilling() {
     if (this.route.snapshot.children.length) {
-      this.automaticFilling = true;
-      this.file.idSupport = this.route.snapshot.children[0].params.idSupport;
-      this.file.numSegment = +this.route.snapshot.children[0].params.numSegment;
-      this.supportExist = true;
-      this.getSupportSegment();
+      this.file.autoPath = true;
     } else {
-      this.automaticFilling = false;
-      this.file.idSupport = '';
-      this.file.numSegment = 0;
+      this.file.autoPath = false;
     }
   }
 
-  checkRouteExist() {
-    console.log(this.supportSegmentData);
-    this.supportSegmentService
-      .getSupportSegment(this.file.idSupport, this.file.numSegment)
-      .subscribe((data) => {
-        this.supportSegmentData = data;
-        if (Object.keys(this.supportSegmentData).length) {
-            this.supportExist = true;
-            this.supportSegmentData = data[0] ;
-            this.router.navigate([`/detail-file/support/${this.file.idSupport}/seg/${this.file.numSegment}`]);
-            this.dataReady = true;
-            this.title = '';
-            this.automaticFilling = false;
-        } else {
-          this.supportExist = false;
-          this.router.navigate(['../../', 'detail-file']);
-          this.file.idSupport = '';
-          this.file.numSegment = 0;
-          this.dataReady = false;
-        }
-      });
-  }
-
-  getSupportSegment(): void {
-    this.dataReady = false;
-    this.supportSegmentService
-      .getSupportSegment(this.file.idSupport, this.file.numSegment)
-      .subscribe((data) => {
-        this.supportSegmentData = data[0] ;
-        this.dataReady = true;
-        console.log(data);
-        // if (Object.keys(this.supportSegmentData).length) {
-        //     this.supportExist = true;
-        // } else {
-        //   this.supportExist = false;
-        // }
-      });
-  }
 }
 
 

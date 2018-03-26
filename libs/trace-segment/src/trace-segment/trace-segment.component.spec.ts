@@ -1,25 +1,37 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 
 import { TraceSegmentComponent } from './trace-segment.component';
 
 describe('TraceSegmentComponent', () => {
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+  let testHostComponent: TestHostComponent;
   let component: TraceSegmentComponent;
-  let fixture: ComponentFixture<TraceSegmentComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TraceSegmentComponent ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [TraceSegmentComponent, TestHostComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TraceSegmentComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create component', () => {
+    expect(testHostFixture).toBeDefined();
   });
+
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test ></component-under-test>`
+  })
+  class TestHostComponent {
+    @ViewChild(TraceSegmentComponent)
+    public TraceSegmentComponent: TraceSegmentComponent;
+  }
 });
