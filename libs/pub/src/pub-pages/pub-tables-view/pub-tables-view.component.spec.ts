@@ -1,7 +1,5 @@
-import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-
-import { RouterTestingModule } from '@angular/router/testing';
 
 import { PubTablesViewComponent } from './pub-tables-view.component';
 
@@ -14,7 +12,6 @@ describe('PubTablesViewComponent', () => {
 
   beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule],
         declarations: [PubTablesViewComponent, TestHostComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
@@ -27,6 +24,42 @@ describe('PubTablesViewComponent', () => {
 
   it('should create component', () => {
     expect(testHostFixture).toBeDefined();
+  });
+
+  it('should have link property', () => {
+    fixture = TestBed.createComponent(PubTablesViewComponent);
+    component = fixture.componentInstance;
+    component.link = '/link';
+    fixture.detectChanges();
+    expect(component.link).toBeDefined();
+  });
+
+  it('should display view for 24h', () => {
+    fixture = TestBed.createComponent(PubTablesViewComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.daysTableView).toBe(1);
+  });
+
+  it('should have headerTableLinkExist property to true', () => {
+    fixture = TestBed.createComponent(PubTablesViewComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.headerTableLinkExist).toBe(true);
+  });
+
+  it('should have inProgressTableLink link to "../in-progress" ', () => {
+    fixture = TestBed.createComponent(PubTablesViewComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.inProgressTableLink).toBe('../in-progress');
+  });
+
+  it('should have completedTableLink link to "../completed" ', () => {
+    fixture = TestBed.createComponent(PubTablesViewComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.completedTableLink).toBe('../completed');
   });
 
   @Component({

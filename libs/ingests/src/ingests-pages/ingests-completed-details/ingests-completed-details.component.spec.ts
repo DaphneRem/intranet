@@ -8,6 +8,9 @@ describe('IngestsCompletedDetailsComponent', () => {
   let testHostFixture: ComponentFixture<TestHostComponent>;
   let testHostComponent: TestHostComponent;
 
+  let component: IngestsCompletedDetailsComponent;
+  let fixture: ComponentFixture<IngestsCompletedDetailsComponent>;
+
   beforeEach(
     async(() => {
       TestBed.configureTestingModule({
@@ -26,6 +29,26 @@ describe('IngestsCompletedDetailsComponent', () => {
     expect(testHostFixture).toBeDefined();
   });
 
+  it('should display view for 72h', () => {
+    fixture = TestBed.createComponent(IngestsCompletedDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.daysTableView).toBe(3);
+  });
+
+  it('should have headerTableLinkExist property to false', () => {
+    fixture = TestBed.createComponent(IngestsCompletedDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.headerTableLinkExist).toBe(false);
+  });
+
+  it('should have goBack property to true', () => {
+    fixture = TestBed.createComponent(IngestsCompletedDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.goBack).toBe(true);
+  });
 
   @Component({
     selector: `host-component`,

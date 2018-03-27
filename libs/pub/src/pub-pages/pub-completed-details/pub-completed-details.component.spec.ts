@@ -1,7 +1,5 @@
-import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-
-import { RouterTestingModule } from '@angular/router/testing';
 
 import { PubCompletedDetailsComponent } from './pub-completed-details.component';
 
@@ -14,7 +12,6 @@ describe('PubCompletedDetailsComponent', () => {
 
   beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule],
         declarations: [PubCompletedDetailsComponent, TestHostComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
@@ -27,6 +24,35 @@ describe('PubCompletedDetailsComponent', () => {
 
   it('should create component', () => {
     expect(testHostFixture).toBeDefined();
+  });
+
+  it('should have link property', () => {
+    fixture = TestBed.createComponent(PubCompletedDetailsComponent);
+    component = fixture.componentInstance;
+    component.link = '/link';
+    fixture.detectChanges();
+    expect(component.link).toBeDefined();
+  });
+
+  it('should display view for 72h', () => {
+    fixture = TestBed.createComponent(PubCompletedDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.daysTableView).toBe(3);
+  });
+
+  it('should have headerTableLinkExist property to false', () => {
+    fixture = TestBed.createComponent(PubCompletedDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.headerTableLinkExist).toBe(false);
+  });
+
+  it('should have goBack property to true', () => {
+    fixture = TestBed.createComponent(PubCompletedDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.goBack).toBe(true);
   });
 
   @Component({
