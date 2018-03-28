@@ -49,6 +49,7 @@ export const MENUITEMS = [
                 name: 'Menu lorem ipsum',
                 type: 'sub',
                 icon: 'icon-home',
+                iconColor: '#ffffff',
                 children: [
                     {
                         state: 'm1',
