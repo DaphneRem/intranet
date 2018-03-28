@@ -12,9 +12,7 @@
       </button> -->
       <a *ngIf="headerTableLinkExist" 
           class="btn btn-primary btn-outline-primary" 
-          (mouseover)="hovered = true" 
-          (mouseout)="hovered = false"
-          [ngStyle]="hovered ? buttonViewHover : buttonViewMore"
+          [ngStyle]="buttonViewMore"
           [routerLink]="headerTableLink" 
           placement="right" 
           ngbTooltip="Voir fichiers sur les 3 derniers jours">
@@ -48,9 +46,7 @@
     <div class="header-buttons">
       <a *ngIf="headerTableLinkExist" 
           class="btn btn-primary btn-outline-primary"
-          (mouseover)="hovered = true" 
-          (mouseout)="hovered = false"
-          [ngStyle]="hovered ? buttonViewHover : buttonViewMore"
+          [ngStyle]="buttonViewMore"
           [routerLink]="headerTableLink" 
           placement="right" 
           ngbTooltip="Voir fichiers sur les 3 derniers jours">

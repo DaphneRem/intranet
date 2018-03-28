@@ -39,6 +39,9 @@ $tableButton : #3b4650;
                 width : 100px;
                 padding : 5px;
                 margin-top: 2px;
+                &:hover {
+                    background: rgb(235, 235, 235);
+                }
             }
             button {
                 margin-left : 10px;
