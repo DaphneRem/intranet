@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { INTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS } from '@angular/platform-browser-dynamic/src/platform_providers';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -17,7 +16,7 @@ import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 export class AppComponent implements OnInit {
 
   constructor(
-        private store: Store<Navbar>
+    private store: Store<Navbar>
   ) {
     this.navbarStoreOpen = this.store;
   }
@@ -39,6 +38,7 @@ export class AppComponent implements OnInit {
     this.navbarState = this.navbar.navbar.open;
     this.checkHeader(this.navbarState);
   }
+
   // get the event headerNav from root-header component
   checkHeaderNav(event) {
     this.headerNav = event;

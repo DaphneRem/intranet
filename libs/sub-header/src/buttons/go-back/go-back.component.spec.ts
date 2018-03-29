@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { GoBackComponent } from './go-back.component';
 
@@ -8,9 +9,11 @@ describe('GoBackComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GoBackComponent ]
-    })
-    .compileComponents();
+      declarations: [GoBackComponent],
+      imports: [
+        RouterTestingModule
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +22,18 @@ describe('GoBackComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create component', () => {
+    expect(component).toBeDefined();
   });
+
+  it('should call goBack() function on button click', fakeAsync(() => {
+    fixture.detectChanges();
+    spyOn(component, 'goBack');
+    const button = fixture.debugElement.nativeElement.querySelector('button');
+    button.click();
+    fixture.whenStable().then(() => {
+      expect(component.goBack).toHaveBeenCalled();
+    });
+  }));
+
 });

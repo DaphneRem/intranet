@@ -1,18 +1,24 @@
-:host {
-    button {
-        padding : 0;
-        height : 50px;
-        width: 65px;
-        a {
-            height : 50px;
-            width: 100%;
-            padding : 10px;
-            i {
-                font-size: 1.8em;
-                color : #fff;
-                margin : auto;
-            }
-        }
+// $customColorButton: #00aab2;
+// $customColorHover: #4ac2c9;
+
+$customColorButton: #3b4650;
+$customColorHover: #696e72;
+
+button {
+    padding : 0;
+    height : 60px;
+    width: 65px;
+    border-radius: 0;
+    background: $customColorButton;
+    border-color:$customColorButton;
+    &:hover {
+        background: $customColorHover;
+        border-color: $customColorHover;
+    }
+    i {
+        font-size: 1.8em;
+        color : #fff;
+        margin : auto;
     }
 }
 

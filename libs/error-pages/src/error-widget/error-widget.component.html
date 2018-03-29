@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-lg-6 card">
+      <div *ngIf="error === '404'" class="card-block text-center">
+        <h3 class="text-warning">Oups...</h3>
+        <h1 class="text-warning title">
+          4<i class="icofont icofont-emo-worried"></i>4
+        </h1>
+        <h6 class="message">Désolé, la page que vous cherchez semble introuvable</h6>
+        <button (click)="goBack()" class="btn btn-round btn-warning">Retour</button>
+      </div>
+  </div>
+</div>

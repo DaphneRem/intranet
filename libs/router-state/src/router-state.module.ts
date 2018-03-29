@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
+import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { RouterModule } from '@angular/router';
+
+// external imports
+import { EffectsModule } from '@ngrx/effects';
+import { routerReducer } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
-import { EffectsModule } from '@ngrx/effects';
-import { RouterEffects } from './+state/router-state.effects';
-import { routerReducer } from '@ngrx/router-store';
+
 import { CustomSerializer } from './services/custom-serializer.service';
-import { ModuleWithProviders } from '@angular/compiler/src/core';
+import { RouterEffects } from './+state/router-state.effects';
 
 @NgModule()
 export class RouterStateModule {
@@ -16,7 +19,7 @@ export class RouterStateModule {
       providers: [
         { provide: RouterStateSerializer, useClass: CustomSerializer }
       ]
-    }
+    };
   }
 }
 
@@ -28,4 +31,3 @@ export class RouterStateModule {
   ]
 })
 export class RootRouterStateModule {}
-

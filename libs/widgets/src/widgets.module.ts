@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WidgetLinkComponent } from './widget-link/widget-link.component';
 import { RouterModule } from '@angular/router';
+
+// components imports
+import { WidgetDataComponent } from './widget-data/widget-data.component';
+import { WidgetLinkComponent } from './widget-link/widget-link.component';
 
 @NgModule({
   imports: [
@@ -9,9 +12,11 @@ import { RouterModule } from '@angular/router';
     RouterModule
   ],
   declarations: [
+    WidgetDataComponent,
     WidgetLinkComponent
   ],
   exports : [
+    WidgetDataComponent,
     WidgetLinkComponent
   ]
 })

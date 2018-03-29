@@ -12,7 +12,8 @@
       "outDir": "dist/apps/app0",
       "assets": [
         "assets",
-        "../../../assets"
+        "../../../assets",
+        "Web.config"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -47,12 +48,37 @@
       }
     },
     {
+      "name": "error-pages",
+      "root": "libs/error-pages/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "ingests",
+      "root": "libs/ingests/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "loaders",
+      "root": "libs/loaders/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "pub",
+      "root": "libs/pub/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "diffusions-dates",
       "root": "apps/diffusions-dates/src",
       "outDir": "dist/apps/diffusions-dates",
       "assets": [
         "assets",
-        "../../../assets"
+        "../../../assets",
+        "Web.config"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -111,15 +137,27 @@
       "appRoot": ""
     },
     {
-      "name": "scan",
-      "root": "libs/scan/src",
-      "test": "../../../test.ts",
+      "name": "scroll-to-top",
+      "root": "libs/scroll-to-top/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "shared",
+      "root": "libs/shared/src",
+      "test": "../../../test.js",
       "appRoot": ""
     },
     {
       "name": "sub-header",
       "root": "libs/sub-header/src",
       "test": "../../../test.ts",
+      "appRoot": ""
+    },
+    {
+      "name": "trace-segment",
+      "root": "libs/trace-segment/src",
+      "test": "../../../test.js",
       "appRoot": ""
     },
     {

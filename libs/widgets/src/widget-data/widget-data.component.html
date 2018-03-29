@@ -1,0 +1,30 @@
+<div class="card trnasiction-card" [ngClass] ="error ? 'error' : ''" >
+  <div class="card-header" [style.background]="data.headerColor" >
+    <h5 class="text-white" [style.fontWeight]="data.headerColor === widgetsColors.navbar ? 100 : 'bold'">{{data.headerTitle}} </h5>
+    <div *ngIf="data.icon" class="card-header-right">
+      <i [style.color]="data.iconColor" class="icofont icofont-{{data.icon}}"></i>
+    </div>
+  </div>
+  <div *ngIf="!error" class="card-block text-center table-data" [ngStyle]="{ 'min-height': data.minHeight+'px' }" >
+    <div *ngFor="let item of data.rows">
+      <p *ngIf="item.title === 'Commentaire'" class="comment">{{item.data}}</p>
+      <table *ngIf="item.title !== 'Commentaire'">
+        <tr>
+          <th class="text-left item-title">{{item.title}}</th>
+          <!-- if no data -->
+          <th *ngIf="item.data === '' || item.data === null" class="text-right th-data">/</th>
+          <!-- if data span -->
+          <th *ngIf="item.span" class="text-left th-data"><span class="label label-{{item.span}}">{{item.data}}</span></th>
+          <!-- if data type date -->
+          <th *ngIf="item.type === 'date'" class="text-left th-data">{{item.data | date:'medium':'':'fr'}}</th>
+          <!-- else  -->
+          <th *ngIf="!item.type && !item.span" class="text-left th-data">{{item.data}}</th>
+        </tr>
+      </table>
+      <hr *ngIf="!(item === data.rows[data.rows.length - 1])" class="table-data-hr">
+    </div>
+  </div>
+  <div *ngIf="error" class="card-block text-center table-data error" [ngStyle]="{ 'min-height': data.minHeight+'px' }">
+      <p [style.marginTop]="(data.minHeight-30)/2+'px'" >{{errorMessage}}</p>
+  </div>
+</div>

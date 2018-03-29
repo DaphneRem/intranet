@@ -7,59 +7,64 @@ import { MenuItems } from '../menu-items/menu-items.service';
 import { Navbar } from '../+state/navbar.interfaces';
 import { navbarInitialState } from '../+state/navbar.init';
 
+import {rootUrl} from '../../../../.privates-url';
+
 @Component({
   selector: 'root-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  providers : [
-    MenuItems,
-    Store
-  ],
+  providers: [MenuItems, Store],
   animations: [
     trigger('notificationBottom', [
-      state('an-off, void',
+      state(
+        'an-off, void',
         style({
           overflow: 'hidden',
-          height: '0px',
+          height: '0px'
         })
       ),
-      state('an-animate',
+      state(
+        'an-animate',
         style({
           overflow: 'hidden',
-          height: AUTO_STYLE,
+          height: AUTO_STYLE
         })
       ),
-      transition('an-off <=> an-animate', [
-        animate('400ms ease-in-out')
-      ])
+      transition('an-off <=> an-animate', [animate('400ms ease-in-out')])
     ]),
     trigger('slideInOut', [
-      state('in', style({
-        width: '300px',
-        // transform: 'translate3d(0, 0, 0)'
-      })),
-      state('out', style({
-        width: '0',
-        // transform: 'translate3d(100%, 0, 0)'
-      })),
+      state(
+        'in',
+        style({
+          width: '300px'
+          // transform: 'translate3d(0, 0, 0)'
+        })
+      ),
+      state(
+        'out',
+        style({
+          width: '0'
+          // transform: 'translate3d(100%, 0, 0)'
+        })
+      ),
       transition('in => out', animate('400ms ease-in-out')),
       transition('out => in', animate('400ms ease-in-out'))
     ]),
     trigger('mobileHeaderNavRight', [
-      state('nav-off, void',
+      state(
+        'nav-off, void',
         style({
           overflow: 'hidden',
-          height: '0px',
+          height: '0px'
         })
       ),
-      state('nav-on',
+      state(
+        'nav-on',
         style({
-          height: AUTO_STYLE,
+          height: AUTO_STYLE
         })
       ),
-      transition('nav-off <=> nav-on', [
-        animate('400ms ease-in-out')
-      ])
+      transition('nav-off <=> nav-on', [animate('400ms ease-in-out')])
     ]),
     trigger('fadeInOutTranslate', [
       transition(':enter', [
@@ -73,7 +78,6 @@ import { navbarInitialState } from '../+state/navbar.init';
     ])
   ]
 })
-
 export class HeaderComponent implements OnInit {
   @Input() headerTitle: string;
   @Input() logo: string;
@@ -89,29 +93,27 @@ export class HeaderComponent implements OnInit {
   public vnavigationView: string;
   public freamType: string;
   public layoutType: string;
-
-// header thème non utilisé ici pour le moment
+  public rootUrl = rootUrl;
+  // header thème non utilisé ici pour le moment
   public headerTheme: string;
 
-
-// notifications (bell)
+  // notifications (bell)
   public liveNotification: string;
   public liveNotificationClass: string;
 
-// notifications (profil)
+  // notifications (profil)
   public profileNotification: string;
   public profileNotificationClass: string;
 
-// input search
+  // input search
   public searchWidth: number;
   public searchWidthString: string;
 
-// header responsive
+  // header responsive
   public navRight: string;
   public chatTopPosition: string;
 
-
-/******** Options navBar : *********/
+  /******** Options navBar : *********/
 
   public headerFixedMargin: string;
   public windowWidth: number;
@@ -133,16 +135,12 @@ export class HeaderComponent implements OnInit {
   public dropDownIcon: string;
   public subItemIcon: string;
 
-/**********************************/
+  /**********************************/
 
   navbarState: any;
 
-  constructor(
-    public menuItems: MenuItems,
-    private store: Store<Navbar>
-  ) {
-
-    this.navType = 'st2';
+  constructor(public menuItems: MenuItems, private store: Store<Navbar>) {
+    this.navType = 'st1'; // icon menu have colors. Change to 'st2' for no colors
     this.themeLayout = 'vertical';
     this.verticalPlacement = 'left';
     this.verticalLayout = 'wide';
@@ -161,9 +159,9 @@ export class HeaderComponent implements OnInit {
     this.windowWidth = window.innerWidth;
     this.toggleOn = true;
     this.navBarTheme = 'theme1';
-    this.activeItemTheme = 'theme10';
+    this.activeItemTheme = 'theme12';
     this.pcodedSidebarPosition = 'fixed';
-    this.dropDownIcon = 'style3';
+    this.dropDownIcon = 'style1';
     this.subItemIcon = 'style7';
     this.isHeaderChecked = true;
     this.headerFixedMargin = '56px';
@@ -173,7 +171,6 @@ export class HeaderComponent implements OnInit {
     this.itemBorder = true;
 
     this.setMenuAttributes(this.windowWidth);
-
   }
 
   ngOnInit() {
@@ -184,12 +181,16 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-/******** Responsive management *******/
+  /******** Responsive management *******/
 
   onResize(event) {
     this.windowWidth = event.target.innerWidth;
     let reSizeFlag = true;
-    if (this.pcodedDeviceType === 'tablet' && this.windowWidth >= 768 && this.windowWidth <= 1024) {
+    if (
+      this.pcodedDeviceType === 'tablet' &&
+      this.windowWidth >= 768 &&
+      this.windowWidth <= 1024
+    ) {
       reSizeFlag = false;
       this.store.dispatch({ type: 'CLOSE_NAVBAR' });
     } else if (this.pcodedDeviceType === 'mobile' && this.windowWidth < 768) {
@@ -232,7 +233,6 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-
   /********* Responsive Header *********/
 
   toggleHeaderNavRight() {
@@ -241,19 +241,22 @@ export class HeaderComponent implements OnInit {
     this.chatTopPosition = this.chatTopPosition === 'nav-on' ? '112px' : '';
   }
 
-
   /************ Notifications ***********/
 
   // Live Notifications (bell)
   toggleLiveNotification() {
-    this.liveNotification = this.liveNotification === 'an-off' ? 'an-animate' : 'an-off';
-    this.liveNotificationClass = this.liveNotification === 'an-animate' ? 'active' : '';
+    this.liveNotification =
+      this.liveNotification === 'an-off' ? 'an-animate' : 'an-off';
+    this.liveNotificationClass =
+      this.liveNotification === 'an-animate' ? 'active' : '';
   }
 
   // Profil
   toggleProfileNotification() {
-    this.profileNotification = this.profileNotification === 'an-off' ? 'an-animate' : 'an-off';
-    this.profileNotificationClass = this.profileNotification === 'an-animate' ? 'active' : '';
+    this.profileNotification =
+      this.profileNotification === 'an-off' ? 'an-animate' : 'an-off';
+    this.profileNotificationClass =
+      this.profileNotification === 'an-animate' ? 'active' : '';
   }
 
   // Click Outside : close notifications
@@ -295,22 +298,28 @@ export class HeaderComponent implements OnInit {
 
   toggleOpened() {
     if (this.windowWidth < 992) {
-      this.toggleOn = this.verticalNavType === 'offcanvas' ? true : this.toggleOn;
+      this.toggleOn =
+        this.verticalNavType === 'offcanvas' ? true : this.toggleOn;
       if (this.navRight === 'nav-on') {
         this.toggleHeaderNavRight();
       }
     }
-    this.verticalNavType = this.verticalNavType === 'expanded' ? 'offcanvas' : 'expanded';
+    this.verticalNavType =
+      this.verticalNavType === 'expanded' ? 'offcanvas' : 'expanded';
     if (this.verticalNavType === 'expanded') {
       this.store.dispatch({ type: 'OPEN_NAVBAR' });
     } else {
       this.store.dispatch({ type: 'CLOSE_NAVBAR' });
-
     }
   }
 
   onClickedOutsideSidebar(e: Event) {
-    if ((this.windowWidth < 992 && this.toggleOn && this.verticalNavType !== 'offcanvas') || this.verticalEffect === 'overlay') {
+    if (
+      (this.windowWidth < 992 &&
+        this.toggleOn &&
+        this.verticalNavType !== 'offcanvas') ||
+      this.verticalEffect === 'overlay'
+    ) {
       this.toggleOn = true;
       this.verticalNavType = 'offcanvas';
       this.store.dispatch({ type: 'CLOSE_NAVBAR' });
@@ -322,5 +331,4 @@ export class HeaderComponent implements OnInit {
   setBackgroundPattern(pattern: string) {
     document.querySelector('body').setAttribute('themebg-pattern', pattern);
   }
-
 }

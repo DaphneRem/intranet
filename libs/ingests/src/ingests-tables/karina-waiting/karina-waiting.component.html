@@ -1,0 +1,4 @@
+<loader-animation *ngIf="!checkDataReady()"></loader-animation>
+<div *ngIf="checkDataReady()">
+  <custom-datatables [customdatatablesOptions]="customdatatablesOptions"></custom-datatables>
+</div>

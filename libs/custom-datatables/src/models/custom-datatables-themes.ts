@@ -3,4 +3,5 @@ export class Theme {
   firstColumnColor: any;
   headerColor: any;
   buttonViewMore: any;
+  alertColor: any;
 }
