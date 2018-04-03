@@ -204,17 +204,33 @@ $tableButton : #3b4650;
         padding: 5px;
         margin : 3px;
         width: 100%;
+        // width: initial;
         &:hover {
             background-color: $white;
             background-image: none;
             border-color: $tableButton;
             color :$tableButton;
         }
+        &:active {
+            background-color: $white;
+            background-image: none;
+            border-color: $tableButton;
+            color :$tableButton;
+        }
+        &:focus {
+            background-color: $white;
+            background-image: none;
+            border-color: $tableButton;
+            color :$tableButton;
+        }
         &.buttons-columnVisibility {
+            background-color: #ffffff;
+            color: $tableButton;
             &.active {
                 background-image : none;
                 background-color: $tableButton;
                 border: 1px solid $white;
+                color: #ffffff;
                 padding: 5px;
                 cursor : pointer;
                 transition: all ease-in 0.3s;
@@ -231,12 +247,43 @@ $tableButton : #3b4650;
         }
     }
     div.dt-button-collection {
-        margin-top: -105px; 
+        // margin-top: -45px;
+        margin-top: -250px; 
         display: inline-block;
         width: auto;
+        // display: flex;
+        // width: inherit;
         max-width: 100vw;
     }
+    div.dt-button-collection button.dt-button.active:not(.disabled) {
+        background-color: $white;
+        background-image: none;
+        border-color: $tableButton;
+        color :$tableButton;
+        &.buttons-columnVisibility {
+            background-color: #ffffff;
+            color: $tableButton;
+            &.active {
+                background-image : none;
+                background-color: $tableButton;
+                border: 1px solid $tableButton;
+                color: #ffffff;
+                padding: 5px;
+                cursor : pointer;
+                transition: all ease-in 0.3s;
+                border-radius: 2px;
+                font-size: 15px;
+                &:hover {
+                    background-color: $white;
+                    background-image: none;
+                    border-color: $tableButton;
+                    color :$tableButton;
+                }
+            }
+        }
+    }
 }
+
 
 
 /deep/ .dataTables_wrapper .dataTables_info {
@@ -249,14 +296,15 @@ $tableButton : #3b4650;
 
     /deep/ .dataTables_wrapper .dt-buttons {
         .dt-button {
+            width: 100%;
             &.buttons-columnVisibility {
                 width : 140px;
             }
         }
         div.dt-button-collection {
-            margin-top: 0; 
-            display: block;
-            width : 150px;
+            margin-top: -330px; 
+            display: inline-block;
+            width: auto;
         }
     }
 
