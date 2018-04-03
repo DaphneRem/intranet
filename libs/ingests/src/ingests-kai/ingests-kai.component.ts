@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IngestsKaiComponent implements OnInit {
   public link = '/';
-  public daysTableView = 2;
+  public daysTableView = 3;
   public headerTableLinkExist = false;
   public goBack = true;
 

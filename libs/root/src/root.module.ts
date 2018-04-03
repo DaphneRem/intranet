@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
+// external imports
 import { ClickOutsideModule } from 'ng-click-outside';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
@@ -34,9 +35,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     BrowserAnimationsModule,
     ClickOutsideModule,
     CommonModule,
+    HttpClientModule,
     NgbModule.forRoot(),
     PerfectScrollbarModule,
-    HttpClientModule,
     RouterModule,
     StoreModule.forFeature('navbar', navbarReducer, {
       initialState: navbarInitialState

@@ -8,42 +8,79 @@ import {
   Validators
 } from '@angular/forms';
 import swal from 'sweetalert2';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { CustomDatatablesOptions } from '@ab/custom-datatables';
+
 
 @Component({
   selector: 'diffusions-dates-table',
   templateUrl: './diffusions-dates-table.component.html',
-  styleUrls: ['./diffusions-dates-table.component.scss']
+  styleUrls: ['./diffusions-dates-table.component.scss'],
+  providers: [
+    CustomDatatablesOptions
+  ]
 })
+
 export class DiffusionsDatesTableComponent implements OnInit {
-  public dtOptions: DataTables.Settings = {};
-  public diffdatas: any = [];
-  public chanelsList: any = [];
-  public datasForm: any = { channels: [], type: 'Grille' };
+
+  public chanelsList: any = []; // liste des chaines formulaire de recherche
+  public chanelsSearchList: any = []; // liste résultat recherche programme par nom
+  public datasForm: any = { channels: [], type: 'Grille' }; // objet envoyé par le formulaire pour recherche
   public dropdownSettings = {};
-  public submitted = 0; // 0 = pas soumis / 1 = Soumise et retour erreur / 2 = soumis sans erreur detectées avant envoi.
+  public totalNbrHours = '0';
+  public myForm: FormGroup; // objet formulaire utilisé pour le selecteur de dates
 
-  public jsonResults = {};
-  public nbrHours = '0';
+  public currentQuery: any; // variable utilisée pour lancer la requette de recherche et pour pouvoir la tuer quand on annule
+  public errorMessageNumProgram: string; // variable contenant les différents messages d'erreur
+  public validProgramNumber = false; // variable pour valider les différentes étapes de vérification des champs de formulaire
 
-  public myForm: FormGroup;
-  public form: FormGroup;
+  // dataloaded >>
+  // 0 = initialisation
+  // 1 = requette soumise
+  // 2 = data chargée et ok
+  // 3 = erreur de saisie formulaire
 
-  public dataloading = false;
-  public formLoading = false;
+  public dataloaded = 0;
+  public formLoaded = false;
 
-  public myDateRangePickerOptions: IMyDrpOptions = {
-    dateFormat: 'dd.mm.yyyy',
-    width: '100%'
-  };
 
   constructor(
     private diffService: DatesDiffusionsService,
     private formBuilder: FormBuilder
   ) {}
 
-  // les modales
 
-  modalMessage(title, message) {
+  // initialisation des parametres du composant taleau
+  public customdatatablesOptions: CustomDatatablesOptions = {
+    tableTitle: 'Dates de diffusions',
+    data: [],
+    headerTableLinkExist: false,
+    headerTableLink: '',
+    customColumn: false,
+    paging: true,
+    search: true,
+    rowsMax: 20,
+    lenghtMenu: [5, 10, 15],
+    theme: 'blue theme',
+    renderOption: false,
+    buttons: {
+      buttons: true,
+      allButtons: true,
+      colvisButtonExiste: true,
+      copyButtonExiste: true,
+      printButtonExiste: true,
+      excelButtonExiste: true
+    }
+  };
+  // initialisation des parametre du selecteur de dates
+  public myDateRangePickerOptions: IMyDrpOptions = {
+    dateFormat: 'dd.mm.yyyy',
+    width: '100%'
+  };
+
+  // fonction d'appel des modales de messages d'alertes.
+  public modalMessage(title, message) {
     swal({
       title: title,
       text: message
@@ -51,8 +88,7 @@ export class DiffusionsDatesTableComponent implements OnInit {
   }
 
   //  GESTION DE LA SELECTION DES DATES
-
-  onDateRangeChanged(event: IMyDateRangeModel) {
+  public onDateRangeChanged(event: IMyDateRangeModel) {
     const date1A: string =
       event.endDate.year + '-' + event.endDate.month + '-' + event.endDate.day;
     const date2A: string =
@@ -65,18 +101,20 @@ export class DiffusionsDatesTableComponent implements OnInit {
     const date2 = new Date(date2A).getTime();
     const time = date1 - date2; // msec
     const hoursDiff = time / (3600 * 1000);
-    if (hoursDiff > 8760) {
+    // ajout de la condition pour limitée la periode séléctionnée à 2 ans;
+    if (hoursDiff > 17520) {
+      // si > à 2 ans on affiche un message et on vide la zone de saisie de dates;
       this.clearDateRange();
       this.modalMessage(
         '',
-        'Vous ne pouvez pas définir une période suppérieure à 1 an.'
+        'Vous ne pouvez pas définir une période suppérieure à 2 ans.'
       );
       this.clearDateRange();
     }
   }
 
-  setDateRange(): void {
-    //  Set date range (today) using the patchValue function
+  // récupération des dates choisies
+  public setDateRange(): void {
     const date = new Date();
     this.myForm.patchValue({
       myDateRange: {
@@ -94,8 +132,8 @@ export class DiffusionsDatesTableComponent implements OnInit {
     });
   }
 
-  clearDateRange() {
-    //  Clear the date range using the patchValue function
+  // supprimer contenu saisie dans le selecteur de dates
+  public clearDateRange() {
     this.myForm.patchValue({ myDateRange: '' });
     // ici exceptionnellement je cible le bouton dans le dom qui est généré dynamiquement par le composant pour vider l'input de date
     setTimeout(function() {
@@ -103,255 +141,209 @@ export class DiffusionsDatesTableComponent implements OnInit {
     }, '1000');
   }
 
-  //  TABLEAU RESULTATS DIFFS
+  public searchValidator() {
 
-  searchSubmit() {
-    // on active le mode chargement et on verifie les donnees saisies.
-    this.dataloading = true;
-    if (
-      this.datasForm.programName &&
-      this.datasForm.type &&
-      this.datasForm.channels.length > 0
-    ) {
-      if (this.datasForm.datesRange) {
-        if (this.datasForm.datesRange.formatted) {
-          this.datasForm.datesRange = {
-            date1: this.datasForm.datesRange.beginJsDate,
-            date2: this.datasForm.datesRange.endJsDate
-          };
-        }
-        //  envoyer recherche au serveur si parametres formulaire ok
-        this.submitted = 2;
+      // regroupement des différentes étapes de validation du formulaire;
 
-        // JSON d'exemple qui marche :
-        // this.datasForm= {'channels': [ { 'id': 0, 'itemName': 'LIBRE' }, { 'id': 1, 'itemName': 'AB 1' } ], 'type': 'Grille', 'datesRange': { 'date1': '2017-12-01T23:00:00.000Z', 'date2': '2017-12-15T23:00:00.000Z' }, 'programName': 'Recherche Texte' };
+      this.validProgramNumber = this.numProgramValidator();
 
-        const bodyString = JSON.stringify(this.datasForm).replace(/"/g, "'");
-        // console.log('bodyString  > ' + bodyString);
+      if (this.validProgramNumber === true) {
 
-        this.diffService
-          .getDiffusionsDates(this.datasForm)
-          .subscribe((data: any) => {
-            // on vérifie si le résultat n'est pas VIDE
+          this.diffService.checkProgramNumber(this.datasForm.programName)
+          .subscribe(data => {// on test le numéro de programme saisie dans la BDD.
+            this.validProgramNumber = data;
+            if (data === false) {
 
-            if (data && data.length > 0 && JSON.stringify(data) !== '{}') {
-              this.diffdatas = data;
-              this.diffdatas = JSON.parse(this.diffdatas);
-              this.jsonResults = this.diffdatas;
-              this.tableInit(this.diffdatas);
-
-              // calcul de la durée totale des éléments de la liste
-              try {
-                const frameRat = '30'; // fps
-                let secondes = 0;
-                for (let i = 0; i < this.diffdatas.length; i++) {
-                  const secs = this.convertTimeCodeToSeconds(
-                    this.diffdatas[i].Duree,
-                    frameRat
+                this.errorMessageNumProgram = 'Le numéro de programme n\'existe pas ';
+                this.dataloaded = 3;
+                this.modalMessage(
+                  '',
+                  this.errorMessageNumProgram
                   );
-                  secondes = Number(secondes) + Number(secs);
-                  // countHours+=data[i].duree;
-                }
-                this.nbrHours = this.convertTime(secondes, frameRat);
-              } catch (err) {
-                console.log('Error calcul nbr heures totales ' + err);
+              } else {
+
+              // si le numéro de programme est validé on enchaine sur les autres vérifications de formulaire
+              const validationForm = this.formInputsTest();
+              if (validationForm === false) {
+
+                  this.dataloaded = 3;
+                  this.modalMessage(
+                    '',
+                    'Il y\'a une erreur dans vos parametres de recherche'
+                    );
+                } else {
+                    this.dataloaded = 1;
+                    this.searchSubmit('normal');
+                  }
               }
+            });
+
+          } else {
+            this.dataloaded = 3;
+            this.modalMessage(
+              '',
+              this.errorMessageNumProgram
+              );
+          }
+  }
+
+  //  TABLEAU RESULTATS DIFFS
+  public searchSubmit(mode) {
+        // JSON d'exemple qui marche :
+        if(mode === 'test') {
+          this.datasForm= { "channels": [ { "id": 1, "itemName": "AB 1" }, { "id": 19, "itemName": "AB 3" } ], "type": "Conducteur", "programName": "2015-00953", "datesRange": { "date1": "2017-12-31T23:00:00.000Z", "date2": "2018-03-30T22:00:00.000Z" } };
+       }
+      // on remplace les double quotes par des simples quotes
+      const bodyString = JSON.stringify(this.datasForm).replace(/"/g, "'");
+
+        this.currentQuery = this.diffService
+          .getDiffusionsDates(this.datasForm)
+          .subscribe(data => {
+            // on vérifie si le résultat n'est pas VIDE
+            const dataJson = JSON.stringify(data);
+            if (data && data.length > 0
+              && dataJson !== '{}'
+              && dataJson !== '""'
+              && dataJson !== '[]') {
+              this.customdatatablesOptions.data = data;
+              // calcul de la durée totale des éléments de la liste
+              this.totalNbrHours = this.diffService.calculateTotalHours(data);
+              this.dataloaded = 2;
             } else {
               this.modalMessage('', 'Aucuns résultats');
+              this.dataloaded = 3;
             }
-            this.submitted = 0;
-            this.dataloading = false;
           });
+  }
+
+  // validation des différents champs du formulaire;
+  public formInputsTest() {
+
+    if ( this.datasForm.type &&
+          this.datasForm.channels.length > 0
+        ) {
+          if (this.datasForm.datesRange) {
+            if (this.datasForm.datesRange.formatted) {
+              // on re formate la date pour qu'elle corresponde aux informations attendues par le serveur
+                this.datasForm.datesRange = {
+                  date1: this.datasForm.datesRange.beginJsDate,
+                  date2: this.datasForm.datesRange.endJsDate
+                };
+              }
+              return true;
       } else {
-        this.submitted = 1;
-        this.modalMessage(
-          '',
-          'Il y\'a une erreur dans vos parametres de recherche'
-        );
+        return false;
       }
     } else {
-      this.submitted = 1;
-      this.modalMessage(
-        '',
-        'Il y\'a une erreur dans vos parametres de recherche.'
-      );
+      return false;
     }
   }
 
-  clearSearch() {
-    this.datasForm = { channels: [], type: 'Grille' };
-    this.clearDateRange();
-    this.submitted = 0;
-    this.jsonResults = {};
-    this.nbrHours = '0';
-  }
-  searchFormInit() {
-    this.formLoading = true;
-    // chargement de la liste des chaines dans l'input de selection
-    this.diffService.getChanelsDiffusions().subscribe(data => {
-      this.chanelsList = data;
-      this.chanelsList = JSON.parse(this.chanelsList);
-
-      // créer un nouvel objet JSON au FORMAT compatible avec le module multi select installé
-      const channels = JSON.parse(data);
-      const newList = [];
-      for (let i = 0; i < channels.length; i++) {
-        const newItem = { id: channels[i].Code, itemName: channels[i].Libelle };
-        newList.push(newItem);
-      }
-      this.chanelsList = newList;
-
-      this.dropdownSettings = {
-        singleSelection: false,
-        text: 'Selection de chaines',
-        selectAllText: 'Tous selectionner',
-        unSelectAllText: 'Désélectionner All',
-        enableSearchFilter: false,
-        classes: 'myclass custom-class'
-      };
-      this.formLoading = false;
-    });
+  public displayErrorMessage(validator) {
+    if (validator === true) {
+      this.dataloaded = 1;
+     } else {
+        this.modalMessage(
+         '',
+         'Il y\'a une erreur dans vos parametres de recherche'
+        );
+       this.dataloaded = 3;
+     }
   }
 
-  tableInit(datas) {
-    this.dtOptions = {
-      data: datas,
-      columns: [
-        {
-          title: 'TypeProduit',
-          data: 'TypeProduit'
-        },
-        {
-          title: 'Chaine',
-          data: 'Chaine'
-        },
-        {
-          title: 'datediff',
-          data: 'datediff'
-        },
-        {
-          title: 'NumProgram',
-          data: 'NumProgram'
-        },
-        {
-          title: 'NumEpisode',
-          data: 'NumEpisode'
-        },
-        {
-          title: 'Duree',
-          data: 'Duree'
-        },
-        {
-          title: 'Support',
-          data: 'Support'
-        },
-        {
-          title: 'segment',
-          data: 'segment'
-        },
-        {
-          title: 'ModFrais',
-          data: 'ModFrais'
-        },
-        {
-          title: 'GenrePrin',
-          data: 'GenrePrin'
-        },
-        {
-          title: 'GenreTertiare',
-          data: 'GenreTertiare'
-        },
-        {
-          title: 'TitreLongFran',
-          data: 'TitreLongFran'
-        },
-        {
-          title: 'TitreEpisFra',
-          data: 'TitreEpisFra'
-        },
-        {
-          title: 'producteur',
-          data: 'producteur'
-        },
-        {
-          title: 'distributeur',
-          data: 'distributeur'
-        },
-        {
-          title: 'realisateur',
-          data: 'realisateur'
-        },
-        {
-          title: 'AnneeProd',
-          data: 'AnneeProd'
-        },
-        {
-          title: 'Europe',
-          data: 'Europe'
-        },
-        {
-          title: 'Moralite',
-          data: 'Moralite'
-        },
-        {
-          title: 'HD_Natif',
-          data: 'HD_Natif'
-        },
-        {
-          title: 'LibQualiteSup',
-          data: 'LibQualiteSup'
-        },
-        {
-          title: 'id_grille',
-          data: 'id_grille'
-        },
-        {
-          title: 'DureeSec',
-          data: 'DureeSec'
-        },
-        {
-          title: 'OrigineTable',
-          data: 'OrigineTable'
+  // validation de la saisie du numéro de programme
+  //
+  public numProgramValidator() {
+    this.dataloaded = 1;
+    // on remplace les espaces pour éviter les bugs et erreurs de saisie;
+    if (this.datasForm.programName && this.datasForm.programName.length > 0 ) {
+      this.datasForm.programName = this.datasForm.programName.replace(/\s/g, '');
+    }
+
+    const numProgram = this.datasForm.programName;
+    if (numProgram === '' || numProgram === undefined ) {
+      this.errorMessageNumProgram = 'Champ vide';
+      return false;
+    } else {
+      if (numProgram.indexOf('-') === -1) {
+        this.errorMessageNumProgram = 'Le numéro de programme doit contenir un tiret';
+        return false;
+      } else {
+        const numPrognam_date = numProgram.split('-')[0];
+        if (numPrognam_date < '1996') {
+          this.errorMessageNumProgram = 'La date ne peut pas etre inférieur à 1996';
+          return false;
+        } else {
+          return true;
         }
-      ]
-    };
+      }
+    }
   }
+  // choisir un nom de programme dans la liste de résultats et récupérer le numéro de programme
+  public selectProgName(progNumber) {
+    this.datasForm.programName = progNumber;
+    this.chanelsSearchList = [];
+  }
+  // detecter si c'est du texte ou dés numéros qui sont saisis.
+  // si c'est du texte : on cherche la liste des programmes correspondants a la saisie.
+  // su c'est des chiffres : on vérifie que le numéro de programme est valide;
+  public onSearchChange(searchValue: any) {
+    if (!isNaN(searchValue) || searchValue.indexOf('-') !== -1) {
+      this.chanelsSearchList = [];
+    } else {
+      if (searchValue.length > 5 ) {
+        this.diffService.searchProgNumbersByName(searchValue).subscribe(data => { this.chanelsSearchList = data; });
+      }
+    }
+  }
+
+  // réinitialiser le formulaire
+  public clearSearch() {
+    this.datasForm = { channels: [], type: 'Grille' };
+    this.dataloaded = 0;
+    this.clearDateRange();
+    this.totalNbrHours = '0';
+    this.currentQuery.unsubscribe();
+  }
+
+  public searchFormInit() {
+    this.formLoaded = false;
+
+    try {// ajout d'un try pour régler un probleme de test unitaire qui plantait au lancement de cette fonction d'initialisation
+
+      // chargement de la liste des chaines dans l'input de selection
+      this.diffService.getChanelsDiffusions().subscribe(data => {
+        // créer un nouvel objet JSON au FORMAT compatible avec le module multi select installé
+        const channels = data;
+        const newList = [];
+        for (let i = 0; i < channels.length; i++) {
+          const newItem = { id: channels[i].code, itemName: channels[i].libelle };
+          newList.push(newItem);
+        }
+        this.chanelsList = newList;
+        this.dropdownSettings = {
+          singleSelection: false,
+          text: 'Selection de chaines',
+          selectAllText: 'Tous selectionner',
+          unSelectAllText: 'Désélectionner All',
+          enableSearchFilter: false,
+          classes: 'myclass custom-class'
+        };
+        this.formLoaded = true;
+      });
+    } catch (err) {}
+  }
+ // vider la zone de recherche de programme quand click sur la croix affichée dans le cas ou le numéro de programme est faux;
+  public clearnInputSearch() {
+    this.datasForm.programName = '';
+    this.dataloaded = 0;
+ }
 
   ngOnInit() {
     this.myForm = this.formBuilder.group({
       myDateRange: ['', Validators.required]
     });
     this.searchFormInit();
-  }
-
-  convertTimeCodeToSeconds(timeString, framerate) {
-    const timeArray = timeString.split(':');
-    const hours = timeArray[0] * 60 * 60;
-    const minutes = timeArray[1] * 60;
-    const seconds = timeArray[2];
-    const frames = timeArray[3] * (1 / framerate);
-    const str =
-      'h:' + hours + '\nm:' + minutes + '\ns:' + seconds + '\f:' + frames;
-
-    const totalTime = hours + minutes + seconds + frames;
-    return totalTime;
-  }
-
-  convertTimeToFrames(timeString, framerate) {
-    const secs = this.convertTimeCodeToSeconds(timeString, framerate);
-    return secs * framerate;
-  }
-  convertTime(frames, fps) {
-    fps = typeof fps !== 'undefined' ? fps : 30;
-    const pad = function(input) {
-        return input < 10 ? '0' + input : input;
-      },
-      seconds = typeof frames !== 'undefined' ? frames / fps : 0;
-    return [
-      pad(Math.floor(seconds / 3600)),
-      pad(Math.floor((seconds % 3600) / 60)),
-      pad(Math.floor(seconds % 60)),
-      pad(Math.floor(frames % fps))
-    ].join(':');
+    // this.diffService.searchProgNumbersByName('friends').subscribe(data => { this.chanelsSearchList = data;});
   }
 }

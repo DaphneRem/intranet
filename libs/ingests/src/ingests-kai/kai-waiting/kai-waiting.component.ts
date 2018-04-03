@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { KaiWaitingService } from '../services/kai-waiting.service';
 import { KaiWaiting } from '../models/kai-waiting';
 
@@ -18,11 +19,9 @@ export class KaiWaitingComponent implements OnInit {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
 
-public render: boolean;
-
+  public render: boolean;
   public dataReady = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
-
     tableTitle: 'en attente Kai',
     data: [],
     headerTableLinkExist: false,
@@ -30,7 +29,7 @@ public render: boolean;
     customColumn: false,
     paging: true,
     search: true,
-    rowsMax: 5,
+    rowsMax: 10,
     lenghtMenu: [5, 10, 15],
     theme : 'red theme',
     renderOption : true,
@@ -47,7 +46,7 @@ public render: boolean;
   constructor(private kaiWaitingService: KaiWaitingService) {}
 
   ngOnInit() {
-    this.getIngestsInProgress(this.daysTableView);
+    this.getIngestsInProgress();
     this.checkDaysViews();
     this.checkLinks();
   }
@@ -62,7 +61,6 @@ public render: boolean;
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
     if (this.headerTableLinkExist) {
       this.customdatatablesOptions.headerTableLink = this.headerTableLink;
-      console.log(this.headerTableLink);
     }
   }
 
@@ -79,11 +77,11 @@ public render: boolean;
     return this.dataReady;
   }
 
-  getIngestsInProgress(number) {
-    this.kaiWaitingService.getIngestsInProgress(number).subscribe(data => {
+  getIngestsInProgress() {
+    this.kaiWaitingService.getIngestsInProgress().subscribe(data => {
+      console.log(data);
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
-      console.log(this.customdatatablesOptions.data);
     });
   }
 }

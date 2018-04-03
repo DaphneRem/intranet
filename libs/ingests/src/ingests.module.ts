@@ -1,49 +1,52 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
+// lib Imports
+import { CustomDatatablesModule } from '@ab/custom-datatables';
+import { LoadersModule } from '@ab/loaders';
+import { ScrollToTopModule } from '@ab/scroll-to-top';
 import { SubHeaderModule } from '@ab/sub-header';
 import { WidgetsModule } from '@ab/widgets';
-import { DataTablesModule } from 'angular-datatables';
 
-import { CustomDatatablesModule } from '@ab/custom-datatables';
+// pages imports
+import { IngestsCompletedDetailsComponent } from './ingests-pages/ingests-completed-details/ingests-completed-details.component';
+import { IngestsInProgressDetailsComponent } from './ingests-pages/ingests-in-progress-details/ingests-in-progress-details.component';
+import { IngestsPurgedComponent } from './ingests-tables/ingests-purged/ingests-purged.component';
+import { IngestsTablesViewComponent } from './ingests-pages/ingests-tables-view/ingests-tables-view.component';
+import { IngestsWidgetsViewComponent } from './ingests-pages/ingests-widgets-view/ingests-widgets-view.component';
 
-import { IngestsWidgetsViewComponent } from './ingests-widgets-view/ingests-widgets-view.component';
-import { IngestsTablesViewComponent } from './ingests-tables-view/ingests-tables-view.component';
-import { IngestsPurgedComponent } from './ingests-purged/ingests-purged.component';
-
-import { IngestsInProgressComponent } from './ingests-in-progress/ingests-in-progress.component';
-import { IngestsInProgressDetailsComponent } from './ingests-in-progress-details/ingests-in-progress-details.component';
-import { IngestsCompletedComponent } from './ingests-completed/ingests-completed.component';
-import { IngestsCompletedDetailsComponent } from './ingests-completed-details/ingests-completed-details.component';
-import { KaiWaitingComponent } from './ingests-kai/kai-waiting/kai-waiting.component';
+// components imports
+import { IngestsCompletedComponent } from './ingests-tables/ingests-completed/ingests-completed.component';
+import { IngestsInProgressComponent } from './ingests-tables/ingests-in-progress/ingests-in-progress.component';
 import { IngestsKaiComponent } from './ingests-kai/ingests-kai.component';
 import { KaiEchecComponent } from './ingests-kai/kai-echec/kai-echec.component';
+import { KaiWaitingComponent } from './ingests-kai/kai-waiting/kai-waiting.component';
+import { KarinaWaitingComponent } from './ingests-tables/karina-waiting/karina-waiting.component';
+import { KarinaWaitingDetailsComponent } from './ingests-pages/karina-waiting-details/karina-waiting-details.component';
 
 @NgModule({
   imports: [
     CommonModule,
     CustomDatatablesModule,
+    LoadersModule,
+    ScrollToTopModule,
     SubHeaderModule,
-    WidgetsModule,
-    DataTablesModule
+    WidgetsModule
   ],
   declarations: [
+    IngestsCompletedComponent,
     IngestsInProgressComponent,
-    IngestsWidgetsViewComponent,
-    IngestsTablesViewComponent,
+    IngestsKaiComponent,
+    IngestsPurgedComponent,
+    KaiEchecComponent,
+    KaiWaitingComponent,
+    IngestsCompletedDetailsComponent,
     IngestsInProgressDetailsComponent,
     IngestsPurgedComponent,
-    IngestsCompletedComponent,
-    IngestsCompletedDetailsComponent,
-    KaiWaitingComponent,
-    IngestsKaiComponent,
-    KaiEchecComponent
-  ],
-  exports : [
+    IngestsTablesViewComponent,
     IngestsWidgetsViewComponent,
-    IngestsTablesViewComponent
+    KarinaWaitingComponent,
+    KarinaWaitingDetailsComponent,
   ]
 })
-
-export class IngestsModule {
-}
+export class IngestsModule {}

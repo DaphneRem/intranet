@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 
 import { DiffusionsDatesTableComponent} from 'libs/diffusions-dates/src/diffusions-dates-table/diffusions-dates-table.component';
 
@@ -14,7 +14,7 @@ const routes: Routes = [
       {
         path: '',
         component: DiffusionsDatesTableComponent,
-        data: { title : 'Dates Diffusions' },
+        data: { title : 'Dates Diffusions' }
       },
       {
         path: 'diffusions-dates',
@@ -23,12 +23,12 @@ const routes: Routes = [
       }
     ]
   }
-
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}]
 })
 
 export class AppRoutingModule { }

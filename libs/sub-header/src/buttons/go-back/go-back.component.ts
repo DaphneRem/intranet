@@ -6,13 +6,14 @@ import { Location } from '@angular/common';
   templateUrl: './go-back.component.html',
   styleUrls: [
     './go-back.component.scss',
-        '../../../../../assets/icon/icofont/css/icofont.scss'
-
+    '../../../../../assets/icon/icofont/css/icofont.scss'
   ]
 })
 export class GoBackComponent implements OnInit {
 
-  constructor(private location: Location) { }
+  constructor(
+    private location: Location
+  ) {}
 
   ngOnInit() {
   }
@@ -20,6 +21,5 @@ export class GoBackComponent implements OnInit {
   goBack() {
     this.location.back();
   }
-
 
 }

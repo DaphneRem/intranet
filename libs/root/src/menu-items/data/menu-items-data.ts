@@ -1,4 +1,18 @@
-const distUrl = 'http://127.0.0.1/edsa-Angular/ng-nx-project/dist/apps/';
+
+// TODO : ajouter url définitive de prod (importer à partir du fichier privates-url.ts)
+
+import { rootUrl_DiffDates, rootUrl} from '../../../../../.privates-url';
+
+const distUrl: String = '';
+const distUrl_DiffDates: String = '';
+
+if (document.location.host.indexOf('localhost') !== -1) {
+  this.distUrl = document.location.host;
+  this.distUrl_DiffDates = document.location.host;
+} else {
+  this.distUrl = '/#' + rootUrl;
+  this.distUrl_DiffDates = rootUrl_DiffDates;
+}
 
 export const MENUITEMS = [
     {
@@ -11,42 +25,48 @@ export const MENUITEMS = [
                 name: 'Technique',
                 type: 'sub',
                 icon: 'icofont icofont-repair',
+                iconColor: '#39ADB5',
                 children: [
+                    {
+                        state: 'publicité',
+                        name: 'Publicité',
+                        route: `${distUrl}/publicity`
+                    },
                     {
                         state: 'numerisation',
                         name: 'Numérisation',
-                        route: 'ingests'
+                        route: `${distUrl}/ingests`
                     },
                     {
                         state: 'detail-fichier',
                         name: 'Détail Fichier',
-                        route: 'detail-file'
-
+                        route: `${distUrl}/detail-file`,
+                        tooltipText : 'Trace Segment'
                     },
                     {
                         state: 'fichiers-purges',
                         name: 'Fichiers Purgés',
-                        route: 'purged'
+                        route: `${distUrl}/purged`
                     }
                 ]
             }
         ]
     },
     {
-        label: 'Dates diffusions',
-        url: `${this.distUrl}diffusions-dates/`,
+        label: 'Dates de diffusions',
+        url: `${this.distUrl_DiffDates}diffusions-dates/`,
         main: [
             {
-                state: 'dates diffusions',
-                short_label: 'm',
-                name: 'DatesDiffusions',
+                state: 'Dates de diffusions',
+                short_label: 'd',
+                name: 'Dates de diffusions',
                 type: 'sub',
                 icon: 'icon-home',
                 children: [
                     {
-                        state: 'dates-de-diffusions',
-                        name: 'Dates de diffusions',
-                        route: 'diffusions-dates'
+                      state: 'diffusions-dates',
+                      name: 'Dates de diffusions',
+                      route: `${distUrl_DiffDates}/diffusions-dates`
                     }
                 ]
             }

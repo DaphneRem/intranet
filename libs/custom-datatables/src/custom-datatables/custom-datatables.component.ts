@@ -1,4 +1,7 @@
 import { AfterViewInit, Component, OnInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+
+// imports external libs
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs/Subject';
 
@@ -16,31 +19,33 @@ import { CustomThemesService } from '../services/custom-datatables-themes.servic
 })
 export class CustomDatatablesComponent implements OnInit, AfterViewInit {
 
+  @Input() customdatatablesOptions: CustomDatatablesOptions;
+
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
   public render: boolean;
 
-
-
   @Output()
   change = new EventEmitter();
 
-
-  @Input() customdatatablesOptions: CustomDatatablesOptions;
-
-
+  // datatable const
   public renderOption: boolean;
-  public finalData: any = [];
   public dtOptions: any = {};
 
+  // my const
   public idSelectedData: string;
   public themeName: string;
   public theme: any;
 
+  public finalData: any = [];
   public data: any = [] ;
   public headerColor: string;
   public firstColumnColor: string;
+  public alertColor;
+  public buttonViewMore;
+  public buttonViewHover;
+  public hovered = false;
   public paging: boolean;
   public search: boolean;
   public tableTitle: string;
@@ -48,29 +53,37 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   public headerTableLink: string;
   public buttons: any;
 
-  // public colvisButton = 'colvis';
-  // public copyButton = 'copy';
-  // public printButton = 'print';
-  // public excelButton = 'excel';
+  public trTagName;
 
+  // custom the text of the buttons
   public colvisButton =  {
             extend: 'colvis',
-            text: 'Colonnes'
+            text: 'Gérer les Colonnes'
         };
   public copyButton = {
             extend: 'copy',
-            text: 'Copier'
+            text: 'Tout copier'
         };
   public printButton =  {
             extend: 'print',
             text: 'Imprimer'
         };
   public excelButton =  {
-            extend: 'excel',
-            text: 'Excel'
+            extend: 'csv',
+            text: 'Export csv',
+            fieldSeparator: ','
         };
+  // public excelTestButton =  {
+  //           extend: 'excel',
+  //           text: 'Export excel',
+  //       };
+  public pageLengthButton =  {
+            extend: 'pageLength',
+        };
+  // public createRowButton =         { extend: 'create',     editor: myEditor };
 
 
+  // custom datatable language
   public frenchLanguage = {
       processing: 'Traitement en cours...',
       search: 'Rechercher&nbsp;:',
@@ -87,17 +100,32 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
           previous: 'Pr&eacute;c&eacute;dent',
           next: 'Suivant',
           last: 'Dernier'
-      }
+      },
+      buttons: {
+            pageLength: {
+                _: 'Afficher %d éléments',
+                '-1': 'Tout afficher'
+            },
+            copyTitle: 'Ajouté au presse-papiers',
+            copySuccess: {
+              _: '%d lignes copiées',
+              1: '1 ligne copiée'
+            }
+        }
   };
 
-  constructor( private customThemesService: CustomThemesService ) {}
+  constructor(
+    private customThemesService: CustomThemesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.displayDatatables();
+    this.displayDatatables(); // display datatables if data.length
     this.displayCustomOptions();
     this.displayTheme(this.themeName);
   }
 
+  // TODO : voir https://stackoverflow.com/questions/37966718/datatables-export-to-excel-button-is-not-showing pour les options des boutons
 
   ngAfterViewInit(): void {
     this.dtTrigger.next();
@@ -120,10 +148,10 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
 
   displayDatatables() {
     const options = this.customdatatablesOptions;
-    if (options.data.length) {
+    if (options.data.length) { // if data != 0 or data != []
       this.dtOptions = {
         data: options.data,
-        columns: this.dispplayColumns(),
+        columns: this.dispplayColumns(), // check if customColumn exist
         scrollX: true,
         paging: options.paging,
         searching: options.search,
@@ -133,18 +161,18 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         lengthMenu : options.lenghtMenu,
         dom: 'Bfrtip',
         buttons: [],
-        rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        rowCallback: (row: Node, data: any[] | Object, index: number) => { // datatable function to display action on double click
             const self = this;
             $('td', row).unbind('click');
-            $('td', row).bind('click', () => {
-              self.someClickHandler(data);
+            $('td', row).bind('dblclick', () => {
+              self.someClickHandler(data); // go to file-detail with autoPath when double click on row
             });
           return row;
         }
       };
-      console.log(options.data);
       this.displayButtons();
       console.log(this.dtOptions.buttons);
+
     }
   }
 
@@ -152,25 +180,25 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
     const options = this.customdatatablesOptions;
     if (options.buttons.buttons) {
       if (options.buttons.allButtons) {
-                    console.log('ok1');
-
+        console.log('allButtons');
         return this.dtOptions.buttons
-            .push(
-              {
-                extend: 'collection',
-                text: 'Options',
-                buttons: [
-                  this.colvisButton,
-                  this.copyButton,
-                  this.printButton,
-                  this.excelButton
-                ]
-              }
-            );
+          .push(
+            {
+              extend: 'collection',
+              text: 'Options',
+              buttons: [
+                // this.excelTestButton,
+                this.pageLengthButton,
+                this.colvisButton,
+                this.copyButton,
+                this.printButton,
+                this.excelButton,
+              ]
+            }
+          );
       } else {
         this.buttons.map(item => {
           if (item.exist) {
-            console.log('ok');
             this.dtOptions.buttons
             .push(
               {
@@ -217,17 +245,25 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         ];
   }
 
+  // use service to recovers theme data which corresponds to argument
   displayTheme(customTheme) {
     this.theme = this.customThemesService.getTheme(customTheme);
     this.headerColor = this.theme.headerColor;
     this.firstColumnColor = this.theme.firstColumnColor;
+    this.alertColor = this.theme.alertColor;
+    this.buttonViewMore = this.theme.buttonViewMore;
+    this.buttonViewHover = this.theme.buttonViewHover;
   }
 
+  // go to file-detail with autoPath when double click on row
   someClickHandler(dataRow: any): void {
     this.idSelectedData = dataRow.id;
-    console.log(this.idSelectedData);
+    if (dataRow.id && (dataRow.noseg >= 0)) {
+      this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    }
   }
 
+  // adjust title of columns if customComlumn exist
   dispplayColumns() {
     if (this.customdatatablesOptions.customColumn) {
       // add custom columns

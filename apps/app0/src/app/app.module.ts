@@ -1,60 +1,63 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from '@ngrx/effects';
-// import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID, } from '@angular/core';
 import { NxModule } from '@nrwl/nx';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
 /*********** from app0 **********/
+
 // modules :
 import { AppRoutingModule } from './app-routing.module';
 
 // components :
 import { AppComponent } from './app.component';
-import { UsersListComponent } from './users-list/users-list.component';
 
 /*********** from Libs **********/
-import { CustomDatatablesModule } from '@ab/custom-datatables';
 
-import { RootModule, navbarReducer } from '@ab/root';
-import { RouterStateModule } from '@ab/router-state';
+import { CustomDatatablesModule } from '@ab/custom-datatables';
+import { ErrorPagesModule } from '@ab/error-pages';
 import { IngestsModule } from '@ab/ingests';
+import { PubModule } from '@ab/pub';
+import { RouterStateModule } from '@ab/router-state';
+import { RootModule, navbarReducer } from '@ab/root';
 import { SubHeaderModule } from '@ab/sub-header';
+import { TraceSegmentModule, lastSearchReducer } from '@ab/trace-segment';
 import { WidgetsModule } from '@ab/widgets';
 
+registerLocaleData(localeFr, 'fr');
+
 @NgModule({
-  declarations:
-  [
-    AppComponent,
-    UsersListComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     AppRoutingModule,
     BrowserModule,
     CustomDatatablesModule,
     EffectsModule.forRoot([]),
+    ErrorPagesModule,
     HttpClientModule,
+    IngestsModule,
     NxModule.forRoot(),
+    PubModule,
     RootModule,
     RouterStateModule.forRoot(),
-    IngestsModule,
-    StoreModule.forRoot({
-      navbar: navbarReducer,
-    }),
     StoreDevtoolsModule.instrument({
       maxAge: 25 // Retains last 25 states
     }),
+    StoreModule.forRoot({
+      navbar: navbarReducer,
+      lastSearch: lastSearchReducer
+    }),
     SubHeaderModule,
+    TraceSegmentModule,
     WidgetsModule
   ],
-  providers: [
-    // {
-    //   provide: LocationStrategy,
-    //   useClass: HashLocationStrategy
-    // }
-  ],
+  providers: [{ provide: LOCALE_ID, useValue: 'fr' }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

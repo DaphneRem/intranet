@@ -3,7 +3,7 @@
     <div class="f-left">
       <go-back *ngIf="goBack"></go-back>
     </div>
-    <h2 class="middle">{{subTitle | uppercase}}</h2>
+    <h2 class="middle">{{subTitle | uppercase}} {{title | uppercase}}</h2>
     <div class="f-right right-btn">
       <change-view *ngIf="changeView" [tableView]="tableView" [link]="link"></change-view>
     </div>

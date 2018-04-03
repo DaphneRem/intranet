@@ -1,0 +1,146 @@
+<div class="row">
+  <div class="card col-lg-12 col-xl-12 ">
+    <div class="large-widget ">
+      <div class="trnasiction-card">
+        <!-- <div class="card-header large-header">
+          <h5>
+            Etape en cours
+          </h5>
+          <div class="card-header-right">
+            <i class="icofont icofont-ui-settings"></i>
+          </div>
+        </div>
+        <hr> -->
+        <div class="card-block large-card text-center">
+
+          <!-- ************* Wizard view *************** -->
+          <div *ngIf="newInnerWidth > 990" class="wizard">
+            <ul class="row justify-content-center">
+              <!-- inProgress -->
+              <li class="col-lg-1 step">
+                <div *ngIf="!step.inProgress.active" class="step-round" [ngClass]="displayStepRoundClass(step.inProgress)">
+                  <i class="icofont icofont-spinner-alt-6"></i>
+                </div>
+                <!-- with tooltip if active -->
+                <div *ngIf="step.inProgress.active" class="step-round" [ngClass]="displayStepRoundClass(step.inProgress)" ngbTooltip="Fichier en cours de traitement" placement="top">
+                  <i class="icofont icofont-spinner-alt-6"></i>
+                </div>
+                <p [ngClass]="displayStepTextClass(step.inProgress)" >En cours</p>
+                <div *ngIf="step.inProgress.active" class="triangle">
+                  <div class="my-triangle"></div>
+                </div>
+              </li>
+              <!-- karina -->
+              <li class="col-lg-2 line" [ngClass]="step.karina.valid || step.karina.active ? 'success' : 'disabled'" ></li>
+              <li class="col-lg-1 step">
+                <div *ngIf="!step.karina.active" class="step-round" [ngClass]="displayStepRoundClass(step.karina)">
+                  <i class="icofont icofont-wall-clock"></i>
+                </div>
+                <!-- with tooltip if active -->
+                <div 
+                  *ngIf="step.karina.active" 
+                  class="step-round" 
+                  [ngClass]="displayStepRoundClass(step.karina)" 
+                  ngbTooltip="Fichier en attente Karina" 
+                  placement="top">
+                  <i class="icofont icofont-wall-clock"></i>
+                </div>
+                <p [ngClass]="displayStepTextClass(step.karina)">Karina</p>
+                <div *ngIf="step.karina.active" class="triangle">
+                  <div class="my-triangle"></div>
+                </div>
+              </li>
+              <!-- kai -->
+              <li class="col-lg-2 line" [ngClass]="step.kai.valid || step.kai.active ? 'success' : 'disabled'"></li>
+              <li class="col-lg-1 step">
+                <div *ngIf="!step.kai.active" class="step-round" [ngClass]="displayStepRoundClass(step.kai)">
+                  <i class="icofont icofont-wall-clock"></i>
+                </div>
+                <!-- with tooltip if active -->
+                <div 
+                  *ngIf="step.kai.active" 
+                  class="step-round" 
+                  [ngClass]="displayStepRoundClass(step.kai)" 
+                  ngbTooltip="Fichier en attente Kai" 
+                  placement="top">
+                  <i class="icofont icofont-wall-clock"></i>
+                </div>
+                <p [ngClass]="displayStepTextClass(step.kai)">Kai</p>
+                <div *ngIf="step.kai.active" class="triangle">
+                  <div class="my-triangle"></div>
+                </div>
+              </li>
+              <!-- completed -->
+              <li class="col-lg-2 line" [ngClass]="step.completed.valid || step.completed.active ? 'success' : 'disabled'"></li>
+              <li class="col-lg-1 step">
+                <div *ngIf="!step.completed.active" class="step-round" [ngClass]="displayStepRoundClass(step.completed)">
+                  <i class="icofont icofont-check-alt"></i>
+                </div>
+                <!-- with tooltip if active -->
+                <div 
+                  *ngIf="step.completed.active" 
+                  class="step-round" 
+                  [ngClass]="displayStepRoundClass(step.completed)" 
+                  ngbTooltip="Fichier terminé" 
+                  placement="top">
+                  <i class="icofont icofont-check-alt"></i>
+                </div>
+                <p [ngClass]="displayStepTextClass(step.completed)">Terminé</p>
+                <div *ngIf="step.completed.active" class="triangle">
+                  <div class="my-triangle"></div>
+                </div>
+              </li>
+            </ul>
+            <!-- <hr> -->
+
+          </div>
+
+          <!-- ************* Responsive view *************** -->
+          <div *ngIf="newInnerWidth < 990">
+            <!-- inProgress -->
+            <div 
+              *ngIf="step.inProgress.active" 
+              class="circle-step" 
+              [ngClass]="step.inProgress.activeRoundColor"
+               ngbTooltip="Fichier en cours de traitement" 
+               placement="top">
+              <i class="icofont icofont-spinner-alt-6"></i>
+            </div>
+            <p *ngIf="step.inProgress.active"[ngClass]="step.inProgress.activeTextColor">En cours</p>
+            <!-- karina -->
+            <div 
+              *ngIf="step.karina.active" 
+              class="circle-step" 
+              [ngClass]="step.karina.activeRoundColor" 
+              ngbTooltip="Fichier en attente Karina" 
+              placement="top">
+              <i class="icofont icofont-wall-clock"></i>
+            </div>
+            <p *ngIf="step.karina.active" [ngClass]="step.karina.activeTextColor">Karina</p>
+            <!-- kai -->
+            <div 
+              *ngIf="step.kai.active" 
+              class="circle-step" 
+              [ngClass]="step.kai.activeRoundColor"
+              ngbTooltip="Fichier en attente Kai" 
+              placement="top">
+              <i class="icofont icofont-wall-clock"></i>
+            </div>
+            <p *ngIf="step.kai.active" [ngClass]="step.kai.activeTextColor">Kai</p>
+            <!-- completed -->
+            <div 
+              *ngIf="step.completed.active" 
+              class="circle-step" 
+              [ngClass]="step.completed.activeRoundColor"
+              ngbTooltip="Fichier terminé" 
+              placement="top">
+              <i class="icofont icofont-check-alt"></i>
+            </div>
+            <p *ngIf="step.completed.active" [ngClass]="step.completed.activeTextColor">Terminé</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

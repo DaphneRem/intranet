@@ -9,16 +9,11 @@ import { Component, OnInit, Input } from '@angular/core';
   ]
 })
 export class WidgetLinkComponent implements OnInit {
-  @Input() widgetTitle;
-  @Input() widgetSubTitle;
-  @Input() widgetIcon;
-  @Input() widgetLink;
-  @Input() widgetBackgroundColor;
+  @Input() widget;
 
   constructor() { }
 
   ngOnInit() {
-    console.log(this.widgetLink);
   }
 
 }

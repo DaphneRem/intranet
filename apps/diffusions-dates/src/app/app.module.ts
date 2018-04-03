@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 
 import { NxModule } from '@nrwl/nx';
@@ -15,10 +16,16 @@ import { RootModule, navbarReducer } from '@ab/root';
 import { RouterStateModule } from '@ab/router-state';
 import { SubHeaderModule } from '@ab/sub-header';
 
+import { CustomDatatablesModule } from '@ab/custom-datatables';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   imports: [
     AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     RootModule,
     StoreModule.forRoot({
@@ -31,8 +38,11 @@ import { SubHeaderModule } from '@ab/sub-header';
     RouterStateModule.forRoot(),
     EffectsModule.forRoot([]),
     DiffusionsDatesModule,
-    NxModule.forRoot()
+    NxModule.forRoot(),
+    HttpClientModule,
+    CustomDatatablesModule
   ],
+  providers: [HttpClientModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
 })

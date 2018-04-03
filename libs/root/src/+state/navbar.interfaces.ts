@@ -1,5 +1,4 @@
 export interface Navbar {
-  // define state here
     open: boolean;
 }
 

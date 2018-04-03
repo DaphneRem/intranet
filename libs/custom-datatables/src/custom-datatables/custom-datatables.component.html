@@ -1,41 +1,59 @@
 <div class= "custom-datatables row">
+
+  <!-- ************** If data exist ************** -->
   <div *ngIf="data.length" class="card">
-
-
+    <!-- Header Buttons -->
     <div class="header-buttons">
       <!-- <button type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
         Rafraichir
       </button> -->
-      <button *ngIf="renderOption" type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
+      <!-- <button *ngIf="renderOption" type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
         Rafraichir
-      </button>
-      <a *ngIf="headerTableLinkExist" class="btn btn-primary btn-outline-primary" [routerLink]="headerTableLink">
+      </button> -->
+      <a *ngIf="headerTableLinkExist" 
+          class="btn btn-primary btn-outline-primary" 
+          [ngStyle]="buttonViewMore"
+          [routerLink]="headerTableLink" 
+          placement="right" 
+          ngbTooltip="Voir fichiers sur les 3 derniers jours">
         Voir plus...
       </a>
-    </div>
+    </div> 
+    <!-- Header Table -->
     <div 
       class="datatables-header text-center middle" 
       [ngStyle]="headerColor"
       [ngClass]="paging || search ? 'down-header' : ''">
-      <div class="header-title text-uppercase">
+      <div 
+        class="header-title text-uppercase title"
+        [placement]="data[0].id && data[0].noseg >= 0 ? 'bottom' : '' "
+        [ngbTooltip]="data[0].id && data[0].noseg >= 0 ? 'Double cliquer sur un fichier pour avoir une vue détaillée' : ''">
         {{tableTitle}}
       </div>
     </div>
-    <table datatable 
+    <!-- Body Table => datatables -->
+    <table 
+      datatable 
       [dtOptions]="dtOptions" 
       [dtTrigger]="dtTrigger"
       class="table table-styling row-border hover"
       [ngStyle]="firstColumnColor">
     </table>
-
-
   </div>
+  <!-- ************* If !data exist ************* -->
   <div *ngIf="!data.length" class="card no-data">
-      <div class="header-buttons">
-          <a *ngIf="headerTableLinkExist" class="btn btn-primary btn-outline-primary" [routerLink]="headerTableLink">
-            Voir plus...
-          </a>
-      </div>
+    <!-- Header Buttons -->
+    <div class="header-buttons">
+      <a *ngIf="headerTableLinkExist" 
+          class="btn btn-primary btn-outline-primary"
+          [ngStyle]="buttonViewMore"
+          [routerLink]="headerTableLink" 
+          placement="right" 
+          ngbTooltip="Voir fichiers sur les 3 derniers jours">
+        Voir plus...
+      </a>
+    </div>
+    <!-- Header Table -->
     <div 
       class="datatables-header text-center middle"
       [ngStyle]="headerColor">
@@ -43,8 +61,13 @@
          {{tableTitle}}
       </div>
     </div>
-    <div class="alert alert-warning text-center">
-      <strong> Il n'y a pas de fichiers {{tableTitle}}</strong>
+    <!-- Body Table (error) if server responds [] -->
+    <div *ngIf="data != 0 || data.length === 0" class="alert text-center" [ngStyle]="alertColor">
+      <p> Il n'y a pas de fichiers {{tableTitle}}</p>
+    </div>
+    <!-- Body Table (error) if server responds 0 -->
+    <div *ngIf="data === 0" class="alert text-center" [ngStyle]="alertColor">
+      <p> Les fichiers {{tableTitle}} sont momentanément indisponibles, merci de réessayer plus tard.</p>
     </div>
   </div>
 </div>

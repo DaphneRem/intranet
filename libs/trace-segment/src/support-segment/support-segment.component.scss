@@ -1,0 +1,105 @@
+@import '../../../../libs/shared/colors-theme';
+
+$labelColor : #000000;
+$headerColor :  rgb(64, 153, 255);
+$headerColorGradient: linear-gradient(45deg, #4099ff, #73b4ff);
+
+// // data
+// $blueThemeColor: #39ADB5; // in progress
+// $greenThemeColor: #17B978; // completed
+// $redThemeColor: #FF5F5F; // kai
+// $yellowThemeColor: #FDB44B; // karina
+
+// // btn
+// $diseableColor :  #d6d6d6;
+// $validColor : #2ed8b6;
+// $invalidColor :  #FF5370;
+
+:host {
+    .row {
+        margin: 0 15px ;
+        padding : 0px;
+        .card {
+            padding :0;
+            margin: 0;
+            .large-widget {
+                width : 100%;
+                margin : auto;
+                .card-header {
+                    padding: 10px;
+                    // background: $blueThemeColor;
+                    color :  $blueThemeColor;
+                    border: 2px solid  $blueThemeColor;
+                    margin-bottom: 10px;
+                    h5 {
+                        font-size: 1.1em;
+                        // color : #fff;
+                        color :  $blueThemeColor;
+                        display: inline-flex;
+                        span {
+                            font-size: 1.1em;
+                            margin: -2px 5px 0 5px;
+                            background: #ffff;
+                        }
+                    }
+                    .card-header-right {
+                        padding :0;
+                        margin-top: -25px;
+                        i {
+                            // color : #ffff;
+                            color :  $blueThemeColor;
+                            font-size: 2em;
+                        }
+                    }
+                }
+                hr {
+                    margin-top: 0;
+                }
+                .card-block {
+                    &.large-card {
+                    padding : 5px;
+                    }
+                    p {
+                        font-size: 1.3em;
+                        font-weight: bold;
+                        padding : 15px 0 0 0;
+                        margin: 0;
+                    }
+                    hr {
+                        width: 50%;
+                    }
+                    div.little-widget {
+                        width :100%;
+                        .little-header {
+                            padding :10px;
+                            margin-bottom: 20px;
+                            h5 {
+                                font-size: 1em;
+                            }
+                        }
+                        .table-data {
+                            width: 90%;
+                            margin: auto;
+                            height : 160px;
+                            table {
+                                width: 100%;
+                                .table-data-hr {
+                                    width: 100%;
+                                }
+                                .th-data {
+                                    font-weight: 100;
+                                }
+                                .two-points {
+                                    width : 12px;
+                                }
+                            }
+                            .table-data-hr {
+                                width: 100%;
+                            }
+                        }
+                    }
+                } 
+            }
+        }
+    }
+}

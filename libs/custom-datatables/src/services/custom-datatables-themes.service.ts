@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CUSTOMTHEMES } from '../data/custom-datatables-themes-data';
-import { Theme } from '@ab/custom-datatables';
+
+import { CustomThemes } from '../data/custom-datatables-themes-data';
+export { Theme } from '../models/custom-datatables-themes';
 
 
 @Injectable()
@@ -9,7 +10,7 @@ export class CustomThemesService {
 
   getTheme(name: string) {
     let theme;
-    CUSTOMTHEMES.map(item => {
+    CustomThemes.map(item => {
       if (item.name === name) {
         return theme = item;
       }

@@ -20,6 +20,7 @@ export interface MainMenuItems {
     name: string;
     type: string;
     icon: string;
+    iconColor?: string;
     badge?: BadgeItem[];
     children?: ChildrenItems[];
 }

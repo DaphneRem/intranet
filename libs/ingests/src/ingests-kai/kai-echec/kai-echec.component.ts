@@ -1,8 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { KaiEchecService } from '../services/kai-echec.service';
 import { KaiEchec } from '../models/kai-echec';
 
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
+
 @Component({
   selector: 'kai-echec',
   templateUrl: './kai-echec.component.html',
@@ -18,16 +20,15 @@ export class KaiEchecComponent implements OnInit {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
 
-public render: boolean;
-
+  public render: boolean;
   public dataReady = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
-
     tableTitle: 'Ingests en echec',
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
-    customColumn: false,
+    customColumn: true,
+    columns: [],
     paging: true,
     search: true,
     rowsMax: 5,
@@ -44,10 +45,10 @@ public render: boolean;
     }
   };
 
-  constructor(private kaiEchecService: KaiEchecService) {}
+  constructor( private kaiEchecService: KaiEchecService ) {}
 
   ngOnInit() {
-    this.getIngestsInProgress(this.daysTableView);
+    this.getIngestsKaiEchec(this.daysTableView);
     this.checkDaysViews();
     this.checkLinks();
   }
@@ -62,7 +63,6 @@ public render: boolean;
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
     if (this.headerTableLinkExist) {
       this.customdatatablesOptions.headerTableLink = this.headerTableLink;
-      console.log(this.headerTableLink);
     }
   }
 
@@ -79,12 +79,38 @@ public render: boolean;
     return this.dataReady;
   }
 
-  getIngestsInProgress(number) {
-    this.kaiEchecService.getIngestsInProgress(number).subscribe(data => {
+  getIngestsKaiEchec(number) {
+    this.kaiEchecService.getIngestsKaiEchec(number).subscribe(data => {
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
-      console.log(this.customdatatablesOptions.data);
+      this.displayColumns(data);
     });
+  }
+
+    displayColumns(data) {
+    console.log('data columns :' + data[0]);
+    this.customdatatablesOptions.columns = [
+      {
+        title : 'DIFFUSION_ID',
+        data : 'DIFFUSION_ID'
+      },
+      {
+        title : 'STATUTDETAIL',
+        data : 'STATUTDETAIL'
+      },
+      {
+        title : 'POSSTATUT',
+        data : 'POSSTATUT'
+      },
+      {
+        title : 'TSTAMP',
+        data : 'TSTAMP'
+      },
+      {
+        title : 'COMMENTAIRE',
+        data : 'COMMENTAIRE'
+      }
+    ];
   }
 }
 

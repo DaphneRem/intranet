@@ -1,65 +1,80 @@
-export const CUSTOMTHEMES = [
+import { blueThemeColor, greenThemeColor, redThemeColor, yellowThemeColor } from '@ab/shared';
+
+export const CustomThemes = [
     {
         name : 'blue theme',
         firstColumnColor: {
-            'background' : '#BDC3C7'
+            'background' : blueThemeColor
         },
         headerColor: {
-            'background' : 'linear-gradient(45deg, #4099ff, #73b4ff)'
+            'background' : '#fff',
+            'border' : '1px solid',
+            'border-color' : blueThemeColor,
+            'color' : blueThemeColor
         },
         buttonViewMore : {
-            'color' : '#fff',
-            'border-color' : '#fff'
+            'color' : blueThemeColor,
+            'border-color' : blueThemeColor,
+        },
+        alertColor :  {
+            'background' : '#ebebeb'
         }
     },
     {
         name : 'green theme',
         firstColumnColor: {
-            'background' : '#BDC3C7'
+            'background' : greenThemeColor
         },
         headerColor: {
-            'background' : 'linear-gradient(45deg, #2ed8b6, #59e0c5)'
+            'background' : '#fff',
+            'border' : '1px solid',
+            'border-color' : greenThemeColor,
+            'color' : greenThemeColor
         },
         buttonViewMore : {
-            'color' : '#fff',
-            'border-color' : '#fff'
+            'color' : greenThemeColor,
+            'border-color' : greenThemeColor,
+        },
+        alertColor :  {
+            'background' : '#ebebeb'
         }
     },
-        {
+    {
         name : 'red theme',
         firstColumnColor: {
-            'background' : '#BDC3C7'
+            'background' : redThemeColor
         },
         headerColor: {
-            'background' : 'linear-gradient(45deg, #FF5370, #ff869a)'
+            'background' : '#fff',
+            'border' : '1px solid',
+            'border-color' : redThemeColor,
+            'color' : redThemeColor
         },
         buttonViewMore : {
-            'color' : '#fff',
-            'border-color' : '#fff'
+            'color' : redThemeColor,
+            'border-color' : redThemeColor,
+        },
+        alertColor :  {
+            'background' : '#ebebeb'
         }
-    }
+    },
+    {
+        name : 'yellow theme',
+        firstColumnColor: {
+            'background' : yellowThemeColor
+        },
+        headerColor: {
+            'background' : '#fff',
+            'border' : '1px solid',
+            'border-color' : yellowThemeColor,
+            'color' : yellowThemeColor
+        },
+        buttonViewMore : {
+            'color' : yellowThemeColor,
+            'border-color' : yellowThemeColor,
+        },
+        alertColor :  {
+            'background' : '#ebebeb'
+        }
+    },
 ];
-
-// 'background' : 'linear-gradient(45deg, #2ed8b6, #59e0c5)'
-
-
-    // {
-    //   title: 'Terminés',
-    //   icon: 'icofont icofont-check-alt',
-    //   size: 'col-md-12 col-lg-6 ',
-    //   link: './completed',
-    //   color: 'linear-gradient(45deg, #2ed8b6, #59e0c5)'
-    // },
-    // {
-    //   title: 'En attente KAI',
-    //   icon: 'icofont icofont-wall-clock',
-    //   size: 'col-md-12 col-lg-6 ',
-    //   link: './kai-waiting',
-    //   color: 'linear-gradient(45deg, #FF5370, #ff869a)'
-    // },
-    // {
-    //   title: 'En attente KARINA',
-    //   icon: 'icofont icofont-wall-clock',
-    //   size: 'col-md-12 col-lg-6 ',
-    //   link: './karina-waiting',
-    //   color: 'linear-gradient(45deg, #FFB64D, #ffcb80)'

@@ -1,17 +1,39 @@
+/******************* Template element ******************/
+
 import { Directive, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { AccordionLinkDirective } from './accordionlink.directive';
+
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/filter';
+
+import { AccordionLinkDirective } from './accordionlink.directive';
 
 @Directive({
   selector: '[appAccordion]',
 })
 export class AccordionDirective implements OnInit {
-
   protected navlinks: Array<AccordionLinkDirective> = [];
   private countState = 1;
   private _router: Subscription;
+
+ constructor( private router: Router) {}
+
+  ngOnInit(): any {
+    this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
+      this.countState = 0;
+      this.navlinks.forEach((link: AccordionLinkDirective) => {
+        if (link.group) {
+          const routeUrl = this.getUrl();
+          const currentUrl = routeUrl.split('/');
+          if (currentUrl.indexOf( link.group ) > 0) {
+            link.open = true;
+            this.closeOtherLinks(link);
+          }
+        }
+      });
+    });
+  }
+
   closeOtherLinks(openLink: AccordionLinkDirective): void {
       this.countState++;
       if ((openLink.group !== 'sub-toggled' || openLink.group !== 'main-toggled') && this.countState === 1) {
@@ -41,22 +63,4 @@ export class AccordionDirective implements OnInit {
   getUrl() {
     return this.router.url;
   }
-
-  ngOnInit(): any {
-    this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-      this.countState = 0;
-      this.navlinks.forEach((link: AccordionLinkDirective) => {
-        if (link.group) {
-          const routeUrl = this.getUrl();
-          const currentUrl = routeUrl.split('/');
-          if (currentUrl.indexOf( link.group ) > 0) {
-            link.open = true;
-            this.closeOtherLinks(link);
-          }
-        }
-      });
-    });
-  }
-
-  constructor( private router: Router) {}
 }
