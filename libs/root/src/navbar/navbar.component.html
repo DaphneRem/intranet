@@ -1,25 +1,25 @@
-<nav id="main_navbar" 
-  class="pcoded-navbar" 
+<nav id="main_navbar"
+  class="pcoded-navbar"
   [style.margin-top]="headerFixedMargin"
-  [attr.pcoded-header-position]="pcodedHeaderPosition" 
-  [attr.navbar-theme]="navBarTheme" 
+  [attr.pcoded-header-position]="pcodedHeaderPosition"
+  [attr.navbar-theme]="navBarTheme"
   [attr.active-item-theme]="activeItemTheme"
-  sub-item-theme="theme2" 
-  active-item-style="style0" 
+  sub-item-theme="theme2"
+  active-item-style="style0"
   [attr.pcoded-navbar-position]="pcodedSidebarPosition">
   <div class="pcoded-inner-navbar main-menu" appAccordion>
-    <perfect-scrollbar 
-      [style.max-width]="'235px'" 
-      [style.max-height]="sidebarFixedHeight" 
+    <perfect-scrollbar
+      [style.max-width]="'235px'"
+      [style.max-height]="sidebarFixedHeight"
       [config]="config">
       <span *ngFor="let asideItems of menuItems.getAll()" class="d-color">
         <div class="pcoded-navigation-label" menu-title-theme="theme4">{{asideItems.label}}</div>
-        <ul class="pcoded-item pcoded-left-item" 
-          [attr.item-border]="itemBorder" 
-          [attr.item-border-style]="itemBorderStyle" 
+        <ul class="pcoded-item pcoded-left-item"
+          [attr.item-border]="itemBorder"
+          [attr.item-border-style]="itemBorderStyle"
           [attr.subitem-border]="subItemBorder"
-          *ngFor="let asideItem of asideItems.main" 
-          appAccordionLink 
+          *ngFor="let asideItem of asideItems.main"
+          appAccordionLink
           group="{{asideItem.state}}">
           <li active *ngIf="asideItem.type === 'external'" appAccordionLink group="{{asideItem.state}}">
             <a href="{{asideItem.external}}" target="{{asideItem.target ? '_blank' : '_self'}}" appAccordionToggle>
@@ -28,8 +28,8 @@
                 <b>{{ asideItem.short_label }}</b>
               </span>
               <span class="pcoded-mtext">{{ asideItem.name }}</span>
-              <span 
-                *ngFor="let asideBadge of asideItem.badge" 
+              <span
+                *ngFor="let asideBadge of asideItem.badge"
                 class="pcoded-badge label label-{{ asideBadge.type }}">
                 {{asideBadge.value}}
               </span>
@@ -43,8 +43,8 @@
                 <b>{{ asideItem.short_label }}</b>
               </span>
               <span class="pcoded-mtext">{{ asideItem.name }}</span>
-              <span 
-                *ngFor="let asideBadge of asideItem.badge" 
+              <span
+                *ngFor="let asideBadge of asideItem.badge"
                 class="pcoded-badge label label-{{ asideBadge.type }}">
                 {{asideBadge.value}}
               </span>
@@ -57,8 +57,8 @@
                   <b>{{ asideItem.short_label }}</b>
                 </span>
                 <span class="pcoded-mtext">{{ asideItem.name }}</span>
-                <span 
-                  *ngFor="let asideBadge of asideItem.badge" 
+                <span
+                  *ngFor="let asideBadge of asideItem.badge"
                   class="pcoded-badge label label-{{ asideBadge.type }}">
                   {{asideBadge.value}}
                 </span>
@@ -66,10 +66,10 @@
               </a>
             </ng-template>
           </li>
-          <li active 
-            *ngIf="asideItem.type === 'sub'" 
-            class="pcoded-hasmenu" 
-            [attr.dropdown-icon]="dropDownIcon" 
+          <li active
+            *ngIf="asideItem.type === 'sub'"
+            class="pcoded-hasmenu"
+            [attr.dropdown-icon]="dropDownIcon"
             [attr.subitem-icon]="subItemIcon"
             appAccordionLink group="{{asideItem.state}}">
             <a active href="javascript:;" appAccordionToggle>
@@ -78,8 +78,8 @@
                 <b>{{ asideItem.short_label }}</b>
               </span>
               <span class="pcoded-mtext">{{ asideItem.name }}</span>
-              <span 
-                *ngFor="let asideBadge of asideItem.badge" 
+              <span
+                *ngFor="let asideBadge of asideItem.badge"
                 class="pcoded-badge label label-{{ asideBadge.type }}">
                 {{asideBadge.value}}
               </span>
@@ -88,21 +88,23 @@
             <ul class="pcoded-submenu">
               <ng-template ngFor let-asideChildren [ngForOf]="asideItem.children">
                 <li [routerLinkActive]="['active']" *ngIf="asideChildren.type !== 'sub'">
-                  <a [routerLink]="['/', asideChildren.route]" target="{{asideChildren.target ? '_blank' : '_self'}}">
+
+                  <!-- <a [routerLink]="['/', asideChildren.route]" target="{{asideChildren.target ? '_blank' : '_self'}}"> -->
+                  <a [href]="[asideChildren.route]" target="{{asideChildren.target ? '_blank' : '_self'}}">
                     <span class="pcoded-micon">
                       <i class="icon-angle-right"></i>
                     </span>
                     <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
-                    <span 
-                      *ngIf="asideChildren.tooltipText" 
-                      class="pcoded-mtext" 
-                      placement="right" 
+                    <span
+                      *ngIf="asideChildren.tooltipText"
+                      class="pcoded-mtext"
+                      placement="right"
                       [ngbTooltip]="tipContent">
-                      {{ asideChildren.name }} 
+                      {{ asideChildren.name }}
                     </span>
                     <ng-template #tipContent>{{asideChildren.tooltipText}}</ng-template>
-                    <span 
-                      *ngFor="let asideChildrenBadge of asideChildren.badge" 
+                    <span
+                      *ngFor="let asideChildrenBadge of asideChildren.badge"
                       class="pcoded-badge label label-{{ asideChildrenBadge.type }}">
                       {{asideChildrenBadge.value}}
                     </span>
@@ -110,12 +112,12 @@
                   </a>
                 </li>
 
-                <li active 
-                  class="pcoded-hasmenu" 
-                  [attr.dropdown-icon]="dropDownIcon" 
-                  [attr.subitem-icon]="subItemIcon" 
+                <li active
+                  class="pcoded-hasmenu"
+                  [attr.dropdown-icon]="dropDownIcon"
+                  [attr.subitem-icon]="subItemIcon"
                   *ngIf="asideChildren.type === 'sub'"
-                  appAccordionLink 
+                  appAccordionLink
                   group="sub-toggled">
                   <a href="javascript:;" appAccordionToggle>
                     <span class="pcoded-micon">
@@ -123,7 +125,7 @@
                     </span>
                     <span class="pcoded-mtext">{{ asideChildren.name }}</span>
                     <span
-                      *ngFor="let asideChildrenBadge of asideChildren.badge" 
+                      *ngFor="let asideChildrenBadge of asideChildren.badge"
                       class="pcoded-badge label label-{{ asideChildrenBadge.type }}">
                       {{asideChildrenBadge.value}}
                     </span>
@@ -137,8 +139,8 @@
                             <i class="icon-angle-right"></i>
                           </span>
                           <span class="pcoded-mtext">{{ asideChildrenSub.name }}</span>
-                          <span 
-                            *ngFor="let asideChildrenSubBadge of asideChildrenSub.badge" 
+                          <span
+                            *ngFor="let asideChildrenSubBadge of asideChildrenSub.badge"
                             class="pcoded-badge label label-{{ asideChildrenSubBadge.type }}">
                             {{asideChildrenSubBadge.value}}
                           </span>
