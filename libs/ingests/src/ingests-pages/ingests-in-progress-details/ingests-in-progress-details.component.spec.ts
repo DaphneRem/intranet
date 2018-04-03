@@ -8,6 +8,9 @@ describe('IngestsInProgressDetailsComponent', () => {
   let testHostFixture: ComponentFixture<TestHostComponent>;
   let testHostComponent: TestHostComponent;
 
+  let component: IngestsInProgressDetailsComponent;
+  let fixture: ComponentFixture<IngestsInProgressDetailsComponent>;
+
   beforeEach(
     async(() => {
       TestBed.configureTestingModule({
@@ -24,6 +27,35 @@ describe('IngestsInProgressDetailsComponent', () => {
 
   it('should create component', () => {
     expect(testHostFixture).toBeDefined();
+  });
+
+  it('should have link property', () => {
+    fixture = TestBed.createComponent(IngestsInProgressDetailsComponent);
+    component = fixture.componentInstance;
+    component.link = '/link';
+    fixture.detectChanges();
+    expect(component.link).toBeDefined();
+  });
+
+  it('should display view for 72h', () => {
+    fixture = TestBed.createComponent(IngestsInProgressDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.daysTableView).toBe(3);
+  });
+
+  it('should have headerTableLinkExist property to false', () => {
+    fixture = TestBed.createComponent(IngestsInProgressDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.headerTableLinkExist).toBe(false);
+  });
+
+  it('should have goBack property to true', () => {
+    fixture = TestBed.createComponent(IngestsInProgressDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.goBack).toBe(true);
   });
 
   @Component({

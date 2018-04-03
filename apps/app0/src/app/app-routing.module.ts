@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 
 import {
     IngestsCompletedDetailsComponent,
@@ -25,12 +24,13 @@ const routes: Routes = [
       {
         path: '',
         component: IngestsWidgetsViewComponent,
-        data: { title : 'Numérisation' }
+        data: { title : 'Numérisation' },
       },
       {
         path: 'tables-view',
         component:  IngestsTablesViewComponent,
-        data: { title : 'Numérisation' }
+        data: { title : 'Numérisation' },
+
       },
       {
         path: 'in-progress',
@@ -61,7 +61,7 @@ const routes: Routes = [
     children : [
       {
         path: 'support/:idSupport/seg/:numSegment',
-        component: TraceSegmentComponent
+        component: TraceSegmentComponent,
       }
     ]
   },
@@ -95,13 +95,13 @@ const routes: Routes = [
     component: IngestsPurgedComponent,
     data: { title : 'Fichiers purgés' }
   },
-  { path: '**', component: Page404Component }
+  { path: '**', component: Page404Component },
+
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}]
+  exports: [RouterModule]
 })
 
 export class AppRoutingModule { }

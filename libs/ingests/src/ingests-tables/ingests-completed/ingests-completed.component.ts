@@ -5,6 +5,7 @@ import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 import { IngestsCompletedService } from '../../services/ingests-completed.service';
 import { IngestsCompleted } from '../../models/ingests-completed';
+import { Title } from '@angular/platform-browser/src/browser/title';
 
 @Component({
   selector: 'ingests-completed',
@@ -27,7 +28,8 @@ export class IngestsCompletedComponent implements OnInit {
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
-    customColumn: false,
+    customColumn: true,
+    columns: [],
     paging: true,
     search: true,
     rowsMax: 10,
@@ -47,7 +49,7 @@ export class IngestsCompletedComponent implements OnInit {
   constructor( private ingestsCompletedService: IngestsCompletedService ) {}
 
   ngOnInit() {
-    this.getIngestsInProgress(this.daysTableView);
+    this.getIngestsCompleted(this.daysTableView);
     this.checkDaysViews();
     this.checkLinks();
   }
@@ -72,14 +74,66 @@ export class IngestsCompletedComponent implements OnInit {
     return this.dataReady;
   }
 
-  getIngestsInProgress(number) {
+  getIngestsCompleted(number) {
     this.ingestsCompletedService
-      .getIngestsInProgress(number)
+      .getIngestsCompleted(number)
       .subscribe(data => {
         this.customdatatablesOptions.data = data;
         this.dataReady = true;
+        this.displayColumns(data);
     });
   }
+
+  displayColumns(data) {
+    console.log('data columns :' + data[0]);
+    this.customdatatablesOptions.columns = [
+      {
+        title : 'titreSeg',
+        data : 'titreSeg'
+      },
+      {
+        title : 'id',
+        data : 'id'
+      },
+      {
+        title : 'noseg',
+        data : 'noseg'
+      },
+      {
+        title : 'nomfichier',
+        data : 'nomfichier'
+      },
+      {
+        title : 'stockage',
+        data : 'stockage'
+      },
+      {
+        title : 'idSuppSuivant',
+        data : 'idSuppSuivant'
+      },
+      {
+        title : 'noSegSuivant',
+        data : 'noSegSuivant'
+      },
+      {
+        title : 'statutSupport',
+        data : 'statutSupport'
+      },
+      {
+        title : 'typeSupport',
+        data : 'typeSupport'
+      },
+      {
+        title : 'tstamp',
+        data : 'tstamp'
+      },
+      {
+        title : 'commentaires',
+        data : 'commentaires'
+      },
+    ];
+  }
+
 }
 
 

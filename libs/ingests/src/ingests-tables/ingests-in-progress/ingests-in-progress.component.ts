@@ -30,7 +30,8 @@ export class IngestsInProgressComponent implements OnInit {
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
-    customColumn: false,
+    customColumn: true,
+    columns: [],
     paging: true,
     search: true,
     rowsMax: 10,
@@ -88,6 +89,57 @@ export class IngestsInProgressComponent implements OnInit {
         this.data = data;
         this.customdatatablesOptions.data = this.data;
         this.dataReady = true;
+        this.displayColumns(data);
       });
+  }
+
+  displayColumns(data) {
+    console.log('data columns :' + data[0]);
+    this.customdatatablesOptions.columns = [
+      {
+        title : 'titreSeg',
+        data : 'titreSeg'
+      },
+      {
+        title : 'id',
+        data : 'id'
+      },
+      {
+        title : 'noseg',
+        data : 'noseg'
+      },
+      {
+        title : 'nomfichier',
+        data : 'nomfichier'
+      },
+      {
+        title : 'stockage',
+        data : 'stockage'
+      },
+      {
+        title : 'idSuppSuivant',
+        data : 'idSuppSuivant'
+      },
+      {
+        title : 'noSegSuivant',
+        data : 'noSegSuivant'
+      },
+      {
+        title : 'statutSupport',
+        data : 'statutSupport'
+      },
+      {
+        title : 'typeSupport',
+        data : 'typeSupport'
+      },
+      {
+        title : 'tstamp',
+        data : 'tstamp'
+      },
+      {
+        title : 'commentaires',
+        data : 'commentaires'
+      },
+    ];
   }
 }

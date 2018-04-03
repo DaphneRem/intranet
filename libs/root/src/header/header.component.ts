@@ -7,8 +7,6 @@ import { MenuItems } from '../menu-items/menu-items.service';
 import { Navbar } from '../+state/navbar.interfaces';
 import { navbarInitialState } from '../+state/navbar.init';
 
-import {rootUrl} from '../../../../.privates-url';
-
 @Component({
   selector: 'root-header',
   templateUrl: './header.component.html',
@@ -93,7 +91,7 @@ export class HeaderComponent implements OnInit {
   public vnavigationView: string;
   public freamType: string;
   public layoutType: string;
-  public rootUrl = rootUrl;
+
   // header thème non utilisé ici pour le moment
   public headerTheme: string;
 

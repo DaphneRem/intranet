@@ -17,7 +17,7 @@ export class IngestsCompletedService {
 
   constructor( private http: HttpClient ) {}
 
-  getIngestsInProgress(days: number): Observable<IngestsCompleted[]> {
+  getIngestsCompleted(days: number): Observable<IngestsCompleted[]> {
     return this.http
       .get(urlIngests + days + urlCompleted)
       .map((res: any) => {
@@ -25,6 +25,7 @@ export class IngestsCompletedService {
           res = 0;
           return res;
         }
+        console.log(JSON.parse(res));
         return JSON.parse(res) as IngestsCompleted[];
       })
       .catch(this.handleError);

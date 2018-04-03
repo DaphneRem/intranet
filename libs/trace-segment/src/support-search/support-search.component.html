@@ -39,13 +39,13 @@
           </div>
         </div>
         <div class="col-lg-2 submit">
-          <button *ngIf="searchFile.invalid && !file.autoPath" (click)="checkRouteExist()" type="submit" class="btn btn-primary" [disabled]="searchFile.invalid">
+          <button *ngIf="searchFile.invalid && !file.autoPath" (click)="checkRouteExist()" type="submit" class="btn btn-primary check-route" [disabled]="searchFile.invalid">
             Rechercher
           </button>
-          <button *ngIf="!searchFile.invalid && !file.autoPath" (click)="checkRouteExist()" type="submit" class="btn btn-primary" [disabled]="searchFile.invalid">
+          <button *ngIf="!searchFile.invalid && !file.autoPath" (click)="checkRouteExist()" type="submit" class="btn btn-primary check-route" [disabled]="searchFile.invalid">
             Rechercher
           </button>
-          <button *ngIf="file.autoPath" (click)="newSearch()" type="submit" class="btn btn-primary">
+          <button *ngIf="file.autoPath" (click)="newSearch()" type="submit" class="btn btn-primary new-search">
             Nouvelle recherche
           </button>
           <!-- <button *ngIf="!searchFile.invalid" (click)="checkRouteExist()" type="submit" class="btn btn-primary" [disabled]="searchFile.invalid">

@@ -58,20 +58,30 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   // custom the text of the buttons
   public colvisButton =  {
             extend: 'colvis',
-            text: 'Colonnes'
+            text: 'Gérer les Colonnes'
         };
   public copyButton = {
             extend: 'copy',
-            text: 'Copier'
+            text: 'Tout copier'
         };
   public printButton =  {
             extend: 'print',
             text: 'Imprimer'
         };
   public excelButton =  {
-            extend: 'excel',
-            text: 'Excel'
+            extend: 'csv',
+            text: 'Export csv',
+            fieldSeparator: ','
         };
+  // public excelTestButton =  {
+  //           extend: 'excel',
+  //           text: 'Export excel',
+  //       };
+  public pageLengthButton =  {
+            extend: 'pageLength',
+        };
+  // public createRowButton =         { extend: 'create',     editor: myEditor };
+
 
   // custom datatable language
   public frenchLanguage = {
@@ -90,7 +100,18 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
           previous: 'Pr&eacute;c&eacute;dent',
           next: 'Suivant',
           last: 'Dernier'
-      }
+      },
+      buttons: {
+            pageLength: {
+                _: 'Afficher %d éléments',
+                '-1': 'Tout afficher'
+            },
+            copyTitle: 'Ajouté au presse-papiers',
+            copySuccess: {
+              _: '%d lignes copiées',
+              1: '1 ligne copiée'
+            }
+        }
   };
 
   constructor(
@@ -150,6 +171,8 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         }
       };
       this.displayButtons();
+      console.log(this.dtOptions.buttons);
+
     }
   }
 
@@ -157,16 +180,19 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
     const options = this.customdatatablesOptions;
     if (options.buttons.buttons) {
       if (options.buttons.allButtons) {
+        console.log('allButtons');
         return this.dtOptions.buttons
           .push(
             {
               extend: 'collection',
               text: 'Options',
               buttons: [
+                // this.excelTestButton,
+                this.pageLengthButton,
                 this.colvisButton,
                 this.copyButton,
                 this.printButton,
-                this.excelButton
+                this.excelButton,
               ]
             }
           );

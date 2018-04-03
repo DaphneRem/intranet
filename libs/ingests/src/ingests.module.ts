@@ -7,7 +7,6 @@ import { LoadersModule } from '@ab/loaders';
 import { ScrollToTopModule } from '@ab/scroll-to-top';
 import { SubHeaderModule } from '@ab/sub-header';
 import { WidgetsModule } from '@ab/widgets';
-import { DataTablesModule } from 'angular-datatables';
 
 // pages imports
 import { IngestsCompletedDetailsComponent } from './ingests-pages/ingests-completed-details/ingests-completed-details.component';
@@ -32,8 +31,7 @@ import { KarinaWaitingDetailsComponent } from './ingests-pages/karina-waiting-de
     LoadersModule,
     ScrollToTopModule,
     SubHeaderModule,
-    WidgetsModule,
-    DataTablesModule
+    WidgetsModule
   ],
   declarations: [
     IngestsCompletedComponent,

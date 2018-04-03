@@ -1,10 +1,5 @@
-
 // TODO : ajouter url définitive de prod (importer à partir du fichier privates-url.ts)
-
-import { rootUrl_DiffDates, rootUrl} from '../../../../../.privates-url';
-
-const distUrl: string = rootUrl;
-const distUrl_DiffDates = rootUrl_DiffDates;
+const distUrl = 'url prod';
 
 export const MENUITEMS = [
     {
@@ -22,43 +17,55 @@ export const MENUITEMS = [
                     {
                         state: 'publicité',
                         name: 'Publicité',
-                        route: `${distUrl}/#/publicity`
+                        route: 'publicity'
                     },
                     {
                         state: 'numerisation',
                         name: 'Numérisation',
-                        route: `${distUrl}/#/ingests`
+                        route: 'ingests',
                     },
                     {
                         state: 'detail-fichier',
                         name: 'Détail Fichier',
-                        route: `${distUrl}/#/detail-file`,
+                        route: 'detail-file',
                         tooltipText : 'Trace Segment'
                     },
                     {
                         state: 'fichiers-purges',
                         name: 'Fichiers Purgés',
-                        route: `${distUrl}/#/purged`
+                        route: 'purged'
                     }
                 ]
             }
         ]
     },
     {
-        label: 'Dates de diffusions',
-        url: `${this.distUrl_DiffDates}diffusions-dates/`,
+        label: 'App1',
+        url: `${this.distUrl}app1/`,
         main: [
             {
-                state: 'Dates de diffusions',
-                short_label: 'd',
-                name: 'Dates de diffusions',
+                state: 'menu lorem ipsum',
+                short_label: 'm',
+                name: 'Menu lorem ipsum',
                 type: 'sub',
                 icon: 'icon-home',
+                iconColor: '#ffffff',
                 children: [
                     {
-                      state: 'diffusions-dates',
-                      name: 'Dates de diffusions',
-                      route: `${distUrl_DiffDates}/#/diffusions-dates`
+                        state: 'm1',
+                        name: 'Menu lorem ipsum1',
+                        routerLink: 'xxx'
+                    },
+                    {
+                        state: 'm2',
+                        name: 'Menu lorem ipsum2',
+                        routerLink: 'xxx'
+
+                    },
+                    {
+                        state: 'm3',
+                        name: 'Menu lorem ipsum3',
+                        routerLink: 'xxx'
                     }
                 ]
             }

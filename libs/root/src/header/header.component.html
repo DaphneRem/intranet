@@ -1,35 +1,35 @@
 <div id="pcoded" class="pcoded"
-  [attr.nav-type]="navType"
-  [attr.theme-layout]="themeLayout"
+  [attr.nav-type]="navType" 
+  [attr.theme-layout]="themeLayout" 
   [attr.vertical-placement]="verticalPlacement"
-  [attr.vertical-layout]="verticalLayout"
-  [attr.pcoded-device-type]="pcodedDeviceType"
+  [attr.vertical-layout]="verticalLayout" 
+  [attr.pcoded-device-type]="pcodedDeviceType" 
   [attr.vertical-nav-type]="verticalNavType"
-  [attr.vertical-effect]="verticalEffect"
-  [attr.vnavigation-view]="vnavigationView"
-  [attr.fream-type]="freamType"
-  [attr.layout-type]="layoutType"
+  [attr.vertical-effect]="verticalEffect" 
+  [attr.vnavigation-view]="vnavigationView" 
+  [attr.fream-type]="freamType" 
+  [attr.layout-type]="layoutType" 
   (window:resize)="onResize($event)">
   <div class="pcoded-overlay-box"></div>
   <div class="pcoded-container navbar-wrapper">
-    <nav
-      class="navbar header-navbar pcoded-header"
+    <nav 
+      class="navbar header-navbar pcoded-header" 
       [attr.pcoded-header-position]="pcodedHeaderPosition">
       <div class="navbar-wrapper">
         <div class="navbar-logo">
-          <a class="mobile-menu"
-            id="mobile-collapse"
-            href="javascript:"
-            (click)="toggleOpened()"
-            (clickOutside)="onClickedOutsideSidebar($event)"
+          <a class="mobile-menu" 
+            id="mobile-collapse" 
+            href="javascript:" 
+            (click)="toggleOpened()" 
+            (clickOutside)="onClickedOutsideSidebar($event)" 
             [exclude]="'#mobile-collapse'">
             <i class="icon-menu"></i>
           </a>
-          <a href="{{rootUrl}}">
+          <a href="#">
             <!-- ajouter conditions pour la suite si logo == 'KARINA'-->
-            <img *ngIf="logo ==='logoABintranet'"
-              class="img-fluid"
-              src="./assets/images/logoABintranet.png"
+            <img *ngIf="logo ==='logoABintranet'" 
+              class="img-fluid" 
+              src="./assets/images/logoABintranet.png" 
               alt="Theme-Logo" />
           </a>
           <a href="javascript:" class="mobile-options" (click)="toggleHeaderNavRight()">
@@ -67,9 +67,9 @@
 
           <!-- nav right -->
           <!-- <ul [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
-            <li (clickOutside)="notificationOutsideClick('live')"
-              class="header-notification"
-              [ngClass]="liveNotificationClass"
+            <li (clickOutside)="notificationOutsideClick('live')" 
+              class="header-notification" 
+              [ngClass]="liveNotificationClass" 
               (click)="toggleLiveNotification()">
               <a href="javascript:">
                 <i class="icon-bell"></i>
@@ -82,8 +82,8 @@
                 </li>
                 <li>
                   <div class="media">
-                    <img class="d-flex align-self-center img-radius"
-                      src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png"
+                    <img class="d-flex align-self-center img-radius" 
+                      src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png" 
                       alt="Generic placeholder image">
                     <div class="media-body">
                       <h5 class="notification-user">John Doe</h5>
@@ -94,8 +94,8 @@
                 </li>
                 <li>
                   <div class="media">
-                    <img class="d-flex align-self-center img-radius"
-                      src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png"
+                    <img class="d-flex align-self-center img-radius" 
+                      src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png" 
                       alt="Generic placeholder image">
                     <div class="media-body">
                       <h5 class="notification-user">Joseph William</h5>
@@ -106,8 +106,8 @@
                 </li>
                 <li>
                   <div class="media">
-                    <img class="d-flex align-self-center img-radius"
-                      src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png"
+                    <img class="d-flex align-self-center img-radius" 
+                      src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png" 
                       alt="Generic placeholder image">
                     <div class="media-body">
                       <h5 class="notification-user">Sara Soudein</h5>
@@ -124,13 +124,13 @@
                 <span class="badge bg-c-green"></span>
               </a>
             </li>
-            <li (clickOutside)="notificationOutsideClick('profile')"
-              class="user-profile header-notification"
+            <li (clickOutside)="notificationOutsideClick('profile')" 
+              class="user-profile header-notification" 
               [ngClass]="profileNotificationClass"
               (click)="toggleProfileNotification()">
               <a href="javascript:">
-                <img src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png"
-                  class="img-radius"
+                <img src="https://bde-eeigm.fr/wp-content/uploads/2016/11/photo-de-profil-generique-garcon.png" 
+                  class="img-radius" 
                   alt="User-Profile-Image">
                 <span>John Doe</span>
                 <i class="icon-angle-down"></i>
@@ -173,7 +173,7 @@
   </div>
 
 <!-- NAVBAR -->
-  <root-navbar
+  <root-navbar 
     id="mobile-collapse"
     [headerFixedMargin]="headerFixedMargin"
     [windowWidth]="windowWidth"

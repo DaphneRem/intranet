@@ -27,7 +27,8 @@ export class KaiEchecComponent implements OnInit {
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
-    customColumn: false,
+    customColumn: true,
+    columns: [],
     paging: true,
     search: true,
     rowsMax: 5,
@@ -82,7 +83,34 @@ export class KaiEchecComponent implements OnInit {
     this.kaiEchecService.getIngestsKaiEchec(number).subscribe(data => {
       this.customdatatablesOptions.data = data;
       this.dataReady = true;
+      this.displayColumns(data);
     });
+  }
+
+    displayColumns(data) {
+    console.log('data columns :' + data[0]);
+    this.customdatatablesOptions.columns = [
+      {
+        title : 'DIFFUSION_ID',
+        data : 'DIFFUSION_ID'
+      },
+      {
+        title : 'STATUTDETAIL',
+        data : 'STATUTDETAIL'
+      },
+      {
+        title : 'POSSTATUT',
+        data : 'POSSTATUT'
+      },
+      {
+        title : 'TSTAMP',
+        data : 'TSTAMP'
+      },
+      {
+        title : 'COMMENTAIRE',
+        data : 'COMMENTAIRE'
+      }
+    ];
   }
 }
 

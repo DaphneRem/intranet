@@ -16,10 +16,6 @@ export const CustomThemes = [
             'color' : blueThemeColor,
             'border-color' : blueThemeColor,
         },
-        buttonViewHover: {
-            'background' : blueThemeColor,
-            'border-color' : blueThemeColor,
-        },
         alertColor :  {
             'background' : '#ebebeb'
         }
@@ -37,10 +33,6 @@ export const CustomThemes = [
         },
         buttonViewMore : {
             'color' : greenThemeColor,
-            'border-color' : greenThemeColor,
-        },
-        buttonViewHover: {
-            'background' : greenThemeColor,
             'border-color' : greenThemeColor,
         },
         alertColor :  {
@@ -62,10 +54,6 @@ export const CustomThemes = [
             'color' : redThemeColor,
             'border-color' : redThemeColor,
         },
-        buttonViewHover: {
-            'background' : redThemeColor,
-            'border-color' : redThemeColor,
-        },
         alertColor :  {
             'background' : '#ebebeb'
         }
@@ -83,10 +71,6 @@ export const CustomThemes = [
         },
         buttonViewMore : {
             'color' : yellowThemeColor,
-            'border-color' : yellowThemeColor,
-        },
-        buttonViewHover: {
-            'background' : yellowThemeColor,
             'border-color' : yellowThemeColor,
         },
         alertColor :  {
