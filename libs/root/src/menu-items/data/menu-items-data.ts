@@ -11,7 +11,7 @@ if (document.location.host.indexOf('localhost') !== -1) {
   this.distUrl_DiffDates = document.location.host;
 } else {
   this.distUrl = '/#' + rootUrl;
-  this.distUrl_DiffDates = rootUrl_DiffDates;
+  this.distUrl_DiffDates = '/#' + rootUrl_DiffDates;
 }
 
 export const MENUITEMS = [
