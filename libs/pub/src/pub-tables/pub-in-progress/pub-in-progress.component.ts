@@ -27,7 +27,8 @@ export class PubInProgressComponent implements OnInit {
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
-    customColumn: false,
+    customColumn: true,
+    columns: [],
     paging: true,
     search: true,
     rowsMax: 10,
@@ -82,7 +83,33 @@ export class PubInProgressComponent implements OnInit {
           this.customdatatablesOptions.data = data;
         }
         this.dataReady = true;
+        this.displayColumns(data);
     });
+  }
+
+  displayColumns(data) {
+    this.customdatatablesOptions.columns = [
+      {
+        title : 'id',
+        data : 'id'
+      },
+      {
+        title : 'noseg',
+        data : 'noseg'
+      },
+      {
+        title : 'titreEpisFra',
+        data : 'titreEpisFra'
+      },
+      {
+        title : 'filename',
+        data : 'filename'
+      },
+      {
+        title : 'dateetat',
+        data : 'dateetat'
+      },
+    ];
   }
 }
 
