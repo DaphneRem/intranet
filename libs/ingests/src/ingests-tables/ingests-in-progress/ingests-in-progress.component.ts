@@ -117,19 +117,19 @@ export class IngestsInProgressComponent implements OnInit {
         data : 'stockage'
       },
       {
-        title : 'idSuppSuivant',
+        title : 'idSuivant',
         data : 'idSuppSuivant'
       },
+      // {
+      //   title : 'noSegSuivant',
+      //   data : 'noSegSuivant'
+      // },
       {
-        title : 'noSegSuivant',
-        data : 'noSegSuivant'
-      },
-      {
-        title : 'statutSupport',
+        title : 'statut',
         data : 'statutSupport'
       },
       {
-        title : 'typeSupport',
+        title : 'type',
         data : 'typeSupport'
       },
       {
