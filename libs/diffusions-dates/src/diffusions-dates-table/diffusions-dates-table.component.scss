@@ -1,0 +1,81 @@
+.custom-day {
+  text-align: center;
+  padding: 0.185rem 0.25rem;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+}
+.custom-day.focused {
+  background-color: #e6e6e6;
+}
+.custom-day.range,
+.custom-day:hover {
+  background-color: rgb(2, 117, 216);
+  color: white;
+}
+.custom-day.faded {
+  background-color: rgba(2, 117, 216, 0.5);
+}
+/deep/ #mydateRange .selectiongroup:focus-within {
+  border: 1px solid #4099ff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+/deep/ custom-datatables .custom-datatables[_ngcontent-c8] {
+  margin: 0;
+  width: inherit;
+  padding: 0;
+}
+
+h5 {
+  margin: 0 0 8px 0;
+}
+.btn-primary .icon-search{
+  position: relative;
+  top: 2px;
+  left: 5px;
+}
+.input-group .input-group-addon.valid{
+  width: 25px;
+  padding: 7px 5px;
+  background: #28a745;
+}
+.input-group .input-group-addon.novalid{
+  width: 25px;
+  padding: 7px 5px;
+  background: #dc3545;
+}
+.input-group-warning .form-control {
+  border-color: #cccccc;
+}
+/deep/ .card .card-block table tr {
+  height: 0px !important;
+}
+/deep/ angular2-multiselect .selected-list[_ngcontent-c8] .c-btn[_ngcontent-c8] {
+  box-shadow: none;
+  padding: 7px;
+}
+
+#programSearchBox
+{
+  position: absolute;
+  top: 40px;
+  left:0px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  z-index: 99999;
+  box-shadow: 0px 0px 4px #ccc;
+  background: #FFF;
+  cursor: pointer;
+  max-height: 50vh;
+  overflow: auto;
+  ul{
+    li{
+      padding:2px 0 2px 0;
+      display: inline-table;
+      width: 100%;
+      &:hover{
+        background:#eee;
+      }
+    }
+  }
+}

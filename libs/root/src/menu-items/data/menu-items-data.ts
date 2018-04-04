@@ -1,5 +1,18 @@
+
 // TODO : ajouter url définitive de prod (importer à partir du fichier privates-url.ts)
-const distUrl = 'url prod';
+
+import { rootUrlDiffDates, rootUrl} from '../../../../../.privates-url';
+
+let distUrl: String = '';
+let distUrl_DiffDates: String = '';
+
+if (document.location.host.indexOf('localhost') !== -1) {
+  distUrl = document.location.host;
+  distUrl_DiffDates = document.location.host;
+} else {
+  distUrl =  rootUrl + '/#';
+  distUrl_DiffDates = rootUrlDiffDates + '/#';
+}
 
 export const MENUITEMS = [
     {
@@ -17,55 +30,43 @@ export const MENUITEMS = [
                     {
                         state: 'publicité',
                         name: 'Publicité',
-                        route: 'publicity'
+                        route: `${distUrl}/publicity`
                     },
                     {
                         state: 'numerisation',
                         name: 'Numérisation',
-                        route: 'ingests',
+                        route: `${distUrl}/ingests`
                     },
                     {
                         state: 'detail-fichier',
                         name: 'Détail Fichier',
-                        route: 'detail-file',
+                        route: `${distUrl}/detail-file`,
                         tooltipText : 'Trace Segment'
                     },
                     {
                         state: 'fichiers-purges',
                         name: 'Fichiers Purgés',
-                        route: 'purged'
+                        route: `${distUrl}/purged`
                     }
                 ]
             }
         ]
     },
     {
-        label: 'App1',
-        url: `${this.distUrl}app1/`,
+        label: 'Dates de diffusions',
+        url: `${this.distUrl_DiffDates}diffusions-dates/`,
         main: [
             {
-                state: 'menu lorem ipsum',
-                short_label: 'm',
-                name: 'Menu lorem ipsum',
+                state: 'Dates de diffusions',
+                short_label: 'd',
+                name: 'Dates de diffusions',
                 type: 'sub',
                 icon: 'icon-home',
-                iconColor: '#ffffff',
                 children: [
                     {
-                        state: 'm1',
-                        name: 'Menu lorem ipsum1',
-                        routerLink: 'xxx'
-                    },
-                    {
-                        state: 'm2',
-                        name: 'Menu lorem ipsum2',
-                        routerLink: 'xxx'
-
-                    },
-                    {
-                        state: 'm3',
-                        name: 'Menu lorem ipsum3',
-                        routerLink: 'xxx'
+                      state: 'diffusions-dates',
+                      name: 'Dates de diffusions',
+                      route: `${distUrl_DiffDates}/diffusions-dates`
                     }
                 ]
             }
