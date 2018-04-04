@@ -89,8 +89,8 @@
               <ng-template ngFor let-asideChildren [ngForOf]="asideItem.children">
                 <li [routerLinkActive]="['active']" *ngIf="asideChildren.type !== 'sub'">
 
-                  <!-- <a [routerLink]="['/', asideChildren.route]" target="{{asideChildren.target ? '_blank' : '_self'}}"> -->
-                  <a [href]="[asideChildren.route]" target="{{asideChildren.target ? '_blank' : '_self'}}">
+    <!-- <a [routerLink]="['/', asideChildren.route]" target="{{asideChildren.target ? '_blank' : '_self'}}"> -->
+          <a [href]="[asideChildren.route]" target="{{asideChildren.target ? '_blank' : '_self'}}">
                     <span class="pcoded-micon">
                       <i class="icon-angle-right"></i>
                     </span>
