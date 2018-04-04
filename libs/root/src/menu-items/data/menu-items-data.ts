@@ -7,8 +7,8 @@ let distUrl: String = '';
 let distUrl_DiffDates: String = '';
 
 if (document.location.host.indexOf('localhost') !== -1) {
-  distUrl = document.location.host;
-  distUrl_DiffDates = document.location.host;
+  distUrl = '/#';
+  distUrl_DiffDates = '/#';
 } else {
   distUrl =  rootUrl + '/#';
   distUrl_DiffDates = rootUrlDiffDates + '/#';
