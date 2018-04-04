@@ -12,7 +12,7 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 
-fdescribe('Component: DiffusionsDatesTableComponent', () => {
+describe('Component: DiffusionsDatesTableComponent', () => {
 
   let component: DiffusionsDatesTableComponent;
   let fixture: ComponentFixture<DiffusionsDatesTableComponent>;

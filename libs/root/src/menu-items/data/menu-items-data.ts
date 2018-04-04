@@ -3,15 +3,15 @@
 
 import { rootUrl_DiffDates, rootUrl} from '../../../../../.privates-url';
 
-const distUrl: String = '';
-const distUrl_DiffDates: String = '';
+let distUrl: String = '';
+let distUrl_DiffDates: String = '';
 
 if (document.location.host.indexOf('localhost') !== -1) {
-  this.distUrl = document.location.host;
-  this.distUrl_DiffDates = document.location.host;
+  distUrl = document.location.host;
+  distUrl_DiffDates = document.location.host;
 } else {
-  this.distUrl = '/#' + rootUrl;
-  this.distUrl_DiffDates = '/#' + rootUrl_DiffDates;
+  distUrl =  rootUrl + '/#';
+  distUrl_DiffDates = rootUrl_DiffDates + '/#';
 }
 
 export const MENUITEMS = [
