@@ -1,7 +1,7 @@
 
 // TODO : ajouter url définitive de prod (importer à partir du fichier privates-url.ts)
 
-import { rootUrl_DiffDates, rootUrl} from '../../../../../.privates-url';
+import { rootUrlDiffDates, rootUrl} from '../../../../../.privates-url';
 
 let distUrl: String = '';
 let distUrl_DiffDates: String = '';
@@ -11,7 +11,7 @@ if (document.location.host.indexOf('localhost') !== -1) {
   distUrl_DiffDates = document.location.host;
 } else {
   distUrl =  rootUrl + '/#';
-  distUrl_DiffDates = rootUrl_DiffDates + '/#';
+  distUrl_DiffDates = rootUrlDiffDates + '/#';
 }
 
 export const MENUITEMS = [
