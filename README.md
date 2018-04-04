@@ -1,7 +1,7 @@
 # Intranet Project
 
 This project is a mono repo for angular apps with nx workspace config
-![alt text](http://recurship.com/blog/2017/11/27/nx-the-new-way-to-build-enterprise-angular-apps)
+![alt text](https://static1.squarespace.com/static/5618e3e3e4b0b6c3336cd921/t/5a1b395a0d92971bbcf7c648/1511733604593/1.png?format=750w)
 
 ## Dev Tools
 
