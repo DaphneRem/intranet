@@ -42,7 +42,7 @@ export class NavbarComponent implements OnInit {
   @Input() subItemIcon: string;
 
   public config: any;
-
+  public localMode: boolean;
   constructor(
     private sanitizer: DomSanitizer,
     public menuItems: MenuItems,
@@ -51,8 +51,22 @@ export class NavbarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLocalMode();
+  }
+  isLocalMode() {
+    if (document.location.href.indexOf('localhost') !== -1) {
+      this.localMode = true;
+    } else {
+      this.localMode = false;
+    }
   }
 
+  linkActiveTest(url) {
+    const currentPath = document.location.href;
+    if (currentPath.indexOf(url) !== -1 ) {
+      return 'active';
+    }
+  }
   // method to call the links without adding 'unsafe' before the url address
   sanitize(url: string) {
     return this.sanitizer.bypassSecurityTrustUrl(url);

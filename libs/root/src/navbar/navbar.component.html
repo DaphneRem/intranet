@@ -7,6 +7,9 @@
   sub-item-theme="theme2"
   active-item-style="style0"
   [attr.pcoded-navbar-position]="pcodedSidebarPosition">
+
+
+
   <div class="pcoded-inner-navbar main-menu" appAccordion>
     <perfect-scrollbar
       [style.max-width]="'235px'"
@@ -87,29 +90,55 @@
             </a>
             <ul class="pcoded-submenu">
               <ng-template ngFor let-asideChildren [ngForOf]="asideItem.children">
-                <li [routerLinkActive]="['active']" *ngIf="asideChildren.type !== 'sub'">
+                <li [ngSwitch]="localMode" [ngClass]="linkActiveTest(asideChildren.route)" [routerLinkActive]="['active']" *ngIf="asideChildren.type !== 'sub'">
 
-            <a [routerLink]="asideChildren.route"  routerLinkActive="active" target="{{asideChildren.target ? '_blank' : '_self'}}">
-            <!-- <a [href]="[asideChildren.route]" routerLinkActive="active" target="{{asideChildren.target ? '_blank' : '_self'}}"> -->
-                    <span class="pcoded-micon">
-                      <i class="icon-angle-right"></i>
-                    </span>
-                    <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
-                    <span
-                      *ngIf="asideChildren.tooltipText"
-                      class="pcoded-mtext"
-                      placement="right"
-                      [ngbTooltip]="tipContent">
-                      {{ asideChildren.name }}
-                    </span>
-                    <ng-template #tipContent>{{asideChildren.tooltipText}}</ng-template>
-                    <span
-                      *ngFor="let asideChildrenBadge of asideChildren.badge"
-                      class="pcoded-badge label label-{{ asideChildrenBadge.type }}">
-                      {{asideChildrenBadge.value}}
-                    </span>
-                    <span class="pcoded-mcaret"></span>
-                  </a>
+                    <a *ngSwitchCase="false"
+                    [href]="asideChildren.route"
+                    target="{{asideChildren.target ? '_blank' : '_self'}}">
+                        <span class="pcoded-micon">
+                            <i class="icon-angle-right"></i>
+                          </span>
+                          <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
+                          <span
+                            *ngIf="asideChildren.tooltipText"
+                            class="pcoded-mtext"
+                            placement="right"
+                            [ngbTooltip]="tipContent">
+                            {{ asideChildren.name }}
+                          </span>
+                          <ng-template #tipContent>{{asideChildren.tooltipText}}</ng-template>
+                          <span
+                            *ngFor="let asideChildrenBadge of asideChildren.badge"
+                            class="pcoded-badge label label-{{ asideChildrenBadge.type }}">
+                            {{asideChildrenBadge.value}}
+                          </span>
+                          <span class="pcoded-mcaret"></span>
+                        </a>
+
+                    <a *ngSwitchCase="true"
+                    [routerLink]="asideChildren.route" [routerLinkActive]="'is-active'" target="{{asideChildren.target ? '_blank' : '_self'}}">
+
+                        <span class="pcoded-micon">
+                          <i class="icon-angle-right"></i>
+                        </span>
+                        <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
+                        <span
+                          *ngIf="asideChildren.tooltipText"
+                          class="pcoded-mtext"
+                          placement="right"
+                          [ngbTooltip]="tipContent">
+                          {{ asideChildren.name }}
+                        </span>
+                        <ng-template #tipContent>{{asideChildren.tooltipText}}</ng-template>
+                        <span
+                          *ngFor="let asideChildrenBadge of asideChildren.badge"
+                          class="pcoded-badge label label-{{ asideChildrenBadge.type }}">
+                          {{asideChildrenBadge.value}}
+                        </span>
+                        <span class="pcoded-mcaret"></span>
+                      </a>
+
+
                 </li>
 
                 <li active
@@ -155,6 +184,9 @@
           </li>
         </ul>
       </span>
+
+
     </perfect-scrollbar>
   </div>
+
 </nav>
