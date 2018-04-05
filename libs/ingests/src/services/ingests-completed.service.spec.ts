@@ -35,11 +35,7 @@ describe('Service: IngestsCompletedService', () => {
         }
       ]
     });
-    
-    // Get the MockBackend
     backend = TestBed.get(MockBackend);
-
-    // Returns a service with the MockBackend so we can test with dummy responses
     service = TestBed.get(IngestsCompletedService);
   });
 
@@ -47,15 +43,9 @@ describe('Service: IngestsCompletedService', () => {
         service = s;
       }));
 
-    it(`should issue a request`,
-        // 1. declare as async test since the HttpClient works with Observables
-        async(
-          // 2. inject HttpClient and HttpTestingController into the test
+    it(`should issue a request`, async(
           inject([HttpClient, HttpTestingController], (http: HttpClient, backend: HttpTestingController) => {
-            // 3. send a simple request
             http.get('/foo/bar').subscribe();
-            // 4. HttpTestingController supersedes `MockBackend` from the "old" Http package
-            // here two, it's significantly less boilerplate code needed to verify an expected request
             backend.expectOne({
               url: '/foo/bar',
               method: 'GET'
@@ -83,7 +73,6 @@ describe('Service: IngestsCompletedService', () => {
                 tstamp: '2018-03-26T12:05:45'
             }
         ];
-      // When the request subscribes for results on a connection, return a fake response
       backend.connections.subscribe(connection => {
         connection.mockRespond(
           new Response(<ResponseOptions>{
@@ -91,7 +80,6 @@ describe('Service: IngestsCompletedService', () => {
           })
         );
       });
-      // Perform a request and make sure we get the response we expect
       service.getIngestsCompleted(3).subscribe(res => {
         expect(res).toBeDefined();
         expect(typeof res).toBe('object');
