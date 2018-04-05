@@ -98,15 +98,18 @@ export class IngestsInProgressComponent implements OnInit {
     this.customdatatablesOptions.columns = [
       {
         title : 'titreSeg',
-        data : 'titreSeg'
+        data : 'titreSeg',
+        className: 'long-data'
+
       },
       {
         title : 'id',
-        data : 'id'
+        data : 'id',
       },
       {
         title : 'noseg',
-        data : 'noseg'
+        data : 'noseg',
+        className: 'small-data'
       },
       {
         title : 'nomfichier',
@@ -138,7 +141,8 @@ export class IngestsInProgressComponent implements OnInit {
       },
       {
         title : 'commentaires',
-        data : 'commentaires'
+        data : 'commentaires',
+        className: 'long-data'
       },
     ];
   }

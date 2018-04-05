@@ -5,6 +5,8 @@ $warningColor : #FFB64D;
 $warningGradient : linear-gradient(45deg, #FFB64D, #ffcb80);
 $selectedRow : #3b4650;
 $tableButton : #3b4650;
+
+
 .custom-datatables {
     margin : 10px;
     width: inherit;
@@ -131,6 +133,31 @@ $tableButton : #3b4650;
     border-top : 0;
 }
 
+/deep/ .small-data {
+    width: 50px; 
+    white-space: pre-wrap;
+}
+
+/deep/ .long-data {
+    width: 150px; 
+    white-space: pre-wrap;
+    text-align: start !important;
+}
+
+/deep/ .longer-data {
+    width: 60%; 
+    white-space: pre-wrap;
+    text-align: start !important;
+}
+
+/deep/ .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody > table > tbody > tr > td {
+    vertical-align: middle;
+    text-align: center;
+}
+/deep/ .table > thead > tr > th {
+    text-align: center;
+}
+
 // scroll :
 /deep/ .dataTables_wrapper.no-footer .dataTables_scrollBody {
     border-bottom: 0;
@@ -235,7 +262,6 @@ $tableButton : #3b4650;
                 cursor : pointer;
                 transition: all ease-in 0.3s;
                 border-radius: 2px;
-                text-transorm: capitalize;
                 font-size: 15px;
                 &:hover {
                     background-color: $white;
@@ -248,7 +274,7 @@ $tableButton : #3b4650;
     }
     div.dt-button-collection {
         // margin-top: -45px;
-        margin-top: -250px; 
+        margin-top: -210px; 
         display: inline-block;
         width: auto;
         // display: flex;

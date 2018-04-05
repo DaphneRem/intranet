@@ -73,14 +73,9 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
             text: 'Export csv',
             fieldSeparator: ','
         };
-  // public excelTestButton =  {
-  //           extend: 'excel',
-  //           text: 'Export excel',
-  //       };
   public pageLengthButton =  {
             extend: 'pageLength',
         };
-  // public createRowButton =         { extend: 'create',     editor: myEditor };
 
 
   // custom datatable language
@@ -155,6 +150,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         scrollX: true,
         paging: options.paging,
         searching: options.search,
+        autoWidth: false,
         language : this.frenchLanguage,
         select : 'single',
         pageLength : options.rowsMax,
@@ -187,9 +183,8 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
               extend: 'collection',
               text: 'Options',
               buttons: [
-                // this.excelTestButton,
                 this.pageLengthButton,
-                this.colvisButton,
+                // this.colvisButton,
                 this.copyButton,
                 this.printButton,
                 this.excelButton,
@@ -270,9 +265,11 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
       this.customdatatablesOptions.columns.map(item =>
         this.finalData.push({
           title: item.title.toUpperCase(),
-          data: item.data
+          data: item.data,
+          className: item.className
         })
       );
+      console.log(this.finalData);
       return this.finalData;
     } else {
       Object.keys(this.customdatatablesOptions.data[0]).map(item =>

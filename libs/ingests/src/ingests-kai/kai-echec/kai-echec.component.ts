@@ -108,7 +108,8 @@ export class KaiEchecComponent implements OnInit {
       },
       {
         title : 'COMMENTAIRE',
-        data : 'COMMENTAIRE'
+        data : 'COMMENTAIRE',
+        className: 'longer-data'
       }
     ];
   }

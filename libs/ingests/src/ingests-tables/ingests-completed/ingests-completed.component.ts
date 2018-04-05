@@ -89,47 +89,50 @@ export class IngestsCompletedComponent implements OnInit {
     this.customdatatablesOptions.columns = [
       {
         title : 'titreSeg',
-        data : 'titreSeg'
+        data : 'titreSeg',
+        className: 'long-data'
       },
       {
         title : 'id',
-        data : 'id'
+        data : 'id',
       },
       {
         title : 'noseg',
-        data : 'noseg'
+        data : 'noseg',
       },
       {
         title : 'nomfichier',
-        data : 'nomfichier'
+        data : 'nomfichier',
       },
       {
         title : 'stockage',
-        data : 'stockage'
+        data : 'stockage',
       },
       {
-        title : 'idSuppSuivant',
-        data : 'idSuppSuivant'
+        title : 'idSuivant',
+        data : 'idSuppSuivant',
+        className: 'long-data'
+      },
+      // {
+      //   title : 'noSegSuivant',
+      //   data : 'noSegSuivant'
+      // },
+      {
+        title : 'statut',
+        data : 'statutSupport',
       },
       {
-        title : 'noSegSuivant',
-        data : 'noSegSuivant'
-      },
-      {
-        title : 'statutSupport',
-        data : 'statutSupport'
-      },
-      {
-        title : 'typeSupport',
-        data : 'typeSupport'
+        title : 'type',
+        data : 'typeSupport',
       },
       {
         title : 'tstamp',
-        data : 'tstamp'
+        data : 'tstamp',
       },
       {
         title : 'commentaires',
-        data : 'commentaires'
+        data : 'commentaires',
+        className: 'long-data'
       },
     ];
   }

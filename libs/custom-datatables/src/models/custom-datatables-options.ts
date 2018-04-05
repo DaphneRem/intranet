@@ -17,6 +17,7 @@ export class CustomDatatablesOptions {
 export class Columns {
   title: string;
   data: string;
+  className?: string;
 }
 
 export class Buttons {
@@ -26,5 +27,6 @@ export class Buttons {
   copyButtonExiste: boolean;
   printButtonExiste: boolean;
   excelButtonExiste: boolean;
+  pageLengthButton?: boolean;
 }
 
