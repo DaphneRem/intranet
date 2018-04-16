@@ -46,12 +46,12 @@ registerLocaleData(localeFr, 'fr');
     PubModule,
     RootModule,
     RouterStateModule.forRoot(),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25 // Retains last 25 states
-    }),
     StoreModule.forRoot({
       navbar: navbarReducer,
       lastSearch: lastSearchReducer
+    }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25 // Retains last 25 states
     }),
     SubHeaderModule,
     TraceSegmentModule,
