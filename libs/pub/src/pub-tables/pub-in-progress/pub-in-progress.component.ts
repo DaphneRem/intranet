@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 // lib imports
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
@@ -35,6 +36,7 @@ export class PubInProgressComponent implements OnInit {
     lenghtMenu: [5, 10, 15],
     theme: 'blue theme',
     renderOption: true,
+    dbClickActionExist: true,
     buttons: {
       buttons: true,
       allButtons: true,
@@ -45,12 +47,16 @@ export class PubInProgressComponent implements OnInit {
     }
   };
 
-  constructor( private pubInProgressService: PubInProgressService ) {}
+  constructor(
+    private pubInProgressService: PubInProgressService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.getPubInProgress(this.daysTableView);
     this.checkDaysViews();
     this.checkLinks();
+    this.displayAction();
   }
 
   checkLinks() {
@@ -67,6 +73,12 @@ export class PubInProgressComponent implements OnInit {
     } else {
       this.customdatatablesOptions.rowsMax = 15;
     }
+  }
+
+  displayAction() {
+    this.customdatatablesOptions.dbClickAction = (dataRow) => {
+      this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    };
   }
 
   checkDataReady() {

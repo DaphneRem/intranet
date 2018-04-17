@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 // lib imports
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
@@ -36,6 +37,7 @@ export class IngestsCompletedComponent implements OnInit {
     lenghtMenu: [5, 10, 15],
     theme: 'green theme',
     renderOption: true,
+    dbClickActionExist: true,
     buttons: {
       buttons: true,
       allButtons: true,
@@ -46,19 +48,30 @@ export class IngestsCompletedComponent implements OnInit {
     }
   };
 
-  constructor( private ingestsCompletedService: IngestsCompletedService ) {}
+  constructor(
+    private ingestsCompletedService: IngestsCompletedService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.getIngestsCompleted(this.daysTableView);
     this.checkDaysViews();
     this.checkLinks();
+    this.displayAction();
   }
+  // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
 
   checkLinks() {
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
     if (this.headerTableLinkExist) {
       this.customdatatablesOptions.headerTableLink = this.headerTableLink;
     }
+  }
+
+  displayAction() {
+    this.customdatatablesOptions.dbClickAction = (dataRow) => {
+      this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    };
   }
 
   checkDaysViews() {

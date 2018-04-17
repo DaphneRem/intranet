@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 // lib imports
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
@@ -35,6 +36,7 @@ export class PubCompletedComponent implements OnInit {
     lenghtMenu: [5, 10, 15],
     theme: 'green theme',
     renderOption: true,
+    dbClickActionExist: true,
     buttons: {
       buttons: true,
       allButtons: true,
@@ -45,12 +47,16 @@ export class PubCompletedComponent implements OnInit {
     }
   };
 
-  constructor( private pubCompletedService: PubCompletedService ) {}
+  constructor(
+    private pubCompletedService: PubCompletedService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.getPubCompleted(this.daysTableView);
     this.checkDaysViews();
     this.checkLinks();
+    this.displayAction();
   }
 
   checkLinks() {
@@ -58,6 +64,12 @@ export class PubCompletedComponent implements OnInit {
     if (this.headerTableLinkExist) {
       this.customdatatablesOptions.headerTableLink = this.headerTableLink;
     }
+  }
+
+  displayAction() {
+    this.customdatatablesOptions.dbClickAction = (dataRow) => {
+      this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    };
   }
 
   checkDaysViews() {

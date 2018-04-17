@@ -12,6 +12,8 @@ export class CustomDatatablesOptions {
   buttons: Buttons;
   theme: string;
   renderOption: boolean;
+  dbClickActionExist?: boolean;
+  dbClickAction?: any;
 }
 
 export class Columns {

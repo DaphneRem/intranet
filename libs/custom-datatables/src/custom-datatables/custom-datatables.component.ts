@@ -253,8 +253,10 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   // go to file-detail with autoPath when double click on row
   someClickHandler(dataRow: any): void {
     this.idSelectedData = dataRow.id;
-    if (dataRow.id && (dataRow.noseg >= 0)) {
-      this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    // if (dataRow.id && (dataRow.noseg >= 0)) {
+      if (this.customdatatablesOptions.dbClickActionExist) {
+        this.customdatatablesOptions.dbClickAction(dataRow);
+      // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
     }
   }
 
