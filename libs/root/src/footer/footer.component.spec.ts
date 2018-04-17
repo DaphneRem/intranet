@@ -29,7 +29,7 @@ describe('FooterComponent', () => {
     const noData = fixture.debugElement.query(By.css('.navbar-text'));
     const el = noData.nativeElement;
     const content = el.textContent;
-    expect(content).toContain('@ AB-Télévision');
+    expect(content).toContain('© AB-Télévision');
   });
 
 });
