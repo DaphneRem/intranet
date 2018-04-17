@@ -156,8 +156,8 @@
       "appRoot": ""
     },
     {
-      "name": "trace-segment",
-      "root": "libs/trace-segment/src",
+      "name": "custom-datatables",
+      "root": "libs/custom-datatables/src",
       "test": "../../../test.js",
       "appRoot": ""
     },
