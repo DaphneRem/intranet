@@ -49,7 +49,18 @@ const fakeFrenchLanguage = {
         previous: 'Pr&eacute;c&eacute;dent',
         next: 'Suivant',
         last: 'Dernier'
-    }
+    },
+    buttons: {
+      pageLength: {
+          _: 'Afficher %d éléments',
+          '-1': 'Tout afficher'
+      },
+      copyTitle: 'Ajouté au presse-papiers',
+      copySuccess: {
+        _: '%d lignes copiées',
+        1: '1 ligne copiée'
+      }
+  }
 };
 
 describe('CustomDatatablesComponent', () => {
