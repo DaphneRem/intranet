@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing'
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { IngestsInProgressComponent } from './ingests-in-progress.component';
 import { IngestsInProgressService } from '../../services/ingests-in-progress.service';
@@ -19,7 +20,8 @@ describe('IngestsInProgressComponent', () => {
       TestBed.configureTestingModule({
         imports: [
           HttpClientModule,
-          HttpClientTestingModule
+          HttpClientTestingModule,
+          RouterTestingModule
         ],
         declarations: [
           IngestsInProgressComponent,

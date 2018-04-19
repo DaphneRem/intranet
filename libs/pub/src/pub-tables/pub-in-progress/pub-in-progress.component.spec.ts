@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing'
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { PubInProgressComponent } from './pub-in-progress.component';
 import { PubInProgressService } from '../../services/pub-in-progress.service';
@@ -17,12 +18,10 @@ describe('PubInProgressComponent', () => {
       TestBed.configureTestingModule({
         imports: [
           HttpClientModule,
-          HttpClientTestingModule
+          HttpClientTestingModule,
+          RouterTestingModule
         ],
-        declarations: [
-          PubInProgressComponent,
-          TestHostComponent
-        ],
+        declarations: [PubInProgressComponent, TestHostComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [PubInProgressService]
       }).compileComponents();
