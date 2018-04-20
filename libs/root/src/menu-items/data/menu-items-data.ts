@@ -47,6 +47,11 @@ export const MENUITEMS = [
                         state: 'fichiers-purges',
                         name: 'Fichiers Purgés',
                         route: `${distUrl}/purged`
+                    },
+                    {
+                        state: 'playlists',
+                        name: 'Playlists',
+                        route: `${distUrl}/playlists`
                     }
                 ]
             }
