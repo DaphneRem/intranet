@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import {
     IngestsCompletedDetailsComponent,
@@ -12,6 +12,12 @@ import {
     KarinaWaitingDetailsComponent
 } from '@ab/ingests';
 import { Page404Component } from '@ab/error-pages';
+import {
+  PlaylistsAllDetailsComponent,
+  PlaylistsErrorsDetailsComponent,
+  PlaylistsTablesViewComponent,
+  PlaylistsWidgetsViewComponent,
+} from '@ab/playlists';
 import { PubCompletedDetailsComponent, PubInProgressDetailsComponent, PubTablesViewComponent, PubWidgetsViewComponent } from '@ab/pub';
 import { TraceSegmentComponent } from '@ab/trace-segment';
 
@@ -95,6 +101,33 @@ const routes: Routes = [
     path: 'purged',
     component: IngestsPurgedComponent,
     data: { title : 'Fichiers purgés' }
+  },
+  {
+    path: 'playlists',
+    children :
+    [
+      {
+        path: '',
+        component: PlaylistsWidgetsViewComponent,
+        data: { title : 'Playlists' }
+      },
+      {
+        path: 'tables-view',
+        component: PlaylistsTablesViewComponent,
+        data: { title : 'Playlists' }
+
+      },
+      {
+        path: 'errors',
+        component: PlaylistsErrorsDetailsComponent,
+        data: { title : 'Erreurs Playlists' }
+      },
+      {
+        path: 'all',
+        component: PlaylistsAllDetailsComponent,
+        data: { title : 'Toutes les Playlists' }
+      }
+    ]
   },
   { path: '**', component: Page404Component },
 

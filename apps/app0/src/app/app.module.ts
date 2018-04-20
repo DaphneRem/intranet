@@ -23,6 +23,7 @@ import { AppComponent } from './app.component';
 import { CustomDatatablesModule } from '@ab/custom-datatables';
 import { ErrorPagesModule } from '@ab/error-pages';
 import { IngestsModule } from '@ab/ingests';
+import { PlaylistsModule } from '@ab/playlists';
 import { PubModule } from '@ab/pub';
 import { RouterStateModule } from '@ab/router-state';
 import { RootModule, navbarReducer } from '@ab/root';
@@ -43,6 +44,7 @@ registerLocaleData(localeFr, 'fr');
     HttpClientModule,
     IngestsModule,
     NxModule.forRoot(),
+    PlaylistsModule,
     PubModule,
     RootModule,
     RouterStateModule.forRoot(),
