@@ -10,6 +10,18 @@ export class PlaylistsAllDetailsComponent implements OnInit {
   public headerTableLinkExist = false;
   public goBack = true;
 
+  public openNotification = false;
+
+  public customNotification = {
+    title: 'Attention',
+    msg: 'La dernière playlist a été ajoutée il y a plus d’une heure',
+    showClose: true,
+    timeout: 10000,
+    theme: 'default',
+    type: 'warning',
+    position: 'top-right',
+    closeOther: true
+  };
   constructor() { }
 
   ngOnInit() {
