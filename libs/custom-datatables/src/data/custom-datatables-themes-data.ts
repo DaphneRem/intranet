@@ -1,4 +1,4 @@
-import { blueThemeColor, greenThemeColor, redThemeColor, yellowThemeColor } from '@ab/shared';
+import { blueThemeColor, greenThemeColor, redThemeColor, yellowThemeColor, errorThemeColor } from '@ab/shared';
 
 export const CustomThemes = [
     {
@@ -72,6 +72,25 @@ export const CustomThemes = [
         buttonViewMore : {
             'color' : yellowThemeColor,
             'border-color' : yellowThemeColor,
+        },
+        alertColor :  {
+            'background' : '#ebebeb'
+        }
+    },
+    {
+        name : 'error theme',
+        firstColumnColor: {
+            'background' : errorThemeColor
+        },
+        headerColor: {
+            'background' : '#fff',
+            'border' : '1px solid',
+            'border-color' : errorThemeColor,
+            'color' : errorThemeColor
+        },
+        buttonViewMore : {
+            'color' : errorThemeColor,
+            'border-color' : errorThemeColor,
         },
         alertColor :  {
             'background' : '#ebebeb'
