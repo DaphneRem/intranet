@@ -10,9 +10,8 @@ export class PlaylistsErrorsDetailsComponent implements OnInit {
   public headerTableLinkExist = false;
   public goBack = true;
 
-  constructor() { }
+  public openNotification = false;
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }
