@@ -254,9 +254,10 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   someClickHandler(dataRow: any): void {
     this.idSelectedData = dataRow.id;
     // if (dataRow.id && (dataRow.noseg >= 0)) {
+    // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    // }
       if (this.customdatatablesOptions.dbClickActionExist) {
         this.customdatatablesOptions.dbClickAction(dataRow);
-      // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
     }
   }
 
