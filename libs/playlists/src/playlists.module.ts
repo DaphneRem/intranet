@@ -17,10 +17,12 @@ import { PlaylistsWidgetsViewComponent } from './playlists-pages/playlists-widge
 
 // components import
 import { PlaylistsErrorsTableComponent } from './playlists-tables/playlists-errors-table/playlists-errors-table.component';
+import { PlaylistsAllTableComponent } from './playlists-tables/playlists-all-table/playlists-all-table.component';
 
 @NgModule({
   imports: [
     CommonModule,
+    CustomDatatablesModule,
     LoadersModule,
     NotificationsModule,
     ScrollToTopModule,
@@ -32,7 +34,8 @@ import { PlaylistsErrorsTableComponent } from './playlists-tables/playlists-erro
     PlaylistsErrorsTableComponent,
     PlaylistsErrorsDetailsComponent,
     PlaylistsTablesViewComponent,
-    PlaylistsWidgetsViewComponent
+    PlaylistsWidgetsViewComponent,
+    PlaylistsAllTableComponent
   ],
   exports: [
     PlaylistsAllDetailsComponent,
