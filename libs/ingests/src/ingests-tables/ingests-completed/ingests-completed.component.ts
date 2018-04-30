@@ -59,7 +59,6 @@ export class IngestsCompletedComponent implements OnInit {
     this.checkLinks();
     this.displayAction();
   }
-  // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
 
   checkLinks() {
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
