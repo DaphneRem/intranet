@@ -26,12 +26,6 @@ export class PlaylistsErrorsService {
           return res;
         }
         console.log(res);
-        res.map(e => {
-            let diff = new Date(e.datediff);
-            let ordre = new Date(e.dateordre);
-            e.datediff = diff.toLocaleString();
-            e.dateordre = ordre.toLocaleString();
-        });
         return res as Playlist[];
       })
       .catch(this.handleError);
