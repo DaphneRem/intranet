@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
   public marginTop = '56px';
   public paddingTop;
   public marginLeft;
-  public title = 'app0';
+  public title = 'suivi-ingests';
   public logo = 'logoABintranet';
   public headerNav = false;
 

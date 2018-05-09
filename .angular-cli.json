@@ -7,9 +7,9 @@
   },
   "apps": [
     {
-      "name": "app0",
-      "root": "apps/app0/src",
-      "outDir": "dist/apps/app0",
+      "name": "suivi-ingests",
+      "root": "apps/suivi-ingests/src",
+      "outDir": "dist/apps/suivi-ingests",
       "assets": [
         "assets",
         "../../../assets",
@@ -196,11 +196,11 @@
       "exclude": "**/node_modules/**"
     },
     {
-      "project": "apps/app0/tsconfig.app.json",
+      "project": "apps/suivi-ingests/tsconfig.app.json",
       "exclude": "**/node_modules/**"
     },
     {
-      "project": "apps/app0/tsconfig.e2e.json",
+      "project": "apps/suivi-ingests/tsconfig.e2e.json",
       "exclude": "**/node_modules/**"
     },
     {

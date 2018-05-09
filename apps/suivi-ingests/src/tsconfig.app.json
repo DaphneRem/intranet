@@ -1,7 +1,7 @@
 {
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../../dist/out-tsc/apps/app0",
+    "outDir": "../../../dist/out-tsc/apps/suivi-ingests",
     "module": "es2015"
   },
   "include": [

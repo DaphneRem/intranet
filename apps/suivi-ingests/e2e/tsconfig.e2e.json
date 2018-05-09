@@ -1,7 +1,7 @@
 {
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../../dist/out-tsc/e2e/app0",
+    "outDir": "../../../dist/out-tsc/e2e/suivi-ingests",
     "baseUrl": "./",
     "module": "commonjs",
     "target": "es5",

@@ -15,10 +15,10 @@
     "buildDiff-test": "ng build --app=diffusions-dates --baseHref http://vm-angular-rc:8082 ",
     "buildDiff-release": "ng build --app=diffusions-dates --baseHref http://vm-angular-rc:8084",
     "buildDiffProd": "ng build --app=diffusions-dates --baseHref http://vm-angular-rc:8082 --prod ",
-    "ingest-build-local": "ng build --app=app0 --baseHref http://127.0.0.1:8080/edsa-ingest/ --watch",
-    "ingest-build-test": "ng build --app=app0 --baseHref http://vm-angular-rc:8083",
-    "ingest-build-release": "ng build --prod --app=app0 --baseHref http://vm-angular-rc:8085",
-    "sbuild": "ng build --app=app0 --baseHref http://vm-angular-rc:8083/SuiviIngest"
+    "ingest-build-local": "ng build --app=suivi-ingests --baseHref http://127.0.0.1:8080/edsa-ingest/ --watch",
+    "ingest-build-test": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083",
+    "ingest-build-release": "ng build --prod --app=suivi-ingests --baseHref http://vm-angular-rc:8085",
+    "sbuild": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083/SuiviIngest"
   },
   "private": true,
   "dependencies": {

@@ -10,7 +10,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
-/*********** from app0 **********/
+/*********** from suivi-ingests **********/
 
 // modules :
 import { AppRoutingModule } from './app-routing.module';
