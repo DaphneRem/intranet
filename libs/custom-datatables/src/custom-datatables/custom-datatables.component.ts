@@ -52,6 +52,8 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   public headerTableLinkExist: boolean;
   public headerTableLink: string;
   public buttons: any;
+  public tooltipHeader: string;
+
 
   public trTagName;
 
@@ -220,6 +222,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
       this.headerTableLinkExist = options.headerTableLinkExist;
       this.headerTableLink = options.headerTableLink;
       this.renderOption = options.renderOption;
+      this.tooltipHeader = options.tooltipHeader;
       this.buttons = [
             {
               name : this.colvisButton,

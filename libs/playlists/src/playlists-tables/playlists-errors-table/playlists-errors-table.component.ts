@@ -76,6 +76,7 @@ export class PlaylistsErrorsTableComponent implements OnInit {
       this.comment.exist = true;
       this.comment.text = dataRow.commentaire;
     };
+    this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour voir le message d\'erreur associé';
   }
 
   checkDaysViews() {

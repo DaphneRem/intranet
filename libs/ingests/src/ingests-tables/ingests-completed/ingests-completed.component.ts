@@ -71,6 +71,7 @@ export class IngestsCompletedComponent implements OnInit {
     this.customdatatablesOptions.dbClickAction = (dataRow) => {
       this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
     };
+    this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour avoir une vue détaillée';
   }
 
   checkDaysViews() {
