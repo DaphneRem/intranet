@@ -9,6 +9,7 @@ describe('Ingests App (suivi-ingests)', () => {
 
  // Check title in navigation :
 
+ /*** Ingests ***/
   it('should display title "Numérisation" to path "/"', () => {
     page.navigateToHome();
     expect(page.getPageTitle()).toEqual('Numérisation');
@@ -39,6 +40,12 @@ describe('Ingests App (suivi-ingests)', () => {
     expect(page.getPageTitle()).toEqual('En attente KARINA');
   });
 
+  it('should display title "Fichiers purgés" to path "purged"', () => {
+    page.navigateToPurged();
+    expect(page.getPageTitle()).toEqual('Fichiers purgés');
+  });
+
+  /*** Publicity ***/
   it('should display title "Publicité" to path "publicity"', () => {
     page.navigateToPub();
     expect(page.getPageTitle()).toEqual('Publicité');
@@ -59,9 +66,24 @@ describe('Ingests App (suivi-ingests)', () => {
     expect(page.getPageTitle()).toEqual('Publicités Terminés');
   });
 
-  it('should display title "Fichiers purgés" to path "purged"', () => {
-    page.navigateToPurged();
-    expect(page.getPageTitle()).toEqual('Fichiers purgés');
+  /*** Publicity ***/
+  it('should display title "Playlists" to path "playlists"', () => {
+    page.navigateToPlaylists();
+    expect(page.getPageTitle()).toEqual('Playlists');
   });
 
+  it('should display title "Playlists" to path "playlists/tables-view"', () => {
+    page.navigateToPlaylistsTable();
+    expect(page.getPageTitle()).toEqual('Playlists');
+  });
+
+  it('should display title "Erreurs Playlists" to path "playlists/erros"', () => {
+    page.navigateToPlaylistsErrors();
+    expect(page.getPageTitle()).toEqual('Erreurs Playlists');
+  });
+
+  it('should display title "Toutes les Playlists" to path "playlists/all"', () => {
+    page.navigateToPlaylistsAll();
+    expect(page.getPageTitle()).toEqual('Toutes les Playlists');
+  });
 });

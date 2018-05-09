@@ -52,6 +52,21 @@ export class AppPage {
     return browser.get('#/purged');
   }
 
+  navigateToPlaylists() {
+    return browser.get('#/playlists');
+  }
+
+  navigateToPlaylistsTable() {
+    return browser.get('#/playlists/tables-view');
+  }
+
+  navigateToPlaylistsErrors() {
+    return browser.get('#/playlists/errors');
+  }
+
+  navigateToPlaylistsAll() {
+    return browser.get('#/playlists/all');
+  }
   // get Title
   getPageTitle() {
     return browser.getTitle();
