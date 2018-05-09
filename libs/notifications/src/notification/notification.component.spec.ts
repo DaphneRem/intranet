@@ -2,24 +2,60 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NotificationComponent } from './notification.component';
 
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ToastyModule } from 'ng2-toasty';
+
 describe('NotificationComponent', () => {
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+  let testHostComponent: TestHostComponent;
+
   let component: NotificationComponent;
   let fixture: ComponentFixture<NotificationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NotificationComponent ]
+      imports : [ ToastyModule ],
+      declarations: [ NotificationComponent, TestHostComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NotificationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create component', () => {
+    expect(testHostFixture).toBeDefined();
   });
+
+  it('should have showClose property', () => {
+    fixture = TestBed.createComponent(NotificationComponent);
+    component = fixture.componentInstance;
+    component.showClose = true;
+    fixture.detectChanges();
+    expect(component.showClose).toBeDefined();
+  });
+
+  it('should have closeOther property', () => {
+    fixture = TestBed.createComponent(NotificationComponent);
+    component = fixture.componentInstance;
+    component.closeOther = false;
+    fixture.detectChanges();
+    expect(component.closeOther).toBeDefined();
+  });
+
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test ></component-under-test>`
+  })
+  class TestHostComponent {
+    @ViewChild(NotificationComponent)
+    public NotificationComponen: NotificationComponent;
+  }
+
 });
+
+

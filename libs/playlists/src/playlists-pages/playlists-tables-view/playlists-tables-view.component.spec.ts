@@ -36,6 +36,14 @@ describe('PlaylistsTablesViewComponent', () => {
     expect(component.link).toBeDefined();
   });
 
+  it('should have link property', () => {
+    fixture = TestBed.createComponent(PlaylistsTablesViewComponent);
+    component = fixture.componentInstance;
+    component.link = '/link';
+    fixture.detectChanges();
+    expect(component.link).toBeDefined();
+  });
+
   // it('should display view for 24h', () => {
   //   fixture = TestBed.createComponent(PlaylistsTablesViewComponent);
   //   component = fixture.componentInstance;

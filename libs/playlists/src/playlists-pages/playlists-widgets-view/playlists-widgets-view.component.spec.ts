@@ -48,7 +48,7 @@ describe('PlaylistsWidgetsViewComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     expect(component.widgets[0].title).toBe('Erreurs Playlist');
-    expect(component.widgets[0].icon).toBe('icofont icofont-youtube-play');
+    expect(component.widgets[0].icon).toBe('icofont icofont-warning-alt');
     expect(component.widgets[0].size).toBe('col-md-12 col-lg-6 ');
     expect(component.widgets[0].link).toBe('./errors');
     expect(component.widgets[0].color).toBe('#FF0000');
@@ -59,7 +59,7 @@ describe('PlaylistsWidgetsViewComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     expect(component.widgets[1].title).toBe('Toutes les Playlists');
-    expect(component.widgets[1].icon).toBe('icofont icofont-video-alt');
+    expect(component.widgets[1].icon).toBe('icofont icofont-youtube-play');
     expect(component.widgets[1].size).toBe('col-md-12 col-lg-6 ');
     expect(component.widgets[1].link).toBe('./all');
     expect(component.widgets[1].color).toBe('#39ADB5');
