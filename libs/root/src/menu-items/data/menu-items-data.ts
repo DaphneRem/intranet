@@ -30,7 +30,7 @@ export const MENUITEMS = [
                     {
                         state: 'publicité',
                         name: 'Publicité',
-                        route: `${distUrl}/publicity`
+                        route: `${distUrl}/advertising`
                     },
                     {
                         state: 'numerisation',
