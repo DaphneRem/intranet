@@ -23,6 +23,7 @@ import { KaiEchecComponent } from './ingests-kai/kai-echec/kai-echec.component';
 import { KaiWaitingComponent } from './ingests-kai/kai-waiting/kai-waiting.component';
 import { KarinaWaitingComponent } from './ingests-tables/karina-waiting/karina-waiting.component';
 import { KarinaWaitingDetailsComponent } from './ingests-pages/karina-waiting-details/karina-waiting-details.component';
+import { IngestsErrorsComponent } from './ingests-tables/ingests-errors/ingests-errors.component';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { KarinaWaitingDetailsComponent } from './ingests-pages/karina-waiting-de
     IngestsWidgetsViewComponent,
     KarinaWaitingComponent,
     KarinaWaitingDetailsComponent,
+    IngestsErrorsComponent,
   ]
 })
 export class IngestsModule {}
