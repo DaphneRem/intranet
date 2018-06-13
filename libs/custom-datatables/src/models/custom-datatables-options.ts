@@ -5,6 +5,9 @@ export class CustomDatatablesOptions {
   headerTableLink?: string;
   customColumn: boolean;
   columns?: Columns[];
+  // columnDefs?: ColumnDefs[];
+  // createdRow?: any;
+  importantData?:  ImportantData[];
   paging: boolean;
   search: boolean;
   rowsMax: number;
@@ -21,6 +24,13 @@ export class Columns {
   title: string;
   data: string;
   className?: string;
+  // createdCell?: any;
+  render?: any;
+}
+
+export class ColumnDefs {
+  targets: number;
+  createdCell?: any;
 }
 
 export class Buttons {
@@ -33,3 +43,8 @@ export class Buttons {
   pageLengthButton?: boolean;
 }
 
+export class ImportantData {
+  cellData: any;
+  className: string;
+  index: number;
+}

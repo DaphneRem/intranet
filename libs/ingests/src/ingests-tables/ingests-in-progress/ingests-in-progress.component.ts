@@ -36,6 +36,13 @@ export class IngestsInProgressComponent implements OnInit {
     paging: true,
     search: true,
     rowsMax: 10,
+    importantData : [
+      {
+        index : 4,
+        className: 'warning',
+        cellData: ['Bad Storage']
+      }
+    ],
     lenghtMenu: [5, 10, 15],
     theme : 'blue theme',
     renderOption : true,
@@ -100,7 +107,12 @@ export class IngestsInProgressComponent implements OnInit {
       .getIngestsInProgress(e)
       .subscribe(data => {
         this.data = data;
-        this.customdatatablesOptions.data = this.data;
+        console.log(data);
+        if (!data) {
+          this.customdatatablesOptions.data = [];
+        } else {
+          this.customdatatablesOptions.data = data;
+        }
         this.dataReady = true;
         this.displayColumns(data);
       });
@@ -140,16 +152,20 @@ export class IngestsInProgressComponent implements OnInit {
       //   title : 'noSegSuivant',
       //   data : 'noSegSuivant'
       // },
+      // {
+      //   title : 'statut',
+      //   data : 'statutSupport'
+      // },
       {
-        title : 'statut',
-        data : 'statutSupport'
+        title : 'diffusion ID',
+        data : 'diffusionid'
       },
       {
         title : 'type',
         data : 'typeSupport'
       },
       {
-        title : 'tstamp',
+        title : 'date état',
         data : 'tstamp'
       },
       {

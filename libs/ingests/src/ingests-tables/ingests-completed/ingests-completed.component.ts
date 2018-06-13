@@ -36,6 +36,18 @@ export class IngestsCompletedComponent implements OnInit {
     rowsMax: 10,
     lenghtMenu: [5, 10, 15],
     theme: 'green theme',
+    // importantData : [
+    //   {
+    //     index : 4,
+    //     className: 'warning',
+    //     cellData: ['Storage OK']
+    //   },
+    //   {
+    //     index : 2,
+    //     className: 'blue',
+    //     cellData: ['0']
+    //   }
+    // ],
     renderOption: true,
     dbClickActionExist: true,
     buttons: {
@@ -91,7 +103,11 @@ export class IngestsCompletedComponent implements OnInit {
     this.ingestsCompletedService
       .getIngestsCompleted(number)
       .subscribe(data => {
-        this.customdatatablesOptions.data = data;
+        if (!data) {
+          this.customdatatablesOptions.data = [];
+        } else {
+          this.customdatatablesOptions.data = data;
+        }
         this.dataReady = true;
         this.displayColumns(data);
     });
@@ -119,7 +135,7 @@ export class IngestsCompletedComponent implements OnInit {
       },
       {
         title : 'stockage',
-        data : 'stockage',
+        data : 'stockage'
       },
       {
         title : 'idSuivant',
@@ -130,16 +146,20 @@ export class IngestsCompletedComponent implements OnInit {
       //   title : 'noSegSuivant',
       //   data : 'noSegSuivant'
       // },
+      // {
+      //   title : 'statut',
+      //   data : 'statutSupport',
+      // },
       {
-        title : 'statut',
-        data : 'statutSupport',
+        title : 'diffusion ID',
+        data : 'diffusionid'
       },
       {
         title : 'type',
         data : 'typeSupport',
       },
       {
-        title : 'tstamp',
+        title : 'date état',
         data : 'tstamp',
       },
       {

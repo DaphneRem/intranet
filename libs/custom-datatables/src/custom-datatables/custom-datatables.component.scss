@@ -138,6 +138,14 @@ $tableButton : #3b4650;
     white-space: pre-wrap;
 }
 
+/deep/ .warning {
+    color : red;
+}
+
+/deep/ .blue {
+    color : blue;
+}
+
 /deep/ .long-data {
     width: 150px; 
     white-space: pre-wrap;

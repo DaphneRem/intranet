@@ -144,6 +144,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   }
 
   displayDatatables() {
+    // console.log(this.customdatatablesOptions.createdRow[0]);
     const options = this.customdatatablesOptions;
     if (options.data.length) { // if data != 0 or data != []
       this.dtOptions = {
@@ -154,6 +155,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         searching: options.search,
         autoWidth: false,
         language : this.frenchLanguage,
+        // createdRow: this.displayCreatedRow(),
         select : 'single',
         pageLength : options.rowsMax,
         lengthMenu : options.lenghtMenu,
@@ -161,6 +163,9 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
         buttons: [],
         rowCallback: (row: Node, data: any[] | Object, index: number) => { // datatable function to display action on double click
             const self = this;
+            if (options.importantData) {
+              options.importantData.map( item => this.displayImportantData(item, row));
+            }
             $('td', row).unbind('click');
             $('td', row).bind('dblclick', () => {
               self.someClickHandler(data); // go to file-detail with autoPath when double click on row
@@ -172,6 +177,19 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
       console.log(this.dtOptions.buttons);
 
     }
+
+  }
+
+  displayImportantData(data, row) {
+    console.log(data.index);
+    console.log(data.className);
+    console.log(data.cellData);
+    const importantData = $('td', row).eq(data.index).text().toLowerCase();
+    data.cellData.map(item => {
+      if (item.toLowerCase().includes(importantData)) {
+        $('td', row).eq(data.index).addClass(data.className);
+      }
+    });
   }
 
   displayButtons() {
