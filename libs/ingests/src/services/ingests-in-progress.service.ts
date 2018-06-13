@@ -23,10 +23,13 @@ export class IngestsInProgressService {
       .get<IngestsInProgress[]>(urlIngests + days + urlInProgress)
       .map((res: any) => {
         if (!res) {
+          console.log(res);
           res = 0;
           return res;
         }
-        return JSON.parse(res) as IngestsInProgress[];
+        // return JSON.parse(res) as IngestsInProgress[];
+        console.log(res);
+        return res as IngestsInProgress[];
       })
       .catch(this.handleError);
   }

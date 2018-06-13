@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
+import { InfoTraitementKai } from '../models/info-traitement-kai';
+
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
+import { catchError, retry, map } from 'rxjs/operators';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -8,32 +11,31 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
 // temporary imports :
-import { urlIngests, urlCompleted } from '../../../../.privates-url';
-
-import { IngestsCompleted } from '../models/ingests-completed';
+import { urlTraitementKai, urlSegment } from '../../../../.privates-url';
 
 @Injectable()
-export class IngestsCompletedService {
+export class  InfoTraitementKaiService {
+  constructor(
+    private http: HttpClient
+  ) {}
 
-  constructor( private http: HttpClient ) {}
 
-  getIngestsCompleted(days: number): Observable<IngestsCompleted[]> {
+  getInfoTraitementKai(idSupport: string, numSegment: number): Observable<InfoTraitementKai> {
+    console.log(urlTraitementKai + idSupport + urlSegment + numSegment);
     return this.http
-      .get(urlIngests + days + urlCompleted)
+      .get<InfoTraitementKai>(urlTraitementKai + idSupport + urlSegment + numSegment)
       .map((res: any) => {
         if (!res) {
-          res = 0;
-          return res;
+          return 0;
         }
-        // console.log(JSON.parse(res));
-        console.log(res);
-        return res as IngestsCompleted[];
+        // return JSON.parse(res);
+        console.log(res[0]);
+        return res[0] as InfoTraitementKai;
       })
       .catch(this.handleError);
   }
 
   private handleError(error: HttpErrorResponse) {
-    console.log(error);
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.error.message);
     } else {
