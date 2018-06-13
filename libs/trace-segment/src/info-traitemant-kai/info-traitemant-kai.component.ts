@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { InformationsKai } from '../models/informations-kai';
+import { InfoTraitementKai } from '../models/info-traitement-kai';
+
 import { InformationsKaiService } from '../services/informations-kai.service';
+import { InfoTraitementKaiService } from '../services/info-traitement-kai.service';
 
 @Component({
   selector: 'info-traitemant-kai',
@@ -10,95 +14,59 @@ import { InformationsKaiService } from '../services/informations-kai.service';
     '../../../../assets/icon/icofont/css/icofont.scss'
   ],
   providers : [
-        InformationsKaiService
+        InformationsKaiService,
+        InfoTraitementKaiService
   ]
 })
 export class InfoTraitemantKaiComponent implements OnInit {
   @Input() file;
-  public dataReady = false;
-  public infosKaiData;
+  public dataInfoReady = false;
+  public dataTraitementReady = false;
+  public infosKaiData: InformationsKai;
+  public traitementKaiData: InfoTraitementKai;
   public widgetsInfosData;
+  public widgetTraitementData;
   public minHeight = 155;
-  public error;
-  public errorMessage;
+  public errorTraitement = false;
+  public errorInfos = false;
+  public errorMessage = 'Données indisponibles';
 
   constructor(
-       private informationsKaiService: InformationsKaiService,
-
+      private informationsKaiService: InformationsKaiService,
+      private infoTraitementKaiService: InfoTraitementKaiService
   ) { }
 
   ngOnInit() {
     console.log(this.file);
-    this.getSupportSegment();
+    this.getInformationsKai();
   }
 
-  getSupportSegment(): void {
+  getInformationsKai(): void {
     this.informationsKaiService
       .getInformationsKai(this.file.idSupport, this.file.numSegment)
       .subscribe(data => {
-        this.dataReady = true;
         this.infosKaiData = data;
-        console.log(this.infosKaiData);
         if (!data) {
-          this.error = true;
-          this.errorMessage = 'Données indisponibles';
-          console.log(this.error);
-          console.log(this.errorMessage);
-          this.displayErrorData();
-        } else {
-          this.displayWidgetInfosData(this.infosKaiData);
+          this.errorInfos = true;
         }
+        this.displayInfosWidgets();
+        this.getInfoTraitementKai();
       });
   }
 
-  displayErrorData() {
-    this.widgetsInfosData = [
-      {
-        headerTitle : 'SGT',
-        headerColor : 'navbar',
-        minHeight : this.minHeight,
-        size : 3,
-      },
-      {
-        headerTitle : 'Informations KAI',
-        headerColor : 'red',
-        minHeight : this.minHeight,
-        icon : 'info-square',
-        size : 3,
-      },
-      // En attentant la requête informations traitement KAI
-      {
-        headerTitle : 'Traitement KAI',
-        headerColor : 'red',
-        minHeight : this.minHeight,
-        size : 3,
-        rows : [
-          {
-            title: 'Etape', // STATUT
-            data: 'REMONTEE INGEST',
-          },
-          {
-            title: 'Statut', // posstatut
-            data: 'TERMINE',
-          },
-        ]
-      },
-      {
-        headerTitle : 'Commentaire KAI',
-        headerColor : 'red',
-        minHeight : this.minHeight,
-        size : 3,
-        rows : [
-          {
-            title: 'Commentaire', // STATUT
-            data: 'Il n\'y a pas d\'élément dans la liste des ordres: 20882848/0 (commentaire provisoire)',
-          },
-        ]
-      },
-    ];
+  getInfoTraitementKai() {
+    this.infoTraitementKaiService
+      .getInfoTraitementKai(this.file.idSupport, this.file.numSegment)
+      .subscribe(data => {
+        this.traitementKaiData = data;
+        if (!data) {
+          this.errorTraitement = true;
+        }
+        this.displayTraitementWidgets();
+      });
   }
 
-  displayWidgetInfosData(data) {
+  displayInfosWidgets() {
     this.widgetsInfosData = [
       {
         headerTitle : 'SGT',
@@ -107,12 +75,12 @@ export class InfoTraitemantKaiComponent implements OnInit {
         size : 3,
         rows : [
           {
-            title: 'Identifiant SGT',
-            data : data.ObectId,
+            title: 'Identifiant SGT (obj id)',
+            data : this.infosKaiData.ObectId,
           },
           {
             title: 'Statut SGT',
-            data: data.Status,
+            data: this.infosKaiData.Status,
           }
         ]
       },
@@ -125,33 +93,38 @@ export class InfoTraitemantKaiComponent implements OnInit {
         rows : [
           {
             title: 'Unité de stockage',
-            data: data.objgroup,
+            data: this.infosKaiData.objgroup,
           },
           {
             title: 'Statut du fichier',
-            data: data.technicalStatus,
+            data: this.infosKaiData.technicalStatus,
           },
           {
             title: 'Date de mise à jour',
-            data: data.datemaj,
+            data: this.infosKaiData.datemaj,
             type: 'date'
           },
         ]
-      },
-      // En attentant la requête informations traitement KAI
-      {
+      }
+    ];
+    this.dataInfoReady = true;
+  }
+
+  displayTraitementWidgets() {
+    this.widgetTraitementData = [
+       {
         headerTitle : 'Traitement KAI',
         headerColor : 'red',
         minHeight : this.minHeight,
         size : 3,
         rows : [
           {
-            title: 'Etape', // STATUT
-            data: 'REMONTEE INGEST',
+            title: 'Etape',
+            data: this.traitementKaiData.statut,
           },
           {
-            title: 'Statut', // posstatut
-            data: 'TERMINE',
+            title: 'Statut',
+            data: this.traitementKaiData.posstatut,
           },
         ]
       },
@@ -162,12 +135,13 @@ export class InfoTraitemantKaiComponent implements OnInit {
         size : 3,
         rows : [
           {
-            title: 'Commentaire', // STATUT
-            data: 'Il n\'y a pas d\'élément dans la liste des ordres: 20882848/0 (commentaire provisoire)',
+            title: 'Commentaire',
+            data: this.traitementKaiData.commentaire,
           },
         ]
       },
     ];
+    this.dataTraitementReady = true;
   }
 
 }

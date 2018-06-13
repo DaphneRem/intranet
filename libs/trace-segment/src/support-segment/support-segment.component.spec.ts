@@ -58,10 +58,10 @@ describe('SupportSegmentComponent', () => {
     expect(typeof component.file).toBe('object');
   }));
 
-  it('should have minHeight property to 155', () => {
+  it('should have minHeight property to 210', () => {
     fixture = TestBed.createComponent(SupportSegmentComponent);
     component = fixture.componentInstance;
-    expect(component.minHeight).toBe(155);
+    expect(component.minHeight).toBe(210);
   });
 
   it('should have displayWidgetData() function', () => {

@@ -1,39 +1,18 @@
-<loader-animation *ngIf="!dataReady"></loader-animation>
-<div *ngIf="dataReady && !error" class="row">
-    <!-- <div class="card col-lg-12 col-xl-12 ">
-        <div class="large-widget ">
-            <div class="trnasiction-card" [style.background]="error ? 'rgb(235, 235, 235)' : '#ffff'">
-                <div class="card-header large-header">
-                    <h5 class="">
-                        Informations KAI
-                    </h5>
-                    <div class="card-header-right">
-                        <i class="icofont icofont-info-square"></i>
-                    </div>
-                </div>
-                <hr>
-                <div class="card-block large-card text-center">
-                    <div class="row" *ngIf="!error"> -->
-                        <widget-data
-                            class="col-lg-{{item.size}} col-xl-{{item.size}}" 
-                            *ngFor="let item of widgetsInfosData" 
-                            [data]="widgetsInfosData[widgetsInfosData.indexOf(item)]">
-                        </widget-data>
-                    <!-- </div>
-                    <div class="row error" *ngIf="error">
-                        <p class="error-message">{{errorMessage}}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-</div>
-<div *ngIf="dataReady && error" class="row">
-    <widget-data 
-        class="col-lg-{{item.size}} col-xl-{{item.size}}"  
+<loader-animation *ngIf="!dataInfoReady && !dataTraitementReady"></loader-animation>
+<div *ngIf="dataInfoReady && dataTraitementReady" class="row">
+    <widget-data
+        class="col-lg-{{item.size}} col-xl-{{item.size}}" 
         *ngFor="let item of widgetsInfosData" 
         [data]="widgetsInfosData[widgetsInfosData.indexOf(item)]"
-        [error]="error"
-        [errorMessage]="errorMessage" >
+        [error]="errorInfos"
+        [errorMessage]="errorMessage">
+    </widget-data>
+    <widget-data
+        class="col-lg-{{item.size}} col-xl-{{item.size}}" 
+        *ngFor="let item of widgetTraitementData" 
+        [data]="widgetTraitementData[widgetTraitementData.indexOf(item)]"
+        [error]="errorTraitement"
+        [errorMessage]="errorMessage">
     </widget-data>
 </div>
+

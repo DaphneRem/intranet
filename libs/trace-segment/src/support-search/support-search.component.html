@@ -57,7 +57,8 @@
       </form>
       <div *ngIf="file.exist" class="title">
         <!-- <hr> -->
-        <h4 class="text-center">{{title}}</h4>
+        <h4 class="text-center subtitle">TO : {{oeuvreTitle}}</h4>
+        <h4 class="text-center">TS : {{segmentTitle}}</h4>
       </div>
       <!-- <loader-animation *ngIf="file.exist === false && search.statut && error.statut===false" class="loader"></loader-animation> -->
       <div *ngIf="searchStore.error" class="no-file text-center">

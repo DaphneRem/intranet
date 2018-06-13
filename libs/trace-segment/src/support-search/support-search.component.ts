@@ -25,6 +25,8 @@ export class SupportSearchComponent implements OnInit {
   public supportSegmentData;
   public dataReady: boolean;
   public title: string;
+  public segmentTitle: string;
+  public oeuvreTitle: string;
   public errorMessageNoData = 'Les données sont momentanément indisponibles, veuillez essayer ultérieurement.';
   public error = {
       statut: false,
@@ -161,7 +163,8 @@ export class SupportSearchComponent implements OnInit {
           }
           if (Object.keys(this.supportSegmentData).length) {
               this.file.exist = true;
-              this.title = this.supportSegmentData.titreseg;
+              this.segmentTitle = this.supportSegmentData.titreseg;
+              this.oeuvreTitle = this.supportSegmentData.titreoeuvre;
               this.store.dispatch({ type: 'NO_ERROR_SEARCH', payload: { idSupport: this.file.idSupport, numSeg: this.file.numSegment} });
           } else {
             this.file.exist = false;

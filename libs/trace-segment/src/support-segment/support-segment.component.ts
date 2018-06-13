@@ -22,7 +22,7 @@ export class SupportSegmentComponent implements OnInit {
   public dataReady: boolean;
   public supportData; // recovers data from service
 
-  public minHeight = 155; // min-height fo all widgets
+  public minHeight = 210; // min-height fo all widgets
   public error = {
     status : false,
     message: 'Les données sont momentanément indisponibles, veuillez essayer ultérieurement.'
@@ -78,6 +78,10 @@ export class SupportSegmentComponent implements OnInit {
             span : 'warning'
           },
           {
+            title: 'Diffusion ID',
+            data : data.diffusionid,
+          },
+          {
             title: 'Type',
             data: data.TypeSupport,
           },
@@ -102,8 +106,8 @@ export class SupportSegmentComponent implements OnInit {
             data: data.numepisode,
           },
           {
-            title: 'Durée',
-            data: data.durant,
+            title: 'Type fichier',
+            data: data.typefichier,
           }
         ]
       },
@@ -120,6 +124,10 @@ export class SupportSegmentComponent implements OnInit {
           {
             title: 'TC de fin',
             data: data.markout,
+          },
+          {
+            title: 'Durée',
+            data: data.durant,
           }
         ]
       },

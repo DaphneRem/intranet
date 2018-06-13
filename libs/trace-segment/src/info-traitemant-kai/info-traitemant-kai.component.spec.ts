@@ -45,13 +45,13 @@ describe('InfoTraitemantKaiComponent', () => {
     expect(component.minHeight).toBe(155);
   });
 
-  it('should call getSupportSegment() function ngOnInit', fakeAsync( () => {
+  it('should call getInformationsKai() function ngOnInit', fakeAsync( () => {
     fixture = TestBed.createComponent(InfoTraitemantKaiComponent);
     component = fixture.componentInstance;
-    spyOn(component, 'getSupportSegment');
+    spyOn(component, 'getInformationsKai');
     component.ngOnInit();
     fixture.whenStable().then(() => {
-      expect(component.getSupportSegment).toHaveBeenCalled();
+      expect(component.getInformationsKai).toHaveBeenCalled();
     });
   }));
 
