@@ -115,7 +115,7 @@ export class PubInProgressComponent implements OnInit {
         data : 'titreEpisFra'
       },
       {
-        title : 'filename',
+        title : 'nom de fichier',
         data : 'filename'
       },
       {
