@@ -7,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PubTablesViewComponent implements OnInit {
   public link = '../';
-  public daysTableView = 1;
-  public headerTableLinkExist = true;
-  public inProgressTableLink = '../in-progress';
-  public completedTableLink = '../completed';
+  // public daysTableView = 1;
+  public view24h = 1;
+  public view72h = 3;
+  // public headerTableLinkExist = true;
+  // public inProgressTableLink = '../in-progress';
+  public completedTableLink = './completed';
 
   constructor() { }
 

@@ -7,12 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IngestsTablesViewComponent implements OnInit {
   public link = '/';
-  public daysTableView = 1;
-  public headerTableLinkExist = true;
-  public inProgressTableLink = '../in-progress';
-  public completedTableLink = '../completed';
-  public kaiTableLink = '../kai-waiting';
-  public karinaTableLink = '../karina-waiting';
+  public view24h = 1;
+  public view72h = 3;
+  public completedTableLink = './completed';
+  // public inProgressTableLink = '../in-progress';
+  // public kaiTableLink = '../kai-waiting';
+  // public karinaTableLink = '../karina-waiting';
 
   constructor() { }
 

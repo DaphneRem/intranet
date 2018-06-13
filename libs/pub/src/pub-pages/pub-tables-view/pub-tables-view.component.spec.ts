@@ -38,28 +38,21 @@ describe('PubTablesViewComponent', () => {
     fixture = TestBed.createComponent(PubTablesViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(component.daysTableView).toBe(1);
+    expect(component.view24h).toBe(1);
   });
 
-  it('should have headerTableLinkExist property to true', () => {
+  it('should display view for 72h', () => {
     fixture = TestBed.createComponent(PubTablesViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(component.headerTableLinkExist).toBe(true);
+    expect(component.view72h).toBe(3);
   });
 
-  it('should have inProgressTableLink link to "../in-progress" ', () => {
+  it('should have completedTableLink link to "./completed" ', () => {
     fixture = TestBed.createComponent(PubTablesViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(component.inProgressTableLink).toBe('../in-progress');
-  });
-
-  it('should have completedTableLink link to "../completed" ', () => {
-    fixture = TestBed.createComponent(PubTablesViewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    expect(component.completedTableLink).toBe('../completed');
+    expect(component.completedTableLink).toBe('./completed');
   });
 
   @Component({

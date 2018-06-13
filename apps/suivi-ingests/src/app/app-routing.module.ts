@@ -30,35 +30,34 @@ const routes: Routes = [
     [
       {
         path: '',
-        component: IngestsWidgetsViewComponent,
+        component: IngestsTablesViewComponent,
         data: { title : 'Numérisation' },
       },
-      {
-        path: 'tables-view',
-        component:  IngestsTablesViewComponent,
-        data: { title : 'Numérisation' },
-
-      },
-      {
-        path: 'in-progress',
-        component: IngestsInProgressDetailsComponent,
-        data: { title : 'Fichiers en cours de traitement' }
-      },
+      // {
+      //   path: 'tables-view',
+      //   component:  IngestsTablesViewComponent,
+      //   data: { title : 'Numérisation' },
+      // },
+      // {
+      //   path: 'in-progress',
+      //   component: IngestsInProgressDetailsComponent,
+      //   data: { title : 'Fichiers en cours de traitement' }
+      // },
       {
         path: 'completed',
         component: IngestsCompletedDetailsComponent,
         data: { title : 'Fichiers Terminés' }
       },
-      {
-        path: 'kai-waiting',
-        component:  IngestsKaiComponent,
-        data: { title : 'Numérisation KAI' }
-      },
-      {
-        path: 'karina-waiting',
-        component: KarinaWaitingDetailsComponent,
-        data: { title : 'En attente KARINA' }
-      }
+      // {
+      //   path: 'kai-waiting',
+      //   component:  IngestsKaiComponent,
+      //   data: { title : 'Numérisation KAI' }
+      // },
+      // {
+      //   path: 'karina-waiting',
+      //   component: KarinaWaitingDetailsComponent,
+      //   data: { title : 'En attente KARINA' }
+      // }
     ]
   },
   {
@@ -73,23 +72,28 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'publicity',
+    path: 'advertising',
     children : [
+      // {
+      //   path: '',
+      //   component: PubWidgetsViewComponent,
+      //   data: { title : 'Publicité' }
+      // },
+      // {
+      //   path: 'tables-view',
+      //   component: PubTablesViewComponent,
+      //   data: { title : 'Publicité' }
+      // },
       {
         path: '',
-        component: PubWidgetsViewComponent,
-        data: { title : 'Publicité' }
-      },
-      {
-        path: 'tables-view',
         component: PubTablesViewComponent,
         data: { title : 'Publicité' }
       },
-      {
-        path: 'in-progress',
-        component: PubInProgressDetailsComponent,
-        data: { title : 'Publicités en cours de traitement' }
-      },
+      // {
+      //   path: 'in-progress',
+      //   component: PubInProgressDetailsComponent,
+      //   data: { title : 'Publicités en cours de traitement' }
+      // },
       {
         path: 'completed',
         component: PubCompletedDetailsComponent,

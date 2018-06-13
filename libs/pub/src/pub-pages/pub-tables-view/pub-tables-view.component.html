@@ -1,11 +1,11 @@
-<sub-header [changeView]="true" [tableView]="true" [link]="link"></sub-header>
+<sub-header></sub-header>
 <pub-in-progress 
-    [headerTableLinkExist]="headerTableLinkExist" 
+    [headerTableLinkExist]="false" 
     [headerTableLink]="inProgressTableLink"
-    [daysTableView]="daysTableView">
+    [daysTableView]="view72h">
 </pub-in-progress>
 <pub-completed 
-    [headerTableLinkExist]="headerTableLinkExist" 
+    [headerTableLinkExist]="true" 
     [headerTableLink]="completedTableLink" 
-    [daysTableView]="daysTableView">
+    [daysTableView]="view24h">
 </pub-completed>
