@@ -39,14 +39,6 @@ describe('NotificationComponent', () => {
     expect(component.showClose).toBeDefined();
   });
 
-  it('should have closeOther property', () => {
-    fixture = TestBed.createComponent(NotificationComponent);
-    component = fixture.componentInstance;
-    component.closeOther = false;
-    fixture.detectChanges();
-    expect(component.closeOther).toBeDefined();
-  });
-
   @Component({
     selector: `host-component`,
     template: `<component-under-test ></component-under-test>`
