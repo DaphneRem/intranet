@@ -18,6 +18,7 @@
     "ingest-build-local": "ng build --app=suivi-ingests --baseHref http://127.0.0.1:8080/edsa-ingest/ --watch",
     "ingest-build-test": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083",
     "ingest-build-release": "ng build --prod --app=suivi-ingests --baseHref http://vm-angular-rc:8085",
+    "materiel" : "ng serve --app=fiches-materiel",
     "sbuild": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083/SuiviIngest"
   },
   "private": true,
