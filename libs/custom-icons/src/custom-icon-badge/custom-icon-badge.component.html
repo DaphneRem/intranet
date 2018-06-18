@@ -1,0 +1,10 @@
+<div class="creation-logo" [routerLink]="[link]">
+  <div class="circle-icon" [style.background]="bigIcon.circleColor">
+    <i class="icon" [ngClass]="bigIcon.icon"></i>
+  </div>
+  <div class="icon-creation" [style.background]="littleIcon.circleColor">
+    <i class="creation" [ngClass]="littleIcon.icon" [ngStyle]="{ 'font-size' : littleIcon.iconSize, 'margin-top' : littleIcon.iconMargin, 'margin-left' : littleIcon.iconMargin}"></i>
+  </div>
+</div>
+
+
