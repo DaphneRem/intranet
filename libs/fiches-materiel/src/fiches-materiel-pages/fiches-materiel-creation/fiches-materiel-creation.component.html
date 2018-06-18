@@ -1,4 +1,10 @@
 <sub-header></sub-header>
-<p>
-  fiches-materiel-creation works!
-</p>
+
+<div class="row card">
+  <div class="col-lg-11">
+  </div>
+  <div class="table-top col-lg-1">
+    <custom-icon-badge *ngFor="let icon of icons" [littleIcon]="icon.littleIcon" [bigIcon]="icon.bigIcon" [link]="icon.link">
+    </custom-icon-badge>
+  </div>
+</div>
