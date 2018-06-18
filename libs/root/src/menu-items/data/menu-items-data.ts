@@ -16,13 +16,13 @@ if (document.location.host.indexOf('localhost') !== -1) {
 
 export const MENUITEMS = [
     {
-        label: 'Ingests',
+        label: '',
         url: `${this.distUrl}app0/`,
         main: [
             {
-                state: 'technique',
-                short_label: 'T',
-                name: 'Technique',
+                state: 'suivi-ingests',
+                short_label: 'SI',
+                name: 'Suivi Ingests',
                 type: 'sub',
                 icon: 'icofont icofont-repair',
                 iconColor: '#39ADB5',
@@ -52,6 +52,31 @@ export const MENUITEMS = [
                         state: 'playlists',
                         name: 'Playlists',
                         route: `${distUrl}/playlists`
+                    }
+                ]
+            },
+            {
+                state: 'fiches-materiel',
+                short_label: 'FM',
+                name: 'Fiches Matériel',
+                type: 'sub',
+                icon: 'icofont icofont-ui-file',
+                iconColor: '#FF9C2A',
+                children: [
+                    {
+                        state: 'suivi-fiches-materiel',
+                        name: 'Suivi fiches Matériel',
+                        route: `${distUrl}`
+                    },
+                    {
+                        state: 'creation-fiches-materiel',
+                        name: 'Création fiches Matériel',
+                        route: `${distUrl}/creation`
+                    },
+                    {
+                        state: 'suivi-fiches-achat',
+                        name: 'Suivi fiches Achat',
+                        route: `${distUrl}/display`
                     }
                 ]
             }

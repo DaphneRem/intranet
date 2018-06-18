@@ -147,8 +147,8 @@
       "appRoot": ""
     },
     {
-      "name": "ingests",
-      "root": "libs/ingests/src",
+      "name": "fiches-materiel",
+      "root": "libs/fiches-materiel/src",
       "test": "../../../test.js",
       "appRoot": ""
     },
@@ -156,6 +156,12 @@
       "name": "ingests",
       "root": "libs/ingests/src",
       "test": "../../../test.ts",
+      "appRoot": ""
+    },
+    {
+      "name": "ingests",
+      "root": "libs/ingests/src",
+      "test": "../../../test.js",
       "appRoot": ""
     },
     {
