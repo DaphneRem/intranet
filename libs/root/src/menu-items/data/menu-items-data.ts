@@ -60,23 +60,23 @@ export const MENUITEMS = [
                 short_label: 'FM',
                 name: 'Fiches Matériel',
                 type: 'sub',
-                icon: 'icofont icofont-ui-file',
+                icon: 'icofont icofont-file-text',
                 iconColor: '#FF9C2A',
                 children: [
                     {
                         state: 'suivi-fiches-materiel',
                         name: 'Suivi fiches Matériel',
-                        route: `${distUrl}`
+                        route: `${distUrl}/material-sheets`
                     },
                     {
                         state: 'creation-fiches-materiel',
                         name: 'Création fiches Matériel',
-                        route: `${distUrl}/material-sheets/creation`
+                        route: `${distUrl}/creation`
                     },
                     {
                         state: 'suivi-fiches-achat',
                         name: 'Suivi fiches Achat',
-                        route: `${distUrl}/material-sheets/display`
+                        route: `${distUrl}/displaying-purchase-sheets`
                     }
                 ]
             }
