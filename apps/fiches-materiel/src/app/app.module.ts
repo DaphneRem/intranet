@@ -20,7 +20,8 @@ import { AppComponent } from './app.component';
 
 /*********** from Libs **********/
 
-import { FichesMaterielModule } from '@ab/fiches-materiel';
+import { ErrorPagesModule } from '@ab/error-pages';
+import { FichesMaterielLibModule } from '@ab/fiches-materiel';
 import { RouterStateModule } from '@ab/router-state';
 import { RootModule, navbarReducer } from '@ab/root';
 import { SubHeaderModule } from '@ab/sub-header';
@@ -33,6 +34,8 @@ registerLocaleData(localeFr, 'fr');
     AppRoutingModule,
     BrowserModule,
     EffectsModule.forRoot([]),
+    ErrorPagesModule,
+    FichesMaterielLibModule,
     HttpClientModule,
     NxModule.forRoot(),
     RootModule,

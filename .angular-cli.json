@@ -147,7 +147,7 @@
       "appRoot": ""
     },
     {
-      "name": "fiches-materiel",
+      "name": "fiches-materiel-lib",
       "root": "libs/fiches-materiel/src",
       "test": "../../../test.js",
       "appRoot": ""
@@ -156,12 +156,6 @@
       "name": "ingests",
       "root": "libs/ingests/src",
       "test": "../../../test.ts",
-      "appRoot": ""
-    },
-    {
-      "name": "ingests",
-      "root": "libs/ingests/src",
-      "test": "../../../test.js",
       "appRoot": ""
     },
     {
@@ -263,14 +257,6 @@
     },
     {
       "project": "apps/fiches-materiel/e2e/tsconfig.e2e.json",
-      "exclude": "**/node_modules/**"
-    },
-    {
-      "project": "apps/fm/src/tsconfig.app.json",
-      "exclude": "**/node_modules/**"
-    },
-    {
-      "project": "apps/fm/e2e/tsconfig.e2e.json",
       "exclude": "**/node_modules/**"
     }
   ],

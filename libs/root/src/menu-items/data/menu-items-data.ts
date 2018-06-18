@@ -71,12 +71,12 @@ export const MENUITEMS = [
                     {
                         state: 'creation-fiches-materiel',
                         name: 'Création fiches Matériel',
-                        route: `${distUrl}/creation`
+                        route: `${distUrl}/material-sheets/creation`
                     },
                     {
                         state: 'suivi-fiches-achat',
                         name: 'Suivi fiches Achat',
-                        route: `${distUrl}/display`
+                        route: `${distUrl}/material-sheets/display`
                     }
                 ]
             }
