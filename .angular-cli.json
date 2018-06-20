@@ -171,6 +171,12 @@
       "appRoot": ""
     },
     {
+      "name": "modals",
+      "root": "libs/modals/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "notifications",
       "root": "libs/notifications/src",
       "test": "../../../test.js",
