@@ -1,0 +1,30 @@
+.modal-content {
+    button {
+        &.return-btn {
+            margin-right: 0;
+            float: right;
+            color: #fff;
+            background-color: #3b4650;
+            background-image: none;
+            border-color: #3b4650;
+            transition: all ease-in 0.3s;
+            border-radius: 2px;
+            text-transform: capitalize;
+            font-size: 15px;
+            padding: 8px 10px;
+        }
+    }
+    .icon {
+        display : block;
+        .creation-icon {
+            width: 70px;
+            float: right;
+            margin-right: 70px;
+            margin-bottom: -43px;
+        }
+    }
+}
+
+.close-icon {
+    font-size: 2em;
+}
