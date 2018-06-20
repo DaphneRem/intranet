@@ -1,7 +1,7 @@
 export class CustomIconBadge {
     littleIcon: LittleIcon;
     bigIcon: BigIcon;
-    link: string;
+    link?: string;
 }
 
 export class LittleIcon {
@@ -15,4 +15,5 @@ export class LittleIcon {
 export class BigIcon {
     icon: string;
     circleColor: string;
+    iconSize?: string;
 }
