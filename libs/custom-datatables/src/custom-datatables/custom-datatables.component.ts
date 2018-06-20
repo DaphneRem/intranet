@@ -26,8 +26,8 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   dtTrigger: Subject<any> = new Subject();
   public render: boolean;
 
-  @Output()
-  change = new EventEmitter();
+  @Output() change = new EventEmitter();
+  @Output() dataRow = new EventEmitter();
 
   // datatable const
   public renderOption: boolean;
@@ -274,6 +274,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   // go to file-detail with autoPath when double click on row
   someClickHandler(dataRow: any): void {
     this.idSelectedData = dataRow.id;
+    this.dataRow.emit(dataRow);
     // if (dataRow.id && (dataRow.noseg >= 0)) {
     // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
     // }
