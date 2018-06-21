@@ -85,8 +85,9 @@ export class FichesAchatsTableComponent implements OnInit {
   }
 
   openMyModal() {
-    console.log();
+    console.log(document.querySelector('#recap-fiche-achat'));
     document.querySelector('#recap-fiche-achat').classList.add('md-show');
+    document.getElementById('recap-fiche-achat').classList.add('md-show');
   }
 
   displayAction() {

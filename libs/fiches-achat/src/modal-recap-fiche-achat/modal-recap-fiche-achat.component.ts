@@ -7,6 +7,10 @@ import swal from 'sweetalert2';
 
 import { CustomIconBadge } from '@ab/custom-icons';
 
+// service import
+import { FichesAchatService } from '../services/fiches-achat.service';
+import { FicheAchatDetails } from '../models/fiche-achat-details';
+
 @Component({
   selector: 'modal-recap-fiche-achat',
   templateUrl: './modal-recap-fiche-achat.component.html',
@@ -35,6 +39,8 @@ export class ModalRecapFicheAchatComponent implements OnInit {
   @Input() visible: boolean;
   @Input() ficheAchat;
   public config: any;
+  public detailsFicheAchat;
+  public dataReady = false;
 
   public fichesMaterielCreation: CustomIconBadge = {
       littleIcon : {
@@ -49,7 +55,10 @@ export class ModalRecapFicheAchatComponent implements OnInit {
         iconSize: '1.8em'
       }
   };
-  constructor( private router: Router ) { }
+  constructor(
+    private router: Router,
+    private fichesAchatService: FichesAchatService
+  ) { }
 
   confirmCreation(event) {
     swal({
@@ -76,7 +85,17 @@ export class ModalRecapFicheAchatComponent implements OnInit {
     ((event.target.parentElement.parentElement).parentElement).classList.remove('md-show');
   }
 
+  getFicheAchatDetails(id) {
+    this.fichesAchatService
+      .getFichesAchatDetails(id)
+      .subscribe( data => {
+        this.detailsFicheAchat = data;
+        this.dataReady = true;
+      });
+  }
+
   ngOnInit() {
+    this.getFicheAchatDetails(10);
   }
 
 }

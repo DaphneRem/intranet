@@ -13,7 +13,7 @@ import swal from 'sweetalert2';
   ]
 })
 export class FichesAchatDetailsComponent implements OnInit {
-  @Input() ficheAchat;
+  @Input() detailsFicheAchat;
 
   constructor( private router: Router ) { }
 

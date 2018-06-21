@@ -1,6 +1,9 @@
 $navbarColor : #3b4650;
 
 .modal-content {
+    &.my-content {
+        padding: 0 40px 30px;
+    }
     button {
         &.return-btn {
             margin-right: 0;
