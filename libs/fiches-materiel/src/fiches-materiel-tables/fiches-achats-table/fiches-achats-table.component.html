@@ -1,5 +1,0 @@
-<loader-animation *ngIf="!checkDataReady()"></loader-animation>
-<div *ngIf="checkDataReady()">
-  <custom-datatables [customdatatablesOptions]="customdatatablesOptions" (dataRow)="selectedFicheAchat($event)"></custom-datatables>
-</div>
-<modal-recap-fiche-achat [ficheAchat]="myFicheAchat" ></modal-recap-fiche-achat>
