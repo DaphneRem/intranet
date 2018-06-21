@@ -1,0 +1,9 @@
+<modal-animation [modalID]="'recap-fiche-achat'" [modalClass]="'md-effect-1'">
+  <h3>{{ficheAchat.titreSeg}}</h3>
+  <div class="modal-content">
+    <fiches-achat-details [ficheAchat]="ficheAchat" ></fiches-achat-details>
+  </div>
+  <button (click)="closeMyModal($event)" class="md-close-btn">
+    <i class="close-icon icofont icofont-close-line"></i>
+  </button>
+</modal-animation>

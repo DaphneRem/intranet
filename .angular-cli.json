@@ -153,6 +153,12 @@
       "appRoot": ""
     },
     {
+      "name": "fiches-achat-lib",
+      "root": "libs/fiches-achat/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "fiches-materiel-lib",
       "root": "libs/fiches-materiel/src",
       "test": "../../../test.js",
