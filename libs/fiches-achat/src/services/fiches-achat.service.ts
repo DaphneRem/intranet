@@ -9,8 +9,10 @@ import 'rxjs/add/observable/throw';
 
 // temporary imports :
 import { urlIngests, urlCompleted } from '../../../../.privates-url';
+import { urlFicheAchat, urlDetailFicheAchat } from '../../../../.privates-url';
 
 import { FicheAchat } from '../models/fiche-achat';
+import { FicheAchatDetails } from '../models/fiche-achat-details';
 
 @Injectable()
 export class FichesAchatService {
@@ -28,6 +30,21 @@ export class FichesAchatService {
         // console.log(JSON.parse(res));
         console.log(res);
         return res as FicheAchat[];
+      })
+      .catch(this.handleError);
+  }
+
+  getFichesAchatDetails(id: number): Observable<FicheAchatDetails[]> {
+    return this.http
+      .get(urlFicheAchat + urlDetailFicheAchat + id)
+      .map((res: any) => {
+        // if (!res) {
+        //   res = 0;
+        //   return res;
+        // }
+        // console.log(JSON.parse(res));
+        console.log(res);
+        return res as FicheAchatDetails[];
       })
       .catch(this.handleError);
   }
