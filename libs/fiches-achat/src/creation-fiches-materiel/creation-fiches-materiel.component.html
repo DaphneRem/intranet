@@ -1,0 +1,12 @@
+<div class="series" *ngFor="let serie of series">
+  <div class="title">
+    <div class="number">{{detailsFicheAchat.indexOf(serie) + 1}}</div>
+    <h4>{{serie.titre_vf}}</h4>
+  </div>
+  <div class="details">
+    <p class="serie-details">N° épisodes : de 1 à <span>{{serie.nombre_episodes}}</span></p>
+    <div class="modif"><i class="icofont icofont-pencil-alt-5"></i></div>
+  </div>
+</div>
+<button (click)="confirmCreation($event)" class="creation-btn btn btn-info md-close">Créer</button>
+<button (click)="closeMyModal($event)" class="return-btn btn btn-info md-close">Fermer</button>
