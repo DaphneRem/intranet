@@ -70,7 +70,8 @@
 }
 
 .md-content {
-  color: #666666;
+  // color: #666666;
+  color: #000000;
   background: #fff;
   position: relative;
   border-radius: 3px;
@@ -94,6 +95,7 @@
     p {
       margin: 0;
       padding: 10px 0;
+      font-size: 1em;
     }
     ul {
       margin: 0;
