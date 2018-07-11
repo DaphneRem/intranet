@@ -1,17 +1,20 @@
 
 // TODO : ajouter url définitive de prod (importer à partir du fichier privates-url.ts)
 
-import { rootUrlDiffDates, rootUrl} from '../../../../../.privates-url';
+import { rootUrlDiffDates, rootUrl, rootUrlMateriel} from '../../../../../.privates-url';
 
 let distUrl: String = '';
 let distUrl_DiffDates: String = '';
+let distUrl_Materiel: String = '';
 
 if (document.location.host.indexOf('localhost') !== -1) {
   distUrl =  '';
   distUrl_DiffDates = '#';
+  distUrl_Materiel = '';
 } else {
   distUrl =  rootUrl + '/#';
   distUrl_DiffDates = rootUrlDiffDates + '/#';
+  distUrl_Materiel = rootUrlMateriel + '/#';
 }
 
 export const MENUITEMS = [
@@ -66,17 +69,17 @@ export const MENUITEMS = [
                     {
                         state: 'suivi-fiches-materiel',
                         name: 'Suivi fiches Matériel',
-                        route: `${distUrl}/material-sheets`
+                        route: `${distUrl_Materiel}/material-sheets`
                     },
                     {
                         state: 'creation-fiches-materiel',
                         name: 'Création fiches Matériel',
-                        route: `${distUrl}/creation`
+                        route: `${distUrl_Materiel}/creation`
                     },
                     {
                         state: 'suivi-fiches-achat',
                         name: 'Suivi fiches Achat',
-                        route: `${distUrl}/displaying-purchase-sheets`
+                        route: `${distUrl_Materiel}/displaying-purchase-sheets`
                     }
                 ]
             }
