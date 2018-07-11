@@ -1,18 +1,18 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 // lib imports
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
 // service import
-import { FichesAchatService } from '../../services/fiches-achat.service';
-import { FicheAchat } from '../../models/fiche-achat';
+import { FichesAchatService } from '@ab/fiches-achat';
+import { FicheAchat } from '@ab/fiches-achat';
 
 @Component({
   selector: 'fiches-achats-table',
   templateUrl: './fiches-achats-table.component.html',
   styleUrls: ['./fiches-achats-table.component.scss'],
-    providers : [
+  providers : [
     FichesAchatService
   ]
 })
@@ -25,7 +25,7 @@ export class FichesAchatsTableComponent implements OnInit {
   public render: boolean;
   public dataReady = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
-    tableTitle: 'Fiches Achat',
+    tableTitle: 'Fiches Achat non traitées',
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
@@ -87,7 +87,7 @@ export class FichesAchatsTableComponent implements OnInit {
   openMyModal() {
     console.log(document.querySelector('#recap-fiche-achat'));
     document.querySelector('#recap-fiche-achat').classList.add('md-show');
-    document.getElementById('recap-fiche-achat').classList.add('md-show');
+    // document.getElementById('recap-fiche-achat').classList.add('md-show');
   }
 
   displayAction() {
@@ -132,60 +132,13 @@ export class FichesAchatsTableComponent implements OnInit {
   }
 
   displayColumns(data) {
-    console.log('data columns :' + data[0]);
-    this.customdatatablesOptions.columns = [
+    this.customdatatablesOptions.columns = [];
+    Object.keys(data[0]).map((e) => this.customdatatablesOptions.columns.push(
       {
-        title : 'titreSeg',
-        data : 'titreSeg',
-        className: 'long-data'
-      },
-      {
-        title : 'id',
-        data : 'id',
-      },
-      {
-        title : 'noseg',
-        data : 'noseg',
-      },
-      {
-        title : 'nomfichier',
-        data : 'nomfichier',
-      },
-      {
-        title : 'stockage',
-        data : 'stockage'
-      },
-      {
-        title : 'idSuivant',
-        data : 'idSuppSuivant',
-        className: 'long-data'
-      },
-      // {
-      //   title : 'noSegSuivant',
-      //   data : 'noSegSuivant'
-      // },
-      // {
-      //   title : 'statut',
-      //   data : 'statutSupport',
-      // },
-      {
-        title : 'diffusion ID',
-        data : 'diffusionid'
-      },
-      {
-        title : 'type',
-        data : 'typeSupport',
-      },
-      {
-        title : 'date état',
-        data : 'tstamp',
-      },
-      {
-        title : 'commentaires',
-        data : 'commentaires',
-        className: 'long-data'
-      },
-    ];
+        title : e,
+        data : e
+      })
+    );
   }
 
 }

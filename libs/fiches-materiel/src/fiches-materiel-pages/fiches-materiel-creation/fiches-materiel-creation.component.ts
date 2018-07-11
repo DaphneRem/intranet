@@ -14,7 +14,6 @@ export class FichesMaterielCreationComponent implements OnInit {
 
   public openModal;
 
-
   public daysTableView = 3;
   public headerTableLinkExist = false;
 

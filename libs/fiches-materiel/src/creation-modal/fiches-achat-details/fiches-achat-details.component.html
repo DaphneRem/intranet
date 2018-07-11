@@ -10,7 +10,8 @@
     <p class="oeuvre-details">Nombre d'épisodes : <span [ngClass]="oeuvre.nombre_episodes !== 1 ? 'important' : ''">{{oeuvre.nombre_episodes}}</span></p>
   </div>
 </div>
-<button (click)="confirmCreation($event)" class="creation-btn btn btn-info md-close">Créer les fiches Matériel</button>
+<button *ngIf="seriesExist" (click)="goToNextStep()" class="creation-btn btn btn-info md-close">Créer les fiches Matériel</button>
+<button *ngIf="!seriesExist" (click)="confirmCreation($event)" class="creation-btn btn btn-info md-close">Créer les fiches Matériel</button>
 <button (click)="closeMyModal($event)" class="return-btn btn btn-info md-close">Fermer</button>
 <!-- <div class="icon">
           <div class="creation-icon">

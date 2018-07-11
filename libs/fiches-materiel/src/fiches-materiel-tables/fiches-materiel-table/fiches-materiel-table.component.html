@@ -1,0 +1,7 @@
+<loader-animation *ngIf="!checkDataReady()"></loader-animation>
+<!-- {{customdatatablesOptions.data | json}} -->
+<div *ngIf="checkDataReady()">
+  <custom-datatables [customdatatablesOptions]="customdatatablesOptions" (dataRow)="selectedFicheAchat($event)"></custom-datatables>
+</div>
+
+<!-- {{customdatatablesOptions.data | json}} -->

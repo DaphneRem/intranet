@@ -1,0 +1,21 @@
+<modal-animation [modalID]="'recap-fiche-achat'" [modalClass]="'md-effect-1'">
+  <h3 *ngIf="dataReady">Fiche Achat n° {{detailsFicheAchat[0].id_fiche}}</h3>
+  <div class="modal-content my-content" *ngIf="dataReady">
+    <fiches-achat-details 
+      *ngIf="step === 1" 
+      (nextStep)="changeStep($event)"
+      [step]="step" 
+      [seriesExist]="seriesExist"
+      [detailsFicheAchat]="detailsFicheAchat">
+    </fiches-achat-details>
+    <creative-form-fiches-materiel 
+      *ngIf="step === 2" 
+      [step]="step" 
+      (initStep)="changeStep($event)"
+      [detailsFicheAchat]="detailsFicheAchat"
+      ></creative-form-fiches-materiel>
+  </div>
+  <button *ngIf="dataReady" (click)="closeMyModal($event)" class="md-close-btn">
+    <i class="close-icon icofont icofont-close-line"></i>
+  </button>
+</modal-animation>

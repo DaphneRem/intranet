@@ -1,0 +1,85 @@
+<form #myForm="ngForm" class="form-group" >
+  <div class="oeuvres" *ngFor="let oeuvre of oeuvreWithGaps;let index = index;">
+    <div class="title">
+      <div class="number">{{oeuvre.index}}</div>
+      <h4>{{oeuvre.titre_vf}}</h4>
+      <p> -  {{oeuvre.nombre_episodes}} épisodes</p>
+    </div>
+    <div class="details row" *ngFor="let gap of oeuvre.gaps;let i = index;">
+      <div class="space "><span *ngIf="!oeuvre.gaps.indexOf(gap)">N° épisodes :</span></div>
+      <div class="oeuvre-details ">
+        de 
+        <input type="text" 
+          (input)="gap.last ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
+          maxlength="3" 
+          [readonly]="!gap.modif" 
+          [ngClass]="!gap.modif ? 'disabled' : ''" 
+          [disabled]="!gap.modif" 
+          name="a{{index}}" 
+          [(ngModel)]="gap.first" 
+          placeholder="{{gap.first}}"
+          #first="ngModel"
+          pattern="^[0-9]*$">
+        à
+        <input type="text" 
+          (input)="gap.first ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
+          maxlength="3" 
+          [readonly]="!gap.modif" 
+          [ngClass]="!gap.modif ? 'disabled' : ''"  
+          [disabled]="!gap.modif" 
+          name="b{{index}}" 
+          [(ngModel)]="gap.last" 
+          placeholder="{{gap.last}}"
+          #last="ngModel"
+          pattern="^[0-9]*$">
+      </div>
+      <div class="modif" (click)="modifGaps(gap)" *ngIf="displayModifGapBtn(oeuvre.gaps, gap)">
+        <i class="icofont icofont-pencil-alt-5"></i>
+      </div>
+      <div class="delete-icon" (click)="deleteGaps(oeuvre.gaps, gap)" *ngIf="displayCancelBtn(oeuvre.gaps, gap)">
+        <i class="icofont icofont-ui-delete"></i>
+      </div>
+      <div class="add " (click)="addGaps(oeuvre.gaps, gap)" *ngIf="displayAddBtn(oeuvre, oeuvre.gaps, gap)">
+        <i class="icofont icofont-ui-add"></i>
+      </div>
+      <button *ngIf="displayValidBtn(gap)" (click)="validGaps(gap)" class="valid btn btn-info " [disabled]="!gap.modif">Valider</button>
+      <button *ngIf="displayInvalidBtn(gap)" class="invalid btn btn-info "><i class="icofont icofont-ui-block"></i>Valider</button>
+      <button *ngIf="gap.modif && !displayValidBtn(gap)" (click)="cancelGaps(oeuvre.gaps, gap)" class="delete btn btn-info " [disabled]="!gap.modif">Annuler</button>
+      <div class="gap-error" *ngIf="gap.error && gap.modif">
+        <p *ngIf="gap.errorMessage === 'too much'" class="error-message invalid-message">Le nombre de fiches Matériel ne doit pas dépasser le nombre total d’épisodes</p>
+        <p *ngIf="gap.errorMessage === 'same value'" class="error-message same-value invalid-message">Vous ne pouvez pas créer plusieurs fiches Matériel par épisode</p>
+        <p *ngIf="gap.errorMessage === 'not enough'" class="error-message warning-message">Attention : le nombre de fiches Matériel crées est inférieur au nombre d’épisodes</p>
+        <p *ngIf="gap.errorMessage === 'change order'" class="error-message invalid-message">La première valeur indiquée doit être plus petite que la deconde valeur</p>
+        <p *ngIf="gap.errorMessage === 'too little gap'" class="error-message warning-message">Attention : l'intervalle de création est très proche</p>
+        <p *ngIf="gap.errorMessage === 'not number'" class="error-message invalid-message">Vous pouvez inscrire uniquement des valeurs numériques</p>
+      </div>
+      <div></div>
+      <div *ngIf="first.invalid || last.invalid && gap.modif" class="col-form-label form-txt-danger">
+        <!-- <div *ngIf="name.errors.required">
+          n° de support requis
+        </div> -->
+        <!-- <div *ngIf="name.errors.minlength">
+          8 caractères requis
+        </div> -->
+        <!-- <div *ngIf="checkErrorsGap(gaps, gap)"> coco</div> -->
+        <!-- <div *ngIf="gap.modif && myForm.errors.pattern && !myForm.errors.minlength">
+          chiffres uniquement
+        </div> -->
+        <!--Le nombre de fiches Matériel ne doit pas dépasser le nombre total d’épisodes-->
+      </div>
+    </div>
+    <div class="rest-episodes" *ngIf="displayRestOfEps(oeuvre, oeuvre.gaps)">
+      <p class="remaining" *ngIf="remainingEps === 1">{{remainingEps}} épisode n'a pas encore de Fiche Matériel</p>
+      <p class="remaining" *ngIf="remainingEps > 1">{{remainingEps}} épisodes n'ont pas encore de Fiche Matériel</p>
+    </div>
+  </div>
+</form>
+<button (click)="confirmCreation($event)" class="creation-btn btn btn-info md-close">Créer</button>
+<button (click)="closeMyModal($event)" class="return-btn btn btn-info md-close">Fermer</button>
+
+<creation-fiches-materiel
+  [oeuvresSimple]="oeuvresSimple" 
+  [oeuvreWithGaps]="oeuvreWithGaps" 
+  [detailsFicheAchat]="detailsFicheAchat">
+</creation-fiches-materiel>
+           <!-- (keyup)="gap.first ? gap.error = true : gap.error = false" -->

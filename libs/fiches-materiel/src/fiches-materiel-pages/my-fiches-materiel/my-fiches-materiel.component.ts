@@ -13,6 +13,7 @@ import { CustomIconBadge } from '@ab/custom-icons';
 })
 export class MyFichesMaterielComponent implements OnInit {
 
+  public headerTableLinkExist = false;
 
   public widgetLink = '/';
   public icons = [];

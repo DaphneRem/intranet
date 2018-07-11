@@ -8,8 +8,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
 // temporary imports :
-import { urlIngests, urlCompleted } from '../../../../.privates-url';
-import { urlFicheAchat, urlDetailFicheAchat } from '../../../../.privates-url';
+// import { urlIngests, urlCompleted } from '../../../../.privates-url';
+import { urlFicheAchat, urlDetailFicheAchat, urlFicheAchatTraitee } from '../../../../.privates-url';
 
 import { FicheAchat } from '../models/fiche-achat';
 import { FicheAchatDetails } from '../models/fiche-achat-details';
@@ -21,12 +21,12 @@ export class FichesAchatService {
 
   getFichesAchat(days: number): Observable<FicheAchat[]> {
     return this.http
-      .get(urlIngests + days + urlCompleted)
+      .get(urlFicheAchat + urlFicheAchatTraitee)
       .map((res: any) => {
-        if (!res) {
-          res = 0;
-          return res;
-        }
+        // if (!res) {
+        //   res = 0;
+        //   return res;
+        // }
         // console.log(JSON.parse(res));
         console.log(res);
         return res as FicheAchat[];
