@@ -1,5 +1,4 @@
 <p class="nbr-oeuvre">Nombre d'oeuvres : {{detailsFicheAchat.length}}</p>
- 
 <div *ngFor="let oeuvre of detailsFicheAchat" class="oeuvre">
   <div class="title">
     <div class="number">{{detailsFicheAchat.indexOf(oeuvre) + 1}}</div>
@@ -11,11 +10,10 @@
   </div>
 </div>
 <button *ngIf="seriesExist" (click)="goToNextStep()" class="creation-btn btn btn-info md-close">Créer les fiches Matériel</button>
-<button *ngIf="!seriesExist" (click)="confirmCreation($event)" class="creation-btn btn btn-info md-close">Créer les fiches Matériel</button>
+<creation-fiches-materiel  
+  *ngIf="!seriesExist" 
+  [step]="step" 
+  [detailsFicheAchat]="detailsFicheAchat" 
+  (confirmCreation)="checkCreationState($event)">
+</creation-fiches-materiel>
 <button (click)="closeMyModal($event)" class="return-btn btn btn-info md-close">Fermer</button>
-<!-- <div class="icon">
-          <div class="creation-icon">
-            <custom-icon-badge [littleIcon]="fichesMaterielCreation.littleIcon" [bigIcon]="fichesMaterielCreation.bigIcon">
-            </custom-icon-badge>
-          </div>
-        </div> -->

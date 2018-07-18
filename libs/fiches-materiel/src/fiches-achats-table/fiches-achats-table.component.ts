@@ -36,18 +36,6 @@ export class FichesAchatsTableComponent implements OnInit {
     rowsMax: 10,
     lenghtMenu: [5, 10, 15],
     theme: 'blue theme',
-    // importantData : [
-    //   {
-    //     index : 4,
-    //     className: 'warning',
-    //     cellData: ['Storage OK']
-    //   },
-    //   {
-    //     index : 2,
-    //     className: 'blue',
-    //     cellData: ['0']
-    //   }
-    // ],
     renderOption: true,
     dbClickActionExist: true,
     buttons: {
@@ -72,11 +60,6 @@ export class FichesAchatsTableComponent implements OnInit {
     this.displayAction();
   }
 
-  // openMyModal() {
-  //   document.querySelector('#' + event).classList.add('md-show');
-  //   console.log(event);
-  // }
-
   checkLinks() {
     this.customdatatablesOptions.headerTableLinkExist = this.headerTableLinkExist;
     if (this.headerTableLinkExist) {
@@ -85,9 +68,7 @@ export class FichesAchatsTableComponent implements OnInit {
   }
 
   openMyModal() {
-    console.log(document.querySelector('#recap-fiche-achat'));
     document.querySelector('#recap-fiche-achat').classList.add('md-show');
-    // document.getElementById('recap-fiche-achat').classList.add('md-show');
   }
 
   displayAction() {

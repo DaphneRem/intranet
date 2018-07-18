@@ -1,9 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { FicheMaterielCreation } from '../../models/fiche-materiel-creation';
-import { NewFicheMateriel } from './new-fiche-materiel';
-
 import swal from 'sweetalert2';
 
 @Component({
@@ -23,7 +20,6 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   public oeuvresSimple = []; // object from detailsFicheAchat with nombre episodes === 1 (film)
   public oeuvreWithGaps;
   public resetGaps = false;
-  public newFicheMateriel: FicheMaterielCreation;
   public arrayGaps: any;
   public totalGaps;
   public gapAdding = false;
@@ -35,11 +31,9 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   public foundLast;
   public gapInModif = [];
   public otherGapsInmodif = [];
-  public finalArrayFichesMat = [];
-  public fichesMaterielOeuvresSimple = [];
-  public fichesMaterielOeuvresWithEps = [];
+  public creationState: boolean;
 
-  constructor(private router: Router) {}
+  constructor( private router: Router ) {}
 
   ngOnInit() {
     this.checkoeuvresWithEps();
@@ -70,11 +64,17 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
         titre_vo: oeuvre.titre_vo,
         debut_des_droits: oeuvre.debut_des_droits,
         index: this.detailsFicheAchat.indexOf(oeuvre) + 1,
+        warningExist: false,
         numFichesMateriel: [],
         gaps: [
           {
-            first: (oeuvre.nombre_episodes - (oeuvre.nombre_episodes - 1)).toString(),
-            oldFirst: [(oeuvre.nombre_episodes - (oeuvre.nombre_episodes - 1)).toString()],
+            first: (
+              oeuvre.nombre_episodes -
+              (oeuvre.nombre_episodes - 1)
+            ).toString(),
+            oldFirst: [
+              (oeuvre.nombre_episodes - (oeuvre.nombre_episodes - 1)).toString()
+            ],
             error: false,
             errorMessage: '',
             last: oeuvre.nombre_episodes.toString(),
@@ -143,7 +143,11 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   }
 
   displayCancelBtn(gaps, gap) {
-    if (!gap.modif && gaps.indexOf(gap) === gaps.length - 1 && gaps.indexOf(gap)) {
+    if (
+      !gap.modif &&
+      gaps.indexOf(gap) === gaps.length - 1 &&
+      gaps.indexOf(gap)
+    ) {
       return true;
     }
   }
@@ -182,9 +186,9 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
       if (
         gap.first.match(/^[0-9]+$/) &&
         gap.last.match(/^[0-9]+$/) &&
-        gap.errorMessage !== 'too much' &&     //
-        gap.errorMessage !== 'same value' &&  // on ne peut pas forcer ces 3 erreurs contairement aux autres
-        gap.first <= gap.last                //
+        gap.errorMessage !== 'too much' && //
+        gap.errorMessage !== 'same value' && // on ne peut pas forcer ces 3 erreurs contairement aux autres
+        gap.first <= gap.last //
       ) {
         return true;
       } else {
@@ -201,9 +205,9 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
       if (
         !gap.first.match(/^[0-9]+$/) ||
         !gap.last.match(/^[0-9]+$/) ||
-        gap.errorMessage === 'too much' ||     //
-        gap.errorMessage === 'same value' ||  // on ne peut pas forcer ces deux erreurs contairement aux autres
-        gap.errorMessage === 'change order'  //
+        gap.errorMessage === 'too much' || //
+        gap.errorMessage === 'same value' || // on ne peut pas forcer ces deux erreurs contairement aux autres
+        gap.errorMessage === 'change order' //
       ) {
         return true;
       } else {
@@ -221,8 +225,20 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     gap.oldFirst.push(gap.first);
   }
 
-
   /*********************** GAP ERRORS ***********************/
+
+  /** DISPLAY WARNING ICON **/
+  checkIfErrorExist(gaps) {
+    let errors = [];
+    gaps.map((gap) => {
+      if (gap.error) {
+        errors.push(gap.errorMessage);
+      }
+    });
+    if (errors.length) {
+      return true;
+    }
+  }
 
   /** DO ARRAY WITH ALL GAPS **/
   checkAllNumbers(oeuvre, gaps) {
@@ -259,9 +275,9 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     this.arrayLast = [];
     gaps.map(e => {
       this.arrayFirst.push(Number(e.first) - 2),
-      this.arrayFirst.push(Number(e.first) - 1),
-      this.arrayLast.push(Number(e.last) + 1),
-      this.arrayLast.push(Number(e.last) + 2);
+        this.arrayFirst.push(Number(e.first) - 1),
+        this.arrayLast.push(Number(e.last) + 1),
+        this.arrayLast.push(Number(e.last) + 2);
     });
     this.foundFirst = this.arrayLast.find(function(element) {
       return element === Number(gap.first);
@@ -271,7 +287,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     });
   }
 
-  /** DISTRIBUTEs ERROR MESSAGE **/
+  /** DISTRIBUTES ERROR MESSAGE **/
   checkTotal(oeuvre, gaps, gap) {
     gap.error = false;
     this.checkTotalGaps(gaps);
@@ -280,7 +296,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     if (!gap.first.match(/^[0-9]+$/) || !gap.last.match(/^[0-9]+$/)) {
       gap.error = true;
       gap.errorMessage = 'not number';
-    } else if (gap.last < gap.first) {
+    } else if (Number(gap.last) < Number(gap.first)) {
       gap.error = true;
       gap.errorMessage = 'change order';
     } else if (oeuvre.numFichesMateriel.length !== this.noSameValue.length) {
@@ -305,7 +321,11 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   displayRestOfEps(oeuvre, gaps) {
     this.gapInModif = [];
     this.checkTotalGaps(gaps);
-    gaps.map(e => { if (e.modif) { this.gapInModif.push(e); }});
+    gaps.map(e => {
+      if (e.modif) {
+        this.gapInModif.push(e);
+      }
+    });
     if (this.totalGaps < oeuvre.nombre_episodes && !this.gapInModif.length) {
       this.remainingEps = oeuvre.nombre_episodes - this.totalGaps;
       return true;
@@ -318,11 +338,19 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   /************************** MODALS MANAGEMENT  **********************/
   /********************************************************************/
 
-  /******* Modal : creartion with succes *******/
-  confirmCreation(event) {
-    event.target.parentElement.parentElement.parentElement.parentElement.classList.remove('md-show');
+  /******* check crationState event from creation-fiches-materiel component *******/
+  checkCreationState(event) {
+    this.creationState = event;
+      this.confirmCreation();
+  }
+
+  /******* Modal : creation with succes *******/
+  confirmCreation() {
+    document
+      .querySelector('#' + 'recap-fiche-achat')
+      .classList.remove('md-show');
     setTimeout(
-      () =>
+      () => { if (this.creationState) {
         swal({
           text: 'Les fiches materiel ont été crées avec succès',
           showCancelButton: true,
@@ -334,18 +362,29 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
           if (result.value) {
             this.router.navigate([`/material-sheets/my-material-sheets`]);
           }
-        }),
-      500
-    );
-    setTimeout(() => this.initStep.emit((this.step = 1)), 1000);
+        });
+      } else {
+        swal({
+          text: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+          showCancelButton: false,
+          type: 'error',
+          confirmButtonText: 'Fermer',
+          confirmButtonColor: '#979696'
+        });
+      }
+    }, 500);
+    setTimeout(() => {
+      this.initStep.emit((this.step = 1));
+      this.creationState = false;
+    }, 1000);
   }
 
   /***** Close modal creation-details *****/
   closeMyModal(event) {
+    this.creationState = false;
     event.target.parentElement.parentElement.parentElement.parentElement.classList.remove(
       'md-show'
     );
     setTimeout(() => this.initStep.emit((this.step = 1)), 1000);
   }
-
 }

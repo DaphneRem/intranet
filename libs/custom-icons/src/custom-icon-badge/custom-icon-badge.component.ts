@@ -18,17 +18,9 @@ export class CustomIconBadgeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log(this.bigIcon);
-   console.log(this.littleIcon);
-   console.log(this.link);
    this.checkLink(this.link);
   }
 
-  checkLink(link) {
-    if (link !== undefined) {
-      this.linkExist = true;
-    } else {
-      this.link = false;
-    }
-  }
+  checkLink(link) { (link !== undefined) ? this.linkExist = true : this.linkExist = false; }
+
 }

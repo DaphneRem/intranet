@@ -4,12 +4,15 @@ import { Router } from '@angular/router';
 // lib imports
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
-// service import
-import { FichesMaterielService } from '../../services/fiches-materiel.service';
-import { FicheMateriel } from '../../models/fiche-materiel';
-import { FichesAchatService } from '@ab/fiches-achat';
-import { FicheAchatDetails } from '@ab/fiches-achat';
+// fiches achat service & model import
 import { FicheAchat } from '@ab/fiches-achat';
+import { FicheAchatDetails } from '@ab/fiches-achat';
+import { FichesAchatService } from '@ab/fiches-achat';
+
+// fiches matériel service & model import
+import { FicheMateriel } from '../../models/fiche-materiel';
+import { FichesMaterielService } from '../../services/fiches-materiel.service';
+
 
 @Component({
   selector: 'fiches-materiel-table',
@@ -24,9 +27,12 @@ export class FichesMaterielTableComponent implements OnInit {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
 
-  public render: boolean;
 
+  public deadline;
+  public livraison;
+  public acceptation;
   public dataReady = false;
+  public render: boolean;
   public customdatatablesOptions: CustomDatatablesOptions = {
     tableTitle: 'Fiches Materiel',
     data: [],
@@ -44,12 +50,7 @@ export class FichesMaterielTableComponent implements OnInit {
         index : 0,
         className: 'warning',
         cellData: ['10/10/2018 à 00:00:00']
-      },
-      // {
-      //   index : 2,
-      //   className: 'blue',
-      //   cellData: ['0']
-      // }
+      }
     ],
     renderOption: true,
     dbClickActionExist: true,
@@ -100,17 +101,14 @@ export class FichesMaterielTableComponent implements OnInit {
         if (!data) {
           this.customdatatablesOptions.data = [];
         } else {
-          data.map(e => {
-            let deadline = new Date(e.Deadline);
-            let livraison = new Date(e.DateLivraison);
-            let acceptation = new Date(e.DateAcceptation);
-            e.Deadline = deadline.toLocaleString();
-            e.DateLivraison = livraison.toLocaleString();
-            e.DateAcceptation = acceptation.toLocaleString();
-          });
-          data.map((item) => {
-
-          })
+            // data.map(e => {
+            // this.deadline = new Date(e.Deadline);
+            // this.livraison = new Date(e.DateLivraison);
+            // this.acceptation = new Date(e.DateAcceptation);
+            // e.Deadline = this.deadline.toLocaleString();
+            // e.DateLivraison = this.livraison.toLocaleString();
+            // e.DateAcceptation = this.acceptation.toLocaleString();
+            // });
           this.customdatatablesOptions.data = data;
         }
         this.dataReady = true;
@@ -132,8 +130,15 @@ export class FichesMaterielTableComponent implements OnInit {
   }
 
   displayColumns(data) {
-    console.log('data columns :' + data[0]);
     this.customdatatablesOptions.columns = [
+      {
+        title : 'titre vf', // pour les tests
+        data : 'TitreEpisodeVF' // pour les tests
+      },
+      {
+        title : 'date création', // pour les tests
+        data : 'DateCreation' // pour les tests
+      },
       {
         title : 'Deadline',
         data : 'Deadline'
@@ -161,54 +166,8 @@ export class FichesMaterielTableComponent implements OnInit {
       {
         title : 'Version',
         data : 'Fiche_Mat_Version',
-      }
+      },
     ];
   }
 
-
 }
-
-
-
-
-  //   IdFicheMateriel: number;
-  //   IdFicheAchat: number;
-  //   IdFicheDetail: number;
-  //  // Deadline: string;
-  //   SuiviPar: string;
-  //   IdLibstatut: number;
-  //   IdLibEtape: number;
-  //   // NumEpisodeProd: number;
-  //   NumEpisodeAB: number;
-  //   TitreEpisodeVF: string;
-  //   TitreEpisodeVO: string;
-  //   IdSupport: string;
-  //   NumProgram: string;
-  //   // NumEpisode: number;
-  //   ReceptionAccesLabo: string;
-  //   NomLabo: string;
-  //   CoutLabo: number;
-  //   // DateLivraison: string;
-  //   DelaiLivraison: number;
-  //   UniteDelaiLivraison: number;
-  //   // DateAcceptation: string;
-  //   DatePremiereDiff: string;
-  //   AccesVF: string;
-  //   Commentaires: string;
-  //   RetourOri: number;
-  //   RetourOriDernierDelai: string;
-  //   IdStatutElementsAnnexes: number;
-  //   UserCreation: string;
-  //   UserModification: string;
-  //   DateCreation: string;
-  //   DateModification: string;
-  //   Fiche_Mat_ElementsAnnexes: any;
-  //   Fiche_Mat_LibEtape: null;
-  //   Fiche_Mat_LibRetourOri: null;
-  //   Fiche_Mat_Libstatut: null;
-  //   Fiche_Mat_LibStatutElementsAnnexes: null;
-  //   Fiche_Mat_HistoriqueDateLivraison: any;
-  //   Fiche_Mat_HistoriqueStatutEtape: any;
-  //   // Fiche_Mat_Qualite: any;
-  //   Fiche_Mat_StatutElementsAnnexes: any;
-  //   // Fiche_Mat_Version: any;

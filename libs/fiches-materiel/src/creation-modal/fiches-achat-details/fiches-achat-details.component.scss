@@ -1,14 +1,20 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$cancelBtnColor : #989797;
+$importantColor : #fd5f5f;
+
 .nbr-oeuvre {
    margin-bottom : 25px; 
 }
 
 .oeuvre {
+    padding-left: 27px;
     .title {
         display: flex;
         .number {
             height: 25px;
             width: 25px;
-            background: #17AAB2;
+            background: $creationBtnColor;
             color: #ffffff;
             border-radius : 100%;
             padding-left: 8px;
@@ -19,12 +25,12 @@
         }
     }
     .details {
-        margin : 5px 0 10px 15px;
+        margin : 5px 0 10px 35px;
         .oeuvre-details {
             padding: 0;
             span {
                 &.important {
-                    color : red;
+                    color : $importantColor;
                     font-weight: 100;
                 }
             }

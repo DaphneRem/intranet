@@ -1,5 +1,5 @@
 export class NewFicheMateriel {
-    // greeting: string;
+
     IdFicheAchat: number;
     IdFicheDetail: number;
     Deadline: Date;
@@ -28,9 +28,8 @@ export class NewFicheMateriel {
     UserModification: string;
     DateCreation: Date;
     DateModification: Date;
+
         constructor(
-            // message: string,
-            // greeting: string,
             {
                 IdFicheAchat: IdFicheAchat,
                 IdFicheDetail: IdFicheDetail,
@@ -45,7 +44,6 @@ export class NewFicheMateriel {
                 DateCreation: DateCreation,
             }
         ) {
-            // this.greeting = message;
             this.IdFicheAchat = IdFicheAchat,
             this.IdFicheDetail = IdFicheDetail,
             this.Deadline = Deadline,
@@ -76,9 +74,4 @@ export class NewFicheMateriel {
             this.UserModification = '', // par défaut : ''
             this.DateModification = null;
         }
-    // greet() {
-    //     return 'Hello, ' + this.greeting;
-    // }
 }
-
-// let greeter = new Greeter('world');

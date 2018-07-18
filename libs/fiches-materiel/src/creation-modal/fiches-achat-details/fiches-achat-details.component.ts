@@ -8,8 +8,7 @@ import swal from 'sweetalert2';
   templateUrl: './fiches-achat-details.component.html',
   styleUrls: [
     './fiches-achat-details.component.scss',
-    '../../../../../node_modules/sweetalert2/src/sweetalert2.scss',
-
+    '../../../../../node_modules/sweetalert2/src/sweetalert2.scss'
   ]
 })
 export class FichesAchatDetailsComponent implements OnInit {
@@ -17,40 +16,63 @@ export class FichesAchatDetailsComponent implements OnInit {
   @Input() step;
   @Input() seriesExist;
 
-  @Output() nextStep = new EventEmitter;
+  @Output() nextStep = new EventEmitter();
 
-  constructor( private router: Router ) { }
+  public creationState;
 
-  ngOnInit() {
-    console.log(this.seriesExist);
-  }
+  constructor( private router: Router ) {}
+
+  ngOnInit() {}
 
   goToNextStep() {
-    this.step ++;
+    this.step++;
     this.nextStep.emit(this.step);
   }
 
-  confirmCreation(event) {
-      ((event.target.parentElement.parentElement.parentElement).parentElement).classList.remove('md-show');
-      setTimeout(() => swal({
-        text: 'Les fiches materiel ont été crées avec succès',
-        showCancelButton: true,
-        type: 'success',
-        cancelButtonText: 'Fermer',
-        confirmButtonText: 'Voir les fiches matériel',
-        confirmButtonColor: '#17AAB2',
-      }).then((result) => {
-        if (result.value) {
-          this.router.navigate([`/material-sheets/my-material-sheets`]);
-        }
-      }), 500);
-      setTimeout(() => this.nextStep.emit(this.step = 1), 1000);
-    }
+  checkCreationState(event) {
+    this.creationState = event;
+    this.confirmCreation();
+  }
+
+  confirmCreation() {
+    document
+      .querySelector('#' + 'recap-fiche-achat')
+      .classList.remove('md-show');
+    setTimeout(
+      () => { if (this.creationState) {
+        swal({
+          text: 'Les fiches materiel ont été crées avec succès',
+          showCancelButton: true,
+          type: 'success',
+          cancelButtonText: 'Fermer',
+          confirmButtonText: 'Voir les fiches matériel',
+          confirmButtonColor: '#17AAB2'
+        }).then(result => {
+          if (result.value) {
+            this.router.navigate([`/material-sheets/my-material-sheets`]);
+          }
+        });
+      } else {
+        swal({
+          text: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+          showCancelButton: false,
+          type: 'error',
+          confirmButtonText: 'Fermer',
+          confirmButtonColor: '#979696'
+        });
+      }
+    }, 500);
+    setTimeout(() => {
+      this.nextStep.emit((this.step = 1));
+      this.creationState = false;
+    }, 1000);
+  }
 
   closeMyModal(event) {
-    ((event.target.parentElement.parentElement.parentElement).parentElement).classList.remove('md-show');
+    event.target.parentElement.parentElement.parentElement.parentElement.classList.remove(
+      'md-show'
+    );
     this.step = 1;
     this.nextStep.emit(this.step);
   }
-
 }

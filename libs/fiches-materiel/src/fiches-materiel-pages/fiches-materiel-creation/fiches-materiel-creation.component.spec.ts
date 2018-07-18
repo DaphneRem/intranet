@@ -1,6 +1,23 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 
 import { FichesMaterielCreationComponent } from './fiches-materiel-creation.component';
+
+import { CustomIconBadge } from '@ab/custom-icons';
+
+const iconTesting = {
+      littleIcon : {
+        circleColor: '#3383FF',
+        icon : 'icofont icofont-eye',
+        iconSize: '1.5em',
+        iconMargin: '2px',
+      },
+      bigIcon : {
+        icon: 'icofont icofont-file-text',
+        circleColor:  '#999898',
+      },
+      link : '../material-sheets/my-material-sheets'
+};
 
 describe('FichesMaterielCreationComponent', () => {
   let component: FichesMaterielCreationComponent;
@@ -8,7 +25,8 @@ describe('FichesMaterielCreationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FichesMaterielCreationComponent ]
+      declarations: [ FichesMaterielCreationComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
@@ -22,4 +40,34 @@ describe('FichesMaterielCreationComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have a fichesMaterielCreation object', () => {
+    fixture = TestBed.createComponent(FichesMaterielCreationComponent);
+    component = fixture.componentInstance;
+    component.fichesMaterielCreation = iconTesting;
+    expect(component.fichesMaterielCreation).toBeDefined();
+  });
+
+  it('should have a fichesAchatView object', () => {
+    fixture = TestBed.createComponent(FichesMaterielCreationComponent);
+    component = fixture.componentInstance;
+    component.fichesAchatView = iconTesting;
+    expect(component.fichesAchatView).toBeDefined();
+  });
+
+  it('should have headerTableLinkExist property', () => {
+    fixture = TestBed.createComponent(FichesMaterielCreationComponent);
+    component = fixture.componentInstance;
+    component.headerTableLinkExist = true;
+    expect(component.headerTableLinkExist).toBeDefined();
+  });
+
+  it('should have daysTableView property', () => {
+    fixture = TestBed.createComponent(FichesMaterielCreationComponent);
+    component = fixture.componentInstance;
+    component.daysTableView = 2;
+    expect(component.headerTableLinkExist).toBeDefined();
+  });
+
+
 });

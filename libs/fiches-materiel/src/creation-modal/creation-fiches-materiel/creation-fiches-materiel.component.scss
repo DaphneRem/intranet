@@ -1,0 +1,13 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$cancelBtnColor : #c9c9c9;
+$importantColor : #fd5f5f;
+
+
+div {
+    .disabled {
+        background-color: $cancelBtnColor;
+        border-color: $cancelBtnColor;
+        cursor: wait;
+    }
+}

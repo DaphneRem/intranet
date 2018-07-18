@@ -15,9 +15,9 @@ import swal from 'sweetalert2';
 // lib import
 import { CustomIconBadge } from '@ab/custom-icons';
 
-// service import
-import { FichesAchatService } from '@ab/fiches-achat';
+// service & model import
 import { FicheAchatDetails } from '@ab/fiches-achat';
+import { FichesAchatService } from '@ab/fiches-achat';
 
 @Component({
   selector: 'modal-recap-fiche-achat',
@@ -46,27 +46,23 @@ import { FicheAchatDetails } from '@ab/fiches-achat';
 })
 
 export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
-  @Input() visible: boolean;
   @Input() ficheAchat;
 
-  public showDialog = false;
   public myFicheAchat;
-  public config: any;
   public detailsFicheAchat;
   public dataReady = false;
-  public step = 1;
   public seriesExist = false;
-  public init = 1;
   public series = [];
+  public step = 1;
+  public init = 1;
 
   constructor(
     private router: Router,
     private fichesAchatService: FichesAchatService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.step = 1;
-    console.log(this.step);
   }
 
   changeStep(event) {
@@ -78,29 +74,18 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
     this.myFicheAchat = ficheAchat.currentValue;
     if (this.init > 1) {
       this.getFicheAchatDetails(ficheAchat.currentValue.id_fiche);
-      // this.getFicheAchatDetails(18);
     }
     this.init++;
   }
 
-  closeMyModal(event) {
-    ((event.target.parentElement.parentElement).parentElement).classList.remove('md-show');
-    setTimeout(() => this.step = 1, 500);
-  }
-
   checkSeries(data) {
+    this.series = [];
     data.map((e) => {
       if (e.nombre_episodes > 1) {
         this.series.push(e);
-      } else {
-        this.series = [];
       }
     });
-    if (this.series.length) {
-      this.seriesExist = true;
-    } else {
-      this.seriesExist = false;
-    }
+    (this.series.length) ? this.seriesExist = true : this.seriesExist = false;
   }
 
   getFicheAchatDetails(id) {
@@ -111,6 +96,11 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
         this.checkSeries(data);
         this.dataReady = true;
       });
+  }
+
+  closeMyModal(event) {
+    ((event.target.parentElement.parentElement).parentElement).classList.remove('md-show');
+    setTimeout(() => this.step = 1, 500);
   }
 
 }

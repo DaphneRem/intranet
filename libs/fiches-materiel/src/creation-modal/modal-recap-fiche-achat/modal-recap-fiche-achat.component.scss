@@ -1,4 +1,6 @@
 $navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$cancelBtnColor : #989797;
 
 .modal-content {
     &.my-content {
@@ -8,10 +10,10 @@ $navbarColor : #3b4650;
         &.return-btn {
             margin-right: 0;
             float: right;
-            color: #fff;
-            background-color: #989797;
+            color: #ffffff;
+            background-color: $cancelBtnColor;
             background-image: none;
-            border-color: #989797;
+            border-color: $cancelBtnColor;
             transition: all ease-in 0.3s;
             border-radius: 2px;
             text-transform: capitalize;
@@ -19,11 +21,11 @@ $navbarColor : #3b4650;
             padding: 8px 10px;
         }
         &.creation-btn {
-            background-color: #17AAB2;
-            border-color: #17AAB2;
+            background-color: $creationBtnColor;
+            border-color: $creationBtnColor;
             margin-right: 0;
             float: right;
-            color: #fff;
+            color: #ffffff;
             background-image: none;
             transition: all ease-in 0.3s;
             border-radius: 2px;
@@ -50,7 +52,7 @@ $navbarColor : #3b4650;
 }
 
 /deep/ .swal2-popup .swal2-actions .swal2-styled.swal2-confirm {
-            padding: 8px 10px;
-                background-color: #17AAB2;
-                border-color: #17AAB2;
+    padding: 8px 10px;
+    background-color: $creationBtnColor;
+    border-color: $creationBtnColor;
 }

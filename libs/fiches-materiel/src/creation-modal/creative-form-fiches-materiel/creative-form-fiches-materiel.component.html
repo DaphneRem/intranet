@@ -1,6 +1,8 @@
 <form #myForm="ngForm" class="form-group" >
   <div class="oeuvres" *ngFor="let oeuvre of oeuvreWithGaps;let index = index;">
     <div class="title">
+      <i *ngIf="checkIfErrorExist(oeuvre.gaps)" class="warning-icon icofont icofont-warning"></i>
+      <div *ngIf="!checkIfErrorExist(oeuvre.gaps)" class="warning-icon-false"></div>
       <div class="number">{{oeuvre.index}}</div>
       <h4>{{oeuvre.titre_vf}}</h4>
       <p> -  {{oeuvre.nombre_episodes}} épisodes</p>
@@ -54,19 +56,6 @@
         <p *ngIf="gap.errorMessage === 'not number'" class="error-message invalid-message">Vous pouvez inscrire uniquement des valeurs numériques</p>
       </div>
       <div></div>
-      <div *ngIf="first.invalid || last.invalid && gap.modif" class="col-form-label form-txt-danger">
-        <!-- <div *ngIf="name.errors.required">
-          n° de support requis
-        </div> -->
-        <!-- <div *ngIf="name.errors.minlength">
-          8 caractères requis
-        </div> -->
-        <!-- <div *ngIf="checkErrorsGap(gaps, gap)"> coco</div> -->
-        <!-- <div *ngIf="gap.modif && myForm.errors.pattern && !myForm.errors.minlength">
-          chiffres uniquement
-        </div> -->
-        <!--Le nombre de fiches Matériel ne doit pas dépasser le nombre total d’épisodes-->
-      </div>
     </div>
     <div class="rest-episodes" *ngIf="displayRestOfEps(oeuvre, oeuvre.gaps)">
       <p class="remaining" *ngIf="remainingEps === 1">{{remainingEps}} épisode n'a pas encore de Fiche Matériel</p>
@@ -74,12 +63,11 @@
     </div>
   </div>
 </form>
-<button (click)="confirmCreation($event)" class="creation-btn btn btn-info md-close">Créer</button>
-<button (click)="closeMyModal($event)" class="return-btn btn btn-info md-close">Fermer</button>
-
 <creation-fiches-materiel
+  (confirmCreation)="checkCreationState($event)"
   [oeuvresSimple]="oeuvresSimple" 
   [oeuvreWithGaps]="oeuvreWithGaps" 
-  [detailsFicheAchat]="detailsFicheAchat">
+  [detailsFicheAchat]="detailsFicheAchat"
+  [step]="step">
 </creation-fiches-materiel>
-           <!-- (keyup)="gap.first ? gap.error = true : gap.error = false" -->
+<button (click)="closeMyModal($event)" class="return-btn btn btn-info md-close">Fermer</button>
