@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, OnInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  Input,
+  Output,
+  ViewChild,
+  EventEmitter,
+  OnDestroy
+} from '@angular/core';
 import { Router } from '@angular/router';
 
 // imports external libs
@@ -17,7 +26,7 @@ import { CustomThemesService } from '../services/custom-datatables-themes.servic
     CustomDatatablesOptions
   ]
 })
-export class CustomDatatablesComponent implements OnInit, AfterViewInit {
+export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() customdatatablesOptions: CustomDatatablesOptions;
 
@@ -117,6 +126,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+        console.log(this.customdatatablesOptions);
     this.displayDatatables(); // display datatables if data.length
     this.displayCustomOptions();
     this.displayTheme(this.themeName);
@@ -128,19 +138,32 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
     this.dtTrigger.next();
   }
 
-  renderMyData() {
-    this.render = true;
-    this.change.emit(this.render);
-    this.render = false;
+  // renderMyData() {
+  //   this.render = true;
+  //   this.change.emit(this.render);
+  //   this.render = false;
+  // }
+  ngOnDestroy(): void {
+
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+    console.log(this.customdatatablesOptions);
   }
 
   rerender(): void {
+    console.log(this.customdatatablesOptions);
+
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
+        // Destroy the table first
+        // Call the dtTrigger to rerender again
+        console.log(this.customdatatablesOptions);
+        dtInstance.destroy();
+        this.displayDatatables(); // display datatables if data.length
+        this.displayCustomOptions();
+        this.displayTheme(this.themeName);
+        console.log(this.customdatatablesOptions);
+        this.dtTrigger.next();
+      });
   }
 
   displayDatatables() {
@@ -285,6 +308,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit {
 
   // adjust title of columns if customComlumn exist
   dispplayColumns() {
+    this.finalData = [];
     if (this.customdatatablesOptions.customColumn) {
       // add custom columns
       this.customdatatablesOptions.columns.map(item =>
