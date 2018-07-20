@@ -16,7 +16,7 @@ export class FichesMaterielCreationComponent implements OnInit {
   public headerTableLinkExist = false;
 
   public icons = [];
-  public fichesMaterielCreation: CustomIconBadge = {
+  public fichesMaterielView: CustomIconBadge = {
       littleIcon : {
         circleColor: '#3383FF',
         icon : 'icofont icofont-eye',
@@ -27,7 +27,9 @@ export class FichesMaterielCreationComponent implements OnInit {
         icon: 'icofont icofont-file-text',
         circleColor:  '#999898',
       },
-      link : '../material-sheets/my-material-sheets'
+      link : '../material-sheets/my-material-sheets',
+      tooltip : true,
+      tooltipMessage : 'Voir les fiches Matériel'
   };
   public fichesAchatView: CustomIconBadge = {
       littleIcon : {
@@ -40,13 +42,15 @@ export class FichesMaterielCreationComponent implements OnInit {
         icon: 'icofont icofont-tag',
         circleColor:  '#999898',
       },
-      link : '/displaying-purchase-sheets'
+      link : '/displaying-purchase-sheets',
+      tooltip : true,
+      tooltipMessage : 'Voir les Fiches Achat'
   };
 
   constructor() { }
 
   ngOnInit() {
-    this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
+    this.icons = [this.fichesMaterielView, this.fichesAchatView];
   }
 
 }

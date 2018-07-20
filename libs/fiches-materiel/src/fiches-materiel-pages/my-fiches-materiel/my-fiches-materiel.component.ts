@@ -5,11 +5,7 @@ import { CustomIconBadge } from '@ab/custom-icons';
 @Component({
   selector: 'my-fiches-materiel',
   templateUrl: './my-fiches-materiel.component.html',
-  styleUrls: [
-    './my-fiches-materiel.component.scss',
-    '../../../../../assets/icon/icofont/css/icofont.scss'
-
-  ]
+  styleUrls: ['./my-fiches-materiel.component.scss']
 })
 export class MyFichesMaterielComponent implements OnInit {
 

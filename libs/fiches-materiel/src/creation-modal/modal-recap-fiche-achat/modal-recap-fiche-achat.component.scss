@@ -4,9 +4,27 @@ $cancelBtnColor : #989797;
 
 .modal-content {
     &.my-content {
-        padding: 0 40px 30px;
+        // padding: 0 40px 30px;
+        // min-height: 230px;
+        padding-bottom: 50px;
+        padding-top : 0;
     }
     button {
+        &.creation-btn {
+            background-color: $creationBtnColor;
+            border-color: $creationBtnColor;
+            margin-right: 80px;
+            // float: right;
+            color: #ffffff;
+            background-image: none;
+            transition: all ease-in 0.3s;
+            border-radius: 2px;
+            text-transform: capitalize;
+            font-size: 1em;
+            padding: 8px 10px;
+            // margin-right: 80px;
+            margin-bottom: -42px;
+        }
         &.return-btn {
             margin-right: 0;
             float: right;
@@ -17,23 +35,8 @@ $cancelBtnColor : #989797;
             transition: all ease-in 0.3s;
             border-radius: 2px;
             text-transform: capitalize;
-            font-size: 15px;
+            font-size: 1em;
             padding: 8px 10px;
-        }
-        &.creation-btn {
-            background-color: $creationBtnColor;
-            border-color: $creationBtnColor;
-            margin-right: 0;
-            float: right;
-            color: #ffffff;
-            background-image: none;
-            transition: all ease-in 0.3s;
-            border-radius: 2px;
-            text-transform: capitalize;
-            font-size: 15px;
-            padding: 8px 10px;
-            margin-right: 80px;
-            margin-bottom: -40px;
         }
     }
     .icon {

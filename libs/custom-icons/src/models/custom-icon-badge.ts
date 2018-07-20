@@ -1,6 +1,8 @@
 export class CustomIconBadge {
     littleIcon: LittleIcon;
     bigIcon: BigIcon;
+    tooltip?: boolean;
+    tooltipMessage?: string;
     link?: string;
 }
 

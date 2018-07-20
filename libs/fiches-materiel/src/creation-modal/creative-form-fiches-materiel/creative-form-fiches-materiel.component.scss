@@ -6,6 +6,7 @@ $warningColor : #ffa834;
 
 .oeuvres {
     margin-top: 30px;
+    // padding-bottom: 180px;
     .title {
         display: flex;
         .number {
@@ -133,7 +134,7 @@ $warningColor : #ffa834;
     background-image: none;
     transition: all ease-in 0.3s;
     border-radius: 2px;
-    font-size: 15px;
+    font-size: 1em;
     padding: 5px 10px;
 }
 
@@ -147,7 +148,7 @@ $warningColor : #ffa834;
     background-image: none;
     transition: all ease-in 0.3s;
     border-radius: 2px;
-    font-size: 15px;
+    font-size: 1em;
     padding: 5px 10px;
     i {
         margin-right: 10px;
@@ -165,7 +166,7 @@ $warningColor : #ffa834;
     background-image: none;
     transition: all ease-in 0.3s;
     border-radius: 2px;
-    font-size: 15px;
+    font-size: 1em;
     padding: 5px 10px;
 }
 
@@ -182,5 +183,12 @@ $warningColor : #ffa834;
         &.same-value {
             font-size: 1em;
         }
+    }
+}
+
+button {
+    &.creation-off {
+        background-color: $cancelBtnColor;
+        border-color: $cancelBtnColor;
     }
 }

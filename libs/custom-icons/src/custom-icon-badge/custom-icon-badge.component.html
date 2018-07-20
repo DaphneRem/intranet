@@ -1,4 +1,4 @@
-<div class="creation-logo" [routerLink]="linkExist ? [link] : ''">
+<div class="creation-logo" [routerLink]="linkExist ? [link] : ''" placement="top" ngbTooltip="{{tooltipMessage}}">
   <div class="circle-icon" [style.background]="bigIcon.circleColor">
     <i class="icon" [ngClass]="bigIcon.icon" [ngStyle]="{ 'font-size' : bigIcon.iconSize}"></i>
   </div>

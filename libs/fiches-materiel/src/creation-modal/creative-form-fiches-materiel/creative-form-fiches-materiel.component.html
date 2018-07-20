@@ -64,10 +64,12 @@
   </div>
 </form>
 <creation-fiches-materiel
+  *ngIf="displayCreateBtn(oeuvreWithGaps)"
   (confirmCreation)="checkCreationState($event)"
   [oeuvresSimple]="oeuvresSimple" 
   [oeuvreWithGaps]="oeuvreWithGaps" 
   [detailsFicheAchat]="detailsFicheAchat"
   [step]="step">
 </creation-fiches-materiel>
+<button *ngIf="!displayCreateBtn(oeuvreWithGaps)" class="creation-btn creation-off btn btn-info md-close"><i class="icofont icofont-ui-block"></i>Créer</button>
 <button (click)="closeMyModal($event)" class="return-btn btn btn-info md-close">Fermer</button>

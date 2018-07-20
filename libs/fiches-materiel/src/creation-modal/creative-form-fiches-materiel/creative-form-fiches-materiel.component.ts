@@ -14,6 +14,7 @@ import swal from 'sweetalert2';
 export class CreativeFormFichesMaterielComponent implements OnInit {
   @Input() step;
   @Input() detailsFicheAchat;
+
   @Output() initStep = new EventEmitter();
 
   public oeuvresWithEps = []; // object from detailsFicheAchat with nombre episodes > 1 (series)
@@ -31,7 +32,9 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   public foundLast;
   public gapInModif = [];
   public otherGapsInmodif = [];
+  public allGapsValid;
   public creationState: boolean;
+  public modifExist: Boolean = false;
 
   constructor( private router: Router ) {}
 
@@ -95,6 +98,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   /** CIRCLE BTN MODIF CLICK **/
   modifGaps(gap) {
     gap.modif = true;
+    this.modifExist = true;
   }
 
   displayModifGapBtn(gaps, gap) {
@@ -140,6 +144,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     }
     this.resetGaps = false;
     this.gapAdding = false;
+    this.modifExist = false;
   }
 
   displayCancelBtn(gaps, gap) {
@@ -166,6 +171,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
       modif: true
     });
     this.resetGaps = true;
+    this.modifExist = true;
   }
 
   /** DISPLAY CIRCLE ADD BTN **/
@@ -223,6 +229,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     gap.modif = false;
     gap.oldLast.push(gap.last);
     gap.oldFirst.push(gap.first);
+    this.modifExist = false;
   }
 
   /*********************** GAP ERRORS ***********************/
@@ -329,6 +336,31 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     if (this.totalGaps < oeuvre.nombre_episodes && !this.gapInModif.length) {
       this.remainingEps = oeuvre.nombre_episodes - this.totalGaps;
       return true;
+    } else {
+      return false;
+    }
+  }
+
+  /** DISPLAY CREATION BTN OR CREATION DISABLED BTN **/
+  displayCreateBtn(oeuvreWithGaps) {
+    const gapInModif = [];
+    if (oeuvreWithGaps.length > 1) {
+      oeuvreWithGaps.map((item) => {
+        item.gaps.map((gap) => {
+          if (gap.modif === true) {
+            gapInModif.push(gap);
+          }
+        });
+      });
+    } else {
+      oeuvreWithGaps[0].gaps.map((gap) => {
+        if (gap.modif === true) {
+          gapInModif.push(gap);
+        }
+      });
+    }
+    if (!gapInModif.length) {
+        return true;
     } else {
       return false;
     }

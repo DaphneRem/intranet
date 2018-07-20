@@ -99,8 +99,10 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
   }
 
   closeMyModal(event) {
-    ((event.target.parentElement.parentElement).parentElement).classList.remove('md-show');
-    setTimeout(() => this.step = 1, 500);
+    document
+      .querySelector('#' + 'recap-fiche-achat')
+      .classList.remove('md-show');
+    setTimeout(() => (this.step = 1), 500);
   }
 
 }

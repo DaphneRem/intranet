@@ -12,6 +12,8 @@ export class CustomIconBadgeComponent implements OnInit {
   @Input() bigIcon;
   @Input() littleIcon;
   @Input() link;
+  @Input() tooltip;
+  @Input() tooltipMessage;
 
   public linkExist: boolean;
 

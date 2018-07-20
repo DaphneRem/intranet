@@ -26,7 +26,6 @@ describe('ModalRecapFicheAchatComponent', () => {
         TestHostComponent
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-
     })
     .compileComponents();
   }));
