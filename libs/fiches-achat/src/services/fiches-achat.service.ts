@@ -34,6 +34,22 @@ export class FichesAchatService {
       .catch(this.handleError);
   }
 
+  // getFichesAchat2(view: number): Observable<FicheAchat[]> {
+  //   return this.http
+  //     .get(urlFicheAchat + urlFicheAchatTraitee)
+  //     .map((res: any) => {
+  //       // if (!res) {
+  //       //   res = 0;
+  //       //   return res;
+  //       // }
+  //       // console.log(JSON.parse(res));
+  //       console.log(res);
+  //       return res as FicheAchat[];
+  //     })
+  //     .catch(this.handleError);
+  // }
+
+
   getFichesAchatDetails(id: number): Observable<FicheAchatDetails[]> {
     return this.http
       .get(urlFicheAchat + urlDetailFicheAchat + id)

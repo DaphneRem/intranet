@@ -1,4 +1,39 @@
 <sub-header></sub-header>
-<p>
-  display-fiches-achats works!
-</p>
+
+<div class="row card">
+  <p class="col-lg-2">Voir Fiches Achat : </p>
+  <div class="col-lg-3 search-form">
+    <div class="form-radio">
+      <form>
+        <div class="radio radio-inline" *ngFor="let view of views">
+          <label>
+            <input type="radio" name="view.name" checked="checked" (click)="select(view)">
+            <i class="helper"></i>{{view.name}}
+          </label>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="search-btn col-lg-5">
+    <button class="btn btn-info" (click)="submitView()">Rechercher</button>
+  </div>
+  <div class="table-top col-lg-2">
+    <custom-icon-badge 
+      *ngFor="let icon of icons" 
+      [littleIcon]="icon.littleIcon" 
+      [bigIcon]="icon.bigIcon" 
+      [link]="icon.link">
+    </custom-icon-badge>
+  </div>
+</div>
+<fiches-achat-table [headerTableLinkExist]="false" [currentView]="currentView"></fiches-achat-table>
+
+<!-- <ng-container #vc><ng-container>
+<div *ngIf="isLoading">loading...</div>
+<ng-template #tpl>
+  <fiches-achat-table [headerTableLinkExist]="false" [selectedView]="selectedView" ></fiches-achat-table>
+</ng-template> -->
+<!-- 
+    <button (click)="insertChildView()">Insert Child View</button>
+    <button (click)="removeChildView()">Remove Child View</button>
+    <button (click)="reloadChildView()">Reload Child View</button> -->

@@ -7,6 +7,8 @@ import { CustomDatatablesModule } from '@ab/custom-datatables';
 import { CustomIconsModule } from '@ab/custom-icons';
 import { LoadersModule } from '@ab/loaders';
 import { ModalsModule } from '@ab/modals';
+import { SubHeaderModule } from '@ab/sub-header';
+import { FichesAchatTableComponent } from './fiches-achat-table/fiches-achat-table.component';
 
 @NgModule({
   imports: [
@@ -15,11 +17,10 @@ import { ModalsModule } from '@ab/modals';
     CustomIconsModule,
     FormsModule,
     LoadersModule,
-    ModalsModule
+    ModalsModule,
+    SubHeaderModule
   ],
-  declarations: [
-  ],
-  exports: [
-  ]
+  declarations: [FichesAchatTableComponent],
+  exports: [FichesAchatTableComponent]
 })
 export class FichesAchatLibModule {}
