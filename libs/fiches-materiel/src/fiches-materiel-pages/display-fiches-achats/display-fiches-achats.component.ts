@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewContainerRef,
-  AfterViewInit,
-  ViewChild,
-  ViewRef,
-  TemplateRef
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { CustomIconBadge } from '@ab/custom-icons';
 
@@ -17,32 +9,25 @@ import { CustomIconBadge } from '@ab/custom-icons';
 })
 export class DisplayFichesAchatsComponent implements OnInit {
 
-
-  // @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
-
-  // @ViewChild('tpl', {read: TemplateRef}) tpl: TemplateRef<any>;
-
-  // childViewRef: ViewRef;
-  // isLoading = false;
-
-
+  public reloadData = false;
   public views = [
     {
       id: 0,
-      name: 'Toutes'
+      label: 'Toutes'
     },
     {
       id: 1,
-      name: 'Traitées'
+      label: 'Traitées'
     },
     {
       id: 2,
-      name: 'Non traitées'
+      label: 'Non traitées'
     }
   ];
-  public currentView;
   public selectedView;
-  public daysTableView = 3;
+  public stateFIcheAchat;
+  public displayActionType = 'modal';
+  public modalName = '#modal-detail-fiche-achat';
   public headerTableLinkExist = false;
 
   public icons = [];
@@ -56,10 +41,14 @@ export class DisplayFichesAchatsComponent implements OnInit {
     },
     bigIcon: {
       icon: 'icofont icofont-file-text',
-      circleColor: '#999898'
+      circleColor: '#999898',
+      circleColorHover: '#b5b3b3',
     },
-    link: '/creation'
+    link: '/creation',
+    tooltip : true,
+    tooltipMessage : 'Créer des fiches Matériel'
   };
+
   public fichesMaterielView: CustomIconBadge = {
     littleIcon: {
       circleColor: '#3383FF',
@@ -69,19 +58,20 @@ export class DisplayFichesAchatsComponent implements OnInit {
     },
     bigIcon: {
       icon: 'icofont icofont-file-text',
-      circleColor: '#999898'
+      circleColor: '#999898',
+      circleColorHover: '#b5b3b3',
     },
-    link: '../material-sheets/my-material-sheets'
+    link: '../material-sheets/my-material-sheets',
+    tooltip : true,
+    tooltipMessage : 'Voir les fiches Matériel'
   };
 
   constructor() {}
 
   ngOnInit() {
     this.icons = [this.fichesMaterielCreation, this.fichesMaterielView];
-    this.currentView = this.views[2];
+    this.stateFIcheAchat = this.views[2];
     this.selectedView = this.views[2];
-    // this.childViewRef = this.tpl.createEmbeddedView(null);
-    // this.insertChildView();
   }
 
   select(view) {
@@ -90,31 +80,8 @@ export class DisplayFichesAchatsComponent implements OnInit {
   }
 
   submitView() {
-    this.currentView = this.selectedView;
-    alert(this.currentView.name);
-    // this.reloadChildView();
+    console.log('click sur btn rechercher');
+    this.stateFIcheAchat = this.selectedView;
   }
-
-  // ngAfterViewInit() {
-  //   this.childViewRef = this.tpl.createEmbeddedView(null);
-  // }
-
-  // insertChildView() {
-  //   this.vc.insert(this.childViewRef);
-  // }
-
-  // removeChildView() {
-  //   this.vc.detach();
-  // }
-
-  // reloadChildView() {
-  //   this.removeChildView();
-  //   this.isLoading = true;
-  //   setTimeout(() => {
-  //     this.insertChildView();
-  //     this.isLoading = false;
-  //   }, 1000);
-  // }
-
 
 }

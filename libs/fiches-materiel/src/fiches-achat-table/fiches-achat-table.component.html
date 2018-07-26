@@ -1,0 +1,10 @@
+<loader-animation *ngIf="!checkDataReady()"></loader-animation>
+<div *ngIf="checkDataReady()">
+  <custom-datatables 
+    [customdatatablesOptions]="customdatatablesOptions"
+    [rerenderData]="rerenderData"
+    (dataRow)="selectedFicheAchat($event)">
+  </custom-datatables>
+  <modal-fiche-achat-detail [ficheAchat]="myFicheAchat" [dataReloadReady]="dataReloadReady"></modal-fiche-achat-detail>
+  <modal-recap-fiche-achat [ficheAchat]="myFicheAchat"></modal-recap-fiche-achat>
+</div>

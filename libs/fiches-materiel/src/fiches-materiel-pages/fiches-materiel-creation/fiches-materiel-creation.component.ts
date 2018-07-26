@@ -12,8 +12,14 @@ import swal from 'sweetalert2';
 })
 export class FichesMaterielCreationComponent implements OnInit {
 
-  public daysTableView = 3;
+  /* OPTIONS FICHES ACHAT TABLE */
   public headerTableLinkExist = false;
+  public displayActionType = 'modal';
+  public modalName = '#recap-fiche-achat';
+  public stateFIcheAchat = {
+      id: 2,
+      name: 'Non traitées'
+  };
 
   public icons = [];
   public fichesMaterielView: CustomIconBadge = {
@@ -25,7 +31,8 @@ export class FichesMaterielCreationComponent implements OnInit {
       },
       bigIcon : {
         icon: 'icofont icofont-file-text',
-        circleColor:  '#999898',
+      circleColor: '#999898',
+      circleColorHover: '#b5b3b3',
       },
       link : '../material-sheets/my-material-sheets',
       tooltip : true,
@@ -40,7 +47,8 @@ export class FichesMaterielCreationComponent implements OnInit {
       },
       bigIcon : {
         icon: 'icofont icofont-tag',
-        circleColor:  '#999898',
+      circleColor: '#999898',
+      circleColorHover: '#b5b3b3',
       },
       link : '/displaying-purchase-sheets',
       tooltip : true,

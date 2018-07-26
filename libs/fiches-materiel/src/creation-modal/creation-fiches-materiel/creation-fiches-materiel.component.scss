@@ -4,7 +4,8 @@ $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
 
 
-div {
+.create-fiches-materiel {
+    
     .disabled {
         background-color: $cancelBtnColor;
         border-color: $cancelBtnColor;

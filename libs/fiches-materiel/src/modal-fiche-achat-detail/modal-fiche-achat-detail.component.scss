@@ -1,0 +1,87 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$cancelBtnColor : #989797;
+$importantColor : #fd5f5f;
+
+
+
+
+
+.h3 {
+    font-size: 2em;
+}
+.modal-content {
+    &.my-content {
+        // padding: 0 40px 30px;
+        // min-height: 230px;
+        padding-bottom: 20px;
+        padding-top : 0;
+        .nbr-oeuvre {
+            margin : 10px; 
+        }
+        .scroll-content {
+            &.scroll {
+                overflow-y: scroll; 
+                max-height: 320px;
+            }
+            .oeuvre {
+                padding-left: 27px;
+                .title {
+                    display: flex;
+                    .number {
+                        height: 25px;
+                        width: 25px;
+                        background: $creationBtnColor;
+                        color: #ffffff;
+                        border-radius : 100%;
+                        padding-left: 8px;
+                    }
+                    h4 {
+                        font-size: 1em;
+                        margin : 3px 0 0 10px;
+                    }
+                }
+                .details {
+                    margin : 5px 0 10px 35px;
+                    .oeuvre-details {
+                        padding: 0;
+                        span {
+                            &.important {
+                                color : $importantColor;
+                                font-weight: 100;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    button {
+        &.return-btn {
+            width: 75px;
+            margin-right: 0;
+            margin-top: 10px;
+            float: right;
+            color: #ffffff;
+            background-color: $cancelBtnColor;
+            background-image: none;
+            border-color: $cancelBtnColor;
+            transition: all ease-in 0.3s;
+            border-radius: 2px;
+            text-transform: capitalize;
+            font-size: 1em;
+            padding: 8px 10px;
+        }
+    }
+}
+
+.close-icon {
+    font-size: 2em;
+}
+
+/deep/ .swal2-popup .swal2-actions .swal2-styled.swal2-confirm {
+    padding: 8px 10px;
+    background-color: $creationBtnColor;
+    border-color: $creationBtnColor;
+}

@@ -194,7 +194,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
         gap.last.match(/^[0-9]+$/) &&
         gap.errorMessage !== 'too much' && //
         gap.errorMessage !== 'same value' && // on ne peut pas forcer ces 3 erreurs contairement aux autres
-        gap.first <= gap.last //
+        Number(gap.first) <= Number(gap.last)//
       ) {
         return true;
       } else {

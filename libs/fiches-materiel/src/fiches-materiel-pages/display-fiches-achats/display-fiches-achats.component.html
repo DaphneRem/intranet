@@ -8,7 +8,7 @@
         <div class="radio radio-inline" *ngFor="let view of views">
           <label>
             <input type="radio" name="view.name" checked="checked" (click)="select(view)">
-            <i class="helper"></i>{{view.name}}
+            <i class="helper"></i>{{view.label}}
           </label>
         </div>
       </form>
@@ -22,18 +22,15 @@
       *ngFor="let icon of icons" 
       [littleIcon]="icon.littleIcon" 
       [bigIcon]="icon.bigIcon" 
-      [link]="icon.link">
+      [link]="icon.link"
+      [tooltip]="icon.tooltip"
+      [tooltipMessage]="icon.tooltipMessage">
     </custom-icon-badge>
   </div>
 </div>
-<fiches-achat-table [headerTableLinkExist]="false" [currentView]="currentView"></fiches-achat-table>
-
-<!-- <ng-container #vc><ng-container>
-<div *ngIf="isLoading">loading...</div>
-<ng-template #tpl>
-  <fiches-achat-table [headerTableLinkExist]="false" [selectedView]="selectedView" ></fiches-achat-table>
-</ng-template> -->
-<!-- 
-    <button (click)="insertChildView()">Insert Child View</button>
-    <button (click)="removeChildView()">Remove Child View</button>
-    <button (click)="reloadChildView()">Reload Child View</button> -->
+<fiches-achat-table 
+  [headerTableLinkExist]="false" 
+  [stateFIcheAchat]="stateFIcheAchat"
+  [displayActionType]="displayActionType"
+  [modalName]="modalName">
+</fiches-achat-table>

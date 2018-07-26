@@ -17,5 +17,6 @@ export class LittleIcon {
 export class BigIcon {
     icon: string;
     circleColor: string;
+    circleColorHover?: string;
     iconSize?: string;
 }

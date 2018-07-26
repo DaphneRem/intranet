@@ -11,22 +11,27 @@ import { ModalsModule } from '@ab/modals';
 import { SubHeaderModule } from '@ab/sub-header';
 import { WidgetsModule } from '@ab/widgets';
 
-// components imports
+// components pages imports
+import { DisplayFichesAchatsComponent } from './fiches-materiel-pages/display-fiches-achats/display-fiches-achats.component';
 import { FichesMaterielCreationComponent } from './fiches-materiel-pages/fiches-materiel-creation/fiches-materiel-creation.component';
 import {
-  FichesMaterielWidgetViewComponent
-} from './fiches-materiel-pages/fiches-materiel-widget-view/fiches-materiel-widget-view.component';
-import { DisplayFichesAchatsComponent } from './fiches-materiel-pages/display-fiches-achats/display-fiches-achats.component';
+  FichesMaterielWidgetViewComponent } from './fiches-materiel-pages/fiches-materiel-widget-view/fiches-materiel-widget-view.component';
 import { MyFichesMaterielComponent } from './fiches-materiel-pages/my-fiches-materiel/my-fiches-materiel.component';
-import { SearchFormComponent } from './search-form/search-form.component';
+
+// components tables imports
+import { FichesAchatTableComponent } from './fiches-achat-table/fiches-achat-table.component';
 import { FichesMaterielTableComponent } from './fiches-materiel-tables/fiches-materiel-table/fiches-materiel-table.component';
-import {
-  CreativeFormFichesMaterielComponent
-} from './creation-modal/creative-form-fiches-materiel/creative-form-fiches-materiel.component';
-import { ModalRecapFicheAchatComponent } from './creation-modal/modal-recap-fiche-achat/modal-recap-fiche-achat.component';
-import { FichesAchatDetailsComponent } from './creation-modal/fiches-achat-details/fiches-achat-details.component';
-import { FichesAchatsTableComponent } from './fiches-achats-table/fiches-achats-table.component';
+
+// components modals imports
 import { CreationFichesMaterielComponent } from './creation-modal/creation-fiches-materiel/creation-fiches-materiel.component';
+import {
+  CreativeFormFichesMaterielComponent } from './creation-modal/creative-form-fiches-materiel/creative-form-fiches-materiel.component';
+import { FichesAchatDetailsComponent } from './creation-modal/fiches-achat-details/fiches-achat-details.component';
+import { ModalFicheAchatDetailComponent } from './modal-fiche-achat-detail/modal-fiche-achat-detail.component';
+import { ModalRecapFicheAchatComponent } from './creation-modal/modal-recap-fiche-achat/modal-recap-fiche-achat.component';
+
+import { SearchFormComponent } from './search-form/search-form.component';
+
 
 @NgModule({
   imports: [
@@ -43,29 +48,30 @@ import { CreationFichesMaterielComponent } from './creation-modal/creation-fiche
   declarations: [
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
-    FichesAchatsTableComponent,
-    FichesAchatDetailsComponent,
-    FichesMaterielCreationComponent,
-    FichesMaterielWidgetViewComponent,
     DisplayFichesAchatsComponent,
+    FichesAchatDetailsComponent,
+    FichesAchatTableComponent,
+    FichesMaterielCreationComponent,
+    FichesMaterielTableComponent,
+    FichesMaterielWidgetViewComponent,
+    ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
-    SearchFormComponent,
-    FichesMaterielTableComponent,
-    CreationFichesMaterielComponent
+    SearchFormComponent
   ],
   exports: [
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
-    FichesAchatsTableComponent,
-    FichesAchatDetailsComponent,
-    FichesMaterielCreationComponent,
-    FichesMaterielWidgetViewComponent,
     DisplayFichesAchatsComponent,
+    FichesAchatDetailsComponent,
+    FichesAchatTableComponent,
+    FichesMaterielCreationComponent,
+    FichesMaterielTableComponent,
+    FichesMaterielWidgetViewComponent,
+    ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
-    SearchFormComponent,
-    FichesMaterielTableComponent
+    SearchFormComponent
   ]
 })
 export class FichesMaterielLibModule {}

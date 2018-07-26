@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { DataTablesModule } from 'angular-datatables';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { LoadersModule } from '@ab/loaders';
+
 // components imports
 import { CustomDatatablesComponent } from './custom-datatables/custom-datatables.component';
 
@@ -14,6 +16,7 @@ import { CustomDatatablesComponent } from './custom-datatables/custom-datatables
     CommonModule,
     DataTablesModule,
     NgbModule,
+    LoadersModule,
     RouterModule
   ],
   declarations: [

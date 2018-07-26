@@ -8,7 +8,7 @@ import { CustomIconsModule } from '@ab/custom-icons';
 import { LoadersModule } from '@ab/loaders';
 import { ModalsModule } from '@ab/modals';
 import { SubHeaderModule } from '@ab/sub-header';
-import { FichesAchatTableComponent } from './fiches-achat-table/fiches-achat-table.component';
+
 
 @NgModule({
   imports: [
@@ -20,7 +20,7 @@ import { FichesAchatTableComponent } from './fiches-achat-table/fiches-achat-tab
     ModalsModule,
     SubHeaderModule
   ],
-  declarations: [FichesAchatTableComponent],
-  exports: [FichesAchatTableComponent]
+  declarations: [],
+  exports: []
 })
 export class FichesAchatLibModule {}

@@ -13,15 +13,31 @@ import { urlFicheAchat, urlDetailFicheAchat, urlFicheAchatTraitee } from '../../
 
 import { FicheAchat } from '../models/fiche-achat';
 import { FicheAchatDetails } from '../models/fiche-achat-details';
+import { identifierModuleUrl } from '@angular/compiler';
 
 @Injectable()
 export class FichesAchatService {
-
-  constructor( private http: HttpClient ) {}
+  constructor(private http: HttpClient) {}
 
   getFichesAchat(days: number): Observable<FicheAchat[]> {
     return this.http
       .get(urlFicheAchat + urlFicheAchatTraitee)
+      .map((res: any) => {
+        // if (!res) {
+        //   res = 0;
+        //   return res;
+        // }
+        // console.log(JSON.parse(res));
+        console.log(res);
+        return res as FicheAchat[];
+      })
+      .catch(this.handleError);
+  }
+
+  getGlobalFIcheAchat(id): Observable<FicheAchat[]> {
+    console.log(urlFicheAchat + '/FicheAchat' + id);
+    return this.http
+      .get(urlFicheAchat + '/FicheAchat'  + id)
       .map((res: any) => {
         // if (!res) {
         //   res = 0;
@@ -49,7 +65,6 @@ export class FichesAchatService {
   //     .catch(this.handleError);
   // }
 
-
   getFichesAchatDetails(id: number): Observable<FicheAchatDetails[]> {
     return this.http
       .get(urlFicheAchat + urlDetailFicheAchat + id)
@@ -71,11 +86,11 @@ export class FichesAchatService {
       console.error('An error occurred:', error.error.message);
     } else {
       console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+        `Backend returned code ${error.status}, ` + `body was: ${error.error}`
+      );
     }
     return new ErrorObservable(
-      'Something bad happened; please try again later.');
+      'Something bad happened; please try again later.'
+    );
   }
-
 }

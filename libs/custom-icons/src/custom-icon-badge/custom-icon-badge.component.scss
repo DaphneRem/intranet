@@ -17,6 +17,10 @@
         height : 50px;
         width: 50px;
         border-radius : 100%;
+        transition: all ease-in 0.3s;
+        &:hover {
+            transition: all ease-in 0.3s;
+        }
         .icon {
             color : #ffffff;
             display: inline-block;

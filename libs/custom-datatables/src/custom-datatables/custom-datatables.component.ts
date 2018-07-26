@@ -6,7 +6,9 @@ import {
   Output,
   ViewChild,
   EventEmitter,
-  OnDestroy
+  OnDestroy,
+  SimpleChanges,
+  SimpleChange
 } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -16,6 +18,8 @@ import { Subject } from 'rxjs/Subject';
 
 import { CustomDatatablesOptions } from '../models/custom-datatables-options';
 import { CustomThemesService } from '../services/custom-datatables-themes.service';
+import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
+import { setTimeout } from 'timers';
 
 @Component({
   selector: 'custom-datatables',
@@ -26,17 +30,22 @@ import { CustomThemesService } from '../services/custom-datatables-themes.servic
     CustomDatatablesOptions
   ]
 })
-export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   @Input() customdatatablesOptions: CustomDatatablesOptions;
+  @Input() rerenderData; // data to observe (customDatatblesOptions.data from parent element)
 
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
-  public render: boolean;
 
-  @Output() change = new EventEmitter();
   @Output() dataRow = new EventEmitter();
+
+  // rerender onchange variables
+  public init = 0;
+  public dataReady = true;
+  public newData;
+
 
   // datatable const
   public renderOption: boolean;
@@ -62,7 +71,6 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   public headerTableLink: string;
   public buttons: any;
   public tooltipHeader: string;
-
 
   public trTagName;
 
@@ -126,44 +134,52 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   ) {}
 
   ngOnInit(): void {
-        console.log(this.customdatatablesOptions);
+    // this.dataReady = true;
+    this.initializeDatatable();
+  }
+
+  // TODO : voir https://stackoverflow.com/questions/37966718/datatables-export-to-excel-button-is-not-showing pour les options des boutons
+
+  initializeDatatable() {
     this.displayDatatables(); // display datatables if data.length
     this.displayCustomOptions();
     this.displayTheme(this.themeName);
   }
 
-  // TODO : voir https://stackoverflow.com/questions/37966718/datatables-export-to-excel-button-is-not-showing pour les options des boutons
-
   ngAfterViewInit(): void {
     this.dtTrigger.next();
   }
 
-  // renderMyData() {
-  //   this.render = true;
-  //   this.change.emit(this.render);
-  //   this.render = false;
-  // }
   ngOnDestroy(): void {
-
-    // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-    console.log(this.customdatatablesOptions);
   }
 
   rerender(): void {
-    console.log(this.customdatatablesOptions);
-
+    // console.log('rerender function');
+    this.dataReady = false;
+    document.querySelector('#datatable').classList.add('hiden');
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        // Destroy the table first
-        // Call the dtTrigger to rerender again
-        console.log(this.customdatatablesOptions);
-        dtInstance.destroy();
-        this.displayDatatables(); // display datatables if data.length
-        this.displayCustomOptions();
-        this.displayTheme(this.themeName);
-        console.log(this.customdatatablesOptions);
-        this.dtTrigger.next();
-      });
+      dtInstance.destroy(); // Destroy the table first
+      this.initializeDatatable();
+      setTimeout(() => {
+        this.dtTrigger.next(); // Call the dtTrigger to rerender again
+        this.dataReady = true;
+        document.querySelector('#datatable').classList.remove('hiden');
+      }, 0);
+    });
+  }
+
+ ngOnChanges(changes: SimpleChanges) { // observe @Input() rerenderData
+    const changeData: SimpleChange = changes.rerenderData;
+    if (this.customdatatablesOptions.renderOption) { // execute function if renderOptions from customDatatablesOptions is true
+      if (this.init) { // does not execute rerender function onInit
+        this.newData = changeData.currentValue;
+        this.dataReady = false;
+        this.rerender();
+      } else {
+        this.init++;
+      }
+    }
   }
 
   displayDatatables() {
@@ -204,9 +220,9 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   displayImportantData(data, row) {
-    console.log(data.index);
-    console.log(data.className);
-    console.log(data.cellData);
+    // console.log(data.index);
+    // console.log(data.className);
+    // console.log(data.cellData);
     const importantData = $('td', row).eq(data.index).text().toLowerCase();
     data.cellData.map(item => {
       if (item.toLowerCase().includes(importantData)) {
@@ -219,7 +235,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
     const options = this.customdatatablesOptions;
     if (options.buttons.buttons) {
       if (options.buttons.allButtons) {
-        console.log('allButtons');
+        // console.log('allButtons');
         return this.dtOptions.buttons
           .push(
             {
@@ -318,7 +334,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
           className: item.className
         })
       );
-      console.log(this.finalData);
+      // console.log(this.finalData);
       return this.finalData;
     } else {
       Object.keys(this.customdatatablesOptions.data[0]).map(item =>

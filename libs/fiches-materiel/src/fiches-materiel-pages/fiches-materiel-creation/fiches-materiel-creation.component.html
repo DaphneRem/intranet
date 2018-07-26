@@ -14,9 +14,10 @@
       </custom-icon-badge>
     </div>
   </div>
-    <fiches-achats-table 
-      [headerTableLinkExist]="headerTableLinkExist" 
-      [daysTableView]="daysTableView" 
-      (ficheAchat)="selectedFicheAchat($event)">
-    </fiches-achats-table>
+    <fiches-achat-table 
+      [headerTableLinkExist]="false" 
+      [stateFIcheAchat]="stateFIcheAchat"
+      [displayActionType]="displayActionType"
+      [modalName]="modalName">
+    </fiches-achat-table>
 </div>

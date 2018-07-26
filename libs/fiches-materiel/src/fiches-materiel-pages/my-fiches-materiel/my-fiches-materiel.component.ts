@@ -22,9 +22,12 @@ export class MyFichesMaterielComponent implements OnInit {
       },
       bigIcon : {
         icon: 'icofont icofont-file-text',
-        circleColor:  '#999898',
+      circleColor: '#999898',
+      circleColorHover: '#b5b3b3',
       },
-      link : '/creation'
+      link : '/creation',
+      tooltip : true,
+      tooltipMessage : 'Créer des fiches Matériel'
   };
   public fichesAchatView: CustomIconBadge = {
       littleIcon : {
@@ -35,9 +38,12 @@ export class MyFichesMaterielComponent implements OnInit {
       },
       bigIcon : {
         icon: 'icofont icofont-tag',
-        circleColor:  '#999898',
+      circleColor: '#999898',
+      circleColorHover: '#b5b3b3',
       },
-      link : '/displaying-purchase-sheets'
+      link : '/displaying-purchase-sheets',
+      tooltip : true,
+      tooltipMessage : 'Voir les fiches Achat'
   };
 
   constructor() { }

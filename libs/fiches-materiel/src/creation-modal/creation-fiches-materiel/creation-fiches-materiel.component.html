@@ -1,4 +1,4 @@
-<div>
+<div class="create-fiches-materiel">
   <button *ngIf="step !== 1" class="creation-btn btn btn-info md-close" [ngClass]="disabled ? 'disabled' : ''" (click)="!disabled ? createAllOeuvres() : ''">Créer</button>
   <button *ngIf="step === 1" class="creation-btn btn btn-info md-close" [ngClass]="disabled ? 'disabled' : ''" (click)="!disabled ? createOnlyOeuvresSimple() : ''">Créer</button>
 </div>

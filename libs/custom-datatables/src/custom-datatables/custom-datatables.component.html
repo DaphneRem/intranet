@@ -1,19 +1,9 @@
-<div class= "custom-datatables row">
-<p>
-  <button type="button" class="btn waves-effect waves-light blue" (click)="rerender()">
-    Rerender
-  </button>
-</p>
+<loader-animation *ngIf="!dataReady"></loader-animation>
+<div class= "custom-datatables row" id="datatable">
   <!-- ************** If data exist ************** -->
   <div *ngIf="data.length" class="card">
     <!-- Header Buttons -->
     <div class="header-buttons">
-      <!-- <button type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
-        Rafraichir
-      </button> -->
-      <!-- <button *ngIf="renderOption" type="button" class="btn btn-primary btn-outline-primary" (click)="rerender()">
-        Rafraichir
-      </button> -->
       <a *ngIf="headerTableLinkExist" 
           class="btn btn-primary btn-outline-primary" 
           [ngStyle]="buttonViewMore"
@@ -37,7 +27,8 @@
     </div>
     <!-- Body Table => datatables -->
     <table 
-      datatable 
+      datatable
+      id="datatable"
       [dtOptions]="dtOptions" 
       [dtTrigger]="dtTrigger"
       class="table table-styling row-border hover"

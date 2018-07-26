@@ -11,6 +11,9 @@ $tableButton : #3b4650;
     margin : 10px;
     width: inherit;
     padding : 10px;
+    &.hiden {
+        display: none;
+    }
     .card {
         border-radius: 0;
         padding : 10px;

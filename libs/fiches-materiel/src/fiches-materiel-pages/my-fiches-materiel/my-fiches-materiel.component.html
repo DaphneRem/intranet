@@ -8,7 +8,9 @@
     <custom-icon-badge *ngFor="let icon of icons" 
       [littleIcon]="icon.littleIcon"  
       [bigIcon]="icon.bigIcon" 
-      [link]="icon.link">
+      [link]="icon.link"
+      [tooltip]="icon.tooltip"
+      [tooltipMessage]="icon.tooltipMessage">
     </custom-icon-badge>
   </div>
 </div>

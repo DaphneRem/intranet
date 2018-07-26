@@ -101,14 +101,14 @@ export class FichesMaterielTableComponent implements OnInit {
         if (!data) {
           this.customdatatablesOptions.data = [];
         } else {
-            // data.map(e => {
-            // this.deadline = new Date(e.Deadline);
-            // this.livraison = new Date(e.DateLivraison);
-            // this.acceptation = new Date(e.DateAcceptation);
-            // e.Deadline = this.deadline.toLocaleString();
-            // e.DateLivraison = this.livraison.toLocaleString();
-            // e.DateAcceptation = this.acceptation.toLocaleString();
-            // });
+            data.map(e => {
+            this.deadline = new Date(e.Deadline);
+            this.livraison = new Date(e.DateLivraison);
+            this.acceptation = new Date(e.DateAcceptation);
+            e.Deadline = this.deadline.toLocaleString();
+            e.DateLivraison = this.livraison.toLocaleString();
+            e.DateAcceptation = this.acceptation.toLocaleString();
+            });
           this.customdatatablesOptions.data = data;
         }
         this.dataReady = true;
