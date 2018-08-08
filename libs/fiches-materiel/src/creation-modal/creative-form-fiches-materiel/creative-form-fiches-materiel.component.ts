@@ -17,8 +17,6 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
 
   @Output() initStep = new EventEmitter();
 
-  public oeuvresWithEps = []; // object from detailsFicheAchat with nombre episodes > 1 (series)
-  public oeuvresSimple = []; // object from detailsFicheAchat with nombre episodes === 1 (film)
   public oeuvreWithGaps;
   public resetGaps = false;
   public arrayGaps: any;
@@ -39,49 +37,44 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   constructor( private router: Router ) {}
 
   ngOnInit() {
-    this.checkoeuvresWithEps();
     this.initDefaultModels();
   }
 
-  /******* Dispaly series(oeuvresWithEps) and films(oeuvresSimple) in differents arrays ********/
-  checkoeuvresWithEps() {
-    this.detailsFicheAchat.map(oeuvre => {
-      if (oeuvre.nombre_episodes > 1) {
-        return this.oeuvresWithEps.push(oeuvre);
+
+  displayTypeFicheMateriel(oeuvre) {
+    if (oeuvre.nombre_episodes === null) {
+      return 'oneEpisode';
+    } else {
+      if (oeuvre.nombre_episodes === 1) {
+        return 'oneEpisode';
       } else {
-        return this.oeuvresSimple.push(oeuvre);
+        return 'multiEpisode';
       }
-    });
-    console.log(this.oeuvresWithEps);
-    console.log(this.oeuvresSimple);
+    }
   }
 
   /******* Init default oeuvre Model ********/
   initDefaultModels() {
-    this.oeuvreWithGaps = this.oeuvresWithEps.map(oeuvre => {
+    this.oeuvreWithGaps = this.detailsFicheAchat.map(oeuvre => { 
       return {
         id_fiche: oeuvre.id_fiche,
         id_fiche_det: oeuvre.id_fiche_det,
-        nombre_episodes: oeuvre.nombre_episodes,
+        nombre_episodes:  oeuvre.nombre_episodes !== null ? oeuvre.nombre_episodes : 1,
         titre_vf: oeuvre.titre_vf,
         titre_vo: oeuvre.titre_vo,
+        typeficheMateriel: this.displayTypeFicheMateriel(oeuvre),
         debut_des_droits: oeuvre.debut_des_droits,
         index: this.detailsFicheAchat.indexOf(oeuvre) + 1,
         warningExist: false,
         numFichesMateriel: [],
         gaps: [
           {
-            first: (
-              oeuvre.nombre_episodes -
-              (oeuvre.nombre_episodes - 1)
-            ).toString(),
-            oldFirst: [
-              (oeuvre.nombre_episodes - (oeuvre.nombre_episodes - 1)).toString()
-            ],
+            first: oeuvre.nombre_episodes !== null ? (oeuvre.nombre_episodes - (oeuvre.nombre_episodes - 1)).toString() : '1',
+            oldFirst: oeuvre.nombre_episodes !== null ? [(oeuvre.nombre_episodes - (oeuvre.nombre_episodes - 1)).toString()] : ['1'],
             error: false,
             errorMessage: '',
-            last: oeuvre.nombre_episodes.toString(),
-            oldLast: [oeuvre.nombre_episodes.toString()],
+            last: oeuvre.nombre_episodes !== null ? oeuvre.nombre_episodes.toString() : '1',
+            oldLast: oeuvre.nombre_episodes !== null ? [oeuvre.nombre_episodes.toString()] : ['1'],
             modif: false
           }
         ]
@@ -127,6 +120,10 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   /** BTN 'ANNULER' CLICK **/
   cancelGaps(gaps, gap) {
     gap.modif = false;
+    if (gaps.indexOf(gap) === 0 && (!gap.first.length || !gap.last.length)) {
+      gap.first = gap.oldFirst;
+      gap.last = gap.oldLast;
+    }
     if (
       (gaps.indexOf(gap) !== 0 && (!gap.first.length || !gap.last.length)) ||
       this.gapAdding
@@ -300,7 +297,10 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     this.checkTotalGaps(gaps);
     this.displayErrorSameNumber(oeuvre, gaps, gap);
     this.checkGapsInterval(gaps, gap);
-    if (!gap.first.match(/^[0-9]+$/) || !gap.last.match(/^[0-9]+$/)) {
+    if (!gap.first.length || !gap.last.length) {
+      gap.error = true;
+      gap.errorMessage = 'no data';
+    } else if (!gap.first.match(/^[0-9]+$/) || !gap.last.match(/^[0-9]+$/)) {
       gap.error = true;
       gap.errorMessage = 'not number';
     } else if (Number(gap.last) < Number(gap.first)) {
@@ -392,7 +392,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
           confirmButtonColor: '#17AAB2'
         }).then(result => {
           if (result.value) {
-            this.router.navigate([`/material-sheets/my-material-sheets`]);
+            this.router.navigate([`/material-sheets/my-material-sheets/6/asc`]);
           }
         });
       } else {

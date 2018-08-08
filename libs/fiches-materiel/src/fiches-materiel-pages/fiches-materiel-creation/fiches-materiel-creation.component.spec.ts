@@ -41,11 +41,11 @@ describe('FichesMaterielCreationComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a fichesMaterielCreation object', () => {
+  it('should have a fichesMaterielView object', () => {
     fixture = TestBed.createComponent(FichesMaterielCreationComponent);
     component = fixture.componentInstance;
-    component.fichesMaterielCreation = iconTesting;
-    expect(component.fichesMaterielCreation).toBeDefined();
+    component.fichesMaterielView = iconTesting;
+    expect(component.fichesMaterielView).toBeDefined();
   });
 
   it('should have a fichesAchatView object', () => {
@@ -62,10 +62,10 @@ describe('FichesMaterielCreationComponent', () => {
     expect(component.headerTableLinkExist).toBeDefined();
   });
 
-  it('should have daysTableView property', () => {
+  it('should have displayActionType property', () => {
     fixture = TestBed.createComponent(FichesMaterielCreationComponent);
     component = fixture.componentInstance;
-    component.daysTableView = 2;
+    component.displayActionType = 'modal';
     expect(component.headerTableLinkExist).toBeDefined();
   });
 

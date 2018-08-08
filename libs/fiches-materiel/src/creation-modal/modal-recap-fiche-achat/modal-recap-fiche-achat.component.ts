@@ -51,8 +51,6 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
   public myFicheAchat;
   public detailsFicheAchat;
   public dataReady = false;
-  public seriesExist = false;
-  public series = [];
   public step = 1;
   public init = 1;
 
@@ -78,22 +76,11 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
     this.init++;
   }
 
-  checkSeries(data) {
-    this.series = [];
-    data.map((e) => {
-      if (e.nombre_episodes > 1) {
-        this.series.push(e);
-      }
-    });
-    (this.series.length) ? this.seriesExist = true : this.seriesExist = false;
-  }
-
   getFicheAchatDetails(id) {
     this.fichesAchatService
       .getFichesAchatDetails(id)
       .subscribe( data => {
         this.detailsFicheAchat = data;
-        this.checkSeries(data);
         this.dataReady = true;
       });
   }

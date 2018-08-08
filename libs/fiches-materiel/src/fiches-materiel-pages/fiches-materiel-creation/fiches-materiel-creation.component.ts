@@ -34,7 +34,7 @@ export class FichesMaterielCreationComponent implements OnInit {
       circleColor: '#999898',
       circleColorHover: '#b5b3b3',
       },
-      link : '../material-sheets/my-material-sheets',
+      link : '../material-sheets/my-material-sheets/0/desc',
       tooltip : true,
       tooltipMessage : 'Voir les fiches Matériel'
   };

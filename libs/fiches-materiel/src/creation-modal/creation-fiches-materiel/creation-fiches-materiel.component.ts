@@ -16,16 +16,13 @@ import { NewFicheMateriel } from '../../models/new-fiche-materiel';
 export class CreationFichesMaterielComponent implements OnInit {
 
   @Input() detailsFicheAchat;
-  @Input() oeuvresSimple;
   @Input() oeuvreWithGaps;
   @Input() step;
 
   @Output() confirmCreation = new EventEmitter();
 
-  public finalFichesMaterielToCreate: FicheMaterielCreation[] = [];
   public fichesMaterielCreated: FicheMaterielCreation[] = [];
-  public fichesMaterielOeuvresSimple: any;
-  public fichesMaterielOeuvresWithEps: any;
+  public fichesMateriel: any;
   public creationState: Boolean = false;
 
   // dealine calcul
@@ -35,32 +32,45 @@ export class CreationFichesMaterielComponent implements OnInit {
   constructor( private fichesMaterielService: FichesMaterielService ) {}
 
   ngOnInit() {
+    console.log(this.oeuvreWithGaps);
   }
 
   /** POST FICHES MATERIEL **/
   createFichesMateriel(newFicheMateriel) {
-    this.fichesMaterielCreated = [];
-    newFicheMateriel.forEach((fiche) => {
-      this.fichesMaterielService
-        .postFicheMateriel(fiche)
-        .subscribe(
-          res => {
-            this.fichesMaterielCreated.push(res);
-            console.log('Fiches materiel created : ');
-            console.log(this.fichesMaterielCreated);
-            console.log(fiche.TitreEpisodeVF + ' was created');
-            if ((newFicheMateriel.indexOf(fiche) === (newFicheMateriel.length - 1))) {
-              this.creationState = true;
-              this.create(this.creationState);
-              this.disabled = false;
-            }
-          },
-          error => {
-            this.creationState = false;
-            console.log(fiche.TitreEpisodeVF + ' could not be created');
-            this.create(this.creationState);
+    // this.fichesMaterielCreated = [];
+    // newFicheMateriel.forEach((fiche) => {
+    //   this.fichesMaterielService
+    //     .postFicheMateriel(fiche)
+    //     .subscribe(
+    //       res => {
+    //         this.fichesMaterielCreated.push(res);
+    //         console.log('Fiches materiel created : ');
+    //         console.log(this.fichesMaterielCreated);
+    //         console.log(fiche.TitreEpisodeVF + ' was created with numEpisode => ' + fiche.NumEpisode);
+    //         if ((newFicheMateriel.indexOf(fiche) === (newFicheMateriel.length - 1))) {
+    //           this.creationState = true;
+    //           this.create(this.creationState);
+    //           this.disabled = false;
+    //         }
+    //       },
+    //       error => {
+    //         this.creationState = false;
+    //         console.log(fiche.TitreEpisodeVF + ' could not be created');
+    //         this.create(this.creationState);
+    //     });
+    // });
+    this.fichesMaterielService
+      .postFicheMateriel(newFicheMateriel)
+      .subscribe( res => {
+          console.log(res);
+          this.creationState = true;
+          this.create(this.creationState);
+          this.disabled = false;
+        }, error => {
+          this.creationState = false;
+          console.log(' could not be created');
+          this.create(this.creationState);
         });
-    });
   }
 
   /** EMIT CREATION STATE EVENT**/
@@ -68,58 +78,22 @@ export class CreationFichesMaterielComponent implements OnInit {
     this.confirmCreation.emit(state);
   }
 
-  /** CALL CREATION FUNCTIONS FOR ONLY SIMPLE OEUVRE ON CLICK **/
-  createOnlyOeuvresSimple() {
-    this.disabled = true;
-    this.finalFichesMaterielToCreate = [];
-    this.displayFichesMaterielOeuvresSimple(this.detailsFicheAchat);
-    this.finalFichesMaterielToCreate = [...this.fichesMaterielOeuvresSimple];
-    this.createFichesMateriel(this.finalFichesMaterielToCreate);
-  }
-
 
   /** CALL CREATION FUNCTIONS FOR ALL OEUVRES ON CLICK **/
   createAllOeuvres() {
     this.disabled = true;
-    this.finalFichesMaterielToCreate = [];
-    this.displayFichesMaterielOeuvresSimple(this.oeuvresSimple);
-    this.displayFichesMaterielOeuvresWithEps();
-    this.finalFichesMaterielToCreate = [
-      ...this.fichesMaterielOeuvresSimple,
-      ...this.fichesMaterielOeuvresWithEps
-    ];
-    this.createFichesMateriel(this.finalFichesMaterielToCreate);
-  }
-
-  /** CHANGE OEUVRE SIMPLE TO FICHES MATERIEL OEUVRE SIMPLE ARRAY **/
-  displayFichesMaterielOeuvresSimple(oeuvresSimple) {
-    this.fichesMaterielOeuvresSimple = [];
-    oeuvresSimple.forEach(oeuvre => {
-      this.fichesMaterielOeuvresSimple.push(
-        new NewFicheMateriel({
-          IdFicheAchat: this.detailsFicheAchat[this.detailsFicheAchat.indexOf(oeuvre)].id_fiche,
-          IdFicheDetail: this.detailsFicheAchat[this.detailsFicheAchat.indexOf(oeuvre)].id_fiche_det,
-          Deadline: this.deadlineCalcul(oeuvre), // calcul automatique
-          NumEpisodeProd: 1, // calcul automatique !!!!!
-          NumEpisodeAB: 1, // calcul automatique !!!!!!
-          TitreEpisodeVF: oeuvre.titre_vf, // récupéré de la FA
-          TitreEpisodeVO: oeuvre.titre_vo, // récupéré de la FA
-          IdSupport: '',
-          NumProgram: '',
-          NumEpisode: 1, // calcul automatique : erreur
-          DateCreation: new Date().toJSON().slice(0, 19)
-        })
-      );
-    });
+    this.displayFichesMateriel();
+    // this.createFichesMateriel(this.fichesMateriel);
   }
 
   /** CHANGE OEUVRE WITH GAPS TO FICHES MATERIEL OEUVRE WITH EPS ARRAY **/
-  displayFichesMaterielOeuvresWithEps() {
-    this.fichesMaterielOeuvresWithEps = [];
+  displayFichesMateriel() {
+    // this.fichesMateriel = [];
     this.oeuvreWithGaps.forEach(oeuvre => {
+      this.fichesMateriel = [];
       this.checkAllNumbers(oeuvre, oeuvre.gaps);
       for (let i = 0; i < oeuvre.numFichesMateriel.length; i++) {
-        this.fichesMaterielOeuvresWithEps.push(
+        this.fichesMateriel.push(
           new NewFicheMateriel({
             IdFicheAchat: oeuvre.id_fiche,
             IdFicheDetail: oeuvre.id_fiche_det,
@@ -135,6 +109,8 @@ export class CreationFichesMaterielComponent implements OnInit {
           })
         );
       }
+      console.log(this.fichesMateriel);
+      this.createFichesMateriel(this.fichesMateriel);
     });
   }
 

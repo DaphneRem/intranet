@@ -14,7 +14,6 @@ import swal from 'sweetalert2';
 export class FichesAchatDetailsComponent implements OnInit {
   @Input() detailsFicheAchat;
   @Input() step;
-  @Input() seriesExist;
 
   @Output() nextStep = new EventEmitter();
 
@@ -22,7 +21,8 @@ export class FichesAchatDetailsComponent implements OnInit {
 
   constructor( private router: Router ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   goToNextStep() {
     this.step++;
@@ -49,7 +49,7 @@ export class FichesAchatDetailsComponent implements OnInit {
           confirmButtonColor: '#17AAB2'
         }).then(result => {
           if (result.value) {
-            this.router.navigate([`/material-sheets/my-material-sheets`]);
+            this.router.navigate([`/material-sheets/my-material-sheets/6/desc`]);
           }
         });
       } else {

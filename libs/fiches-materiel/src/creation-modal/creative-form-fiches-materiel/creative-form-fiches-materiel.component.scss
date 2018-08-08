@@ -4,6 +4,13 @@ $cancelBtnColor : #989797;
 $importantColor : #fd5f5f;
 $warningColor : #ffa834;
 
+.scroll-content {
+    &.scroll {
+        overflow-y: scroll;
+        max-height: 370px;   
+    }
+}
+
 .oeuvres {
     margin-top: 30px;
     // padding-bottom: 180px;
