@@ -5,6 +5,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { Page404Component } from '@ab/error-pages';
 import {
   FichesMaterielCreationComponent,
+  FicheMaterielDetailsComponent,
   FichesMaterielWidgetViewComponent,
   DisplayFichesAchatsComponent,
   MyFichesMaterielComponent
@@ -21,7 +22,12 @@ const routes: Routes = [
         data : { title : 'Suivi Fiches Matériel'}
       },
       {
-        path: 'my-material-sheets',
+        path: 'my-material-sheets/details/:idFicheMateriel/:idFicheAchatDetails',
+        component : FicheMaterielDetailsComponent,
+        data : { title : 'Détails Fiche Matériel'}
+      },
+      {
+        path: 'my-material-sheets/:columnIndex/:order',
         component : MyFichesMaterielComponent,
         data : { title : 'Mes Fiches Matériel'}
       }

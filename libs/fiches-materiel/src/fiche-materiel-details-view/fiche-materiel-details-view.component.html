@@ -1,0 +1,127 @@
+<div *ngIf="dataGloralReady && dataDetailsReady && dataMaterielReady" class="row fm-details">
+  <div class="card col-lg-12">
+    <div class="row top">
+      <div class="col-lg-3 left-infos">
+        <p class="deadline"><i class="warning-icon icofont icofont-warning"></i><span>  DeadLine : 20/06/18</span></p>
+        <p class="user">Suivi par : utilisateur 1</p>
+      </div>
+      <div class="col-lg-6 title">
+        <h1>TOP MODELS</h1>
+        <h2>The Bold and the beautiful Episode #7176</h2>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+    <div class="row state-content">
+      <div class="col-lg-6 state">
+        <label for="">Statut : </label>
+        <span>En cours</span>
+      </div>
+      <div class="col-lg-6 step">
+        <label for="">Etape : </label>
+        <span>6 - AU BO</span>
+        <div class="history">
+          <i class="icofont icofont-history"></i>
+        </div>   
+      </div>
+    </div>
+    <div class="row fm-detail-body">
+      <div class="col-lg-4 fm-content">
+        <div class="sections">
+          <i class="icofont icofont-tag section-icon"></i>
+          <p>N° fiche Achat : {{myFicheAchatGlobal.numero_fiche}}</p>
+          <p>Type de fiche Achat : Tout Droits</p>
+        </div>
+        <div class="sections info">
+          <i class="icofont icofont-info-circle section-icon"></i>
+          <p>Distributeur : Universal</p>
+          <p>Année prod : 1990</p>
+          <p>N° Episode Prod : 6</p>
+          <p>N° Episode AB : 16</p>
+          <p>Format œuvre : 25 épisodes de 60min</p>
+          <p>Titre épisode VF : TOP MODELS</p>
+          <p>Titre épisode VO : The Bold and The Beautiful Episode #7176</p>
+          <p>Version : VF</p>
+          <p>Qualité : HD</p>
+          <p>Support :</p>
+          <p>Chaînes concernées : AB3</p>
+        </div>
+      </div>
+      <div class="col-lg-4 fm-content">
+        <div class="sections">
+          <i class="icofont icofont-law section-icon"></i>
+          <p>Date déb droits : 15/02/18</p>
+          <p>Date fin droits : 24 mois</p>
+        </div>
+        <div class="sections">
+          <i class="icofont icofont-beaker section-icon"></i>
+          <p>Réception accès labo: 27/09/18</p>
+          <p>Nom du labo: Monal</p>
+          <p>Coût labo: 171,00</p>
+        </div>
+        <div class="sections">
+          <i class="icofont icofont-clock-time section-icon"></i>
+          <p>Date de livraison : 05/02/18</p>
+          <p>Délai de vérif : 60 jours</p>
+          <p>Date Acceptation : 27/03/18</p>
+          <p>Date de première diff : 27/09/18</p>
+        </div>
+        <div class="sections acces-vf">
+          <i class="icofont icofont-unlock section-icon"></i>
+          <p>Accès VF :</p>
+          <p> Lorem Ipsum has been the industry's standard dummy text ever since the</p>
+        </div>
+      </div>
+      <div class="col-lg-4 fm-content">
+        <div class="sections press">
+          <i class="icofont icofont-newspaper section-icon"></i>
+          <p>Eléments annexes : non traitée</p>
+          <p>Détails :</p>
+          <div class="materiel">
+            <ul>
+              <li>Matériel publicitaire<i class="icofont icofont-check-alt"></i></li>
+              <li>Synopsis</li>
+              <li>Visuels</li>
+              <li>Scripts</li>
+              <li>Credits</li>
+              <li>Audio description</li>
+            </ul>
+            <ul>
+              <li>Music cue sheet</li>
+              <li>STL multilingue</li>
+              <li>STL S&M</li>
+              <li>Trailer</li>
+              <li>Making of</li>
+              <li>Certificat de nationalité</li>
+            </ul>
+          </div>
+          <button class="btn btn-info"><i class="icofont icofont-briefcase"></i> Package attendu</button>
+          <p>Commentraires : /</p>
+        </div>
+        <div class="sections ori">
+          <i class="icofont icofont-space-shuttle section-icon"></i>
+          <p>Retour Ori : à faire</p>
+          <p>Durée du prêt : 2 mois</p>
+          <p>Retour Ori dernier délai : 27/09/18</p>
+        </div>
+      </div>
+    </div>
+    <div class="row fm-detail-comment">
+      <div class="col-lg-12 comment">
+        <p>Commentaire :</p>
+        <div class="comment-content"></div>
+      </div>
+    </div>
+    <div class="row fm-detail-footer">
+      <div class="col-lg-2 offset-lg-10 footer-links">
+          <custom-icon-badge *ngFor="let icon of icons" 
+            [littleIcon]="icon.littleIcon" 
+            [bigIcon]="icon.bigIcon" 
+            [link]="icon.link"
+            [action]="icon.action"
+            [tooltip]="icon.tooltip" 
+            [tooltipMessage]="icon.tooltipMessage">
+          </custom-icon-badge>
+      </div>
+    </div>
+  </div>
+</div>

@@ -31,6 +31,8 @@ import { ModalFicheAchatDetailComponent } from './modal-fiche-achat-detail/modal
 import { ModalRecapFicheAchatComponent } from './creation-modal/modal-recap-fiche-achat/modal-recap-fiche-achat.component';
 
 import { SearchFormComponent } from './search-form/search-form.component';
+import { FicheMaterielDetailsComponent } from './fiches-materiel-pages/fiche-materiel-details/fiche-materiel-details.component';
+import { FicheMaterielDetailsViewComponent } from './fiche-materiel-details-view/fiche-materiel-details-view.component';
 
 
 @NgModule({
@@ -52,12 +54,14 @@ import { SearchFormComponent } from './search-form/search-form.component';
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
     FichesMaterielCreationComponent,
+    FicheMaterielDetailsComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
     ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
-    SearchFormComponent
+    SearchFormComponent,
+    FicheMaterielDetailsViewComponent
   ],
   exports: [
     CreativeFormFichesMaterielComponent,
@@ -66,6 +70,7 @@ import { SearchFormComponent } from './search-form/search-form.component';
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
     FichesMaterielCreationComponent,
+    FicheMaterielDetailsComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
     ModalFicheAchatDetailComponent,

@@ -12,7 +12,7 @@ import { FicheMateriel } from '../models/fiche-materiel';
 import { FicheMaterielCreation } from '../models/fiche-materiel-creation';
 
 // temporary imports :
-import { urlFicheMateriel, urlAllFichesMateriel } from '../../../../.privates-url';
+import { urlFicheMateriel, urlAllFichesMateriel, urlOneFicheMateriel } from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -24,15 +24,23 @@ const httpOptions = {
 export class FichesMaterielService {
   constructor(private http: HttpClient) {}
 
+  getOneFicheMateriel(id: number): Observable<FicheMateriel> {
+    return this.http
+      .get(urlFicheMateriel + urlOneFicheMateriel + id)
+      .map((res: any) => {
+        console.log(res);
+        return res as FicheMateriel;
+      });
+  }
+
   getFichesMateriel(): Observable<FicheMateriel[]> {
     return this.http
       .get(urlFicheMateriel + urlAllFichesMateriel)
       .map((res: any) => {
-        // if (!res) {
-        //   res = 0;
-        //   return res;
-        // }
-        // console.log(JSON.parse(res));
+        if (!res) {
+          res = 0;
+          return res;
+        }
         console.log(res);
         return res as FicheMateriel[];
       })
@@ -46,9 +54,7 @@ export class FichesMaterielService {
         urlFicheMateriel + urlAllFichesMateriel,
         ficheMateriel
       )
-      .pipe(
-        catchError(this.handleError)
-    );
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

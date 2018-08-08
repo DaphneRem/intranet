@@ -32,10 +32,10 @@ export class FicheMateriel {
     DateCreation: string;
     DateModification: string;
     Fiche_Mat_ElementsAnnexes?: any;
-    Fiche_Mat_LibEtape?: null;
-    Fiche_Mat_LibRetourOri?: null;
-    Fiche_Mat_Libstatut?: null;
-    Fiche_Mat_LibStatutElementsAnnexes?: null;
+    Fiche_Mat_LibEtape?: any;
+    Fiche_Mat_LibRetourOri?: any;
+    Fiche_Mat_Libstatut?: any;
+    Fiche_Mat_LibStatutElementsAnnexes?: any;
     Fiche_Mat_HistoriqueDateLivraison?: any;
     Fiche_Mat_HistoriqueStatutEtape?: any;
     Fiche_Mat_Qualite?: any;

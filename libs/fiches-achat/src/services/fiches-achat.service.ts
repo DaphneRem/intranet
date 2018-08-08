@@ -23,12 +23,6 @@ export class FichesAchatService {
     return this.http
       .get(urlFicheAchat + urlFicheAchatTraitee)
       .map((res: any) => {
-        // if (!res) {
-        //   res = 0;
-        //   return res;
-        // }
-        // console.log(JSON.parse(res));
-        console.log(res);
         return res as FicheAchat[];
       })
       .catch(this.handleError);
@@ -39,11 +33,6 @@ export class FichesAchatService {
     return this.http
       .get(urlFicheAchat + '/FicheAchat'  + id)
       .map((res: any) => {
-        // if (!res) {
-        //   res = 0;
-        //   return res;
-        // }
-        // console.log(JSON.parse(res));
         console.log(res);
         return res as FicheAchat[];
       })
@@ -69,12 +58,8 @@ export class FichesAchatService {
     return this.http
       .get(urlFicheAchat + urlDetailFicheAchat + id)
       .map((res: any) => {
-        // if (!res) {
-        //   res = 0;
-        //   return res;
-        // }
-        // console.log(JSON.parse(res));
         console.log(res);
+        console.log(urlFicheAchat + urlDetailFicheAchat + id);
         return res as FicheAchatDetails[];
       })
       .catch(this.handleError);

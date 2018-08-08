@@ -1,0 +1,158 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$creationBtnHoverColor :  #2eced6;
+$cancelBtnColor : #c9c9c9;
+$importantColor : #fd5f5f;
+
+.fm-details {
+    padding : 15px 30px;
+    .card {
+        // padding-bottom: 20px;
+        .top {
+            padding-top : 20px;
+            .left-infos {
+                p {
+                    font-size: 1.1em;
+                    margin-left: 20px;
+                    &.user {
+                        padding-left: 50px;
+                    }
+                    &.deadline {
+                        i {
+                            font-size: 2.2em;
+                            color: red;
+                        }
+                        span {
+                            margin-left :13px;
+                        }
+                    }
+                }
+            }
+            .title {
+                text-align: center;
+                h1 {
+                    font-size: 2em;
+                }
+                h2 {
+                    font-size: 1.5em;
+                }
+            }
+        }
+        .state-content {
+            font-size: 1.2em;
+            .state {
+                text-align: right;
+            }
+            .step {
+                display: flex;
+                .history {
+                    margin-left: 20px;
+                    margin-top: -10px;
+                    background: $creationBtnColor;
+                    border-radius: 100%;
+                    height: 40px;
+                    width: 40px;
+                    display: flex;
+                    &:hover {
+                        background: $creationBtnHoverColor;
+                    }
+                    i {
+                        color : #ffffff;
+                        font-size: 2.1em;
+                        // padding-top: 3px;
+                        // padding-right: 3px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+        .fm-detail-body {
+            margin-top : 30px;
+            .fm-content {
+                .sections {
+                    padding: 20px;
+                    margin: 10px;
+                    padding-bottom : 10px;
+                    border : 1px solid grey;
+                    &.info {
+                        min-height : 500px;
+                    }
+                    &.acces-vf {
+                        min-height: 140px;
+                        max-height: 140px;
+                    }
+                    &.press {
+                        min-height: 430px;
+                        max-height: 430px;
+                    }
+                    &.ori {
+                        min-height: 175px;
+                        max-height: 175px;
+                    }
+                    .section-icon {
+                        color: grey;
+                        float: right;
+                        font-size: 2em;
+                    }
+                    p {
+                        font-size: 1.1em;
+                    }
+                    .materiel {
+                        display: flex;
+                        justify-content: space-around;
+                        margin-bottom: 20px;
+                        ul {
+                            li {
+                                i {
+                                    font-size: 1.5em;
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+                    }
+                    button {
+                        background-color: $creationBtnColor;
+                        border-color: $creationBtnColor;
+                        color: #ffffff;
+                        background-image: none;
+                        transition: all ease-in 0.3s;
+                        font-size: 1em;
+                        padding: 8px 10px;
+                        margin-bottom : 20px;
+                        &:hover {
+                            transition: all ease-in 0.3s;
+                            background-color: $creationBtnHoverColor;
+                            border-color: $creationBtnHoverColor;
+                        }
+                        i {
+                            font-size: 1.4em;
+                        }
+                    }
+                }
+            }
+        }
+        .fm-detail-comment {
+            .comment {
+                margin-top: 10px;
+                p {
+                    margin-left : 10px;
+                }
+                .comment-content {
+                    height: 100px;
+                    border : solid 1px grey;
+                    margin: 10px;
+                }
+            }
+        }
+        .fm-detail-footer {
+            padding : 20px;
+            .footer-links {
+                display: flex;
+                justify-content: flex-end
+            }
+        }
+    }
+}
