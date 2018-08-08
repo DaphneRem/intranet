@@ -196,14 +196,18 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
         language : this.frenchLanguage,
         // createdRow: this.displayCreatedRow(),
         select : 'single',
+        order: options.defaultOrder,
         pageLength : options.rowsMax,
         lengthMenu : options.lenghtMenu,
+        responsive : options.responsive,
         dom: 'Bfrtip',
         buttons: [],
         rowCallback: (row: Node, data: any[] | Object, index: number) => { // datatable function to display action on double click
             const self = this;
             if (options.importantData) {
               options.importantData.map( item => this.displayImportantData(item, row));
+            } else {
+              // this.dataReady = true;
             }
             $('td', row).unbind('click');
             $('td', row).bind('dblclick', () => {
@@ -214,9 +218,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
       };
       this.displayButtons();
       console.log(this.dtOptions.buttons);
-
     }
-
   }
 
   displayImportantData(data, row) {
@@ -229,6 +231,9 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
         $('td', row).eq(data.index).addClass(data.className);
       }
     });
+    console.log('omportant data');
+                  // this.dataReady = true;
+
   }
 
   displayButtons() {

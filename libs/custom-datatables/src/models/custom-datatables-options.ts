@@ -15,6 +15,8 @@ export class CustomDatatablesOptions {
   buttons: Buttons;
   theme: string;
   renderOption: boolean;
+  responsive?: boolean;
+  defaultOrder?: any; // [[0, 'asc']]
   reRenderOption?: boolean;
   tooltipHeader?: string;
   dbClickActionExist?: boolean;
@@ -23,7 +25,8 @@ export class CustomDatatablesOptions {
 
 export class Columns {
   title: string;
-  data: string;
+  data: any;
+  class?: string;
   className?: string;
   // createdCell?: any;
   render?: any;

@@ -68,7 +68,8 @@
         "../../../node_modules/font-awesome-scss/scss/font-awesome.scss",
         "./../../../styles/style.scss",
         "../../../node_modules/datatables.net-select-dt/css/select.dataTables.css",
-        "../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css"
+        "../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+        "../../../node_modules/datatables.net-responsive-dt/css/responsive.dataTables.css"
       ],
       "scripts": [
         "../../../node_modules/jquery/dist/jquery.min.js",
@@ -79,7 +80,8 @@
         "../../../node_modules/datatables.net-buttons/js/buttons.flash.js",
         "../../../node_modules/datatables.net-buttons/js/buttons.html5.js",
         "../../../node_modules/datatables.net-buttons/js/buttons.print.js",
-        "../../../node_modules/datatables.net-select/js/dataTables.select.js"
+        "../../../node_modules/datatables.net-select/js/dataTables.select.js",
+        "../../../node_modules/datatables.net-responsive/js/dataTables.responsive.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
