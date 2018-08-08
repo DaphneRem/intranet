@@ -1,8 +1,29 @@
-<div class="creation-logo" [routerLink]="linkExist ? [link] : ''" placement="top" ngbTooltip="{{tooltipMessage}}" (mouseover)="hover=true" (mouseleave)="hover=false">
+<div class="creation-logo" 
+  *ngIf="linkExist"
+  [routerLink]="[link]" 
+  placement="top"
+  ngbTooltip="{{tooltipMessage}}" 
+  (mouseover)="hover=true" 
+  (mouseleave)="hover=false">
   <div class="circle-icon" [ngStyle]="bigIcon.circleColorHover ? {backgroundColor: hover==true ? bigIcon.circleColorHover : bigIcon.circleColor } : {backgroundColor: bigIcon.circleColor }">
     <i class="icon" [ngClass]="bigIcon.icon" [ngStyle]="{ 'font-size' : bigIcon.iconSize}"></i>
   </div>
-  <div class="icon-creation" [style.background]="littleIcon.circleColor">
+  <div *ngIf="littleIcon" class="icon-creation" [style.background]="littleIcon.circleColor">
+    <i class="creation" [ngClass]="littleIcon.icon" [ngStyle]="{ 'font-size' : littleIcon.iconSize, 'margin-top' : littleIcon.iconMargin, 'margin-left' : littleIcon.iconMargin}"></i>
+  </div>
+</div>
+
+<div class="creation-logo" 
+  *ngIf="actionExist"
+  placement="top"
+  ngbTooltip="{{tooltipMessage}}" 
+  (click)="action()"
+  (mouseover)="hover=true" 
+  (mouseleave)="hover=false">
+  <div class="circle-icon" [ngStyle]="bigIcon.circleColorHover ? {backgroundColor: hover==true ? bigIcon.circleColorHover : bigIcon.circleColor } : {backgroundColor: bigIcon.circleColor }">
+    <i class="icon" [ngClass]="bigIcon.icon" [ngStyle]="{ 'font-size' : bigIcon.iconSize}"></i>
+  </div>
+  <div *ngIf="littleIcon" class="icon-creation" [style.background]="littleIcon.circleColor">
     <i class="creation" [ngClass]="littleIcon.icon" [ngStyle]="{ 'font-size' : littleIcon.iconSize, 'margin-top' : littleIcon.iconMargin, 'margin-left' : littleIcon.iconMargin}"></i>
   </div>
 </div>
