@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 // lib imports
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
@@ -13,7 +13,6 @@ import { FichesAchatService } from '@ab/fiches-achat';
 import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 
-
 @Component({
   selector: 'fiches-materiel-table',
   templateUrl: './fiches-materiel-table.component.html',
@@ -23,14 +22,24 @@ import { FichesMaterielService } from '../../services/fiches-materiel.service';
     FichesAchatService
   ]
 })
-export class FichesMaterielTableComponent implements OnInit {
+export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
 
+  // activatedRoute parameters
+  private sub: any;
+  public columnParams;
+  public orderParams;
 
+  public today;
+  public todayDate: Date;
+  public todayTime: number;
+
+  public sortingData;
   public deadline;
   public livraison;
   public acceptation;
+  public creation;
   public dataReady = false;
   public render: boolean;
   public customdatatablesOptions: CustomDatatablesOptions = {
@@ -45,11 +54,13 @@ export class FichesMaterielTableComponent implements OnInit {
     rowsMax: 10,
     lenghtMenu: [5, 10, 15],
     theme: 'blue theme',
+    responsive : true,
+    defaultOrder: [],
     importantData : [
       {
         index : 0,
         className: 'warning',
-        cellData: ['10/10/2018 à 00:00:00']
+        cellData: []
       }
     ],
     renderOption: true,
@@ -67,13 +78,38 @@ export class FichesMaterielTableComponent implements OnInit {
   constructor(
     private fichesMaterielService: FichesMaterielService,
     private fichesAchatService: FichesAchatService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+      this.columnParams = +params['columnIndex'];
+      this.orderParams = params['order'];
+    });
+    this.today = new Date().toJSON().slice(0, 19);
+    this.todayDate = new Date(this.today);
+    this.todayTime = this.todayDate.getTime();
+    console.log(this.columnParams);
+    console.log(this.orderParams);
     this.getFichesMateriel();
     this.checkLinks();
     this.displayAction();
+  }
+
+  checkDeadline(data, fm) { // check DeadLine && display important data
+    if (fm.Deadline) {
+      const fmDeadline = new Date(fm.Deadline);
+      const fmTime = fmDeadline.getTime();
+      if (this.todayTime > fmTime) {
+        this.customdatatablesOptions.importantData[0].cellData.push(new Date(fm.Deadline).toLocaleString());
+      }
+    }
+    if (data.indexOf(fm) === (data.length - 1)) {
+      console.log(fm);
+      console.log('terminée');
+      this.dataReady = true;
+    }
   }
 
   checkLinks() {
@@ -85,13 +121,10 @@ export class FichesMaterielTableComponent implements OnInit {
 
   displayAction() {
     this.customdatatablesOptions.dbClickAction = (dataRow) => {
-      this.router.navigate([`/material-sheets/my-material-sheets`]);
+      this.router.navigate([`/material-sheets/my-material-sheets/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}`]);
     };
     this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour avoir une vue détaillée';
-  }
-
-  checkDataReady() {
-    return this.dataReady;
+    console.log('display action ok');
   }
 
   getFichesMateriel() {
@@ -100,20 +133,21 @@ export class FichesMaterielTableComponent implements OnInit {
       .subscribe(data => {
         if (!data) {
           this.customdatatablesOptions.data = [];
+          this.displayColumns();
+          this.dataReady = true;
         } else {
-            data.map(e => {
-            this.deadline = new Date(e.Deadline);
-            this.livraison = new Date(e.DateLivraison);
-            this.acceptation = new Date(e.DateAcceptation);
-            e.Deadline = this.deadline.toLocaleString();
-            e.DateLivraison = this.livraison.toLocaleString();
-            e.DateAcceptation = this.acceptation.toLocaleString();
-            });
+          data.map(e => {
+            this.checkDeadline(data, e);
+          });
           this.customdatatablesOptions.data = data;
+          this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
+          this.displayColumns();
         }
-        this.dataReady = true;
-        this.displayColumns(data);
     });
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
   getFichesAchat(number) {
@@ -129,45 +163,83 @@ export class FichesMaterielTableComponent implements OnInit {
     });
   }
 
-  displayColumns(data) {
+  displayColumns() {
     this.customdatatablesOptions.columns = [
+      {
+        title : 'Deadline',
+        data : function ( data, type, row, meta ) {
+          return new Date(data.Deadline).toLocaleString();
+        }
+      },
+      {
+        title : 'Suivi',
+        data : function ( data, type, row, meta ) {
+          return '<span class="label bg-info">' + 'En cours' + '</span>'; // change 'En cours' to real data
+        }
+      },
+      {
+        title : 'type fiche achat',
+        data : 'NumEpisodeProd' // data manquante
+      },
+      {
+        title : 'distributeur',
+        data : 'NumEpisodeProd' // data manquante
+      },
       {
         title : 'titre vf', // pour les tests
         data : 'TitreEpisodeVF' // pour les tests
       },
       {
+        title : 'titre vo', // pour les tests
+        data : 'TitreEpisodeVO' // pour les tests
+      },
+      {
         title : 'date création', // pour les tests
-        data : 'DateCreation' // pour les tests
+        data : function ( data, type, row, meta ) {
+          return new Date(data.DateCreation).toLocaleString();
+        }
       },
       {
-        title : 'Deadline',
-        data : 'Deadline'
+        title : 'IdFicheAchat', // delete after tests ok
+        data : 'IdFicheAchat'
       },
       {
-        title : 'N° eps Prod',
-        data : 'NumEpisodeProd',
+        title : 'IdFicheMateriel', // delete after tests ok
+        data : 'IdFicheMateriel'
       },
       {
         title : 'N° eps AB',
         data : 'NumEpisode',
       },
       {
+        title : 'N° eps Prod',
+        data : 'NumEpisodeProd',
+      },
+      {
         title : 'Date Livraison',
-        data : 'DateLivraison'
-      },
-      {
-        title : 'Date Acceptation',
-        data : 'DateAcceptation'
-      },
-      {
-        title : 'Qualite',
-        data : 'Fiche_Mat_Qualite'
+        data : function ( data, type, row, meta ) {
+          return new Date(data.DateLivraison).toLocaleString();
+        }
       },
       {
         title : 'Version',
         data : 'Fiche_Mat_Version',
       },
+      {
+        title : 'Qualite',
+        data : 'Fiche_Mat_Qualite',
+      },
+      {
+        title : 'Date Acceptation',
+        data : function ( data, type, row, meta ) {
+          return new Date(data.DateAcceptation).toLocaleString();
+        }
+      },
+
+
     ];
+    console.log('display columns ok');
+
   }
 
 }

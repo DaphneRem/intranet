@@ -1,4 +1,4 @@
-<loader-animation *ngIf="!checkDataReady()"></loader-animation>
-<div *ngIf="checkDataReady()">
-  <custom-datatables [customdatatablesOptions]="customdatatablesOptions" (dataRow)="selectedFicheAchat($event)"></custom-datatables>
+<loader-animation *ngIf="!dataReady"></loader-animation>
+<div *ngIf="dataReady">
+  <custom-datatables [customdatatablesOptions]="customdatatablesOptions"></custom-datatables>
 </div>
