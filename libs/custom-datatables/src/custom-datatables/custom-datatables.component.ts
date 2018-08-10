@@ -232,8 +232,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
       }
     });
     console.log('important data');
-                  // this.dataReady = true;
-
+    // this.dataReady = true;
   }
 
   displayButtons() {

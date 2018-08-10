@@ -392,7 +392,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
           confirmButtonColor: '#17AAB2'
         }).then(result => {
           if (result.value) {
-            this.router.navigate([`/material-sheets/my-material-sheets/6/asc`]);
+            this.router.navigate([`/material-sheets/my-material-sheets/6/desc`]);
           }
         });
       } else {
