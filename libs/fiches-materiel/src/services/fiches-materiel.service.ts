@@ -12,7 +12,7 @@ import { FicheMateriel } from '../models/fiche-materiel';
 import { FicheMaterielCreation } from '../models/fiche-materiel-creation';
 
 // temporary imports :
-import { urlFicheMateriel, urlAllFichesMateriel, urlOneFicheMateriel } from '../../../../.privates-url';
+import { urlFicheMateriel, urlAllFichesMateriel, urlOneFicheMateriel, urlFicheMaterielByFicheAchatDetail } from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -24,6 +24,7 @@ const httpOptions = {
 export class FichesMaterielService {
   constructor(private http: HttpClient) {}
 
+  /* GET ONE FICHE MATERIEL BY ID */
   getOneFicheMateriel(id: number): Observable<FicheMateriel> {
     return this.http
       .get(urlFicheMateriel + urlOneFicheMateriel + id)
@@ -33,6 +34,7 @@ export class FichesMaterielService {
       });
   }
 
+  /* GET ALL FICHES MATERIEL */
   getFichesMateriel(): Observable<FicheMateriel[]> {
     return this.http
       .get(urlFicheMateriel + urlAllFichesMateriel)
@@ -47,7 +49,7 @@ export class FichesMaterielService {
       .catch(this.handleError);
   }
 
-  /** POST: add a new hero to the database */
+  /* POST FICHES MATERIEL */
   postFicheMateriel(ficheMateriel: FicheMaterielCreation): Observable<FicheMaterielCreation> {
     return this.http
       .post<FicheMaterielCreation>(
@@ -56,6 +58,13 @@ export class FichesMaterielService {
       )
       .pipe(catchError(this.handleError));
   }
+
+  deleteFicheMaterielByFicheAchatDetail(id: number): Observable<{}> {
+    return this.http
+      .delete(urlFicheMateriel + urlFicheMaterielByFicheAchatDetail + id)
+      .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     console.log(error);

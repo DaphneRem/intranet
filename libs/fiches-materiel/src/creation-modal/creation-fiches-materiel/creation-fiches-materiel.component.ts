@@ -37,28 +37,6 @@ export class CreationFichesMaterielComponent implements OnInit {
 
   /** POST FICHES MATERIEL **/
   createFichesMateriel(newFicheMateriel) {
-    // this.fichesMaterielCreated = [];
-    // newFicheMateriel.forEach((fiche) => {
-    //   this.fichesMaterielService
-    //     .postFicheMateriel(fiche)
-    //     .subscribe(
-    //       res => {
-    //         this.fichesMaterielCreated.push(res);
-    //         console.log('Fiches materiel created : ');
-    //         console.log(this.fichesMaterielCreated);
-    //         console.log(fiche.TitreEpisodeVF + ' was created with numEpisode => ' + fiche.NumEpisode);
-    //         if ((newFicheMateriel.indexOf(fiche) === (newFicheMateriel.length - 1))) {
-    //           this.creationState = true;
-    //           this.create(this.creationState);
-    //           this.disabled = false;
-    //         }
-    //       },
-    //       error => {
-    //         this.creationState = false;
-    //         console.log(fiche.TitreEpisodeVF + ' could not be created');
-    //         this.create(this.creationState);
-    //     });
-    // });
     this.fichesMaterielService
       .postFicheMateriel(newFicheMateriel)
       .subscribe( res => {
@@ -72,6 +50,24 @@ export class CreationFichesMaterielComponent implements OnInit {
           this.create(this.creationState);
         });
   }
+
+  /** DELETE FICHES MATERIEL **/
+  deleteOldFichesMateriel(newFicheMateriel, idFicheAchatDetail) {
+    this.fichesMaterielService
+      .deleteFicheMaterielByFicheAchatDetail(idFicheAchatDetail)
+      .subscribe(
+        res => {
+        this.createFichesMateriel(newFicheMateriel);
+        console.log('delete ok ' + idFicheAchatDetail);
+      },
+      error => {
+        this.creationState = false;
+        console.log(' could not be created');
+        this.create(this.creationState);
+      }
+    );
+  }
+
 
   /** EMIT CREATION STATE EVENT**/
   create(state) {
@@ -88,7 +84,6 @@ export class CreationFichesMaterielComponent implements OnInit {
 
   /** CHANGE OEUVRE WITH GAPS TO FICHES MATERIEL OEUVRE WITH EPS ARRAY **/
   displayFichesMateriel() {
-    // this.fichesMateriel = [];
     this.oeuvreWithGaps.forEach(oeuvre => {
       this.fichesMateriel = [];
       this.checkAllNumbers(oeuvre, oeuvre.gaps);
@@ -110,7 +105,7 @@ export class CreationFichesMaterielComponent implements OnInit {
         );
       }
       console.log(this.fichesMateriel);
-      this.createFichesMateriel(this.fichesMateriel);
+      this.deleteOldFichesMateriel(this.fichesMateriel, oeuvre.id_fiche_det);
     });
   }
 
@@ -126,19 +121,22 @@ export class CreationFichesMaterielComponent implements OnInit {
 
   /* CHECK FICHE MATERIEL DEADLINE */
   deadlineCalcul(oeuvre) {
-    this.today = new Date().toJSON().slice(0, 19); // même format que oeuvre.debut_des_droits
+    const todayNewFormatDate = new Date().toJSON().slice(0, 19);
+    const todayDate = new Date(todayNewFormatDate);
+    const diffTimezone = todayDate.getTimezoneOffset(); // get difference with local hour
+    const timestampUtcTodayTime = todayDate.setMinutes(todayDate.getMinutes() - diffTimezone);
+    this.today = new Date(todayDate.setMinutes(todayDate.getMinutes() - diffTimezone)).toJSON().slice(0, 19);
+    console.log(this.today);
     if (oeuvre.debut_des_droits === null || oeuvre.debut_des_droits === undefined) {
       return this.today;
     } else {  // if oeuvre.debut_des_droits exist
-      const todayDate = new Date(this.today);
       const oeuvreDate = new Date(oeuvre.debut_des_droits);
-      const todayTime = todayDate.getTime();
-      const oeuvreTime = oeuvreDate.getTime();
-      const twoMonthsTime = 5184000000;
-      if (oeuvreTime < (todayTime + twoMonthsTime)) { // check if oeuvre.debut_des_droits is already passed
+      const timestampOeuvre = oeuvreDate.getTime();
+      const timestampTwoMonths = 5184000000;
+      if (timestampOeuvre < (timestampUtcTodayTime + timestampTwoMonths)) { // check if oeuvre.debut_des_droits is already passed
         return this.today;
       } else { // if oeuvre.debut_des_droits is more than two months
-        const twoMonthBefore = oeuvreTime - twoMonthsTime;
+        const twoMonthBefore = timestampOeuvre - timestampTwoMonths;
         return new Date(twoMonthBefore).toJSON().slice(0, 19);
       }
     }
