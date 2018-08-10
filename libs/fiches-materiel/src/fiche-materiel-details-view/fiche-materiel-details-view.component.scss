@@ -3,6 +3,7 @@ $creationBtnColor :  #17AAB2;
 $creationBtnHoverColor :  #2eced6;
 $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
+$iconColor : #7f7f7f;
 
 .fm-details {
     padding : 15px 30px;
@@ -16,14 +17,18 @@ $importantColor : #fd5f5f;
                     margin-left: 20px;
                     &.user {
                         padding-left: 50px;
+                        .empty-field {
+                            color : $creationBtnColor; 
+                        }
                     }
                     &.deadline {
                         i {
                             font-size: 2.2em;
-                            color: red;
+                            color: $importantColor;
+                            margin-right : 13px;
                         }
-                        span {
-                            margin-left :13px;
+                        .empty-field {
+                            color : $creationBtnColor;
                         }
                     }
                 }
@@ -32,9 +37,25 @@ $importantColor : #fd5f5f;
                 text-align: center;
                 h1 {
                     font-size: 2em;
+                    &.empty-field {
+                        color :  $creationBtnColor;
+                    }
                 }
                 h2 {
                     font-size: 1.5em;
+                    &.empty-field {
+                        color :  $creationBtnColor;
+                    }
+                }
+            }
+            .warning-fa {
+                text-align: center;
+                i {
+                    font-size : 1.5em;
+                    color : $importantColor;
+                }
+                .warning-no-fa {
+                    color : $importantColor;
                 }
             }
         }
@@ -45,6 +66,9 @@ $importantColor : #fd5f5f;
             }
             .step {
                 display: flex;
+                .empty-field {
+                    color :  $creationBtnColor;
+                }
                 .history {
                     margin-left: 20px;
                     margin-top: -10px;
@@ -76,7 +100,7 @@ $importantColor : #fd5f5f;
                     padding: 20px;
                     margin: 10px;
                     padding-bottom : 10px;
-                    border : 1px solid grey;
+                    border : 1px solid $iconColor;
                     &.info {
                         min-height : 500px;
                     }
@@ -99,17 +123,36 @@ $importantColor : #fd5f5f;
                     }
                     p {
                         font-size: 1.1em;
+                        .ban {
+                            color : $importantColor;
+                        }
+                        span {
+                            &.empty-field {
+                                color : $creationBtnColor;
+                            }
+                        }
+                        &.empty-field {
+                            color : $creationBtnColor;
+                        }
                     }
                     .materiel {
                         display: flex;
                         justify-content: space-around;
                         margin-bottom: 20px;
+                        &.materiel-no-data {
+                            min-height: 150px;
+                        }
                         ul {
                             li {
                                 i {
                                     font-size: 1.5em;
                                     font-weight: bold;
                                 }
+                            }
+                        }
+                        span {
+                            &.empty-field {
+                                color : $creationBtnColor;
                             }
                         }
                     }
@@ -142,8 +185,12 @@ $importantColor : #fd5f5f;
                 }
                 .comment-content {
                     height: 100px;
-                    border : solid 1px grey;
+                    border : solid 1px $iconColor;
                     margin: 10px;
+                    padding : 10px;
+                    &.empty-field {
+                        color : $creationBtnColor;
+                    }
                 }
             }
         }

@@ -2,23 +2,44 @@
   <div class="card col-lg-12">
     <div class="row top">
       <div class="col-lg-3 left-infos">
-        <p class="deadline"><i class="warning-icon icofont icofont-warning"></i><span>  DeadLine : 20/06/18</span></p>
-        <p class="user">Suivi par : utilisateur 1</p>
+        <p class="deadline">
+          <!-- ajouter une condition en fonction de la deadline (si proche ou lointaine) -->
+          <i class="warning-icon icofont icofont-warning"></i>
+          DeadLine :
+          <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
+            {{myFicheMateriel.Deadline ? myFicheMateriel.Deadline : messageEmptyField}}
+          </span>
+        </p>
+        <p class="user">Suivi par : 
+          <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
+            {{myFicheMateriel.SuiviPar}}
+          </p>
       </div>
       <div class="col-lg-6 title">
-        <h1>TOP MODELS</h1>
-        <h2>The Bold and the beautiful Episode #7176</h2>
+        <h1 [ngClass]="!myFicheMateriel.TitreEpisodeVF ? 'empty-field' : ''">
+          {{myFicheMateriel.TitreEpisodeVF}}
+        </h1>
+        <h2 [ngClass]="!myFicheMateriel.TitreEpisodeVO ? 'empty-field' : ''">
+          {{myFicheMateriel.TitreEpisodeVO}}
+        </h2>
       </div>
-      <div class="col-lg-3"></div>
+      <div class="col-lg-3 warning-fa">
+        <i *ngIf="!myFicheAchatGlobalExist" class="icofont icofont-ban"></i>
+        <span *ngIf="!myFicheAchatGlobalExist" class="warning-no-fa">Aucune Fiche achat n'a été trouvée pour cette fiche Matériel</span>
+      </div>
     </div>
     <div class="row state-content">
       <div class="col-lg-6 state">
         <label for="">Statut : </label>
-        <span>En cours</span>
+        <span [ngClass]="!myFicheMateriel.Fiche_Mat_Libstatut.Libelle ? 'empty-field' : ''">
+          {{myFicheMateriel.Fiche_Mat_Libstatut.Libelle}}
+        </span>
       </div>
       <div class="col-lg-6 step">
         <label for="">Etape : </label>
-        <span>6 - AU BO</span>
+        <span [ngClass]="!myFicheMateriel.Fiche_Mat_LibEtape.Libelle ? 'empty-field' : ''">
+          {{myFicheMateriel.Fiche_Mat_LibEtape.Libelle}}
+        </span>
         <div class="history">
           <i class="icofont icofont-history"></i>
         </div>   
@@ -28,87 +49,213 @@
       <div class="col-lg-4 fm-content">
         <div class="sections">
           <i class="icofont icofont-tag section-icon"></i>
-          <p>N° fiche Achat : {{myFicheAchatGlobal.numero_fiche}}</p>
-          <p>Type de fiche Achat : Tout Droits</p>
+
+          <p *ngIf="myFicheAchatGlobalExist"> N° fiche Achat : 
+            <span [ngClass]="!myFicheAchatGlobal.numero_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.numero_fiche ? myFicheAchatGlobal.numero_fiche : messageEmptyField}}</span>
+          </p>
+          <p *ngIf="!myFicheAchatGlobalExist">N° fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+          <p *ngIf="myFicheAchatGlobalExist">Type de fiche Achat : 
+            <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}</span>
+          </p>
+          <p *ngIf="!myFicheAchatGlobalExist">Type de fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
         </div>
         <div class="sections info">
           <i class="icofont icofont-info-circle section-icon"></i>
-          <p>Distributeur : Universal</p>
-          <p>Année prod : 1990</p>
-          <p>N° Episode Prod : 6</p>
-          <p>N° Episode AB : 16</p>
-          <p>Format œuvre : 25 épisodes de 60min</p>
-          <p>Titre épisode VF : TOP MODELS</p>
-          <p>Titre épisode VO : The Bold and The Beautiful Episode #7176</p>
-          <p>Version : VF</p>
-          <p>Qualité : HD</p>
-          <p>Support :</p>
-          <p>Chaînes concernées : AB3</p>
+          <p *ngIf="myFicheAchatGlobalExist">  Distributeur :
+            <span [ngClass]="!myFicheAchatGlobal.Distributeur ? 'empty-field' : ''">
+                {{myFicheAchatGlobal.Distributeur ? myFicheAchatGlobal.Distributeur : messageEmptyField}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheAchatGlobalExist">Distributeur : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+          <p *ngIf="myFicheAchatGlobalExist">Année prod : 
+            <span [ngClass]="!myFicheAchatDetails.annee ? 'empty-field' : ''">
+              {{myFicheAchatDetails.annee ? myFicheAchatDetails.annee : messageEmptyField}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheAchatGlobalExist">Année prod : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+          <p>N° Episode Prod : {{myFicheMateriel.NumEpisodeProd ? myFicheMateriel.NumEpisodeProd : messageEmptyField}}</p>
+          <p>N° Episode AB : {{myFicheMateriel.NumEpisodeAB ? myFicheMateriel.NumEpisodeAB : messageEmptyField}}</p>
+
+          <p *ngIf="myFicheAchatDetailsExist">Format œuvre : 
+            <span [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
+              {{myFicheAchatDetails.nombre_episodes ? 'épisodes de '+myFicheAchatDetails.duree+'min' : messageEmptyField}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+          <p>Titre épisode VF : {{myFicheMateriel.TitreEpisodeVF ? myFicheMateriel.TitreEpisodeVF : messageEmptyField}}</p>
+          <p>Titre épisode VO : {{myFicheMateriel.TitreEpisodeVO ? myFicheMateriel.TitreEpisodeVO : messageEmptyField}}</p>
+
+          <p *ngIf="myFicheMateriel.Fiche_Mat_Version">Version : 
+            <span *ngFor="let item of myFicheMateriel.Fiche_Mat_Version; let x = index">
+              {{x === 0 ? item.libelle : ', '+item.libelle}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheMateriel.Fiche_Mat_Version">Version : 
+            <span class="empty-field">
+              {{messageEmptyField}}
+            </span>
+          </p>
+
+          <p *ngIf="myFicheMateriel.Fiche_Mat_Qualite">Qualité : 
+            <span *ngFor="let item of myFicheMateriel.Fiche_Mat_Qualite; let x = index">
+              {{x === 0 ? item.libelle : ', '+item.libelle}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheMateriel.Fiche_Mat_Qualite">Qualité : 
+            <span class="empty-field">
+              {{messageEmptyField}}
+            </span>
+          </p>
+
+          <p>Support : 
+            <span  [ngClass]="!myFicheMateriel.IdSupport ? 'empty-field' : ''">
+              {{myFicheMateriel.IdSupport ? myFicheMateriel.IdSupport : messageEmptyField}}
+            </span> 
+          </p>
+          <p *ngIf="myFicheAchatGlobal.chaines">Chaînes concernées :
+            <span *ngFor="let item of myFicheAchatGlobal.chaines; let x = index">
+              {{x === 0 ? item : ', '+item}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheAchatGlobal.chaines">Chaînes concernées : 
+            <span class="empty-field">
+              {{messageEmptyField}}
+            </span>
+          </p>
         </div>
       </div>
+
       <div class="col-lg-4 fm-content">
         <div class="sections">
           <i class="icofont icofont-law section-icon"></i>
-          <p>Date déb droits : 15/02/18</p>
-          <p>Date fin droits : 24 mois</p>
+          <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
+            <span [ngClass]="!myFicheAchatDetails.debut_des_droits ? 'empty-field' : ''">
+              {{myFicheAchatDetails.debut_des_droits ? myFicheAchatDetails.debut_des_droits : messageEmptyField}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheAchatDetailsExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+          <p *ngIf="myFicheAchatDetails.duree_droits_annee">Fin des droits : {{myFicheAchatDetails.duree_droits_annee}} an(s)</p>
+          <p *ngIf="myFicheAchatDetails.duree_droits_mois">Fin des droits : {{myFicheAchatDetails.duree_droits_mois}} mois</p>
+          <p *ngIf="!myFicheAchatDetails.duree_droits_annee && !myFicheAchatDetails.duree_droits_mois && myFicheAchatDetailsExist">Fin des droits : 
+            <span class="empty-field">{{messageEmptyField}}</span>
+          </p>
+          <p *ngIf="!myFicheAchatDetailsExist">Fin des droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
         </div>
         <div class="sections">
           <i class="icofont icofont-beaker section-icon"></i>
-          <p>Réception accès labo: 27/09/18</p>
-          <p>Nom du labo: Monal</p>
-          <p>Coût labo: 171,00</p>
+          <p>Réception accès labo: 
+            <span [ngClass]="!myFicheMateriel.ReceptionAccesLabo ? 'empty-field' : ''">
+              {{myFicheMateriel.ReceptionAccesLabo ? myFicheMateriel.ReceptionAccesLabo : messageEmptyField}}
+            </span>  
+          </p>
+          <p>Nom du labo: 
+            <span [ngClass]="!myFicheMateriel.NomLabo ? 'empty-field' : ''">
+              {{myFicheMateriel.NomLabo ? myFicheMateriel.NomLabo : messageEmptyField}}
+            </span>
+          </p>
+          <p>Coût labo: 
+            <span [ngClass]="myFicheMateriel.CoutLabo === null ? 'empty-field' : ''">
+              {{myFicheMateriel.CoutLabo !== null ? myFicheMateriel.CoutLabo : messageEmptyField}}
+            </span>
+          </p>
         </div>
         <div class="sections">
           <i class="icofont icofont-clock-time section-icon"></i>
-          <p>Date de livraison : 05/02/18</p>
-          <p>Délai de vérif : 60 jours</p>
-          <p>Date Acceptation : 27/03/18</p>
-          <p>Date de première diff : 27/09/18</p>
+          <p>Date de livraison : 
+            <span [ngClass]="!myFicheMateriel.DateLivraison ? 'empty-field' : ''">
+              {{myFicheMateriel.DateLivraison ? myFicheMateriel.DateLivraison : messageEmptyField}}
+            </span>
+          </p>
+
+          <p *ngIf="myFicheAchatDetailsExist">Délai de vérif :
+            <span [ngClass]="!myFicheAchatDetails.delai_verification ? 'empty-field' : ''">
+              {{myFicheAchatDetails.delai_verification ? myFicheAchatDetails.delai_verification+' jours' : messageEmptyField}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheAchatDetailsExist">Délai de vérif : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+          <p>Date Acceptation : 
+            <span [ngClass]="!myFicheMateriel.DateAcceptation ? 'empty-field' : ''">
+              {{myFicheMateriel.DateAcceptation ? myFicheMateriel.DateAcceptation : messageEmptyField}}
+            </span>
+          </p>
+          <p>Date de première diff : 
+            <span [ngClass]="!myFicheMateriel.DatePremiereDiff ? 'empty-field' : ''">
+              {{myFicheMateriel.DatePremiereDiff ? myFicheMateriel.DatePremiereDiff : messageEmptyField}}
+            </span>
+          </p>
         </div>
         <div class="sections acces-vf">
           <i class="icofont icofont-unlock section-icon"></i>
           <p>Accès VF :</p>
-          <p> Lorem Ipsum has been the industry's standard dummy text ever since the</p>
+          <p [ngClass]="!myFicheMateriel.AccesVF ? 'empty-field' : ''">{{myFicheMateriel.AccesVF ? myFicheMateriel.AccesVF : messageEmptyField}}</p>
         </div>
       </div>
       <div class="col-lg-4 fm-content">
         <div class="sections press">
           <i class="icofont icofont-newspaper section-icon"></i>
-          <p>Eléments annexes : non traitée</p>
+          <p>Eléments annexes : {{myFicheMateriel.IdStatutElementsAnnexes ? myFicheMateriel.IdStatutElementsAnnexes : messageEmptyField}}</p> 
+          <!-- Eléments annexes => ajouter libellé plutot que number -->
           <p>Détails :</p>
-          <div class="materiel">
+          <div *ngIf="myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel">
             <ul>
-              <li>Matériel publicitaire<i class="icofont icofont-check-alt"></i></li>
-              <li>Synopsis</li>
-              <li>Visuels</li>
-              <li>Scripts</li>
-              <li>Credits</li>
-              <li>Audio description</li>
+              <li *ngFor="let element of myFicheMateriel.Fiche_Mat_ElementsAnnexes; let i = index">
+                <span *ngIf="i<6">{{element.libelle}}
+                  <i *ngIf="element.IsValid" class="icofont icofont-check-alt"></i>
+                </span>
+              </li>
             </ul>
             <ul>
-              <li>Music cue sheet</li>
-              <li>STL multilingue</li>
-              <li>STL S&M</li>
-              <li>Trailer</li>
-              <li>Making of</li>
-              <li>Certificat de nationalité</li>
+              <li *ngFor="let element of myFicheMateriel.Fiche_Mat_ElementsAnnexes; let i = index">
+                <span *ngIf="i>5">{{element.libelle}}
+                  <i *ngIf="element.IsValid" class="icofont icofont-check-alt"></i>
+                </span>
+              </li>
             </ul>
           </div>
+          <div *ngIf="!myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel materiel-no-data">
+            <span class="empty-field">Champ non renseigné dans la fiche Matériel</span>
+          </div>
           <button class="btn btn-info"><i class="icofont icofont-briefcase"></i> Package attendu</button>
-          <p>Commentraires : /</p>
+          <p>Commentraires : <span class="empty-field">{{messageEmptyField}}</span></p> 
+          <!-- voir quel attribut correspond à ce commentaire -->
         </div>
         <div class="sections ori">
           <i class="icofont icofont-space-shuttle section-icon"></i>
-          <p>Retour Ori : à faire</p>
-          <p>Durée du prêt : 2 mois</p>
-          <p>Retour Ori dernier délai : 27/09/18</p>
+          <p>Retour Ori : 
+            <span [ngClass]="!myFicheMateriel.RetourOri ? 'empty-field' : ''">
+              {{myFicheMateriel.RetourOri ? myFicheMateriel.RetourOri : messageEmptyField}}
+            </span>
+          </p>
+          <!-- Retour Ori => ajouter libellé plutot que number -->
+
+          <p *ngIf="myFicheAchatDetailsExist">Durée du prêt : 
+            <span [ngClass]="!myFicheAchatDetails.duree_du_pret ? 'empty-field' : ''">
+              {{myFicheAchatDetails.duree_du_pret ? myFicheAchatDetails.duree_du_pret : messageEmptyField}}
+            </span>
+          </p>
+          <p *ngIf="!myFicheAchatDetailsExist">Durée du prêt : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+          
+          <p>Retour Ori dernier délai : 
+            <span [ngClass]="!myFicheMateriel.RetourOriDernierDelai ? 'empty-field' : ''">
+              {{myFicheMateriel.RetourOriDernierDelai ? myFicheMateriel.RetourOriDernierDelai : messageEmptyField}}
+            </span>
+          </p>
         </div>
       </div>
     </div>
     <div class="row fm-detail-comment">
       <div class="col-lg-12 comment">
         <p>Commentaire :</p>
-        <div class="comment-content"></div>
+        <div class="comment-content" [ngClass]="!myFicheMateriel.Commentaires ? 'empty-field' : ''">
+          {{myFicheMateriel.Commentaires ? myFicheMateriel.Commentaires : messageEmptyField}}
+        </div>
       </div>
     </div>
     <div class="row fm-detail-footer">

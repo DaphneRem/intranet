@@ -26,13 +26,21 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   public sub;
   public idParamsFicheMateriel;
   public idParamsFicheAchat;
-  public ficheAchatDetails;
+
   public myFicheAchatGlobal;
   public myFicheAchatDetails;
   public myFicheMateriel;
+
+  public myFicheAchatGlobalExist: boolean;
+  public myFicheAchatDetailsExist: boolean;
+  public myFicheMaterielExist: boolean;
+
   public dataMaterielReady = false;
   public dataGloralReady = false;
   public dataDetailsReady = false;
+
+  public messageNoFicheAchat = ' pas de fiche Achat rattachée';
+  public messageEmptyField = 'donnée non renseignée';
 
   public icons: CustomIconBadge[];
   public fichesMaterielModification: CustomIconBadge = {
@@ -64,7 +72,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
         circleColor: '#999898',
         circleColorHover: '#b5b3b3',
       },
-      action : () => alert('salut'),
+      action : () => alert('recap fiche Achat Associée'),
       tooltip : true,
       tooltipMessage : 'Voir la fiche Achat associée'
   };
@@ -106,8 +114,15 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
       .getOneFicheMateriel(id)
       .subscribe(data => {
         console.log(data);
-        this.myFicheMateriel = data;
-        this.dataMaterielReady = true;
+        if (data) {
+          this.myFicheMateriel = data[0];
+          console.log(this.myFicheMateriel);
+          this.dataMaterielReady = true;
+          this.myFicheMaterielExist = true;
+        } else {
+          this.myFicheMateriel = {};
+          this.myFicheMaterielExist = false;
+        }
       });
   }
 
@@ -118,11 +133,13 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
       .subscribe(data => {
         console.log(data);
         if (data !== null) {
-          this.myFicheAchatDetails = data;
+          this.myFicheAchatDetails = data[0];
           this.dataDetailsReady = true;
+          this.myFicheAchatDetailsExist = true;
         } else {
           this.myFicheAchatDetails = {};
           this.dataDetailsReady = true;
+          this.myFicheAchatDetailsExist = false;
         }
         console.log(this.myFicheAchatDetails);
       });
@@ -136,9 +153,11 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
         if (data !== null) {
           this.myFicheAchatGlobal = data;
           this.dataGloralReady = true;
+          this.myFicheAchatGlobalExist = true;
         } else {
           this.myFicheAchatGlobal = {};
           this.dataGloralReady = true;
+          this.myFicheAchatGlobalExist = false;
         }
         console.log(this.myFicheAchatGlobal);
       });
