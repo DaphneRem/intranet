@@ -17,7 +17,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       title: 'Mes Fiches Matériel en cours',
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-6 ',
-      link: './my-material-sheets/0/desc',
+      link: './my-material-sheets/0/asc',
       color: '#39ADB5'
     },
     {

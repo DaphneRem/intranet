@@ -56,13 +56,13 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     theme: 'blue theme',
     responsive : true,
     defaultOrder: [],
-    importantData : [
-      {
-        index : 0,
-        className: 'warning',
-        cellData: []
-      }
-    ],
+    // importantData : [
+    //   {
+    //     index : 0,
+    //     className: 'warning',
+    //     cellData: []
+    //   }
+    // ],
     renderOption: true,
     dbClickActionExist: true,
     buttons: {
@@ -136,9 +136,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
           this.displayColumns();
           this.dataReady = true;
         } else {
-          data.map(e => {
-            this.checkDeadline(data, e);
-          });
+          // data.map(e => {
+          //   this.checkDeadline(data, e);
+          // });
           this.customdatatablesOptions.data = data;
           this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
           this.displayColumns();
@@ -167,9 +167,10 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.customdatatablesOptions.columns = [
       {
         title : 'Deadline',
-        data : function ( data, type, row, meta ) {
-          return new Date(data.Deadline).toLocaleString();
-        }
+        data: 'Deadline'
+        // data : function ( data, type, row, meta ) {
+        //   return new Date(data.Deadline).toLocaleString();
+        // }
       },
       {
         title : 'Suivi',
@@ -195,9 +196,10 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       },
       {
         title : 'date création', // pour les tests
-        data : function ( data, type, row, meta ) {
-          return new Date(data.DateCreation).toLocaleString();
-        }
+        data : 'DateCreation'
+        // data : function ( data, type, row, meta ) {
+        //   return new Date(data.DateCreation).toLocaleString();
+        // }
       },
       {
         title : 'IdFicheAchat', // delete after tests ok
@@ -217,9 +219,10 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       },
       {
         title : 'Date Livraison',
-        data : function ( data, type, row, meta ) {
-          return new Date(data.DateLivraison).toLocaleString();
-        }
+        data : 'DateLivraison'
+        // data : function ( data, type, row, meta ) {
+        //   return new Date(data.DateLivraison).toLocaleString();
+        // }
       },
       {
         title : 'Version',
@@ -231,14 +234,16 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       },
       {
         title : 'Date Acceptation',
-        data : function ( data, type, row, meta ) {
-          return new Date(data.DateAcceptation).toLocaleString();
-        }
+        data : 'DateAcceptation'
+        // data : function ( data, type, row, meta ) {
+        //   return new Date(data.DateAcceptation).toLocaleString();
+        // }
       },
 
 
     ];
     console.log('display columns ok');
+    this.dataReady = true;
 
   }
 
