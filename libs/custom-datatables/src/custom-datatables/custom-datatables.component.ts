@@ -231,7 +231,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
         $('td', row).eq(data.index).addClass(data.className);
       }
     });
-    console.log('omportant data');
+    console.log('important data');
                   // this.dataReady = true;
 
   }
