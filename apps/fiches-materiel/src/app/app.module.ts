@@ -1,11 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from '@ngrx/effects';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule, LOCALE_ID, } from '@angular/core';
 import { NxModule } from '@nrwl/nx';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
 
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -48,7 +49,11 @@ registerLocaleData(localeFr, 'fr');
     }),
     RouterStateModule.forRoot()
   ],
-  providers: [{ provide: LOCALE_ID, useValue: 'fr' }],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'fr' },
+    Adal5Service,
+    { provide: Adal5HTTPService, useFactory: Adal5HTTPService.factory, deps: [HttpClient, Adal5Service] }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

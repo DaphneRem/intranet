@@ -1,10 +1,11 @@
 <root-header 
   class="ng-tns-c2-0 ng-star-inserted"
   [headerTitle]="title" 
-  [logo]="logo"  
+  [logo]="logo"
+  (logOutEvent)="logout($event)"
   (headerNav)="checkHeaderNav($event)">
 </root-header>
-  <div 
+<div 
     class="pcoded-main-container app" 
     [style.margin-left]="marginLeft" 
     [style.margin-top]="marginTop" 

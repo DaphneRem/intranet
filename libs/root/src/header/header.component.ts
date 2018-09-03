@@ -13,7 +13,10 @@ import {rootUrl} from '../../../../.privates-url';
 @Component({
   selector: 'root-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  styleUrls: [
+    './header.component.scss',
+    '../../../../assets/icon/icofont/css/icofont.scss'
+  ],
   providers: [MenuItems, Store],
   animations: [
     trigger('notificationBottom', [
@@ -82,8 +85,10 @@ import {rootUrl} from '../../../../.privates-url';
 export class HeaderComponent implements OnInit {
   @Input() headerTitle: string;
   @Input() logo: string;
+  @Input() logout: Function;
 
   @Output() headerNav: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() logOutEvent: EventEmitter<any> = new EventEmitter();
 
   // attr généraux
   public navType: string;
@@ -181,6 +186,10 @@ export class HeaderComponent implements OnInit {
     if (innerWidth <= 992) {
       this.headerNav.emit(true);
     }
+  }
+
+  logOut() {
+    this.logOutEvent.emit(true);
   }
 
   /******** Responsive management *******/
