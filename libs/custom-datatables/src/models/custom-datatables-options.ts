@@ -19,6 +19,8 @@ export class CustomDatatablesOptions {
   defaultOrder?: any; // [[0, 'asc']]
   reRenderOption?: boolean;
   tooltipHeader?: string;
+  clickActionExist?: boolean;
+  clickAction?: any;
   dbClickActionExist?: boolean;
   dbClickAction?: any;
 }

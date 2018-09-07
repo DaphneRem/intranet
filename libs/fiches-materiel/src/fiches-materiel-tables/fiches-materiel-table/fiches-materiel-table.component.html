@@ -1,4 +1,11 @@
+<div class="row modif-btns">
+  <button class="btn btn-warning modif">Modifier</button>
+  <button class="btn btn-warning eps-modif">Modifier tous les épisodes</button>
+</div>
+
+
 <loader-animation *ngIf="!dataReady"></loader-animation>
 <div *ngIf="dataReady">
   <custom-datatables [customdatatablesOptions]="customdatatablesOptions"></custom-datatables>
 </div>
+

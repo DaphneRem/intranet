@@ -210,8 +210,11 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
               // this.dataReady = true;
             }
             $('td', row).unbind('click');
+            $('td', row).bind('click', () => {
+              self.someClickHandler(data);
+            });
             $('td', row).bind('dblclick', () => {
-              self.someClickHandler(data); // go to file-detail with autoPath when double click on row
+              self.someDblClickHandler(data); // go to file-detail with autoPath when double click on row
             });
           return row;
         }
@@ -315,7 +318,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   // go to file-detail with autoPath when double click on row
-  someClickHandler(dataRow: any): void {
+  someDblClickHandler(dataRow: any): void {
     this.idSelectedData = dataRow.id;
     this.dataRow.emit(dataRow);
     // if (dataRow.id && (dataRow.noseg >= 0)) {
@@ -323,6 +326,16 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
     // }
       if (this.customdatatablesOptions.dbClickActionExist) {
         this.customdatatablesOptions.dbClickAction(dataRow);
+    }
+  }
+  someClickHandler(dataRow: any): void {
+    this.idSelectedData = dataRow.id;
+    this.dataRow.emit(dataRow);
+    // if (dataRow.id && (dataRow.noseg >= 0)) {
+    // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
+    // }
+      if (this.customdatatablesOptions.clickActionExist) {
+        this.customdatatablesOptions.clickAction(dataRow);
     }
   }
 

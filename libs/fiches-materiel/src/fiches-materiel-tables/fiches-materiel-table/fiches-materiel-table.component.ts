@@ -65,6 +65,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     // ],
     renderOption: true,
     dbClickActionExist: true,
+    clickActionExist: true,
     buttons: {
       buttons: true,
       allButtons: true,
@@ -122,6 +123,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   displayAction() {
     this.customdatatablesOptions.dbClickAction = (dataRow) => {
       this.router.navigate([`/material-sheets/my-material-sheets/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}`]);
+    };
+    this.customdatatablesOptions.clickAction = (dataRow) => {
+      console.log(dataRow);
     };
     this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour avoir une vue détaillée';
     console.log('display action ok');
