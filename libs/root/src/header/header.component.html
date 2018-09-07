@@ -64,14 +64,21 @@
               </a>
             </li> -->
           </ul>
-
           <ul [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
             <li class="header-notification" [ngClass]="liveNotificationClass" (click)="logOut()">
-              <a href="javascript:">
+              <a href="javascript:" [placement]="'bottom'" [ngbTooltip]="'Déconnexion'">
                 <i class="icofont icofont-logout"></i>
               </a>
             </li>
           </ul>
+          <ul [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
+            <li class="header-notification">
+              <a href="javascript:">
+                <i class="icofont icofont-user-alt-7"></i><span class="user-name">Nom Utilisateur</span>
+              </a>
+            </li>
+          </ul>
+
           <!-- nav right -->
           <!-- <ul [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
             <li (clickOutside)="notificationOutsideClick('live')"

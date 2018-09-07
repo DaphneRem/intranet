@@ -63,6 +63,9 @@ i {
             li {
                 a {
                     color: $iconsHeader;
+                    .user-name {
+                        margin-left: 10px;
+                    }
                 }
                 ul {
                     li {

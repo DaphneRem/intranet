@@ -26,6 +26,10 @@ import { FichesMaterielLibModule } from '@ab/fiches-materiel';
 import { RouterStateModule } from '@ab/router-state';
 import { RootModule, navbarReducer } from '@ab/root';
 import { SubHeaderModule } from '@ab/sub-header';
+import { appReducer } from './+state/app.reducer';
+import { appInitialState } from './+state/app.init';
+import { environment } from '../environments/environment';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 registerLocaleData(localeFr, 'fr');
 
@@ -47,7 +51,10 @@ registerLocaleData(localeFr, 'fr');
     StoreDevtoolsModule.instrument({
       maxAge: 25 // Retains last 25 states
     }),
-    RouterStateModule.forRoot()
+    RouterStateModule.forRoot(),
+    StoreModule.forRoot({app: appReducer}, {initialState: {app: appInitialState}}),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    StoreRouterConnectingModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
