@@ -1,6 +1,6 @@
 <div class="row modif-btns">
-  <button class="btn btn-warning modif">Modifier</button>
-  <button class="btn btn-warning eps-modif">Modifier tous les épisodes</button>
+  <button *ngIf="showModifBtn" class="btn btn-warning modif" (click)="showSelection()">Modifier</button>
+  <button *ngIf="showModifAllEps" class="btn btn-warning eps-modif">Modifier tous les épisodes</button>
 </div>
 
 

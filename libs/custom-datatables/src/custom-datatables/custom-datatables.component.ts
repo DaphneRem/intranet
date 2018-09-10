@@ -40,7 +40,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   dtTrigger: Subject<any> = new Subject();
 
   @Output() dataRow = new EventEmitter();
-
+  @Output() row = new EventEmitter();
   // rerender onchange variables
   public init = 0;
   public dataReady = true;
@@ -125,6 +125,12 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
               _: '%d lignes copiées',
               1: '1 ligne copiée'
             }
+        },
+        select : {
+          rows : {
+            _: '%d lignes sélectionnées',
+            1: '1 ligne sélectionnée'
+          }
         }
   };
 
@@ -195,7 +201,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
         autoWidth: false,
         language : this.frenchLanguage,
         // createdRow: this.displayCreatedRow(),
-        select : 'single',
+        select : options.multiSelection ? true : 'single',
         order: options.defaultOrder,
         pageLength : options.rowsMax,
         lengthMenu : options.lenghtMenu,
@@ -211,7 +217,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
             }
             $('td', row).unbind('click');
             $('td', row).bind('click', () => {
-              self.someClickHandler(data);
+              self.someClickHandler(data, row);
             });
             $('td', row).bind('dblclick', () => {
               self.someDblClickHandler(data); // go to file-detail with autoPath when double click on row
@@ -328,14 +334,16 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
         this.customdatatablesOptions.dbClickAction(dataRow);
     }
   }
-  someClickHandler(dataRow: any): void {
+  someClickHandler(dataRow: any, row): void {
     this.idSelectedData = dataRow.id;
     this.dataRow.emit(dataRow);
+    this.row.emit(row);
     // if (dataRow.id && (dataRow.noseg >= 0)) {
     // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
     // }
+    console.log(row);
       if (this.customdatatablesOptions.clickActionExist) {
-        this.customdatatablesOptions.clickAction(dataRow);
+        this.customdatatablesOptions.clickAction(dataRow, row);
     }
   }
 

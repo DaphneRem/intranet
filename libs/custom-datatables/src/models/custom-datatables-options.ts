@@ -23,6 +23,7 @@ export class CustomDatatablesOptions {
   clickAction?: any;
   dbClickActionExist?: boolean;
   dbClickAction?: any;
+  multiSelection?: boolean;
 }
 
 export class Columns {
