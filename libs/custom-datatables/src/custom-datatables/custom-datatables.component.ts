@@ -41,11 +41,12 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
 
   @Output() dataRow = new EventEmitter();
   @Output() row = new EventEmitter();
+  @Output() selectRows = new EventEmitter();
+
   // rerender onchange variables
   public init = 0;
   public dataReady = true;
   public newData;
-
 
   // datatable const
   public renderOption: boolean;
@@ -56,6 +57,9 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   public themeName: string;
   public theme: any;
 
+public test = 'ookok';
+
+  public rows;
   public finalData: any = [];
   public data: any = [] ;
   public headerColor: string;
@@ -191,6 +195,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   displayDatatables() {
     // console.log(this.customdatatablesOptions.createdRow[0]);
     const options = this.customdatatablesOptions;
+    const that = this;
     if (options.data.length) { // if data != 0 or data != []
       this.dtOptions = {
         data: options.data,
@@ -202,14 +207,27 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
         language : this.frenchLanguage,
         // createdRow: this.displayCreatedRow(),
         select : options.multiSelection ? true : 'single',
+        // select : {
+        //   style : options.multiSelection ? 'multi' : 'single',
+        // },
         order: options.defaultOrder,
         pageLength : options.rowsMax,
         lengthMenu : options.lenghtMenu,
         responsive : options.responsive,
         dom: 'Bfrtip',
-        buttons: [],
+        buttons: options.selectionBtn ? [{
+                      extend: 'selected',
+                      text: 'Modifier',
+                      className: '',
+                      action: function (e, dt, node, config) {
+                                const rows = dt.rows( { selected: true } ).data() ;
+                                console.log(rows);
+                                that.selectRows.emit(rows);
+                              }
+        }] : [],
         rowCallback: (row: Node, data: any[] | Object, index: number) => { // datatable function to display action on double click
             const self = this;
+            //  var rows = this.dtOptions.rows( { selected: true } ).data();
             if (options.importantData) {
               options.importantData.map( item => this.displayImportantData(item, row));
             } else {
@@ -341,7 +359,6 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
     // if (dataRow.id && (dataRow.noseg >= 0)) {
     // this.router.navigate([`/detail-file/support/${dataRow.id}/seg/${dataRow.noseg}`]);
     // }
-    console.log(row);
       if (this.customdatatablesOptions.clickActionExist) {
         this.customdatatablesOptions.clickAction(dataRow, row);
     }

@@ -5,6 +5,7 @@ $warningColor : #FFB64D;
 $warningGradient : linear-gradient(45deg, #FFB64D, #ffcb80);
 $selectedRow : #3b4650;
 $tableButton : #3b4650;
+$disabledColor : rgb(189, 189, 189);
 
 
 .custom-datatables {
@@ -229,6 +230,7 @@ $tableButton : #3b4650;
 /deep/ .dataTables_wrapper .dt-buttons {
     position: absolute;
     bottom: 0;
+    display: flex;
     .dt-button {
         color :$white;
         background-color : $tableButton;
@@ -260,6 +262,33 @@ $tableButton : #3b4650;
             background-image: none;
             border-color: $tableButton;
             color :$tableButton;
+        }
+        &.buttons-selected {
+            background: $warningColor;
+            border-color: $warningColor;
+            &:hover {
+                background-color: $white;
+                background-image: none;
+                border-color: $warningColor;
+                color : $warningColor;
+            }
+            &:focus {
+                background: $warningColor;
+                border-color: $warningColor;
+                color: $white;
+            }
+            &.disabled {
+                background: $disabledColor;
+                border-color: $disabledColor;
+                cursor: not-allowed;
+                color : $white;
+                &:hover {
+                    background: $disabledColor;
+                    border-color: $disabledColor;
+                    border-color: $disabledColor;
+                    color : $white;
+                }
+            }
         }
         &.buttons-columnVisibility {
             background-color: #ffffff;

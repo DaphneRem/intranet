@@ -24,6 +24,8 @@ export class CustomDatatablesOptions {
   dbClickActionExist?: boolean;
   dbClickAction?: any;
   multiSelection?: boolean;
+  selectionBtn?: boolean;
+  selectionBtnAction?: any;
 }
 
 export class Columns {
