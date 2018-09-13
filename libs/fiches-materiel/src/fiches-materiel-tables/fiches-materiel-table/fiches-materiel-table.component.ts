@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 
 import swal from 'sweetalert2';
 
@@ -14,6 +15,9 @@ import { FichesAchatService } from '@ab/fiches-achat';
 // fiches matériel service & model import
 import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
+import {
+  FicheMaterielModification
+} from '@ab/fiches-materiel/src/fiches-materiel-modification-interface/+state/fiche-materiel-modification.interfaces';
 
 @Component({
   selector: 'fiches-materiel-table',
@@ -21,12 +25,16 @@ import { FichesMaterielService } from '../../services/fiches-materiel.service';
   styleUrls: ['./fiches-materiel-table.component.scss'],
   providers : [
     FichesMaterielService,
-    FichesAchatService
+    FichesAchatService,
+    Store
   ]
 })
 export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
+
+  public globalStore;
+  public storeFichesToModif;
 
   public table;
   public ctrlKeyActive = false;
@@ -89,7 +97,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     private fichesMaterielService: FichesMaterielService,
     private fichesAchatService: FichesAchatService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: Store<FicheMaterielModification>
   ) {}
 
   ngOnInit() {
@@ -105,6 +114,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.getFichesMateriel();
     this.checkLinks();
     this.displayAction();
+    this.store.subscribe(data => (this.globalStore = data));
+    this.storeFichesToModif = this.globalStore.ficheMaterielModification;
+    console.log(this.storeFichesToModif);
   }
 
   checkDeadline(data, fm) { // check DeadLine && display important data
@@ -135,8 +147,11 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     console.log(this.selectedRows.length);
     if (this.selectedRows.length > 1) {
       console.log('true');
+      console.log(this.selectedRows);
+      console.log(this.globalStore);
     } else {
       console.log('false');
+      console.log(this.selectedRows[0]);
       swal({
           text: 'Options de modification',
           showCancelButton: true,
@@ -146,7 +161,24 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
           confirmButtonColor: '#17AAB2'
         }).then(result => {
           if (result.value) {
-            this.router.navigate([`/material-sheets/my-material-sheets/6/desc`]);
+            this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+          } else {
+            this.store.dispatch({
+              type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+              payload: {
+                modificationType: 'one',
+                multiFicheAchat: false,
+                multiOeuvre: false,
+                selectedFichesMateriel: [
+                  {
+                    idFicheMateriel: this.selectedRows[0].IdFicheMateriel,
+                    idFicheAchat: this.selectedRows[0].IdFicheAchat,
+                    idFicheAchatDetail: this.selectedRows[0].IdFicheDetail
+                  }
+                ]
+              }
+            });
+            this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
           }
         });
     }

@@ -33,6 +33,15 @@ import { ModalRecapFicheAchatComponent } from './creation-modal/modal-recap-fich
 import { SearchFormComponent } from './search-form/search-form.component';
 import { FicheMaterielDetailsComponent } from './fiches-materiel-pages/fiche-materiel-details/fiche-materiel-details.component';
 import { FicheMaterielDetailsViewComponent } from './fiche-materiel-details-view/fiche-materiel-details-view.component';
+import {
+  FichesMaterielModificationComponent
+} from './fiches-materiel-pages/fiches-materiel-modification/fiches-materiel-modification.component';
+import {
+  FichesMaterielModificationInterfaceComponent
+} from './fiches-materiel-modification-interface/fiches-materiel-modification-interface.component';
+import { StoreModule } from '@ngrx/store';
+import { ficheMaterielModificationReducer } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.reducer';
+import { ficheMaterielModificationInitialState } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.init';
 
 
 @NgModule({
@@ -45,7 +54,12 @@ import { FicheMaterielDetailsViewComponent } from './fiche-materiel-details-view
     LoadersModule,
     ModalsModule,
     SubHeaderModule,
-    WidgetsModule
+    WidgetsModule,
+    StoreModule.forFeature(
+      'ficheMaterielModification',
+      ficheMaterielModificationReducer,
+      { initialState: ficheMaterielModificationInitialState }
+    )
   ],
   declarations: [
     CreativeFormFichesMaterielComponent,
@@ -55,13 +69,15 @@ import { FicheMaterielDetailsViewComponent } from './fiche-materiel-details-view
     FichesAchatTableComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
+    FicheMaterielDetailsViewComponent,
+    FichesMaterielModificationComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
     ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     SearchFormComponent,
-    FicheMaterielDetailsViewComponent
+    FichesMaterielModificationInterfaceComponent
   ],
   exports: [
     CreativeFormFichesMaterielComponent,
@@ -71,6 +87,7 @@ import { FicheMaterielDetailsViewComponent } from './fiche-materiel-details-view
     FichesAchatTableComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
+    FichesMaterielModificationComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
     ModalFicheAchatDetailComponent,
