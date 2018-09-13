@@ -6,6 +6,7 @@ import { Page404Component } from '@ab/error-pages';
 import {
   FichesMaterielCreationComponent,
   FicheMaterielDetailsComponent,
+  FichesMaterielModificationComponent,
   FichesMaterielWidgetViewComponent,
   DisplayFichesAchatsComponent,
   MyFichesMaterielComponent
@@ -25,6 +26,11 @@ const routes: Routes = [
         path: 'my-material-sheets/details/:idFicheMateriel/:idFicheAchatDetails',
         component : FicheMaterielDetailsComponent,
         data : { title : 'Détails Fiche Matériel'}
+      },
+      {
+        path: 'my-material-sheets/modification',
+        component : FichesMaterielModificationComponent,
+        data : { title : 'Modification Fiche Matériel'}
       },
       {
         path: 'my-material-sheets/:columnIndex/:order',

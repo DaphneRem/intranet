@@ -215,16 +215,18 @@ public test = 'ookok';
         lengthMenu : options.lenghtMenu,
         responsive : options.responsive,
         dom: 'Bfrtip',
-        buttons: options.selectionBtn ? [{
-                      extend: 'selected',
-                      text: 'Modifier',
-                      className: '',
-                      action: function (e, dt, node, config) {
-                                const rows = dt.rows( { selected: true } ).data() ;
-                                console.log(rows);
-                                that.selectRows.emit(rows);
-                              }
-        }] : [],
+        buttons: options.selectionBtn ?
+          [{
+            extend: 'selected',
+            text: 'Modifier',
+            className: '',
+            action: function (e, dt, node, config) {
+                      const rows = dt.rows( { selected: true } ).data() ;
+                      console.log(rows);
+                      that.selectRows.emit(rows);
+                    }
+          }]
+         : [],
         rowCallback: (row: Node, data: any[] | Object, index: number) => { // datatable function to display action on double click
             const self = this;
             //  var rows = this.dtOptions.rows( { selected: true } ).data();
