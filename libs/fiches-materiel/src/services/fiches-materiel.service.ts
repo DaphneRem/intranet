@@ -43,7 +43,7 @@ export class FichesMaterielService {
           res = 0;
           return res;
         }
-        console.log(res);
+        // console.log(res);
         return res as FicheMateriel[];
       })
       .catch(this.handleError);

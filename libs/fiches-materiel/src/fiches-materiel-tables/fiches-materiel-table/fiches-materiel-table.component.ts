@@ -35,7 +35,12 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   public globalStore;
   public storeFichesToModif;
-
+  public selectedId = [];
+  public selectedOeuvre;
+  public idFicheAchatArray = [];
+  public idFicheAchatDetailArray = [];
+  public uniqValuesIdFicheAchat;
+  public uniqValuesIdFicheAchatDetail;
   public table;
   public ctrlKeyActive = false;
   public showModifBtn = false;
@@ -141,41 +146,76 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     }
   }
 
+  getUniqValues(array) {
+    return array.filter((elem, pos, arr) => {
+      return arr.indexOf(elem) === pos;
+    });
+  }
+
   AllSelectedRows(e) {
-    console.log(e);
     this.selectedRows = e;
-    console.log(this.selectedRows.length);
+    for (let i = 0; i < this.selectedRows.length; i++) {
+      this.idFicheAchatArray.push(this.selectedRows[i].IdFicheAchat);
+      this.idFicheAchatDetailArray.push(this.selectedRows[i].IdFicheDetail);
+      this.selectedId.push(
+          {
+            idFicheMateriel: this.selectedRows[i].IdFicheMateriel,
+            idFicheAchat: this.selectedRows[i].IdFicheAchat,
+            idFicheAchatDetail: this.selectedRows[i].IdFicheDetail
+          }
+      );
+    }
     if (this.selectedRows.length > 1) {
-      console.log('true');
-      console.log(this.selectedRows);
-      console.log(this.globalStore);
+      this.uniqValuesIdFicheAchat = this.getUniqValues(this.idFicheAchatArray);
+      this.uniqValuesIdFicheAchatDetail = this.getUniqValues(this.idFicheAchatDetailArray);
+      this.store.dispatch({
+        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+        payload: {
+          modificationType: 'multi',
+          multiFicheAchat: this.uniqValuesIdFicheAchat.length > 1 ? true : false,
+          multiOeuvre: this.uniqValuesIdFicheAchatDetail.length > 1 ? true : false,
+          selectedFichesMateriel: this.selectedId
+        }
+      });
+      this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
     } else {
-      console.log('false');
-      console.log(this.selectedRows[0]);
       swal({
-          text: 'Options de modification',
+          title : 'Options de modification',
+          text: `Modifier uniquement la fiche Matériel n°
+                ${this.selectedRows[0].IdFicheMateriel} 
+                ou bien toutes les fiches Matériel associées à l'oeuvre`,
           showCancelButton: true,
           type: 'warning',
-          cancelButtonText: 'Modification unique',
-          confirmButtonText: 'Modifier tous les épisodes',
-          confirmButtonColor: '#17AAB2'
+          cancelButtonText: 'Toutes',
+          confirmButtonText: `Fiche n°${this.selectedRows[0].IdFicheMateriel}`,
+          confirmButtonColor: '#17AAB2',
+          cancelButtonColor: '#17AAB2'
         }).then(result => {
           if (result.value) {
-            this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-          } else {
             this.store.dispatch({
               type: 'ADD_FICHE_MATERIEL_IN_MODIF',
               payload: {
                 modificationType: 'one',
                 multiFicheAchat: false,
                 multiOeuvre: false,
-                selectedFichesMateriel: [
-                  {
-                    idFicheMateriel: this.selectedRows[0].IdFicheMateriel,
-                    idFicheAchat: this.selectedRows[0].IdFicheAchat,
-                    idFicheAchatDetail: this.selectedRows[0].IdFicheDetail
-                  }
-                ]
+                selectedFichesMateriel: this.selectedId
+              }
+            });
+            this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+          } else {
+            this.selectedOeuvre = [];
+            this.customdatatablesOptions.data.map((item) => {
+              if (item.IdFicheDetail === this.selectedRows[0].IdFicheDetail) {
+                this.selectedOeuvre.push(item);
+              }
+            });
+            this.store.dispatch({
+              type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+              payload: {
+                modificationType: 'multi',
+                multiFicheAchat: false,
+                multiOeuvre: false,
+                selectedFichesMateriel: this.selectedOeuvre
               }
             });
             this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
@@ -190,10 +230,6 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     };
     this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour avoir une vue détaillée';
     console.log('display action ok');
-  }
-
-  showSelection() {
-    console.log(this.selectedRows);
   }
 
   getFichesMateriel() {

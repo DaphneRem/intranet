@@ -1,3 +1,7 @@
 <p>
   fiches-materiel-modification-interface works!
 </p>
+<p *ngIf="dataIdFicheMaterielReady">
+  {{allFichesMateriel[0] | json}}
+  <span>{{newObject | json}}</span>
+</p>
