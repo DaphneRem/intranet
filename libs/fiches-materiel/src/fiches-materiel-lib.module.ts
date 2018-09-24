@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 // lib imports
 import { CustomDatatablesModule } from '@ab/custom-datatables';
 import { CustomIconsModule } from '@ab/custom-icons';
@@ -53,6 +55,7 @@ import { ficheMaterielModificationInitialState } from './fiches-materiel-modific
     FormsModule,
     LoadersModule,
     ModalsModule,
+    NgbModule,
     SubHeaderModule,
     WidgetsModule,
     StoreModule.forFeature(

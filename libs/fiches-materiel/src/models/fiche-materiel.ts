@@ -3,7 +3,7 @@ export class FicheMateriel {
     IdFicheMateriel: number;
     IdFicheAchat: number;
     IdFicheDetail: number;
-    Deadline: string;
+    Deadline: string | Date;
     SuiviPar: string;
     IdLibstatut: number;
     IdLibEtape: number;

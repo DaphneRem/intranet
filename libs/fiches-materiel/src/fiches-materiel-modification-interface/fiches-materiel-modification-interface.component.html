@@ -1,7 +1,716 @@
-<p>
-  fiches-materiel-modification-interface works!
-</p>
-<p *ngIf="dataIdFicheMaterielReady">
-  {{allFichesMateriel[0] | json}}
-  <span>{{newObject | json}}</span>
-</p>
+<div *ngIf="dataIdFicheMaterielReady" class="row form-group fm-details">
+  <form class="card col-lg-12">
+    <div class="row top">
+      <div class="col-lg-3 left-infos">
+        <div class="form-group row">
+          <label class="deadline clo-lg-4 col-form-label">
+            Deadline :</label>
+              <div class="input-group col-lg-8">
+                <input class="form-control" 
+                  placeholder="{{displayPlaceholderDatepicker(deadLineNgFormat)}}" 
+                  name="deadlineDate" [(ngModel)]="deadLineNgFormat" 
+                  ngbDatepicker #deadlineDate="ngbDatepicker">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" (click)="deadlineDate.toggle()" type="button">
+                    <i class="icofont icofont-calendar"></i>
+                  </button>
+                </div>
+              </div>
+        </div>
+        <div class="form-group row">
+          <label class="user clo-lg-4 col-form-label">
+            User :</label>
+          <select name="select" class="form-control col-lg-8">
+            <option [value]="newObject.SuiviPar">{{newObject.SuiviPar}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-6 title" *ngIf="selectionType === 'one'">
+        <h1>
+          {{newObject.TitreEpisodeVF}}
+        </h1>
+        <h2>
+           {{newObject.TitreEpisodeVO}}
+        </h2>
+      </div>
+      <div class="col-lg-3 warning-fa">
+        <span class="warning-no-fa"></span>
+      </div>
+    </div>
+    <div class="row state-content">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-3 state form-group">
+        <label class="col-form-label">Statut : </label>
+          <select name="statut" class="form-control" [(ngModel)]="newObject.Fiche_Mat_Libstatut" (click)="clickStatusOptions()">
+            <option *ngIf="initValueStatus" [ngValue]="newObject.Fiche_Mat_Libstatut">
+              <span *ngIf="newObject.Fiche_Mat_Libstatut.Libelle !== 'Valeur d\'origine'">{{newObject.Fiche_Mat_Libstatut.IdLibstatut}} - </span>{{newObject.Fiche_Mat_Libstatut.Libelle}}
+            </option>
+            <option *ngFor="let stat of status" [ngValue]="stat"><span *ngIf="stat.Libelle !== 'Valeur d\'origine'">{{stat.IdLibstatut}} - </span>{{stat.Libelle}}</option>
+          </select>
+        </div>
+      <div class="col-lg-3 step form-group">
+        <label class="col-form-label">Etape : </label>
+          <select name="myStep" class="form-control" [(ngModel)]="newObject.Fiche_Mat_LibEtape" (click)="clickStepOptions()" *ngIf="stepsReady">
+            <option *ngIf="initValueSteps" [ngValue]="newObject.Fiche_Mat_LibEtape" [selected]="true">
+              <span *ngIf="newObject.Fiche_Mat_LibEtape.Libelle !== 'Valeur d\'origine'">{{newObject.Fiche_Mat_LibEtape.IdLibEtape}} - </span>
+              {{newObject.Fiche_Mat_LibEtape.Libelle}}
+            </option>
+            <option *ngFor="let step of steps" [ngValue]="step"><span *ngIf="step.Libelle !== 'Valeur d\'origine'">{{step.IdLibEtape}} - </span>{{step.Libelle}}</option>
+          </select>
+      </div>
+    </div>
+    <div class="row fm-detail-body">
+      <div class="col-lg-4 fm-content">
+        <div class="sections info" [ngStyle]="{'min-height' : selectionType === 'one' ? '745px' : '400px'}" >
+          <i class="icofont icofont-info-circle section-icon"></i>
+          <p *ngIf="selectionType === 'one'"> N° fiche Achat :
+            <span *ngIf="ficheAchatReady">{{ficheAchat.numero_fiche}}</span>
+          </p>
+
+          <p *ngIf="selectionType === 'one'">Type de fiche Achat :
+            <span *ngIf="ficheAchatReady">{{ficheAchat.libelle_type_fiche}}</span>
+          </p>
+          <p *ngIf="selectionType === 'one' && ficheAchatReady"> Distributeur :
+            <span *ngIf="ficheAchat.Distributeur">
+              {{ficheAchat.Distributeur}}
+            </span>
+            <span *ngIf="!ficheAchat.Distributeur">
+              /
+            </span>
+          </p>
+
+          <!-- <p *ngIf="selectionType === 'one'">Année prod :
+            <span>
+             FICHE ACHAT
+            </span>
+          </p> -->
+
+          <div class="row form-group">
+            <label class="col-form-label col-lg-4">N° Episode Prod : </label>
+            <input 
+              [(ngModel)]="newObject.NumEpisodeProd"
+              placeholder="{{newObject.NumEpisodeProd ? 'Valeur d\'origine' : ''}}"
+              type="text" 
+              class="form-control col-lg-6" 
+              id="epProd" 
+              name="epProd"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.NumEpisodeProd !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.NumEpisodeProd = ''">
+                </i>
+                <i *ngIf="newObject.NumEpisodeProd !== 'Valeur d\'origine'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NumEpisodeProd = 'Valeur d\'origine'">
+                </i>
+                <!-- <i *ngIf="newObject.NumEpisodeProd !== allFichesMateriel[0].NumEpisodeProd && selectionType === 'one'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NumEpisodeProd = allFichesMateriel[0].NumEpisodeProd">
+                </i> -->
+              </div>
+          </div>
+          <!-- <p>N° Episode Prod : ooooooooooo</p> -->
+          <div class="row form-group">
+            <label class="col-form-label col-lg-4">N° Episode AB : </label>
+            <input 
+              [(ngModel)]="newObject.NumEpisodeAB"
+              type="text" 
+              class="form-control col-lg-6" 
+              id="epAb" 
+              name="epAb"
+              autocomplete="off">              
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.NumEpisodeAB !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.NumEpisodeAB = ''">
+                </i>
+                <i *ngIf="newObject.NumEpisodeAB !== 'Valeur d\'origine'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NumEpisodeAB = 'Valeur d\'origine'">
+                </i>
+              </div>
+          </div>
+
+          <p *ngIf="selectionType === 'one'">Format œuvre :
+            <span>
+              FICHE ACHAT
+            </span>
+          </p>
+          <!-- <p>Format œuvre :
+            
+            <span>ooooooooooo</span>
+          </p> -->
+          <div class="row form-group">
+            <label class="col-form-label col-lg-4">Titre épisode VF : </label>
+            <input 
+              [(ngModel)]="newObject.TitreEpisodeVF"
+              type="text" 
+              class="form-control col-lg-6" 
+              id="titleEpVf" 
+              name="titleEpVf"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.TitreEpisodeVF !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.TitreEpisodeVF = ''">
+                </i>
+                <i *ngIf="newObject.TitreEpisodeVF !== 'Valeur d\'origine'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.TitreEpisodeVF = 'Valeur d\'origine'">
+                </i>
+              </div>
+          </div>
+
+          <div class="row form-group">
+            <label class="col-form-label col-lg-4">Titre épisode VO :</label>
+            <input 
+              [(ngModel)]="newObject.TitreEpisodeVO"
+              type="text" 
+              class="form-control col-lg-6" 
+              id="titleEpVo" 
+              name="titleEpVo"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.TitreEpisodeVO !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.TitreEpisodeVO = ''">
+                </i>
+                <i *ngIf="newObject.TitreEpisodeVO !== 'Valeur d\'origine'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.TitreEpisodeVO = 'Valeur d\'origine'">
+                </i>
+              </div>
+          </div>
+
+
+
+          <!--<p>Version :
+            <span *ngFor="let item of myFicheMateriel.Fiche_Mat_Version; let x = index">
+              {{x === 0 ? item.libelle : ', '+item.libelle}}
+            </span>
+          </p> -->
+          <div class="row form-group">
+            <label class="col-form-label col-lg-3">Version : </label>
+            <select name="version" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
+              <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
+                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
+                  {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
+                </span>
+                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
+                  {{newObject.RetourOri}}
+                </span>
+              </option>
+              <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
+                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
+                {{ori.Libelle}}
+              </option>
+            </select>
+          </div>
+
+          <div class="row form-group">
+            <label class="col-form-label col-lg-3">Qualité : </label>
+            <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
+              <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
+                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
+                  {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
+                </span>
+                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
+                  {{newObject.RetourOri}}
+                </span>
+              </option>
+              <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
+                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
+                {{ori.Libelle}}
+              </option>
+            </select>
+          </div>
+
+          <div class="row form-group">
+            <label class="col-form-label col-lg-4">Support :</label>
+            <input 
+              [(ngModel)]="newObject.IdSupport"
+              type="text" 
+              class="form-control col-lg-6" 
+              id="support" 
+              name="support"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.IdSupport !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.IdSupport = ''">
+                </i>
+                <i *ngIf="newObject.IdSupport !== 'Valeur d\'origine'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.IdSupport = 'Valeur d\'origine'">
+                </i>
+              </div>
+          </div>
+          <!-- <p *ngIf="myFicheAchatGlobal.chaines">Chaînes concernées :
+            <span *ngFor="let item of myFicheAchatGlobal.chaines; let x = index">
+              {{x === 0 ? item : ', '+item}}
+            </span>
+          </p> -->
+          <p *ngIf="selectionType === 'one'">Chaînes concernées :
+            <span class="empty-field">
+              FICHE ACHAT
+            </span>
+          </p>
+        </div>
+
+
+        <div class="sections ori" *ngIf="selectionType === 'multi'">
+          <i class="icofont icofont-space-shuttle section-icon"></i>
+          <div class="row form-group">
+            <label class="col-form-label col-lg-3">Retour Ori : </label>
+            <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
+              <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
+                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
+                  {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
+                </span>
+                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
+                  {{newObject.RetourOri}}
+                </span>
+              </option>
+              <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
+                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
+                {{ori.Libelle}}
+              </option>
+            </select>
+          </div>
+          <p *ngIf="selectionType === 'one'">Durée du prêt :
+        
+            <span>FICHE ACHAT</span>
+          </p>
+        
+          <!-- <p>Retour Ori dernier délai :
+                    <span>
+                      oooooooooooooooooo
+                    </span>
+                  </p> -->
+          <div class="form-group row livraison-datepicker" *ngIf="newObject.RetourOri === 3">
+            <label class="col-lg-4 col-form-label">
+              Date de retour :
+            </label>
+            <div class="input-group col-lg-6">
+              <input class="form-control" placeholder="{{selectionType === 'one' ? diffDateNgFormat : 'Valeur d\'origine'}}" name="retourDate"
+                [(ngModel)]="diffDateNgFormat" ngbDatepicker #retourDate="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="retourDate.toggle()" type="button">
+                  <i class="icofont icofont-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+      <div class="col-lg-4 fm-content">
+        <div class="sections" *ngIf="selectionType === 'one'">
+          <i class="icofont icofont-law section-icon"></i>
+
+          <p>Date déb droits :
+            
+            <span>FICHE ACHAT</span>
+          </p>
+          <p>Fin des droits :
+            
+            <span>FICHE ACHAT</span>
+          </p>
+
+        </div>
+        <div class="sections" [ngStyle]="{'height' : selectionType === 'multi' ? '215px' : ''}">
+          <i class="icofont icofont-beaker section-icon"></i>
+          <div class="form-group row livraison-datepicker" [ngStyle]="{'margin-top' : selectionType === 'multi' ? '20px' : ''}">
+            <label class="col-lg-5 col-form-label">
+              Réception accès labo :
+            </label>
+            <div class="input-group col-lg-6">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(accLaboDateNgFormat)}}" name="accLaboDate"
+                [(ngModel)]="accLaboDateNgFormat" ngbDatepicker #accLaboDate="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="accLaboDate.toggle()" type="button">
+                  <i class="icofont icofont-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-form-label col-lg-4">Nom du labo :</label>
+            <input 
+              [(ngModel)]="newObject.NomLabo"
+              type="text" 
+              class="form-control col-lg-6" 
+              id="laboName" 
+              name="laboName"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.NomLabo !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.NomLabo = ''">
+                </i>
+                <i *ngIf="newObject.NomLabo !== 'Valeur d\'origine'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NomLabo = 'Valeur d\'origine'">
+                </i>
+              </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-form-label col-lg-4">Coût labo :</label>
+            <input 
+              [(ngModel)]="newObject.CoutLabo"
+              type="text" 
+              class="form-control col-lg-6" 
+              id="laboCost" 
+              name="laboCost"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.CoutLabo !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.CoutLabo = ''">
+                </i>
+                <i *ngIf="newObject.CoutLabo !== 'Valeur d\'origine'"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.CoutLabo = 'Valeur d\'origine'">
+                </i>
+              </div>
+          </div>
+        </div>
+        <div class="sections livraison" [ngStyle]="{'height' : selectionType === 'one' ? '275px' : '255px'}" >
+          <i class="icofont icofont-clock-time section-icon"></i>
+          <div class="form-group row livraison-datepicker" [ngStyle]="{'margin-top' : selectionType === 'multi' ? '15px' : ''}">
+            <label class="col-lg-5 col-form-label">
+              Date de livraison :
+            </label>
+            <div class="input-group col-lg-6">
+              <input class="form-control" 
+                placeholder="{{displayPlaceholderDatepicker(livraisonDateNgFormat)}}" 
+                name="livDate" [(ngModel)]="livraisonDateNgFormat" 
+                ngbDatepicker #livDate="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="livDate.toggle()" type="button">
+                  <i class="icofont icofont-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p *ngIf="selectionType === 'one'">Délai de vérif :
+            
+            <span>Fiche Achat</span>
+          </p>
+
+          <div class="form-group row livraison-datepicker acceptation">
+            <div class="form-check col-lg-5">
+              <label class=" radio">
+                <input type="radio" name="radio" checked="checked" (click)="displayAcceptaionSelectionRadio()" > 
+                <i class="helper"></i>Date d'acceptation :
+              </label>
+            </div>
+            <div class="input-group col-lg-6">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(acceptationDateNgFormat)}}" name="acceptDate"
+                [(ngModel)]="acceptationDateNgFormat" ngbDatepicker #acceptDate="ngbDatepicker" disabled="{{!this.radioSelection.acceptationDateSelected}}">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="acceptDate.toggle()" type="button">
+                  <i class="icofont icofont-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row acceptation">
+            <div class="form-check col-lg-12">
+              <label class=" radio">
+                <input type="radio" name="radio" (click)="displayRenouvellementSelectionRadio()">
+                <i class="helper"></i>Renouvellement
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group row livraison-datepicker">
+            <label class="col-lg-5 col-form-label">
+              Date de première diff :
+            </label>
+            <div class="input-group col-lg-6">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(diffDateNgFormat)}}" name="diffDate"
+                [(ngModel)]="diffDateNgFormat" ngbDatepicker #diffDate="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="diffDate.toggle()" type="button">
+                  <i class="icofont icofont-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sections acces-vf" [ngStyle]="{'min-height' : selectionType === 'multi' ? '190px' : ''}">
+          <i class="icofont icofont-unlock section-icon"></i>
+          <label class="col-form-label col-lg-4">Accès VF :</label>
+          <div class="row form-group">
+            <textarea 
+              [ngStyle]="{'height' : selectionType === 'multi' ? '110px' : ''}"
+              [(ngModel)]="newObject.AccesVF"
+              type="text" 
+              class="form-control md-textarea col-lg-8" 
+              id="accesVf" 
+              name="accesVf"
+              autocomplete="off">
+            </textarea>
+            <div class="icons col-lg-3 textarea-icons" *ngIf="selectionType === 'multi'">
+              <i *ngIf="newObject.AccesVF !== ''"
+                class="icofont icofont-close-line-circled delete"
+                [placement]="'right'" 
+                [ngbTooltip]="resetTooltipMessage"
+                (click)="newObject.AccesVF = ''">
+              </i>
+              <i *ngIf="newObject.AccesVF !== 'Valeur d\'origine'"
+                class="icofont icofont-ui-reply reply"
+                [placement]="'right'" 
+                [ngbTooltip]="replyTooltipMessage"
+                (click)="newObject.AccesVF = 'Valeur d\'origine'">
+              </i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 fm-content">
+        <div class="sections press" [ngStyle]="{'min-height' : selectionType === 'one' ? '560px' : '680px'}">
+          <i class="icofont icofont-newspaper section-icon"></i>
+          <div class="row form-group"  [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : '40px'}">
+            <label class="col-form-label col-lg-5">Elements annexes :</label>
+            <select name="step" class="form-control col-lg-6" [(ngModel)]="newObject.IdStatutElementsAnnexes" (click)="clickAnnexElementOptions()">
+              <option [ngValue]="newObject.IdStatutElementsAnnexes" *ngIf="initAnnexElements">
+                <span *ngIf="newObject.IdStatutElementsAnnexes !== 'Valeur d\'origine'">
+                  {{newObject.IdStatutElementsAnnexes}} - {{annexElements[newObject.IdStatutElementsAnnexes-1].Libelle}}
+                </span>
+                <span *ngIf="newObject.IdStatutElementsAnnexes === 'Valeur d\'origine'">{{newObject.IdStatutElementsAnnexes}}</span>
+              </option>
+              <option *ngFor="let element of annexElements" [ngValue]="element.IdStatutElementsAnnexes"><span *ngIf="element.Libelle !== 'Valeur d\'origine'">{{element.IdStatutElementsAnnexes}} - </span>{{element.Libelle}}</option>
+            </select>
+          </div>
+
+          <p [ngClass]="selectionType === 'multi' ? 'multi' : ''">Détails :</p>
+
+          <div class="details row form-group" *ngIf="selectionType === 'one'" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
+            <div class="left-details col-lg-6">
+              <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
+                <input *ngIf="i<6" id="{{item.IdElementsAnnexes}}" 
+                  name="{{item.libelle}}" 
+                  type="checkbox" 
+                  [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid" 
+                  [checked]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
+                <label *ngIf="i<6" for="{{item.IdElementsAnnexes}}">
+                  {{item.libelle}}
+                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
+                </label>
+              </div>
+            </div>
+            <div class="right-details col-lg-6">
+              <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
+                <input *ngIf="i>5" id="{{item.IdElementsAnnexes}}" 
+                type="checkbox" 
+                name="{{item.libelle}}"
+                [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid"
+                [checked]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
+                <label *ngIf="i>5" for="{{item.IdElementsAnnexes}}">
+                  {{item.libelle}}
+                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="details row form-group" *ngIf="selectionType === 'multi'">
+            <div class="left-details col-lg-6">
+              <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
+                <input *ngIf="i<6" id="{{i}}" 
+                  name="{{i}}" 
+                  type="checkbox" 
+                  [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
+                <label *ngIf="i<6" for="{{i}}">
+                  {{item.libelle}}
+                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
+                </label>
+              </div>
+            </div>
+            <div class="right-details col-lg-6">
+              <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
+                <input *ngIf="i>5" id="{{i}}" 
+                type="checkbox" 
+                name="{{i}}"
+                [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
+                <label *ngIf="i>5" for="{{i}}">
+                  {{item.libelle}}
+                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row buttons" *ngIf="selectionType === 'multi'" [ngClass]="selectionType === 'multi' ? 'multi' : ''">
+            <button class="btn btn-danger btn-outline-danger"
+              *ngIf="checkModifiedElementAnnex(newObject.Fiche_Mat_ElementsAnnexes, null, 'same')"
+              [placement]="'right'" 
+              [ngbTooltip]="resetTooltipMessage"
+              (click)="resetElementAnnex(newObject.Fiche_Mat_ElementsAnnexes, false)">
+              <i class="icofont icofont-close-line-circled delete"></i>
+              Aucun element sélectionné
+            </button>
+            <button class="btn btn-danger btn-outline-danger" 
+              *ngIf="checkModifiedElementAnnex(newObject.Fiche_Mat_ElementsAnnexes, null, 'different')"
+              [placement]="'right'" 
+              [ngbTooltip]="replyTooltipMessage"
+              (click)="resetElementAnnex(newObject.Fiche_Mat_ElementsAnnexes, null)">
+              <i class="icofont icofont-ui-reply reply"></i>
+              Rétablir valeurs d'origines
+            </button>
+          </div>
+
+          <label class="col-form-label row" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
+            <span class="label-comment"> 
+              Commentraires :
+            </span>
+          </label>
+          <div class="row form-group comment-textarea">
+            <textarea 
+              [ngStyle]="{'height' : selectionType === 'multi' ? '100px' : ''}"
+              [(ngModel)]="newObject.Commentaires"
+              type="text" 
+              class="form-control md-textarea col-lg-9" 
+              id="commentaires" 
+              name="commentaires"
+              autocomplete="off">
+            </textarea>
+            <div class="icons col-lg-3 textarea-icons" *ngIf="selectionType === 'multi'">
+              <i *ngIf="newObject.Commentaires !== ''"
+                class="icofont icofont-close-line-circled delete"
+                [placement]="'right'" 
+                [ngbTooltip]="resetTooltipMessage"
+                (click)="newObject.Commentaires = ''">
+              </i>
+              <i *ngIf="newObject.Commentaires !== 'Valeur d\'origine'"
+                class="icofont icofont-ui-reply reply"
+                [placement]="'right'" 
+                [ngbTooltip]="replyTooltipMessage"
+                (click)="newObject.Commentaires = 'Valeur d\'origine'">
+              </i>
+            </div>
+          </div>
+          <!-- voir quel attribut correspond à ce commentaire -->
+        </div>
+        <div class="sections ori" *ngIf="selectionType === 'one'">
+          <i class="icofont icofont-space-shuttle section-icon"></i>
+          <div class="row form-group">
+            <label class="col-form-label col-lg-3">Retour Ori : </label>
+            <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
+              <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
+                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
+                  {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
+                </span>
+                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
+                   {{newObject.RetourOri}}
+                </span>
+              </option>
+              <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
+                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
+                {{ori.Libelle}}
+              </option>
+            </select>
+          </div>
+          <p *ngIf="selectionType === 'one'">Durée du prêt :
+            
+            <span>FICHE ACHAT</span>
+          </p>
+
+          <!-- <p>Retour Ori dernier délai :
+            <span>
+              oooooooooooooooooo
+            </span>
+          </p> -->
+          <div class="form-group row livraison-datepicker" *ngIf="newObject.RetourOri === 3">
+            <label class="col-lg-4 col-form-label">
+              Date de retour :
+            </label>
+            <div class="input-group col-lg-6">
+              <input class="form-control" placeholder="{{selectionType === 'one' ? diffDateNgFormat : 'Valeur d\'origine'}}" name="rDate"
+                [(ngModel)]="diffDateNgFormat" ngbDatepicker #retourDate="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="retourDate.toggle()" type="button">
+                  <i class="icofont icofont-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row fm-detail-comment">
+      <div class="col-lg-12 comment">
+        <p>Commentaire :</p>
+        <div class="comment-content row">
+          <textarea 
+            [ngStyle]="{'height' : selectionType === 'multi' ? '100px' : ''}"
+            [(ngModel)]="newObject.Commentaires"
+            type="text" 
+            class="form-control md-textarea col-lg-10" 
+            id="commentaires" 
+            name="commentaires"
+            autocomplete="off">
+          </textarea>
+          <div class="icons col-lg-2 textarea-icons" *ngIf="selectionType === 'multi'">
+            <i *ngIf="newObject.Commentaires !== ''"
+              class="icofont icofont-close-line-circled delete"
+              [placement]="'right'" 
+              [ngbTooltip]="resetTooltipMessage"
+              (click)="newObject.Commentaires = ''">
+            </i>
+            <i *ngIf="newObject.Commentaires !== 'Valeur d\'origine'"
+              class="icofont icofont-ui-reply reply"
+              [placement]="'right'" 
+              [ngbTooltip]="replyTooltipMessage"
+              (click)="newObject.Commentaires = 'Valeur d\'origine'">
+            </i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row fm-detail-footer">
+      <div class="col-lg-2 offset-lg-10 footer-links">
+        <custom-icon-badge *ngFor="let icon of icons" [littleIcon]="icon.littleIcon" [bigIcon]="icon.bigIcon" [link]="icon.link"
+          [action]="icon.action" [tooltip]="icon.tooltip" [tooltipMessage]="icon.tooltipMessage">
+        </custom-icon-badge>
+      </div>
+    </div>
+  </form>
+</div>

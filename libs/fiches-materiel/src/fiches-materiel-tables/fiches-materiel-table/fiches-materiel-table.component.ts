@@ -186,27 +186,24 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
                 ou bien toutes les fiches Matériel associées à l'oeuvre`,
           showCancelButton: true,
           type: 'warning',
-          cancelButtonText: 'Toutes',
-          confirmButtonText: `Fiche n°${this.selectedRows[0].IdFicheMateriel}`,
+          cancelButtonText: `Fiche n°${this.selectedRows[0].IdFicheMateriel}`,
+          confirmButtonText: 'Toutes',
           confirmButtonColor: '#17AAB2',
           cancelButtonColor: '#17AAB2'
         }).then(result => {
-          if (result.value) {
-            this.store.dispatch({
-              type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-              payload: {
-                modificationType: 'one',
-                multiFicheAchat: false,
-                multiOeuvre: false,
-                selectedFichesMateriel: this.selectedId
-              }
-            });
-            this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-          } else {
+          if (result.value) { // confirm button
+
             this.selectedOeuvre = [];
             this.customdatatablesOptions.data.map((item) => {
               if (item.IdFicheDetail === this.selectedRows[0].IdFicheDetail) {
-                this.selectedOeuvre.push(item);
+                console.log(item.IdFicheDetail);
+                this.selectedOeuvre.push(
+                  {
+                    idFicheMateriel: item.IdFicheMateriel,
+                    idFicheAchat: item.IdFicheAchat,
+                    idFicheAchatDetail: item.IdFicheDetail
+                  }
+                );
               }
             });
             this.store.dispatch({
@@ -219,6 +216,28 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
               }
             });
             this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+
+
+
+
+          } else { // cancel button
+
+            this.store.dispatch({
+              type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+              payload: {
+                modificationType: 'one',
+                multiFicheAchat: false,
+                multiOeuvre: false,
+                selectedFichesMateriel: this.selectedId
+              }
+            });
+            this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+
+
+
+
+
+
           }
         });
     }
