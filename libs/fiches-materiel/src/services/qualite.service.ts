@@ -11,7 +11,7 @@ import { catchError, retry } from 'rxjs/operators';
 import { Qualite } from '../models/qualite';
 
 // temporary imports :
-import { urlFicheMateriel, urlLibQualite } from '../../../../.privates-url';
+import { urlFicheMateriel, urlLibQualite, urlFicheMatQualite } from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -33,6 +33,14 @@ export class QualiteService {
       });
   }
 
+  getQualiteFicheMateriel(id): Observable<Qualite[]> {
+    return this.http
+      .get(urlFicheMateriel + urlFicheMatQualite + id)
+      .map((res: any) => {
+        console.log(res);
+        return res as Qualite[];
+      });
+  }
 
   private handleError(error: HttpErrorResponse) {
     console.log(error);

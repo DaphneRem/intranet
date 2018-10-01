@@ -6,9 +6,10 @@
           <label class="deadline clo-lg-4 col-form-label">
             Deadline :</label>
               <div class="input-group col-lg-8">
+                {{deadlineNewStringFormat}}
                 <input class="form-control" 
-                  placeholder="{{displayPlaceholderDatepicker(deadLineNgFormat)}}" 
-                  name="deadlineDate" [(ngModel)]="deadLineNgFormat" 
+                  placeholder="{{displayPlaceholderDatepicker(newObject.Deadline)}}" 
+                  name="deadlineDate" [(ngModel)]="newObject.Deadline" 
                   ngbDatepicker #deadlineDate="ngbDatepicker">
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary" (click)="deadlineDate.toggle()" type="button">
@@ -41,21 +42,24 @@
       <div class="col-lg-3"></div>
       <div class="col-lg-3 state form-group">
         <label class="col-form-label">Statut : </label>
-          <select name="statut" class="form-control" [(ngModel)]="newObject.Fiche_Mat_Libstatut" (click)="clickStatusOptions()">
-            <option *ngIf="initValueStatus" [ngValue]="newObject.Fiche_Mat_Libstatut">
-              <span *ngIf="newObject.Fiche_Mat_Libstatut.Libelle !== 'Valeur d\'origine'">{{newObject.Fiche_Mat_Libstatut.IdLibstatut}} - </span>{{newObject.Fiche_Mat_Libstatut.Libelle}}
+          <select name="statut" class="form-control" [(ngModel)]="newObject.IdLibstatut" (click)="clickStatusOptions()">
+            <option *ngIf="initValueStatus" [ngValue]="newObject.IdLibstatut">
+              <span *ngIf="newObject.IdLibstatut !== valueNotToChangeLibelle">{{newObject.IdLibstatut}} - {{status[newObject.IdLibstatut-1].Libelle}}</span>
+              <span *ngIf="newObject.IdLibstatut === valueNotToChangeLibelle">{{newObject.IdLibstatut}}</span>
             </option>
-            <option *ngFor="let stat of status" [ngValue]="stat"><span *ngIf="stat.Libelle !== 'Valeur d\'origine'">{{stat.IdLibstatut}} - </span>{{stat.Libelle}}</option>
+            <option *ngFor="let stat of status" [ngValue]="stat.Libelle !== valueNotToChangeLibelle ? stat.IdLibstatut : stat.Libelle">
+              <span *ngIf="stat.Libelle !== valueNotToChangeLibelle">{{stat.IdLibstatut}} - </span>{{stat.Libelle}}</option>
           </select>
         </div>
       <div class="col-lg-3 step form-group">
         <label class="col-form-label">Etape : </label>
-          <select name="myStep" class="form-control" [(ngModel)]="newObject.Fiche_Mat_LibEtape" (click)="clickStepOptions()" *ngIf="stepsReady">
-            <option *ngIf="initValueSteps" [ngValue]="newObject.Fiche_Mat_LibEtape" [selected]="true">
-              <span *ngIf="newObject.Fiche_Mat_LibEtape.Libelle !== 'Valeur d\'origine'">{{newObject.Fiche_Mat_LibEtape.IdLibEtape}} - </span>
-              {{newObject.Fiche_Mat_LibEtape.Libelle}}
+          <select name="myStep" class="form-control" [(ngModel)]="newObject.IdLibEtape" (click)="clickStepOptions()" *ngIf="stepsReady">
+            <option *ngIf="initValueSteps" [ngValue]="newObject.IdLibEtape" [selected]="true">
+              <span *ngIf="newObject.IdLibEtape !== valueNotToChangeLibelle">{{newObject.IdLibEtape}} - {{steps[newObject.IdLibEtape-1].Libelle}}</span>
+              <span *ngIf="newObject.IdLibEtape === valueNotToChangeLibelle">{{newObject.IdLibEtape}}</span>
             </option>
-            <option *ngFor="let step of steps" [ngValue]="step"><span *ngIf="step.Libelle !== 'Valeur d\'origine'">{{step.IdLibEtape}} - </span>{{step.Libelle}}</option>
+            <option *ngFor="let step of steps" [ngValue]="step.Libelle !== valueNotToChangeLibelle ? step.IdLibEtape : step.Libelle">
+              <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{step.IdLibEtape}} - </span>{{step.Libelle}}</option>
           </select>
       </div>
     </div>
@@ -89,7 +93,7 @@
             <label class="col-form-label col-lg-4">N° Episode Prod : </label>
             <input 
               [(ngModel)]="newObject.NumEpisodeProd"
-              placeholder="{{newObject.NumEpisodeProd ? 'Valeur d\'origine' : ''}}"
+              placeholder="{{newObject.NumEpisodeProd ? valueNotToChangeLibelle : ''}}"
               type="text" 
               class="form-control col-lg-6" 
               id="epProd" 
@@ -102,11 +106,11 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NumEpisodeProd = ''">
                 </i>
-                <i *ngIf="newObject.NumEpisodeProd !== 'Valeur d\'origine'"
+                <i *ngIf="newObject.NumEpisodeProd !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.NumEpisodeProd = 'Valeur d\'origine'">
+                  (click)="newObject.NumEpisodeProd = valueNotToChangeLibelle">
                 </i>
                 <!-- <i *ngIf="newObject.NumEpisodeProd !== allFichesMateriel[0].NumEpisodeProd && selectionType === 'one'"
                   class="icofont icofont-ui-reply reply"
@@ -133,11 +137,11 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NumEpisodeAB = ''">
                 </i>
-                <i *ngIf="newObject.NumEpisodeAB !== 'Valeur d\'origine'"
+                <i *ngIf="newObject.NumEpisodeAB !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.NumEpisodeAB = 'Valeur d\'origine'">
+                  (click)="newObject.NumEpisodeAB = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -167,11 +171,11 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.TitreEpisodeVF = ''">
                 </i>
-                <i *ngIf="newObject.TitreEpisodeVF !== 'Valeur d\'origine'"
+                <i *ngIf="newObject.TitreEpisodeVF !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.TitreEpisodeVF = 'Valeur d\'origine'">
+                  (click)="newObject.TitreEpisodeVF = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -192,11 +196,11 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.TitreEpisodeVO = ''">
                 </i>
-                <i *ngIf="newObject.TitreEpisodeVO !== 'Valeur d\'origine'"
+                <i *ngIf="newObject.TitreEpisodeVO !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.TitreEpisodeVO = 'Valeur d\'origine'">
+                  (click)="newObject.TitreEpisodeVO = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -212,36 +216,36 @@
             <label class="col-form-label col-lg-3">Version : </label>
             <select name="version" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
               <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
-                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
+                <span *ngIf="newObject.RetourOri !== valueNotToChangeLibelle">
                   {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
                 </span>
-                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
+                <span *ngIf="newObject.RetourOri === valueNotToChangeLibelle">
                   {{newObject.RetourOri}}
                 </span>
               </option>
               <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
-                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
+                <span *ngIf="ori.IdLibRetourOri !== valueNotToChangeLibelle">{{ori.IdLibRetourOri}} - </span>
                 {{ori.Libelle}}
               </option>
             </select>
           </div>
 
+
+
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Qualité : </label>
-            <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
-              <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
-                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
-                  {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
-                </span>
-                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
-                  {{newObject.RetourOri}}
-                </span>
-              </option>
-              <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
-                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
-                {{ori.Libelle}}
-              </option>
-            </select>
+            <div class="right-details col-lg-6">
+              <div *ngFor="let item of qualite; let i = index" class="checkbox-color checkbox-info">
+                <input 
+                  (click)="displayQualiteChecked(item)"
+                  id="{{item.Libelle}}"
+                  type="checkbox"
+                  name="{{item.Libelle}}">
+                <label for="{{item.Libelle}}">
+                  {{item.Libelle}}
+                </label>
+              </div>
+            </div>
           </div>
 
           <div class="row form-group">
@@ -260,11 +264,11 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.IdSupport = ''">
                 </i>
-                <i *ngIf="newObject.IdSupport !== 'Valeur d\'origine'"
+                <i *ngIf="newObject.IdSupport !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.IdSupport = 'Valeur d\'origine'">
+                  (click)="newObject.IdSupport = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -287,15 +291,15 @@
             <label class="col-form-label col-lg-3">Retour Ori : </label>
             <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
               <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
-                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
+                <span *ngIf="newObject.RetourOri !== valueNotToChangeLibelle">
                   {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
                 </span>
-                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
+                <span *ngIf="newObject.RetourOri === valueNotToChangeLibelle">
                   {{newObject.RetourOri}}
                 </span>
               </option>
               <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
-                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
+                <span *ngIf="ori.IdLibRetourOri !== valueNotToChangeLibelle">{{ori.IdLibRetourOri}} - </span>
                 {{ori.Libelle}}
               </option>
             </select>
@@ -315,8 +319,12 @@
               Date de retour :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{selectionType === 'one' ? diffDateNgFormat : 'Valeur d\'origine'}}" name="retourDate"
-                [(ngModel)]="diffDateNgFormat" ngbDatepicker #retourDate="ngbDatepicker">
+              <input class="form-control" 
+                placeholder="{{displayPlaceholderDatepicker(newObject.DateRetourOri)}}" 
+                name="retourDate"
+                [(ngModel)]="newObject.DateRetourOri"
+                ngbDatepicker 
+                #retourDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="retourDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -351,8 +359,8 @@
               Réception accès labo :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(accLaboDateNgFormat)}}" name="accLaboDate"
-                [(ngModel)]="accLaboDateNgFormat" ngbDatepicker #accLaboDate="ngbDatepicker">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.ReceptionAccesLabo)}}" name="accLaboDate"
+                [(ngModel)]="newObject.ReceptionAccesLabo" ngbDatepicker #accLaboDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="accLaboDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -376,11 +384,11 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NomLabo = ''">
                 </i>
-                <i *ngIf="newObject.NomLabo !== 'Valeur d\'origine'"
+                <i *ngIf="newObject.NomLabo !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.NomLabo = 'Valeur d\'origine'">
+                  (click)="newObject.NomLabo = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -400,11 +408,11 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.CoutLabo = ''">
                 </i>
-                <i *ngIf="newObject.CoutLabo !== 'Valeur d\'origine'"
+                <i *ngIf="newObject.CoutLabo !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.CoutLabo = 'Valeur d\'origine'">
+                  (click)="newObject.CoutLabo = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -417,8 +425,8 @@
             </label>
             <div class="input-group col-lg-6">
               <input class="form-control" 
-                placeholder="{{displayPlaceholderDatepicker(livraisonDateNgFormat)}}" 
-                name="livDate" [(ngModel)]="livraisonDateNgFormat" 
+                placeholder="{{displayPlaceholderDatepicker(newObject.DateLivraison)}}" 
+                name="livDate" [(ngModel)]="newObject.DateLivraison" 
                 ngbDatepicker #livDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="livDate.toggle()" type="button">
@@ -436,13 +444,13 @@
           <div class="form-group row livraison-datepicker acceptation">
             <div class="form-check col-lg-5">
               <label class=" radio">
-                <input type="radio" name="radio" checked="checked" (click)="displayAcceptaionSelectionRadio()" > 
+                <input type="radio" name="radio" checked="{{checkAcceptationSelectionRadio() ? 'checked' : ''}}" (click)="displayAcceptaionSelectionRadio()" > 
                 <i class="helper"></i>Date d'acceptation :
               </label>
             </div>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(acceptationDateNgFormat)}}" name="acceptDate"
-                [(ngModel)]="acceptationDateNgFormat" ngbDatepicker #acceptDate="ngbDatepicker" disabled="{{!this.radioSelection.acceptationDateSelected}}">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.DateAcceptation)}}" name="acceptDate"
+                [(ngModel)]="newObject.DateAcceptation" ngbDatepicker #acceptDate="ngbDatepicker" disabled="{{!checkAcceptationSelectionRadio()}}">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="acceptDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -453,7 +461,7 @@
           <div class="form-group row acceptation">
             <div class="form-check col-lg-12">
               <label class=" radio">
-                <input type="radio" name="radio" (click)="displayRenouvellementSelectionRadio()">
+                <input type="radio" name="radio" (click)="displayRenouvellementSelectionRadio()" checked="{{checkRenouvellementSelectionRadio()}}">
                 <i class="helper"></i>Renouvellement
               </label>
             </div>
@@ -464,8 +472,8 @@
               Date de première diff :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(diffDateNgFormat)}}" name="diffDate"
-                [(ngModel)]="diffDateNgFormat" ngbDatepicker #diffDate="ngbDatepicker">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.DatePremiereDiff)}}" name="diffDate"
+                [(ngModel)]="newObject.DatePremiereDiff" ngbDatepicker #diffDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="diffDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -494,11 +502,11 @@
                 [ngbTooltip]="resetTooltipMessage"
                 (click)="newObject.AccesVF = ''">
               </i>
-              <i *ngIf="newObject.AccesVF !== 'Valeur d\'origine'"
+              <i *ngIf="newObject.AccesVF !== valueNotToChangeLibelle"
                 class="icofont icofont-ui-reply reply"
                 [placement]="'right'" 
                 [ngbTooltip]="replyTooltipMessage"
-                (click)="newObject.AccesVF = 'Valeur d\'origine'">
+                (click)="newObject.AccesVF = valueNotToChangeLibelle">
               </i>
             </div>
           </div>
@@ -511,12 +519,12 @@
             <label class="col-form-label col-lg-5">Elements annexes :</label>
             <select name="step" class="form-control col-lg-6" [(ngModel)]="newObject.IdStatutElementsAnnexes" (click)="clickAnnexElementOptions()">
               <option [ngValue]="newObject.IdStatutElementsAnnexes" *ngIf="initAnnexElements">
-                <span *ngIf="newObject.IdStatutElementsAnnexes !== 'Valeur d\'origine'">
+                <span *ngIf="newObject.IdStatutElementsAnnexes !== valueNotToChangeLibelle">
                   {{newObject.IdStatutElementsAnnexes}} - {{annexElements[newObject.IdStatutElementsAnnexes-1].Libelle}}
                 </span>
-                <span *ngIf="newObject.IdStatutElementsAnnexes === 'Valeur d\'origine'">{{newObject.IdStatutElementsAnnexes}}</span>
+                <span *ngIf="newObject.IdStatutElementsAnnexes === valueNotToChangeLibelle">{{newObject.IdStatutElementsAnnexes}}</span>
               </option>
-              <option *ngFor="let element of annexElements" [ngValue]="element.IdStatutElementsAnnexes"><span *ngIf="element.Libelle !== 'Valeur d\'origine'">{{element.IdStatutElementsAnnexes}} - </span>{{element.Libelle}}</option>
+              <option *ngFor="let element of annexElements" [ngValue]="element.IdStatutElementsAnnexes"><span *ngIf="element.Libelle !== valueNotToChangeLibelle">{{element.IdStatutElementsAnnexes}} - </span>{{element.Libelle}}</option>
             </select>
           </div>
 
@@ -599,7 +607,7 @@
 
           <label class="col-form-label row" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
             <span class="label-comment"> 
-              Commentraires :
+              Commentaires :
             </span>
           </label>
           <div class="row form-group comment-textarea">
@@ -619,11 +627,11 @@
                 [ngbTooltip]="resetTooltipMessage"
                 (click)="newObject.Commentaires = ''">
               </i>
-              <i *ngIf="newObject.Commentaires !== 'Valeur d\'origine'"
+              <i *ngIf="newObject.Commentaires !== valueNotToChangeLibelle"
                 class="icofont icofont-ui-reply reply"
                 [placement]="'right'" 
                 [ngbTooltip]="replyTooltipMessage"
-                (click)="newObject.Commentaires = 'Valeur d\'origine'">
+                (click)="newObject.Commentaires = valueNotToChangeLibelle">
               </i>
             </div>
           </div>
@@ -635,15 +643,15 @@
             <label class="col-form-label col-lg-3">Retour Ori : </label>
             <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
               <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
-                <span *ngIf="newObject.RetourOri !== 'Valeur d\'origine'">
+                <span *ngIf="newObject.RetourOri !== valueNotToChangeLibelle">
                   {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
                 </span>
-                <span *ngIf="newObject.RetourOri === 'Valeur d\'origine'">
+                <span *ngIf="newObject.RetourOri === valueNotToChangeLibelle">
                    {{newObject.RetourOri}}
                 </span>
               </option>
               <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
-                <span *ngIf="ori.IdLibRetourOri !== 'Valeur d\'origine'">{{ori.IdLibRetourOri}} - </span>
+                <span *ngIf="ori.IdLibRetourOri !== valueNotToChangeLibelle">{{ori.IdLibRetourOri}} - </span>
                 {{ori.Libelle}}
               </option>
             </select>
@@ -663,8 +671,8 @@
               Date de retour :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{selectionType === 'one' ? diffDateNgFormat : 'Valeur d\'origine'}}" name="rDate"
-                [(ngModel)]="diffDateNgFormat" ngbDatepicker #retourDate="ngbDatepicker">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(this.newObject.DateRetourOri)}}" name="rDate"
+                [(ngModel)]="this.newObject.DateRetourOri" ngbDatepicker #retourDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="retourDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -695,22 +703,32 @@
               [ngbTooltip]="resetTooltipMessage"
               (click)="newObject.Commentaires = ''">
             </i>
-            <i *ngIf="newObject.Commentaires !== 'Valeur d\'origine'"
+            <i *ngIf="newObject.Commentaires !== valueNotToChangeLibelle"
               class="icofont icofont-ui-reply reply"
               [placement]="'right'" 
               [ngbTooltip]="replyTooltipMessage"
-              (click)="newObject.Commentaires = 'Valeur d\'origine'">
+              (click)="newObject.Commentaires = valueNotToChangeLibelle">
             </i>
           </div>
         </div>
       </div>
     </div>
-    <div class="row fm-detail-footer">
+    <!-- <div class="row fm-detail-footer">
       <div class="col-lg-2 offset-lg-10 footer-links">
         <custom-icon-badge *ngFor="let icon of icons" [littleIcon]="icon.littleIcon" [bigIcon]="icon.bigIcon" [link]="icon.link"
           [action]="icon.action" [tooltip]="icon.tooltip" [tooltipMessage]="icon.tooltipMessage">
         </custom-icon-badge>
       </div>
-    </div>
+    </div> -->
+    <fiches-materiel-modification-action 
+      [allFichesMateriel]="allFichesMateriel"
+      [selectionType]="selectionType"
+      [multiOeuvre]="multiOeuvre"
+      [multiFichesAchat]="multiFichesAchat"
+      [initialFichesMateriel]="initialFichesMateriel"
+      [valueNotToChangeLibelle]="valueNotToChangeLibelle"
+      [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
+      [newObject]="newObject">
+    </fiches-materiel-modification-action>
   </form>
 </div>

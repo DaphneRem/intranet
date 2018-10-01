@@ -11,7 +11,7 @@ import { catchError, retry } from 'rxjs/operators';
 import { AnnexElement } from '../models/annex-element';
 
 // temporary imports :
-import { urlFicheMateriel, urlLibAnnexElements } from '../../../../.privates-url';
+import { urlFicheMateriel, urlLibAnnexElements, urlFicheMatAnnexElements } from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -27,6 +27,15 @@ export class AnnexElementsService {
   getAnnexElements(): Observable<AnnexElement[]> {
     return this.http
       .get(urlFicheMateriel + urlLibAnnexElements)
+      .map((res: any) => {
+        console.log(res);
+        return res as AnnexElement[];
+      });
+  }
+
+  getAnnexElementsFicheMateriel(id) {
+    return this.http
+      .get(urlFicheMateriel + urlFicheMatAnnexElements + id)
       .map((res: any) => {
         console.log(res);
         return res as AnnexElement[];

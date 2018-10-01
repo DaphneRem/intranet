@@ -65,6 +65,26 @@ export class FichesMaterielService {
       .pipe(catchError(this.handleError));
   }
 
+  /* PUT FICHES MATERIEL */
+  updateFicheMateriel(ficheMateriel: FicheMaterielCreation[]): Observable<FicheMaterielCreation[]> {
+    return this.http
+      .put<FicheMaterielCreation[]>(
+        urlFicheMateriel + urlAllFichesMateriel,
+        ficheMateriel
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  /* PATCH FICHES MATERIEL */
+  patchFicheMateriel(ficheMateriel) {
+    return this.http
+      .patch(
+        urlFicheMateriel + urlAllFichesMateriel,
+        ficheMateriel
+      )
+      .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     console.log(error);

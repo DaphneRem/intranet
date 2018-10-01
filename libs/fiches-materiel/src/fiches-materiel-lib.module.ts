@@ -44,6 +44,9 @@ import {
 import { StoreModule } from '@ngrx/store';
 import { ficheMaterielModificationReducer } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.reducer';
 import { ficheMaterielModificationInitialState } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.init';
+import {
+  FichesMaterielModificationActionComponent
+} from './fiches-materiel-modification-interface/fiches-materiel-modification-action/fiches-materiel-modification-action.component';
 
 
 @NgModule({
@@ -80,7 +83,8 @@ import { ficheMaterielModificationInitialState } from './fiches-materiel-modific
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     SearchFormComponent,
-    FichesMaterielModificationInterfaceComponent
+    FichesMaterielModificationInterfaceComponent,
+    FichesMaterielModificationActionComponent
   ],
   exports: [
     CreativeFormFichesMaterielComponent,
