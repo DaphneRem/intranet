@@ -8,10 +8,10 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
-import { Qualite, QualiteByFM } from '../models/qualite';
+import { Version, VersionLib } from '../models/version';
 
 // temporary imports :
-import { urlFicheMateriel, urlLibQualite, urlFicheMatQualite, urlQualite } from '../../../../.privates-url';
+import { urlFicheMateriel, urlFicheMatVersion, urlFicheAchat, urlVersionLib, urlVersion } from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -20,42 +20,42 @@ const httpOptions = {
 };
 
 @Injectable()
-export class QualiteService {
+export class VersionService {
   constructor(private http: HttpClient) {}
 
-  /* GET ONE FICHE MATERIEL BY ID */
-  getQualite(): Observable<Qualite[]> {
+
+  getVersionFicheMateriel(id): Observable<Version[]> {
     return this.http
-      .get(urlFicheMateriel + urlLibQualite)
+      .get(urlFicheMateriel + urlVersion + urlFicheMatVersion + id)
       .map((res: any) => {
         console.log(res);
-        return res as Qualite[];
+        return res as Version[];
       });
   }
 
-  getQualiteFicheMateriel(id): Observable<QualiteByFM[]> {
+  getVersionLib(): Observable<VersionLib[]> {
     return this.http
-      .get(urlFicheMateriel + urlFicheMatQualite + id)
+      .get(urlFicheAchat + urlVersionLib)
       .map((res: any) => {
         console.log(res);
-        return res as QualiteByFM[];
+        return res as VersionLib[];
       });
   }
 
-  postQualite(qualite) {
+  postVersion(version) {
     return this.http
       .post(
-        urlFicheMateriel + urlQualite,
-        qualite
+        urlFicheMateriel + urlVersion,
+        version
       )
       .pipe(catchError(this.handleError));
   }
 
-  patchQualite(qualite) {
+  patchVersion(version) {
     return this.http
       .patch(
-        urlFicheMateriel + urlQualite,
-        qualite
+        urlFicheMateriel + urlVersion,
+        version
       )
       .pipe(catchError(this.handleError));
   }

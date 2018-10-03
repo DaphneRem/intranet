@@ -16,6 +16,9 @@ import { AnnexElement } from '../models/annex-element';
 import { QualiteService } from '../services/qualite.service';
 import { Qualite } from '../models/qualite';
 
+import { VersionService } from '../services/version.service';
+import { Version, VersionLib } from '../models/version';
+
 import { RetourOriLibService } from '../services/retour-ori-lib.service';
 
 import { CustomDatepickerI18n, I18n } from '../services/custom-datepicker-i18n';
@@ -42,6 +45,7 @@ import {
     RetourOriLibService,
     StatusLibService,
     StepsLibService,
+    VersionService,
     QualiteService,
     Store,
     I18n,
@@ -90,7 +94,16 @@ export class FichesMaterielModificationInterfaceComponent
 
   public qualite: any;
   public qualiteReady: Boolean = false;
-  public qualiteFicheMateriel: any;
+  public qualiteFicheMateriel: any = [];
+  public qualiteArrayIdExist: any = [];
+  public qualitePresent;
+  public selectedQuality: any = [];
+
+  public versionFicheMateriel: any = [];
+  public versionLib: any;
+  public versionPresent: any;
+  public versionArrayIdExist: any = [];
+  public selectedVersion: any = [];
 
   public valueNotToChangeLibelle = 'Valeur d\'origine';
   public resetTooltipMessage = 'Vider le champs';
@@ -244,6 +257,7 @@ export class FichesMaterielModificationInterfaceComponent
     private statusLibService: StatusLibService,
     private stepsLibService: StepsLibService,
     private qualiteService: QualiteService,
+    private versionService: VersionService,
     private store: Store<FicheMaterielModification>
   ) {}
 
@@ -252,27 +266,63 @@ export class FichesMaterielModificationInterfaceComponent
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     // this.allIdSelectedFichesMateriel = this.storeFichesToModif.selectedFichesMateriel;
     this.checkAllIdSelected();
-    console.log(this.storeFichesToModif);
     this.getLibs();
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
     this.displaySelectionMode(this.storeFichesToModif);
-    console.log(this.initValueSteps);
-    console.log(this.steps);
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch({
+      type: 'DELETE_ALL_FICHE_MATERIEL_IN_MODIF',
+      payload: {}
+    });
+  }
+
+  displaySelectionMode(storeFichesToModif) {
+    this.selectionType = storeFichesToModif.modificationType;
+    this.multiOeuvre = storeFichesToModif.multiOeuvre;
+    this.multiFichesAchat = storeFichesToModif.multiFicheAchat;
+    console.log('selection Type : ' + this.selectionType);
+    console.log('multi oeuvre : ' + this.multiOeuvre);
+    console.log('multi fiches achat : ' + this.multiFichesAchat);
   }
 
   displayQualiteChecked(item) {
     console.log(item);
-    if (this.newObject.Fiche_Mat_Qualite === null) {
+    if (this.qualiteFicheMateriel === null) {
       console.log('null');
-      this.newObject.Fiche_Mat_Qualite = [item];
-    } else if (this.newObject.Fiche_Mat_Qualite.indexOf(item) !== -1) {
-      console.log(this.newObject.Fiche_Mat_Qualite.indexOf(item));
-      this.newObject.Fiche_Mat_Qualite.splice(this.newObject.Fiche_Mat_Qualite.indexOf(item), 1);
+      this.selectedQuality = [item];
+    } else if (this.qualiteFicheMateriel.indexOf(item) !== -1) {
+      console.log(this.qualiteFicheMateriel.indexOf(item));
+      this.qualiteFicheMateriel.splice(
+        this.qualiteFicheMateriel.indexOf(item),
+        1
+      );
       console.log('true');
-      console.log(this.newObject.Fiche_Mat_Qualite);
+      console.log(this.qualiteFicheMateriel);
     } else {
       console.log('else');
-      this.newObject.Fiche_Mat_Qualite.push(item);
+      this.qualiteFicheMateriel.push(item);
+    }
+  }
+
+  displayVersionChecked(item) {
+    console.log(item);
+    console.log(this.versionFicheMateriel);
+    if (this.versionFicheMateriel === null) {
+      console.log('null');
+      this.selectedVersion = [item];
+    } else if (this.versionFicheMateriel.indexOf(item) !== -1) {
+      console.log(this.versionFicheMateriel.indexOf(item));
+      this.versionFicheMateriel.splice(
+        this.versionFicheMateriel.indexOf(item),
+        1
+      );
+      console.log('true');
+      console.log(this.versionFicheMateriel);
+    } else {
+      console.log('else');
+      this.versionFicheMateriel.push(item);
     }
   }
 
@@ -285,13 +335,6 @@ export class FichesMaterielModificationInterfaceComponent
       });
     });
     console.log(this.allIdSelectedFichesMateriel);
-  }
-
-  ngOnDestroy() {
-    this.store.dispatch({
-      type: 'DELETE_ALL_FICHE_MATERIEL_IN_MODIF',
-      payload: {}
-    });
   }
 
   getFicheAchat(id) {
@@ -312,6 +355,8 @@ export class FichesMaterielModificationInterfaceComponent
       );
     });
   }
+
+  /************************ Datepicker / Date functions ********************/
 
   displayPlaceholderDatepicker(e) {
     if (this.selectionType === 'one') {
@@ -382,6 +427,32 @@ export class FichesMaterielModificationInterfaceComponent
     }
   }
 
+  /*****************************************************************************/
+  /**************************** GET Fiche Materiel *****************************/
+
+  getFicheMateriel(id: number, index, length) {
+    console.log(index);
+    console.log(length);
+    this.fichesMaterielService.getOneFicheMateriel(id).subscribe(data => {
+      if (data) {
+        this.allFichesMateriel.push(data[0]);
+        this.initialFichesMateriel.push(data[0]);
+        if (length === 1) {
+          this.getQualiteFicheMateriel(id);
+          this.getVersionFicheMateriel(id);
+          this.getAnnexElementsFicheMateriel(id);
+        }
+        if (index === length - 1) {
+          this.displayNewObject(length, data[0]);
+          this.dataIdFicheMaterielReady = true;
+        } else {
+          this.dataIdFicheMaterielReady = true;
+        }
+      }
+    });
+    console.log(this.allFichesMateriel);
+  }
+
   displayNewObject(length, ficheMateriel) {
     if (length === 1) {
       this.newObject = ficheMateriel;
@@ -390,6 +461,74 @@ export class FichesMaterielModificationInterfaceComponent
     } else {
       this.displayLibValueNotToChange();
     }
+  }
+
+  getQualiteFicheMateriel(id) {
+    this.qualiteService.getQualiteFicheMateriel(id).subscribe(data => {
+      if (data) {
+        data.map(item => {
+          console.log(item);
+          console.log('____________________________________');
+          this.qualitePresent = data;
+          if (item.IsValid) {
+            this.qualiteArrayIdExist.push(item.idLibQualiteSup);
+            this.qualite.map(e => {
+              if (e.Code === item.idLibQualiteSup) {
+                this.qualiteFicheMateriel.push(e);
+                console.log(this.qualiteFicheMateriel);
+              }
+            });
+            console.log(this.qualiteArrayIdExist);
+          }
+        });
+      }
+      this.qualitePresent = data;
+      console.log(data);
+    });
+  }
+
+// versionArrayIdExist
+  getVersionFicheMateriel(id) {
+    this.versionService.getVersionFicheMateriel(id).subscribe(data => {
+      if (data) {
+        data.map(item => {
+          console.log(item);
+          this.versionPresent = data;
+          if (item.Isvalid) {
+            this.versionArrayIdExist.push(item.IdFicheAch_Lib_Versions);
+            this.versionLib.map(e => {
+              if (e.id_version === item.IdFicheAch_Lib_Versions) {
+                this.versionFicheMateriel.push(e);
+                console.log(this.versionFicheMateriel);
+              }
+            });
+            console.log(this.versionArrayIdExist);
+          }
+        });
+      }
+      this.versionPresent = data;
+      console.log(data);
+    });
+  }
+
+  getAnnexElementsFicheMateriel(id) {
+    this.annexElementsService
+      .getAnnexElementsFicheMateriel(id)
+      .subscribe(data => {
+        this.annexElementsFicheMateriel = data;
+        console.log(data);
+      });
+  }
+
+  /************************** GET lib select Options ***************************/
+
+  getLibs() {
+    this.getStepsLib();
+    this.getStatusLib();
+    this.getQualiteLib();
+    this.getAnnexStatus();
+    this.getRetourOriLib();
+    this.getVersionLib();
   }
 
   displayLibValueNotToChange() {
@@ -409,61 +548,6 @@ export class FichesMaterielModificationInterfaceComponent
       IdLibRetourOri: this.valueNotToChangeLibelle,
       Libelle: this.valueNotToChangeLibelle
     });
-  }
-
-  displaySelectionMode(storeFichesToModif) {
-    this.selectionType = storeFichesToModif.modificationType;
-    this.multiOeuvre = storeFichesToModif.multiOeuvre;
-    this.multiFichesAchat = storeFichesToModif.multiFicheAchat;
-    console.log('selection Type : ' + this.selectionType);
-    console.log('multi oeuvre : ' + this.multiOeuvre);
-    console.log('multi fiches achat : ' + this.multiFichesAchat);
-  }
-
-  /************************** GET Fiche Materiel ***************************/
-
-  getFicheMateriel(id: number, index, length) {
-    console.log(index);
-    console.log(length);
-    this.fichesMaterielService.getOneFicheMateriel(id).subscribe(data => {
-      if (data) {
-        this.allFichesMateriel.push(data[0]);
-        this.initialFichesMateriel.push(data[0]);
-        this.getQualiteFicheMateriel(id);
-        this.getAnnexElementsFicheMateriel(id);
-        if (index === length - 1) {
-          this.displayNewObject(length, data[0]);
-          this.dataIdFicheMaterielReady = true;
-        } else {
-          this.dataIdFicheMaterielReady = true;
-        }
-      }
-    });
-    console.log(this.allFichesMateriel);
-  }
-
-  getQualiteFicheMateriel(id) {
-    this.qualiteService.getQualiteFicheMateriel(id).subscribe(data => {
-      this.qualiteFicheMateriel = data;
-      console.log(data);
-    });
-  }
-
-  getAnnexElementsFicheMateriel(id) {
-    this.annexElementsService.getAnnexElementsFicheMateriel(id).subscribe(data => {
-      this.annexElementsFicheMateriel = data;
-      console.log(data);
-    });
-  }
-
-  /************************** GET lib select Options ***************************/
-
-  getLibs() {
-    this.getStepsLib();
-    this.getStatusLib();
-    this.getQualiteLib();
-    this.getAnnexStatus();
-    this.getRetourOriLib();
   }
 
   getStepsLib() {
@@ -504,6 +588,13 @@ export class FichesMaterielModificationInterfaceComponent
       console.log('qualité');
       console.log(data);
       this.qualiteReady = true;
+    });
+  }
+
+  getVersionLib() {
+    this.versionService.getVersionLib().subscribe(data => {
+      this.versionLib = data;
+      console.log(data);
     });
   }
 
@@ -559,7 +650,7 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   /************************** Buttons 'Elements annexes' *****************************/
- 
+
   checkModifiedElementAnnex(annexElementArray, value, state) {
     let modifiedElement = [];
     annexElementArray.map(item => {

@@ -4,6 +4,9 @@ import { Location } from '@angular/common';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 import { FicheMateriel } from '../../models/fiche-materiel';
 
+import { QualiteService } from '../../services/qualite.service';
+import { VersionService } from '../../services/version.service';
+
 @Component({
   selector: 'fiches-materiel-modification-action',
   templateUrl: './fiches-materiel-modification-action.component.html',
@@ -22,13 +25,25 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() initialFichesMateriel;
   @Input() valueNotToChangeLibelle;
   @Input() allIdSelectedFichesMateriel;
+  @Input() qualiteFicheMateriel;
+  @Input() qualitePresent;
+  @Input() annexElementsFicheMateriel;
+  @Input() versionFicheMateriel;
+  @Input() versionPresent;
 
   public myFicheMateriel;
   public changedValues = {};
   public multiDataToUpdate;
+  public qualiteToUpdate = [];
+  public qualiteToPost = [];
+
+  public versionToUpdate: any = [];
+  public versionToPost: any = [];
 
   constructor(
     private fichesMaterielService: FichesMaterielService,
+    private qualiteService: QualiteService,
+    private versionService: VersionService,
     private location: Location
   ) {}
 
@@ -43,6 +58,56 @@ export class FichesMaterielModificationActionComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  changeQualiteFormat(id) {
+    this.qualiteToPost = [];
+    this.qualiteToUpdate = [];
+    this.qualiteFicheMateriel.forEach((item) => {
+      if (this.qualitePresent.length > 0) {
+        console.log('qualite presente : ');
+        console.log(this.qualitePresent);
+        this.qualitePresent.forEach(e => {
+          if (e.idLibQualiteSup === item.Code) {
+            e.IsValid = true;
+            this.qualiteToUpdate.push(e);
+          } else {
+            e.IsValid = false;
+            this.qualiteToUpdate.push(e);
+          }
+        });
+        this.qualiteToPost.push({
+          IdFicheMateriel: id,
+          idLibQualiteSup: item.Code,
+          LibQualiteSup: null,
+          IsValid: true
+        });
+      }
+      console.log(this.qualiteToUpdate);
+      console.log(this.qualiteToPost);
+    });
+  }
+
+  changeVersionFormat(id) {
+    console.log(this.versionPresent);
+    this.versionFicheMateriel.map(item => {
+      if (this.versionPresent.length > 0) {
+        this.versionPresent.map(e => {
+          if (e.IdFicheAch_Lib_Versions === item.id_version) {
+            e.Isvalid = true;
+            this.versionToUpdate.push(e);
+          } else {
+            e.Isvalid = false;
+            this.versionToUpdate.push(e);
+          }
+        });
+      }
+      this.versionToPost.push({
+        IdFicheMateriel: id,
+        IdFicheAch_Lib_Versions: item.id_version,
+        Isvalid: true
+      });
+    });
   }
 
   resetDateFormat(newObject) {
@@ -80,9 +145,47 @@ export class FichesMaterielModificationActionComponent implements OnInit {
         console.log(this.myFicheMateriel);
       } else {
         console.log('false');
+        console.log(this.newObject);
+        if (this.newObject.Fiche_Mat_LibEtape.IdLibEtape !== this.newObject.IdLibEtape) {
+          this.newObject.Fiche_Mat_LibEtape = null;
+        }
+        if (this.newObject.Fiche_Mat_LibEtape.IdLibstatut !== this.newObject.IdLibstatut) {
+          this.newObject.Fiche_Mat_Libstatut = null;
+        }
         this.resetDateFormat(this.newObject);
-        this.updatePutFicheMateriel(this.newObject);
+        this.updateQualityFicheMateriel(id);
+        // this.updateVersionFicheMateriel(id);
+        // this.updatePutFicheMateriel(this.newObject);
       }
+    });
+  }
+
+  updateQualityFicheMateriel(id) {
+    this.changeQualiteFormat(id);
+    console.log('quality to update = ' + this.qualiteToUpdate);
+    console.log('quality to post = ' + this.qualiteToPost);
+    if (this.qualiteToPost.length) {
+      this.qualiteService.postQualite(this.qualiteToPost).subscribe(data => {
+        console.log('post');
+        console.log(data);
+      });
+    }
+    if (this.qualiteToUpdate.length) {
+      this.qualiteService.patchQualite(this.qualiteToUpdate).subscribe(data => {
+        console.log('patch');
+        console.log(data);
+      });
+    }
+  }
+
+  updateVersionFicheMateriel(id) {
+    this.changeVersionFormat(id);
+    console.log(this.versionToUpdate);
+    this.versionService.postVersion(this.versionToPost).subscribe(data => {
+      console.log(data);
+    });
+    this.versionService.patchVersion(this.versionToUpdate).subscribe(data => {
+      console.log(data);
     });
   }
 
@@ -90,6 +193,9 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     this.fichesMaterielService.updateFicheMateriel([e]).subscribe(data => {
       if (data) {
         this.goBack();
+      } else {
+        console.log('error');
+        console.log(data);
       }
       console.log(data);
     });

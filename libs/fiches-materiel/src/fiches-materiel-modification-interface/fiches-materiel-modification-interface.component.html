@@ -1,3 +1,5 @@
+{{newObject | json}}
+
 <div *ngIf="dataIdFicheMaterielReady" class="row form-group fm-details">
   <form class="card col-lg-12">
     <div class="row top">
@@ -206,7 +208,7 @@
           </div>
 
 
-
+{{versionFicheMateriel | json}}
           <!--<p>Version :
             <span *ngFor="let item of myFicheMateriel.Fiche_Mat_Version; let x = index">
               {{x === 0 ? item.libelle : ', '+item.libelle}}
@@ -214,20 +216,19 @@
           </p> -->
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Version : </label>
-            <select name="version" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
-              <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
-                <span *ngIf="newObject.RetourOri !== valueNotToChangeLibelle">
-                  {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
-                </span>
-                <span *ngIf="newObject.RetourOri === valueNotToChangeLibelle">
-                  {{newObject.RetourOri}}
-                </span>
-              </option>
-              <option *ngFor="let ori of retourOri" [ngValue]="ori.IdLibRetourOri">
-                <span *ngIf="ori.IdLibRetourOri !== valueNotToChangeLibelle">{{ori.IdLibRetourOri}} - </span>
-                {{ori.Libelle}}
-              </option>
-            </select>
+            <div class="right-details col-lg-6">
+              <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
+                <input 
+                  (click)="displayVersionChecked(item)"
+                  id="{{item.version_mat}}"
+                  type="checkbox"
+                  [checked]="versionArrayIdExist.includes(item.id_version)"
+                  name="{{item.version_mat}}">
+                <label for="{{item.version_mat}}">
+                  {{item.version_mat}}
+                </label>
+              </div>
+            </div>
           </div>
 
 
@@ -240,6 +241,7 @@
                   (click)="displayQualiteChecked(item)"
                   id="{{item.Libelle}}"
                   type="checkbox"
+                  [checked]="qualiteArrayIdExist.includes(item.Code)"
                   name="{{item.Libelle}}">
                 <label for="{{item.Libelle}}">
                   {{item.Libelle}}
@@ -247,6 +249,7 @@
               </div>
             </div>
           </div>
+          {{qualiteFicheMateriel | json}}
 
           <div class="row form-group">
             <label class="col-form-label col-lg-4">Support :</label>
@@ -532,28 +535,28 @@
 
           <div class="details row form-group" *ngIf="selectionType === 'one'" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
             <div class="left-details col-lg-6">
-              <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
+              <div *ngFor="let item of annexElementsFicheMateriel; let i = index" class="checkbox-color checkbox-info">
                 <input *ngIf="i<6" id="{{item.IdElementsAnnexes}}" 
                   name="{{item.libelle}}" 
                   type="checkbox" 
-                  [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid" 
-                  [checked]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
+                  [checked]="annexElementsFicheMateriel[i].IsValid">
                 <label *ngIf="i<6" for="{{item.IdElementsAnnexes}}">
                   {{item.libelle}}
-                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
+                  <!-- {{annexElementsFicheMateriel[i].IsValid}} -->
                 </label>
               </div>
             </div>
             <div class="right-details col-lg-6">
-              <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
+              <div *ngFor="let item of annexElementsFicheMateriel; let i = index" class="checkbox-color checkbox-info">
                 <input *ngIf="i>5" id="{{item.IdElementsAnnexes}}" 
                 type="checkbox" 
                 name="{{item.libelle}}"
-                [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid"
-                [checked]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
+                [checked]="annexElementsFicheMateriel[i].IsValid">
                 <label *ngIf="i>5" for="{{item.IdElementsAnnexes}}">
                   {{item.libelle}}
-                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
+                  <!-- {{annexElementsFicheMateriel[i].IsValid}} -->
+                                   <!-- [(ngModel)]="annexElementsFicheMateriel[i].IsValid" -->
+
                 </label>
               </div>
             </div>
@@ -728,6 +731,11 @@
       [initialFichesMateriel]="initialFichesMateriel"
       [valueNotToChangeLibelle]="valueNotToChangeLibelle"
       [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
+      [qualiteFicheMateriel]="qualiteFicheMateriel"
+      [qualitePresent]="qualitePresent"
+      [versionFicheMateriel]="versionFicheMateriel"
+      [versionPresent]="versionPresent"
+      [annexElementsFicheMateriel]="annexElementsFicheMateriel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
   </form>

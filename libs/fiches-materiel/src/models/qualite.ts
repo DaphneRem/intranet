@@ -5,3 +5,9 @@ export class Qualite {
     Fiche_Mat_Qualite: any;
     FicheAch_FA_Det_Mat_Qualite: any;
 }
+
+export class QualiteByFM {
+    IdFicheMateriel: number;
+    IsValid: boolean;
+    idLibQualiteSup: number;
+}

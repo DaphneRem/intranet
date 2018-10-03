@@ -29,9 +29,9 @@ export class FichesAchatService {
   }
 
   getGlobalFIcheAchat(id): Observable<FicheAchat[]> {
-    console.log(urlFicheAchat + '/FicheAchat' + id);
+    console.log(urlFicheAchat + '/FicheAchat/' + id);
     return this.http
-      .get(urlFicheAchat + '/FicheAchat'  + id)
+      .get(urlFicheAchat + '/FicheAchat/'  + id)
       .map((res: any) => {
         console.log(res);
         return res as FicheAchat[];
