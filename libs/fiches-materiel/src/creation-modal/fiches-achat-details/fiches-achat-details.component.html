@@ -8,8 +8,9 @@
     <div class="details">
       <p class="oeuvre-details">Titre oeuvre VO : {{oeuvre.titre_vo}}</p>
       <p class="oeuvre-details">Nombre d'épisodes : 
-        <span  *ngIf="oeuvre.nombre_episodes !== null" [ngClass]="oeuvre.nombre_episodes !== 1 ? 'important' : ''">{{oeuvre.nombre_episodes}}</span>
+        <span  *ngIf="oeuvre.nombre_episodes !== null && oeuvre.nombre_episodes !== 0" [ngClass]="oeuvre.nombre_episodes !== 1 ? 'important' : ''">{{oeuvre.nombre_episodes}}</span>
         <span *ngIf="oeuvre.nombre_episodes === null">1 (non renseigné dans la fiche Achat)</span>
+        <span *ngIf="oeuvre.nombre_episodes === 0">1 (renseigné à 0 dans la fiche Achat)</span>
       </p>
     </div>
   </div>

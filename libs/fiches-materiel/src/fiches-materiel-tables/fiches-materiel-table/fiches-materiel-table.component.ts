@@ -122,6 +122,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     console.log(this.storeFichesToModif);
+    this.displaySwalModalActions();
   }
 
   checkDeadline(data, fm) { // check DeadLine && display important data
@@ -184,63 +185,65 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
           text: `Modifier uniquement la fiche Matériel n°
                 ${this.selectedRows[0].IdFicheMateriel} 
                 ou bien toutes les fiches Matériel associées à l'oeuvre`,
+          html :
+          `<div>Modifier uniquement la fiche Matériel n° ${this.selectedRows[0].IdFicheMateriel} ou bien toutes les fiches Matériel associées à l'oeuvre</div>` +
+          `<button type="button" role="button" tabindex="0" class="SwalBtn1 customSwalBtn" id="btnCoucou">Toutes</button>` +
+          `<button type="button" role="button" tabindex="0" class="SwalBtn2 customSwalBtn">Fiches  n° ${this.selectedRows[0].IdFicheMateriel} </button>`,
           showCancelButton: true,
+          showConfirmButton: false,
+          showCloseButton: true,
           type: 'warning',
-          cancelButtonText: `Fiche n°${this.selectedRows[0].IdFicheMateriel}`,
-          confirmButtonText: 'Toutes',
-          confirmButtonColor: '#17AAB2',
-          cancelButtonColor: '#17AAB2'
+          cancelButtonText: 'Annuler',
         }).then(result => {
           if (result.value) { // confirm button
-
-            this.selectedOeuvre = [];
-            this.customdatatablesOptions.data.map((item) => {
-              if (item.IdFicheDetail === this.selectedRows[0].IdFicheDetail) {
-                console.log(item.IdFicheDetail);
-                this.selectedOeuvre.push(
-                  {
-                    idFicheMateriel: item.IdFicheMateriel,
-                    idFicheAchat: item.IdFicheAchat,
-                    idFicheAchatDetail: item.IdFicheDetail
-                  }
-                );
-              }
-            });
-            this.store.dispatch({
-              type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-              payload: {
-                modificationType: 'multi',
-                multiFicheAchat: false,
-                multiOeuvre: false,
-                selectedFichesMateriel: this.selectedOeuvre
-              }
-            });
             this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-
-
-
-
-          } else { // cancel button
-
-            this.store.dispatch({
-              type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-              payload: {
-                modificationType: 'one',
-                multiFicheAchat: false,
-                multiOeuvre: false,
-                selectedFichesMateriel: this.selectedId
-              }
-            });
-            this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-
-
-
-
-
-
           }
         });
     }
+  }
+
+  displaySwalModalActions() {
+    const that = this;
+    $(document).on('click', '.SwalBtn1', function() {
+      console.log('Coucou2');
+      that.selectedOeuvre = [];
+      that.customdatatablesOptions.data.map((item) => {
+        console.log(item);
+        if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
+          console.log(item.IdFicheDetail);
+          that.selectedOeuvre.push(
+            {
+              idFicheMateriel: item.IdFicheMateriel,
+              idFicheAchat: item.IdFicheAchat,
+              idFicheAchatDetail: item.IdFicheDetail
+            }
+          );
+        }
+      });
+      that.store.dispatch({
+        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+        payload: {
+          modificationType: 'multi',
+          multiFicheAchat: false,
+          multiOeuvre: false,
+          selectedFichesMateriel: that.selectedOeuvre
+        }
+      });
+      swal.clickConfirm();
+    });
+    $(document).on('click', '.SwalBtn2', function() {
+      console.log('Coucou1');
+      that.store.dispatch({
+        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+        payload: {
+          modificationType: 'one',
+          multiFicheAchat: false,
+          multiOeuvre: false,
+          selectedFichesMateriel: that.selectedId
+        }
+      });
+      swal.clickConfirm();
+    });
   }
 
   displayAction() {

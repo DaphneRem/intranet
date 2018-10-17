@@ -94,7 +94,8 @@ public test = 'ookok';
   public excelButton =  {
             extend: 'csv',
             text: 'Export csv',
-            fieldSeparator: ','
+            fieldSeparator: ';',
+            bom: true
         };
   public pageLengthButton =  {
             extend: 'pageLength',

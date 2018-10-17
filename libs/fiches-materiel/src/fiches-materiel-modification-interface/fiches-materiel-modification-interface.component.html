@@ -1,4 +1,4 @@
-{{newObject | json}}
+<!-- {{newObject | json}} -->
 
 <div *ngIf="dataIdFicheMaterielReady" class="row form-group fm-details">
   <form class="card col-lg-12">
@@ -67,7 +67,7 @@
     </div>
     <div class="row fm-detail-body">
       <div class="col-lg-4 fm-content">
-        <div class="sections info" [ngStyle]="{'min-height' : selectionType === 'one' ? '745px' : '400px'}" >
+        <div class="sections info" [ngStyle]="{'min-height' : selectionType === 'one' ? '745px' : '495px'}" >
           <i class="icofont icofont-info-circle section-icon"></i>
           <p *ngIf="selectionType === 'one'"> N° fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.numero_fiche}}</span>
@@ -97,7 +97,7 @@
               [(ngModel)]="newObject.NumEpisodeProd"
               placeholder="{{newObject.NumEpisodeProd ? valueNotToChangeLibelle : ''}}"
               type="text" 
-              class="form-control col-lg-6" 
+              class="form-control col-lg-4" 
               id="epProd" 
               name="epProd"
               autocomplete="off">
@@ -128,7 +128,7 @@
             <input 
               [(ngModel)]="newObject.NumEpisodeAB"
               type="text" 
-              class="form-control col-lg-6" 
+              class="form-control col-lg-4" 
               id="epAb" 
               name="epAb"
               autocomplete="off">              
@@ -149,8 +149,8 @@
           </div>
 
           <p *ngIf="selectionType === 'one'">Format œuvre :
-            <span>
-              FICHE ACHAT
+            <span *ngIf="ficheAchatDetailReady">
+              {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisodes de ' + ficheAchatDetail.duree+'min' : '/'}}
             </span>
           </p>
           <!-- <p>Format œuvre :
@@ -162,7 +162,7 @@
             <input 
               [(ngModel)]="newObject.TitreEpisodeVF"
               type="text" 
-              class="form-control col-lg-6" 
+              class="form-control col-lg-4" 
               id="titleEpVf" 
               name="titleEpVf"
               autocomplete="off">
@@ -187,7 +187,7 @@
             <input 
               [(ngModel)]="newObject.TitreEpisodeVO"
               type="text" 
-              class="form-control col-lg-6" 
+              class="form-control col-lg-4" 
               id="titleEpVo" 
               name="titleEpVo"
               autocomplete="off">
@@ -208,15 +208,11 @@
           </div>
 
 
-{{versionFicheMateriel | json}}
-          <!--<p>Version :
-            <span *ngFor="let item of myFicheMateriel.Fiche_Mat_Version; let x = index">
-              {{x === 0 ? item.libelle : ', '+item.libelle}}
-            </span>
-          </p> -->
+<!-- {{versionFicheMateriel | json}} -->
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Version : </label>
-            <div class="right-details col-lg-6">
+            <div class="right-details col-lg-6">/</div>
+            <!-- <div class="right-details col-lg-6">
               <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
                 <input 
                   (click)="displayVersionChecked(item)"
@@ -228,14 +224,15 @@
                   {{item.version_mat}}
                 </label>
               </div>
-            </div>
+            </div> -->
           </div>
 
 
 
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Qualité : </label>
-            <div class="right-details col-lg-6">
+            <div class="right-details col-lg-6">/</div>
+            <!-- <div class="right-details col-lg-6">
               <div *ngFor="let item of qualite; let i = index" class="checkbox-color checkbox-info">
                 <input 
                   (click)="displayQualiteChecked(item)"
@@ -247,16 +244,16 @@
                   {{item.Libelle}}
                 </label>
               </div>
-            </div>
+            </div> -->
           </div>
-          {{qualiteFicheMateriel | json}}
+          <!-- {{qualiteFicheMateriel | json}} -->
 
           <div class="row form-group">
             <label class="col-form-label col-lg-4">Support :</label>
             <input 
               [(ngModel)]="newObject.IdSupport"
               type="text" 
-              class="form-control col-lg-6" 
+              class="form-control col-lg-4" 
               id="support" 
               name="support"
               autocomplete="off">
@@ -281,9 +278,10 @@
             </span>
           </p> -->
           <p *ngIf="selectionType === 'one'">Chaînes concernées :
-            <span class="empty-field">
-              FICHE ACHAT
+            <span *ngIf="ficheAchatReady && ficheAchat.chaines">
+              {{ficheAchat.chaines}}
             </span>
+            <span *ngIf="!ficheAchat.chaines">/</span>
           </p>
         </div>
 
@@ -307,9 +305,9 @@
               </option>
             </select>
           </div>
-          <p *ngIf="selectionType === 'one'">Durée du prêt :
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Durée du prêt :
         
-            <span>FICHE ACHAT</span>
+            <span>{{ficheAchatDetail.duree_du_pret}}</span>
           </p>
         
           <!-- <p>Retour Ori dernier délai :
@@ -340,18 +338,17 @@
 
 
       </div>
-
       <div class="col-lg-4 fm-content">
-        <div class="sections" *ngIf="selectionType === 'one'">
+        <div class="sections" *ngIf="selectionType === 'one' && ficheAchatDetailReady">
           <i class="icofont icofont-law section-icon"></i>
 
           <p>Date déb droits :
-            
-            <span>FICHE ACHAT</span>
+            <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits}}</span>
+            <span *ngIf="!ficheAchatDetail.debut_des_droits">/</span>
           </p>
           <p>Fin des droits :
-            
-            <span>FICHE ACHAT</span>
+            <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits}}</span>
+            <span *ngIf="!ficheAchatDetail.expiration_droits">/</span>
           </p>
 
         </div>
@@ -376,7 +373,7 @@
             <input 
               [(ngModel)]="newObject.NomLabo"
               type="text" 
-              class="form-control col-lg-6" 
+              class="form-control col-lg-4" 
               id="laboName" 
               name="laboName"
               autocomplete="off">
@@ -400,7 +397,7 @@
             <input 
               [(ngModel)]="newObject.CoutLabo"
               type="text" 
-              class="form-control col-lg-6" 
+              class="form-control col-lg-4" 
               id="laboCost" 
               name="laboCost"
               autocomplete="off">
@@ -531,9 +528,9 @@
             </select>
           </div>
 
-          <p [ngClass]="selectionType === 'multi' ? 'multi' : ''">Détails :</p>
+          <p [ngClass]="selectionType === 'multi' ? 'multi' : ''">Détails : /</p>
 
-          <div class="details row form-group" *ngIf="selectionType === 'one'" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
+          <!-- <div class="details row form-group" *ngIf="selectionType === 'one'" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
             <div class="left-details col-lg-6">
               <div *ngFor="let item of annexElementsFicheMateriel; let i = index" class="checkbox-color checkbox-info">
                 <input *ngIf="i<6" id="{{item.IdElementsAnnexes}}" 
@@ -542,7 +539,6 @@
                   [checked]="annexElementsFicheMateriel[i].IsValid">
                 <label *ngIf="i<6" for="{{item.IdElementsAnnexes}}">
                   {{item.libelle}}
-                  <!-- {{annexElementsFicheMateriel[i].IsValid}} -->
                 </label>
               </div>
             </div>
@@ -554,15 +550,12 @@
                 [checked]="annexElementsFicheMateriel[i].IsValid">
                 <label *ngIf="i>5" for="{{item.IdElementsAnnexes}}">
                   {{item.libelle}}
-                  <!-- {{annexElementsFicheMateriel[i].IsValid}} -->
-                                   <!-- [(ngModel)]="annexElementsFicheMateriel[i].IsValid" -->
-
                 </label>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="details row form-group" *ngIf="selectionType === 'multi'">
+          <!-- <div class="details row form-group" *ngIf="selectionType === 'multi'">
             <div class="left-details col-lg-6">
               <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
                 <input *ngIf="i<6" id="{{i}}" 
@@ -571,7 +564,6 @@
                   [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
                 <label *ngIf="i<6" for="{{i}}">
                   {{item.libelle}}
-                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
                 </label>
               </div>
             </div>
@@ -583,13 +575,12 @@
                 [(ngModel)]="newObject.Fiche_Mat_ElementsAnnexes[i].IsValid">
                 <label *ngIf="i>5" for="{{i}}">
                   {{item.libelle}}
-                  <!-- {{newObject.Fiche_Mat_ElementsAnnexes[i].IsValid}} -->
                 </label>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="row buttons" *ngIf="selectionType === 'multi'" [ngClass]="selectionType === 'multi' ? 'multi' : ''">
+          <!-- <div class="row buttons" *ngIf="selectionType === 'multi'" [ngClass]="selectionType === 'multi' ? 'multi' : ''">
             <button class="btn btn-danger btn-outline-danger"
               *ngIf="checkModifiedElementAnnex(newObject.Fiche_Mat_ElementsAnnexes, null, 'same')"
               [placement]="'right'" 
@@ -606,7 +597,7 @@
               <i class="icofont icofont-ui-reply reply"></i>
               Rétablir valeurs d'origines
             </button>
-          </div>
+          </div> -->
 
           <label class="col-form-label row" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
             <span class="label-comment"> 
@@ -659,9 +650,9 @@
               </option>
             </select>
           </div>
-          <p *ngIf="selectionType === 'one'">Durée du prêt :
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Durée du prêt :
             
-            <span>FICHE ACHAT</span>
+            <span>{{ficheAchatDetail.duree_du_pret}}</span>
           </p>
 
           <!-- <p>Retour Ori dernier délai :

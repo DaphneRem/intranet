@@ -6,10 +6,22 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
+import { catchError, retry } from 'rxjs/operators';
 
 // temporary imports :
 // import { urlIngests, urlCompleted } from '../../../../.privates-url';
-import { urlFicheAchat, urlDetailFicheAchat, urlFicheAchatTraitee } from '../../../../.privates-url';
+import {
+  urlFicheAchat,
+  urlDetailFicheAchat,
+  urlFicheAchatTraitee,
+  urlFicheAchatStatut,
+  urlFicheAchatImport,
+  urlFicheAchatDetail,
+  urlFicheAchatGlobalPut,
+  urlFicheAchatPatch,
+  urlImportMaterielPatch,
+  urlImportOeuvrePatch,
+} from '../../../../.privates-url';
 
 import { FicheAchat } from '../models/fiche-achat';
 import { FicheAchatDetails } from '../models/fiche-achat-details';
@@ -39,6 +51,21 @@ export class FichesAchatService {
       .catch(this.handleError);
   }
 
+  getFicheAchatByImport(statut: number, imported: number): Observable<FicheAchat[]> {
+    return this.http
+      .get(urlFicheAchat + urlFicheAchatStatut + statut + urlFicheAchatImport + imported)
+      .map((res: any) => {
+        console.log(res);
+        if (res === []) {
+          return res;
+        } else {
+          return res as FicheAchat[];
+
+        }
+      })
+      .catch(this.handleError);
+  }
+
   // getFichesAchat2(view: number): Observable<FicheAchat[]> {
   //   return this.http
   //     .get(urlFicheAchat + urlFicheAchatTraitee)
@@ -63,6 +90,54 @@ export class FichesAchatService {
         return res as FicheAchatDetails[];
       })
       .catch(this.handleError);
+  }
+
+  /* PUT FICHE ACHAT DETAIL */
+  putFicheAchatDetail(id: number, ficheAchatDetail: FicheAchatDetails[]): Observable<FicheAchatDetails[]> {
+    return this.http
+      .put<FicheAchatDetails[]>(
+        urlFicheAchat + urlFicheAchatDetail + id,
+        ficheAchatDetail
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  /* PUT FICHE ACHAT GLOBAL */
+  putFicheAchatGlobal(id: number, ficheAchat: FicheAchat) {
+    return this.http
+      .put(
+        urlFicheAchat + urlFicheAchatGlobalPut + id,
+        ficheAchat
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  /* PATCH FICHE ACHAT GLOBAL */
+  patchMaterielImportFicheAchatGlobal(id: number | string, value: number, ficheAchat: FicheAchat) {
+    return this.http
+      .patch(
+        urlFicheAchat + urlFicheAchatPatch + id + urlImportMaterielPatch + value,
+        ficheAchat
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  patchOeuvreImportFicheAchatGlobal(id: number | string, value: number) {
+    return this.http
+      .patch(
+        urlFicheAchat + urlFicheAchatPatch + id  + urlImportOeuvrePatch + value,
+        value
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  patchMaterielImportFicheAchatDetail(id: number, value: number) {
+    return this.http
+      .patch(
+        urlFicheAchat + urlFicheAchatDetail + id + urlImportMaterielPatch + value,
+        {id: id, import: value}
+      )
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

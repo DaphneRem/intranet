@@ -14,6 +14,7 @@ import swal from 'sweetalert2';
 export class CreativeFormFichesMaterielComponent implements OnInit {
   @Input() step;
   @Input() detailsFicheAchat;
+  @Input() myFicheAchat;
 
   @Output() initStep = new EventEmitter();
 

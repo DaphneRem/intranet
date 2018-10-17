@@ -67,7 +67,7 @@
         <p *ngIf="gap.errorMessage === 'too much'" class="error-message invalid-message">Le nombre de fiches Matériel ne doit pas dépasser le nombre total d’épisodes</p>
         <p *ngIf="gap.errorMessage === 'same value'" class="error-message same-value invalid-message">Vous ne pouvez pas créer plusieurs fiches Matériel par épisode</p>
         <p *ngIf="gap.errorMessage === 'not enough'" class="error-message warning-message">Attention : le nombre de fiches Matériel crées est inférieur au nombre d’épisodes</p>
-        <p *ngIf="gap.errorMessage === 'change order'" class="error-message invalid-message">La première valeur indiquée doit être plus petite que la deconde valeur</p>
+        <p *ngIf="gap.errorMessage === 'change order'" class="error-message invalid-message">La première valeur indiquée doit être plus petite que la seconde valeur</p>
         <p *ngIf="gap.errorMessage === 'too little gap'" class="error-message warning-message">Attention : l'intervalle de création est très proche</p>
         <p *ngIf="gap.errorMessage === 'not number'" class="error-message invalid-message">Vous pouvez inscrire uniquement des valeurs numériques</p>
       </div>
@@ -84,6 +84,7 @@
   (confirmCreation)="checkCreationState($event)"
   [oeuvreWithGaps]="oeuvreWithGaps" 
   [detailsFicheAchat]="detailsFicheAchat"
+  [myFicheAchat]="myFicheAchat"
   [step]="step">
 </creation-fiches-materiel>
 <button *ngIf="!displayCreateBtn(oeuvreWithGaps)" class="creation-btn creation-off btn btn-info md-close"><i class="icofont icofont-ui-block"></i>Créer</button>

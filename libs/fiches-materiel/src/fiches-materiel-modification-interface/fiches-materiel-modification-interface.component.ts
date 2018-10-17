@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { FichesAchatService } from '@ab/fiches-achat';
-import { FicheAchat } from '@ab/fiches-achat';
+import { FicheAchat, FicheAchatDetails } from '@ab/fiches-achat';
 
 import { FichesMaterielService } from '../services/fiches-materiel.service';
 import { FicheMateriel } from '../models/fiche-materiel';
@@ -65,8 +65,11 @@ export class FichesMaterielModificationInterfaceComponent
   public accLaboDateNgFormat: NgbDateStruct;
   public retourDateOriNgFormat: NgbDateStruct;
 
-  public ficheAchat;
+  public ficheAchat: FicheAchat[];
   public ficheAchatReady: Boolean = false;
+
+  public ficheAchatDetail: FicheAchatDetails;
+  public ficheAchatDetailReady: Boolean = false;
 
   public globalStore;
   public storeFichesToModif;
@@ -345,6 +348,14 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
+  getFicheAchatDetail(id) {
+    this.fichesAchatService.getFichesAchatDetails(id).subscribe(data => {
+      this.ficheAchatDetail = data[0];
+      console.log(this.ficheAchatDetail);
+      this.ficheAchatDetailReady = true;
+    });
+  }
+
   getAllFichesMateriel(allIdFichesMateriel) {
     allIdFichesMateriel.map(item => {
       console.log(item);
@@ -457,6 +468,7 @@ export class FichesMaterielModificationInterfaceComponent
     if (length === 1) {
       this.newObject = ficheMateriel;
       this.getFicheAchat(ficheMateriel.IdFicheAchat);
+      this.getFicheAchatDetail(ficheMateriel.IdFicheAchat);
       this.changeDateFormat();
     } else {
       this.displayLibValueNotToChange();
@@ -487,7 +499,7 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
-// versionArrayIdExist
+  // versionArrayIdExist
   getVersionFicheMateriel(id) {
     this.versionService.getVersionFicheMateriel(id).subscribe(data => {
       if (data) {

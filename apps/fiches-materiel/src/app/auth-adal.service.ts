@@ -15,7 +15,8 @@ export class AuthAdalService {
 
   public get(url: string): Observable<any> {
     const options = this.prepareOptions();
-    this.adal5Service.acquireToken('http://localhost:4200');
+    // this.adal5Service.acquireToken('http://localhost:4200'); //dev
+    // this.adal5Service.acquireToken('http://vm-angular-rc:9084'); // build
         return this.adal5HttpService.get(url, options);
   }
 

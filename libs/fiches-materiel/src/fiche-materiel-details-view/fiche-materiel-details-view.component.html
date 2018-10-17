@@ -81,7 +81,7 @@
 
           <p *ngIf="myFicheAchatDetailsExist">Format œuvre : 
             <span [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
-              {{myFicheAchatDetails.nombre_episodes ? 'épisodes de '+myFicheAchatDetails.duree+'min' : messageEmptyField}}
+              {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisodes de '+myFicheAchatDetails.duree+'min' : messageEmptyField}}
             </span>
           </p>
           <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>

@@ -33,6 +33,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
   @Input() modalName?: string;
 
   public rerenderData;
+  public rerenderTitle;
   public dataReloadReady;
   public creationDate;
   public modificationDate;
@@ -40,8 +41,9 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
   public myFicheAchat: any = {};
   public dataReady = false;
   public init = 0;
+  public noData = false;
   public customdatatablesOptions: CustomDatatablesOptions = {
-    tableTitle: 'Fiches Achat non traitées',
+    tableTitle: 'Fiches Materiel',
     data: [],
     headerTableLinkExist: false,
     headerTableLink: '',
@@ -72,8 +74,10 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
 
   ngOnInit() {
     console.log(this.stateFIcheAchat);
+    console.log(this.customdatatablesOptions.tableTitle);
     this.displayDatatable();
     this.dataReloadReady = true;
+    this.customdatatablesOptions.tableTitle = 'coucou';
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -83,7 +87,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       this.refreshDatatable = stateFIcheAchat;
       console.log(this.stateFIcheAchat);
       this.displayDatatable();
-      console.log(this.customdatatablesOptions);
+      console.log(this.customdatatablesOptions.tableTitle);
       // console.log(this.rerenderData);
     } else {
       this.init++;
@@ -120,16 +124,6 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
     this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur une fiche Achat pour avoir une vue détaillée';
   }
 
-  displayHeaderTitle() {
-    if (this.stateFIcheAchat.id === 0) {
-      this.customdatatablesOptions.tableTitle = 'Toutes les fiches Achat';
-    } else if (this.stateFIcheAchat.id === 1) {
-      this.customdatatablesOptions.tableTitle = 'Fiches Achat traitées';
-    } else {
-      this.customdatatablesOptions.tableTitle = 'Fiches Achat non traitées';
-    }
-  }
-
   selectedFicheAchat(event) {
     console.log(event);
     this.myFicheAchat = event;
@@ -141,57 +135,52 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
   }
 
   getFichesAchat(state: number) {
+    let imp: number;
+    let title: string;
+    if (state === 0) { // ALL
+      imp = -1;
+      this.rerenderTitle = 'Toutes les fiches Achats';
+    } else if (state === 1) { // TRAITEE
+      imp = 1;
+      this.rerenderTitle = 'fiches Achats traitées';
+    } else { // NON TRAITEE
+      imp = 0;
+      this.rerenderTitle = 'fiches Achats non traitées';
+    }
     console.log('current tttttt id = ' + this.stateFIcheAchat.id);
-    if (this.stateFIcheAchat.id === 2) {
     this.fichesAchatService
-      .getFichesAchat(state)
+      .getFicheAchatByImport(-1, imp)
       .subscribe(data => {
+        console.log(data);
         if (!data) {
           this.customdatatablesOptions.data = [];
+          this.dataReady = true;
+        } else if (!data.length) {
+          console.log('no data => [] ');
+          this.customdatatablesOptions.tableTitle = this.rerenderTitle;
+          this.customdatatablesOptions.data = data;
+          this.dataReady = false;
+          this.noData = true;
         } else {
-            console.log('requête sur 4 fiches => "non traitée"');
-            data.map(e => {
-              this.creationDate = new Date(e.Date_Creation);
-              this.modificationDate = new Date(e.Date_Modif);
-              e.Date_Creation = this.creationDate.toLocaleString();
-              e.Date_Modif = this.modificationDate.toLocaleString();
-            });
+            console.log('requête sur les fiches => "non traitée"');
+            // data.map(e => {
+            //   this.creationDate = new Date(e.Date_Creation);
+            //   this.modificationDate = new Date(e.Date_Modif);
+            //   e.Date_Creation = this.creationDate.toLocaleString();
+            //   e.Date_Modif = this.modificationDate.toLocaleString();
+            // });
             this.customdatatablesOptions.data = data;
+            this.customdatatablesOptions.tableTitle = 'Fiches Achat non traitées';
+            this.noData = false;
             this.dataReady = true;
             this.displayColumns(data);
             this.rerenderData =  data;
             console.log(this.rerenderData);
             console.log(this.customdatatablesOptions.data);
-            this.displayHeaderTitle();
             this.displayAction();
             this.checkLinks();
         }
       });
-    } else {
-      this.fichesAchatService
-        .getGlobalFIcheAchat(12)
-        .subscribe( data => {
-          if (!data) {
-          this.customdatatablesOptions.data = [];
-          } else {
-            console.log('requête sur une fiche => différent de "non traitée"');
-            // this.creationDate = new Date(data.Date_Creation);
-            // this.modificationDate = new Date(data.Date_Modif);
-            // data.Date_Creation = this.creationDate.toLocaleString();
-            // data.Date_Modif = this.modificationDate.toLocaleString();
-            this.customdatatablesOptions.data = [data];
-            this.dataReady = true;
-            this.displayColumns(data);
-            this.rerenderData = data;
-            console.log(this.rerenderData);
-            console.log(this.customdatatablesOptions.data);
-            this.displayHeaderTitle();
-            this.displayAction();
-            this.checkLinks();
-          }
-        });
-      }
-      console.log(this.customdatatablesOptions.data);
     }
 
             // this.customdatatablesOptions.data = [];

@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
+import { Store } from '@ngrx/store';
+import {
+  FicheMaterielModification
+} from '@ab/fiches-materiel/src/fiches-materiel-modification-interface/+state/fiche-materiel-modification.interfaces';
+
 import { FichesAchatService } from '@ab/fiches-achat';
 import { FicheAchat } from '@ab/fiches-achat';
 
@@ -18,7 +23,8 @@ import { CustomIconBadge } from '@ab/custom-icons';
   ],
   providers : [
     FichesAchatService,
-    FichesMaterielService
+    FichesMaterielService,
+    Store
   ]
 })
 export class FicheMaterielDetailsViewComponent implements OnInit {
@@ -26,6 +32,9 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   public sub;
   public idParamsFicheMateriel;
   public idParamsFicheAchat;
+
+  public globalStore;
+  public storeFichesToModif;
 
   public myFicheAchatGlobal;
   public myFicheAchatDetails;
@@ -55,27 +64,27 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
       circleColor: '#999898',
       circleColorHover: '#b5b3b3',
     },
-    link: '/creation',
+    link: '/material-sheets/my-material-sheets/modification',
     tooltip : true,
     tooltipMessage : 'Modifier la fiche Matériel'
   };
 
-  public fichesAchatView: CustomIconBadge = {
-      littleIcon : {
-        circleColor: '#3383FF',
-        icon : 'icofont icofont-eye',
-        iconSize: '1.5em',
-        iconMargin: '2px',
-      },
-      bigIcon : {
-        icon: 'icofont icofont-tag',
-        circleColor: '#999898',
-        circleColorHover: '#b5b3b3',
-      },
-      action : () => alert('recap fiche Achat Associée'),
-      tooltip : true,
-      tooltipMessage : 'Voir la fiche Achat associée'
-  };
+  // public fichesAchatView: CustomIconBadge = {
+  //     littleIcon : {
+  //       circleColor: '#3383FF',
+  //       icon : 'icofont icofont-eye',
+  //       iconSize: '1.5em',
+  //       iconMargin: '2px',
+  //     },
+  //     bigIcon : {
+  //       icon: 'icofont icofont-tag',
+  //       circleColor: '#999898',
+  //       circleColorHover: '#b5b3b3',
+  //     },
+  //     action : () => alert('recap fiche Achat Associée'),
+  //     tooltip : true,
+  //     tooltipMessage : 'Voir la fiche Achat associée'
+  // };
 
   public back: CustomIconBadge = {
       bigIcon : {
@@ -92,12 +101,12 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private fichesAchatService: FichesAchatService,
-        private fichesMaterielService: FichesMaterielService
-
+        private fichesMaterielService: FichesMaterielService,
+        private store: Store<FicheMaterielModification>
   ) {}
 
   ngOnInit() {
-    this.icons = [this.fichesMaterielModification, this.fichesAchatView, this.back];
+    this.icons = [this.fichesMaterielModification, this.back];
     this.sub = this.route.params.subscribe(params => {
       this.idParamsFicheMateriel = +params['idFicheMateriel'];
       this.idParamsFicheAchat = +params['idFicheAchatDetails'];
@@ -107,6 +116,9 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     this.getFicheAchatDetails(this.idParamsFicheAchat);
     this.getFicheAchatGlobal(this.idParamsFicheAchat);
     this.getFicheMateriel(this.idParamsFicheMateriel);
+    this.store.subscribe(data => (this.globalStore = data));
+    this.storeFichesToModif = this.globalStore.ficheMaterielModification;
+    console.log(this.storeFichesToModif);
   }
 
   getFicheMateriel(id: number) {
@@ -119,6 +131,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
           console.log(this.myFicheMateriel);
           this.dataMaterielReady = true;
           this.myFicheMaterielExist = true;
+          this.fichesMaterielModification.action = this.goToModifInterface();
         } else {
           this.myFicheMateriel = {};
           this.myFicheMaterielExist = false;
@@ -160,6 +173,22 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
           this.myFicheAchatGlobalExist = false;
         }
         console.log(this.myFicheAchatGlobal);
+      });
+  }
+
+  goToModifInterface() {
+    this.store.dispatch({
+        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+        payload: {
+          modificationType: 'one',
+          multiFicheAchat: false,
+          multiOeuvre: false,
+          selectedFichesMateriel: [{
+            idFicheAchat: this.myFicheMateriel.IdFicheAchat,
+            idFicheAchatDetail: this.myFicheMateriel.IdFicheDetail,
+            idFicheMateriel: this.myFicheMateriel.IdFicheMateriel
+          }]
+        }
       });
   }
 

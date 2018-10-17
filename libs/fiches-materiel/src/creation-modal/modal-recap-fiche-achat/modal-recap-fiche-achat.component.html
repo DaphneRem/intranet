@@ -12,6 +12,7 @@
       [step]="step" 
       (initStep)="changeStep($event)"
       [detailsFicheAchat]="detailsFicheAchat"
+      [myFicheAchat]="myFicheAchat"
       ></creative-form-fiches-materiel>
   </div>
   <button *ngIf="dataReady" (click)="closeMyModal($event)" class="md-close-btn">

@@ -18,7 +18,7 @@ export class FichesMaterielCreationComponent implements OnInit {
   public modalName = '#recap-fiche-achat';
   public stateFIcheAchat = {
       id: 2,
-      name: 'Non traitées'
+      name: 'Fiches Achats non traitées'
   };
 
   public icons = [];

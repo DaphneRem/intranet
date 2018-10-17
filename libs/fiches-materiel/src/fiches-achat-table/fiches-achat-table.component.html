@@ -1,4 +1,4 @@
-<loader-animation *ngIf="!checkDataReady()"></loader-animation>
+<loader-animation *ngIf="!checkDataReady() && !noData"></loader-animation>
 <div *ngIf="checkDataReady()">
   <custom-datatables 
     [customdatatablesOptions]="customdatatablesOptions"
@@ -7,4 +7,7 @@
   </custom-datatables>
   <modal-fiche-achat-detail [ficheAchat]="myFicheAchat" [dataReloadReady]="dataReloadReady"></modal-fiche-achat-detail>
   <modal-recap-fiche-achat [ficheAchat]="myFicheAchat"></modal-recap-fiche-achat>
+</div>
+<div *ngIf="noData">
+  <custom-datatables [customdatatablesOptions]="customdatatablesOptions"></custom-datatables>
 </div>
