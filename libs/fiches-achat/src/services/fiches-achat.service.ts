@@ -81,7 +81,7 @@ export class FichesAchatService {
   //     .catch(this.handleError);
   // }
 
-  getFichesAchatDetails(id: number): Observable<FicheAchatDetails[]> {
+  getFichesAchatDetails(id: number | string): Observable<FicheAchatDetails[]> {
     return this.http
       .get(urlFicheAchat + urlDetailFicheAchat + id)
       .map((res: any) => {
@@ -93,9 +93,9 @@ export class FichesAchatService {
   }
 
   /* PUT FICHE ACHAT DETAIL */
-  putFicheAchatDetail(id: number, ficheAchatDetail: FicheAchatDetails[]): Observable<FicheAchatDetails[]> {
+  putFicheAchatDetail(id: number, ficheAchatDetail: FicheAchatDetails) {
     return this.http
-      .put<FicheAchatDetails[]>(
+      .put(
         urlFicheAchat + urlFicheAchatDetail + id,
         ficheAchatDetail
       )

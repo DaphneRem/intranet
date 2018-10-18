@@ -69,10 +69,10 @@ export class CreationFichesMaterielComponent implements OnInit {
           this.createFichesMateriel(newFicheMateriel);
                   console.log(this.myFicheAchat);
 
-          // this.updateFicheAchatDetailImport(
-          //   newFicheMateriel[0].IdFicheDetail,
-          //   this.detailsFicheAchat[0]
-          // );
+          this.updateFicheAchatDetailImport(
+            newFicheMateriel[0].IdFicheDetail,
+            this.detailsFicheAchat[0]
+          );
           this.updateFicheAchatGlobalImport();
           console.log('delete ok ' + idFicheAchatDetail);
         },
@@ -89,20 +89,24 @@ export class CreationFichesMaterielComponent implements OnInit {
     detailsFicheAchat.Import_FM = 1;
     console.log(detailsFicheAchat);
     console.log('update detail FA');
-
-    this.fichesAchatService
-      .patchMaterielImportFicheAchatDetail(idFicheAchatDetail, 1)
-      .subscribe(
-        data => {
-          console.log(data);
-        },
-        error => {
-          console.error(error);
-        }
-    );
+    console.log(detailsFicheAchat.id_fiche_det);
     // this.fichesAchatService
-    //   .putFicheAchatDetail(detailsFicheAchat.id_fiche_det, [detailsFicheAchat])
-    //   .subscribe(data => console.log(data));
+    //   .patchMaterielImportFicheAchatDetail(idFicheAchatDetail, 1)
+    //   .subscribe(
+    //     data => {
+    //       console.log(data);
+    //     },
+    //     error => {
+    //       console.error(error);
+    //     }
+    // );
+    this.fichesAchatService
+      .putFicheAchatDetail(detailsFicheAchat.id_fiche_det, detailsFicheAchat)
+      .subscribe(data => {
+        console.log(data);
+      }, error => {
+        console.error('update PUT Detail error');
+      });
   }
 
   updateFicheAchatGlobalImport() {
@@ -115,7 +119,7 @@ export class CreationFichesMaterielComponent implements OnInit {
       .subscribe(data => {
         console.log(data);
       }, error => {
-        console.error('update PUT error');
+        console.error('update PUT Global error');
       });
   }
 
