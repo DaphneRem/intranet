@@ -86,6 +86,8 @@ export class HeaderComponent implements OnInit {
   @Input() headerTitle: string;
   @Input() logo: string;
   @Input() logout: Function;
+  @Input() authentication?: boolean;
+  @Input() user?: any;
 
   @Output() headerNav: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() logOutEvent: EventEmitter<any> = new EventEmitter();
@@ -146,7 +148,10 @@ export class HeaderComponent implements OnInit {
 
   navbarState: any;
 
-  constructor(public menuItems: MenuItems, private store: Store<Navbar>) {
+  constructor(
+    public menuItems: MenuItems,
+    private store: Store<Navbar>
+  ) {
     this.navType = 'st1'; // icon menu have colors. Change to 'st2' for no colors
     this.themeLayout = 'vertical';
     this.verticalPlacement = 'left';

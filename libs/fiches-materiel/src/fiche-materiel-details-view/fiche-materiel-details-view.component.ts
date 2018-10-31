@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Store } from '@ngrx/store';
 import {
@@ -102,7 +103,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
         private route: ActivatedRoute,
         private fichesAchatService: FichesAchatService,
         private fichesMaterielService: FichesMaterielService,
-        private store: Store<FicheMaterielModification>
+        private store: Store<FicheMaterielModification>,
+        private modalService: NgbModal
   ) {}
 
   ngOnInit() {
@@ -119,6 +121,11 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     console.log(this.storeFichesToModif);
+  }
+
+  openLg(content) {
+    this.modalService.open(content, { size: 'lg' });
+    console.log('click to open large modal');
   }
 
   getFicheMateriel(id: number) {

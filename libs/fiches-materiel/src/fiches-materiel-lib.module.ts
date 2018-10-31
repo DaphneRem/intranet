@@ -47,6 +47,12 @@ import { ficheMaterielModificationInitialState } from './fiches-materiel-modific
 import {
   FichesMaterielModificationActionComponent
 } from './fiches-materiel-modification-interface/fiches-materiel-modification-action/fiches-materiel-modification-action.component';
+import {
+  HistoryStepsStatusModalComponent
+} from './fiche-materiel-details-view/history-steps-status-modal/history-steps-status-modal.component';
+import {
+  HistoryDeliveryDateModalComponent
+} from './fiche-materiel-details-view/history-delivery-date-modal/history-delivery-date-modal.component';
 
 
 @NgModule({
@@ -79,12 +85,14 @@ import {
     FichesMaterielModificationComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
+    HistoryDeliveryDateModalComponent,
+    HistoryStepsStatusModalComponent,
     ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     SearchFormComponent,
     FichesMaterielModificationInterfaceComponent,
-    FichesMaterielModificationActionComponent
+    FichesMaterielModificationActionComponent,
   ],
   exports: [
     CreativeFormFichesMaterielComponent,
@@ -97,6 +105,8 @@ import {
     FichesMaterielModificationComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
+    HistoryDeliveryDateModalComponent,
+    HistoryStepsStatusModalComponent,
     ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,

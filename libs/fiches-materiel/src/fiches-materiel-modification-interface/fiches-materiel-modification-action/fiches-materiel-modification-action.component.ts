@@ -229,6 +229,9 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     if ((newObject.DateRetourOri !== null) && (newObject.DateRetourOri !== this.valueNotToChangeLibelle)) {
       newObject.DateRetourOri = `${newObject.DateRetourOri.year}-${newObject.DateRetourOri.month}-${newObject.DateRetourOri.day}T00:00:00`;
     }
+    if ((newObject.RetourOriDernierDelai !== null) && (newObject.RetourOriDernierDelai !== this.valueNotToChangeLibelle)) {
+      newObject.RetourOriDernierDelai = `${newObject.RetourOriDernierDelai.year}-${newObject.RetourOriDernierDelai.month}-${newObject.RetourOriDernierDelai.day}T00:00:00`;
+    }
   }
 
   getFicheMaterielOriginal(id) {
@@ -248,7 +251,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
         if (this.newObject.Fiche_Mat_LibEtape.IdLibEtape !== this.newObject.IdLibEtape) {
           this.newObject.Fiche_Mat_LibEtape = null;
         }
-        if (this.newObject.Fiche_Mat_LibEtape.IdLibstatut !== this.newObject.IdLibstatut) {
+        if (this.newObject.Fiche_Mat_Libstatut.IdLibstatut !== this.newObject.IdLibstatut) {
           this.newObject.Fiche_Mat_Libstatut = null;
         }
         this.resetDateFormat(this.newObject);

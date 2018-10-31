@@ -4,7 +4,7 @@
   <form class="card col-lg-12">
     <div class="row top">
       <div class="col-lg-3 left-infos">
-        <div class="form-group row">
+        <div *ngIf="(newObject.IdLibstatut === 1) || (newObject.IdLibstatut === 3 && newObject.RetourOri === 1)" class="form-group row">
           <label class="deadline clo-lg-4 col-form-label">
             Deadline :</label>
               <div class="input-group col-lg-8">
@@ -306,15 +306,14 @@
             </select>
           </div>
           <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Durée du prêt :
-        
             <span>{{ficheAchatDetail.duree_du_pret}}</span>
           </p>
         
-          <!-- <p>Retour Ori dernier délai :
-                    <span>
-                      oooooooooooooooooo
-                    </span>
-                  </p> -->
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Retour Ori dernier délai :
+            <span>
+              {{lendingDurationDate}}
+            </span>
+          </p>
           <div class="form-group row livraison-datepicker" *ngIf="newObject.RetourOri === 3">
             <label class="col-lg-4 col-form-label">
               Date de retour :
@@ -343,11 +342,11 @@
           <i class="icofont icofont-law section-icon"></i>
 
           <p>Date déb droits :
-            <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits}}</span>
+            <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.debut_des_droits">/</span>
           </p>
           <p>Fin des droits :
-            <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits}}</span>
+            <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.expiration_droits">/</span>
           </p>
 
@@ -423,7 +422,7 @@
             <label class="col-lg-5 col-form-label">
               Date de livraison :
             </label>
-            <div class="input-group col-lg-6">
+            <div class="input-group col-lg-6" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
               <input class="form-control" 
                 placeholder="{{displayPlaceholderDatepicker(newObject.DateLivraison)}}" 
                 name="livDate" [(ngModel)]="newObject.DateLivraison" 
@@ -650,16 +649,16 @@
               </option>
             </select>
           </div>
-          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Durée du prêt :
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady && newObject.RetourOri === 1">Durée du prêt :
             
-            <span>{{ficheAchatDetail.duree_du_pret}}</span>
+            <span>{{ficheAchatDetail.duree_du_pret}} jour(s)</span>
           </p>
 
-          <!-- <p>Retour Ori dernier délai :
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady && newObject.RetourOri === 1">Retour Ori dernier délai :
             <span>
-              oooooooooooooooooo
+              {{lendingDurationDate | date}}
             </span>
-          </p> -->
+          </p>
           <div class="form-group row livraison-datepicker" *ngIf="newObject.RetourOri === 3">
             <label class="col-lg-4 col-form-label">
               Date de retour :

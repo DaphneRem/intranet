@@ -60,7 +60,6 @@ export class FichesAchatService {
           return res;
         } else {
           return res as FicheAchat[];
-
         }
       })
       .catch(this.handleError);

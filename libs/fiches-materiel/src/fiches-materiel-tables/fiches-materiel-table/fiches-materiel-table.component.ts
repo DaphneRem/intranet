@@ -12,12 +12,17 @@ import { FicheAchat } from '@ab/fiches-achat';
 import { FicheAchatDetails } from '@ab/fiches-achat';
 import { FichesAchatService } from '@ab/fiches-achat';
 
+
 // fiches matériel service & model import
 import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 import {
   FicheMaterielModification
 } from '@ab/fiches-materiel/src/fiches-materiel-modification-interface/+state/fiche-materiel-modification.interfaces';
+
+// Steps import
+import { StepsLibService } from '../../services/steps-lib.service';
+import { Step } from '../../models/step';
 
 @Component({
   selector: 'fiches-materiel-table',
@@ -26,6 +31,7 @@ import {
   providers : [
     FichesMaterielService,
     FichesAchatService,
+    StepsLibService,
     Store
   ]
 })
@@ -54,6 +60,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   public today;
   public todayDate: Date;
   public todayTime: number;
+
+  public stepLib: Step[];
+  public stepLibReady: Boolean = false;
 
   public selectedRows = [];
   public sortingData;
@@ -103,7 +112,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     private fichesAchatService: FichesAchatService,
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store<FicheMaterielModification>
+    private store: Store<FicheMaterielModification>,
+    private stepsLibService: StepsLibService
   ) {}
 
   ngOnInit() {
@@ -117,6 +127,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     console.log(this.columnParams);
     console.log(this.orderParams);
     this.getFichesMateriel();
+    this.getStepsLib();
     this.checkLinks();
     this.displayAction();
     this.store.subscribe(data => (this.globalStore = data));
@@ -147,6 +158,15 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     }
   }
 
+  getStepsLib() {
+    this.stepsLibService.getStepsLib()
+      .subscribe(data => {
+        this.stepLib = data;
+        console.log(data);
+        this.stepLibReady = true;
+      });
+  }
+
   getUniqValues(array) {
     return array.filter((elem, pos, arr) => {
       return arr.indexOf(elem) === pos;
@@ -155,6 +175,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   AllSelectedRows(e) {
     this.selectedRows = e;
+    console.log(this.selectedRows);
     for (let i = 0; i < this.selectedRows.length; i++) {
       this.idFicheAchatArray.push(this.selectedRows[i].IdFicheAchat);
       this.idFicheAchatDetailArray.push(this.selectedRows[i].IdFicheDetail);
@@ -204,11 +225,15 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   displaySwalModalActions() {
     const that = this;
+    let coco = this.selectedRows;
+    console.log(coco);
     $(document).on('click', '.SwalBtn1', function() {
+          console.log(coco);
       console.log('Coucou2');
       that.selectedOeuvre = [];
       that.customdatatablesOptions.data.map((item) => {
         console.log(item);
+        console.log(that.selectedRows[0].IdFicheDetail);
         if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
           console.log(item.IdFicheDetail);
           that.selectedOeuvre.push(
@@ -220,15 +245,28 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
           );
         }
       });
-      that.store.dispatch({
-        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-        payload: {
-          modificationType: 'multi',
-          multiFicheAchat: false,
-          multiOeuvre: false,
-          selectedFichesMateriel: that.selectedOeuvre
-        }
-      });
+      if (that.selectedOeuvre.length > 1) {
+        that.store.dispatch({
+          type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+          payload: {
+            modificationType: 'multi',
+            multiFicheAchat: false,
+            multiOeuvre: false,
+            selectedFichesMateriel: that.selectedOeuvre
+          }
+        });
+      } else {
+        that.store.dispatch({
+          type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+          payload: {
+            modificationType: 'one',
+            multiFicheAchat: false,
+            multiOeuvre: false,
+            selectedFichesMateriel: that.selectedId
+          }
+        });
+      }
+
       swal.clickConfirm();
     });
     $(document).on('click', '.SwalBtn2', function() {
@@ -266,6 +304,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
           // data.map(e => {
           //   this.checkDeadline(data, e);
           // });
+          console.log(data);
           this.customdatatablesOptions.data = data;
           this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
           this.displayColumns();
@@ -291,6 +330,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   }
 
   displayColumns() {
+    let that = this;
     this.customdatatablesOptions.columns = [
       {
         title : 'Deadline',
@@ -302,7 +342,25 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       {
         title : 'Suivi',
         data : function ( data, type, row, meta ) {
-          return '<span class="label bg-info">' + 'En cours' + '</span>'; // change 'En cours' to real data
+          let currentItemLib;
+          that.stepLib.map(item => {
+            if (item.IdLibEtape === data.IdLibEtape) {
+              currentItemLib = item;
+            }
+          });
+          if (data.IdLibEtape < 7) {
+            return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibEtape >= 7 && data.IdLibEtape < 14) {
+            return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibEtape === 14) {
+            return '<span class="label bg-primary">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibEtape === 15 || data.IdLibEtape === 16) {
+            return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibEtape === 17) {
+            return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>';
+          } else {
+            return '/';
+          }
         }
       },
       {

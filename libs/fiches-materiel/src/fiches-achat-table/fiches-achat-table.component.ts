@@ -248,7 +248,8 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       },
       {
         title : 'chaines',
-        data : 'chaines'
+        data : 'lib_chaines'
+        // data: 'id_fiche'
       },
       {
         title : 'Date Creation',

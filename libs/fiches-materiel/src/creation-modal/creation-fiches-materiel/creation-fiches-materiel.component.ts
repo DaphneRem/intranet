@@ -40,6 +40,7 @@ export class CreationFichesMaterielComponent implements OnInit {
     console.log(this.oeuvreWithGaps);
     console.log('detail FA : ');
     console.log(this.detailsFicheAchat);
+    console.log(this.myFicheAchat);
   }
 
   /** POST FICHES MATERIEL **/
@@ -60,8 +61,15 @@ export class CreationFichesMaterielComponent implements OnInit {
   }
 
   /** DELETE FICHES MATERIEL **/
-  deleteOldFichesMateriel(newFicheMateriel, idFicheAchatDetail) {
+  deleteOldFichesMateriel(newFicheMateriel, idFicheAchatDetail, index, lastIndex) {
     console.log(newFicheMateriel[0]);
+    console.log(this.detailsFicheAchat);
+    let ficheAchatDetail;
+    this.detailsFicheAchat.map(item => {
+      if (item.id_fiche_det === newFicheMateriel[0].IdFicheDetail) {
+        ficheAchatDetail = item;
+      }
+    });
     this.fichesMaterielService
       .deleteFicheMaterielByFicheAchatDetail(idFicheAchatDetail)
       .subscribe(
@@ -71,10 +79,14 @@ export class CreationFichesMaterielComponent implements OnInit {
 
           this.updateFicheAchatDetailImport(
             newFicheMateriel[0].IdFicheDetail,
-            this.detailsFicheAchat[0]
+            ficheAchatDetail
           );
-          this.updateFicheAchatGlobalImport();
+          if (index === lastIndex) {
+            this.updateFicheAchatGlobalImport();
+          }
+          // this.updateFicheAchatGlobalImport();
           console.log('delete ok ' + idFicheAchatDetail);
+          this.creationState = true;
         },
         error => {
           this.creationState = false;
@@ -110,6 +122,8 @@ export class CreationFichesMaterielComponent implements OnInit {
   }
 
   updateFicheAchatGlobalImport() {
+    console.log('old fiche Achat :');
+    console.log(this.myFicheAchat);
     console.log('update global FA');
     this.myFicheAchat.Import_FM = 1;
     console.log('myFicheAchat to Update :');
@@ -158,7 +172,11 @@ export class CreationFichesMaterielComponent implements OnInit {
         );
       }
       console.log(this.fichesMateriel);
-      this.deleteOldFichesMateriel(this.fichesMateriel, oeuvre.id_fiche_det);
+      let index = this.oeuvreWithGaps.indexOf(oeuvre);
+      let lastIndex = this.oeuvreWithGaps.length - 1;
+      console.log(index);
+      console.log(lastIndex);
+      this.deleteOldFichesMateriel(this.fichesMateriel, oeuvre.id_fiche_det, index, lastIndex);
     });
   }
 

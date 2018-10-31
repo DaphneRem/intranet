@@ -95,6 +95,9 @@ export class FichesMaterielModificationInterfaceComponent
   public retourOriReady: Boolean = false;
   public initValueRetourOri: Boolean = true;
 
+  public lendingDurationDate;
+  public lendingDurationDatepicker;
+
   public qualite: any;
   public qualiteReady: Boolean = false;
   public qualiteFicheMateriel: any = [];
@@ -281,6 +284,35 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
+  displayOriLastDeadline(deliveryDate) {
+    console.log(deliveryDate);
+    const duree = this.ficheAchatDetail.duree_du_pret;
+    let month, day;
+    if (deliveryDate.month < 10) {
+      month = `0${deliveryDate.month}`;
+    } else {
+      month = deliveryDate.month;
+    }
+    if (deliveryDate.day < 10) {
+      day = `0${deliveryDate.day}`;
+    } else {
+      day = deliveryDate.day;
+    }
+    console.log(day);
+    console.log(month);
+    const dateString = new Date(deliveryDate.year + '-' + month + '-' + day);
+    console.log(dateString);
+    const addDureeLendingDuration = dateString.setDate(dateString.getDate() + duree);
+    this.lendingDurationDate = new Date(addDureeLendingDuration);
+    console.log(this.lendingDurationDate);
+    this.newObject.RetourOriDernierDelai = {
+      year: new Date(this.lendingDurationDate).getFullYear(),
+      month: new Date(this.lendingDurationDate).getMonth() + 1,
+      day: new Date(this.lendingDurationDate).getDate()
+    };
+    console.log(this.newObject.RetourOriDernierDelai);
+  }
+
   displaySelectionMode(storeFichesToModif) {
     this.selectionType = storeFichesToModif.modificationType;
     this.multiOeuvre = storeFichesToModif.multiOeuvre;
@@ -353,6 +385,7 @@ export class FichesMaterielModificationInterfaceComponent
       this.ficheAchatDetail = data[0];
       console.log(this.ficheAchatDetail);
       this.ficheAchatDetailReady = true;
+      this.displayOriLastDeadline(this.livraisonDateNgFormat);
     });
   }
 
@@ -405,6 +438,8 @@ export class FichesMaterielModificationInterfaceComponent
       );
     }
     if (this.newObject.DateLivraison !== null) {
+      console.log('date de livraison : ');
+      console.log(this.newObject.DateLivraison);
       this.livraisonDateNgFormat = {
         year: new Date(this.newObject.DateLivraison).getFullYear(),
         month: new Date(this.newObject.DateLivraison).getMonth() + 1,

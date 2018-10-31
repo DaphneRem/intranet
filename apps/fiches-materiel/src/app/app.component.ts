@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
   public headerNav = false;
   public userName;
   public name;
+  public user;
 
   ngOnInit() {
     // check navbar.open state from store
@@ -72,6 +73,11 @@ export class AppComponent implements OnInit {
 
     this.userName = this.adal5Service.userInfo.username;
     this.name = this.adal5Service.userInfo.profile.name;
+
+    this.user = {
+      name: this.name,
+      userName: this.userName
+    };
 
     this.store.dispatch({
       type: 'ADD_USER',

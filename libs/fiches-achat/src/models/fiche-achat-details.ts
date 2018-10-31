@@ -12,6 +12,7 @@ export class FicheAchatDetails {
     debut_des_droits: Date;
     duree_droits_mois: number;
     duree_droits_annee: number;
+    duree_du_pret: number;
     type_duree_droits: number;
     expiration_droits: Date;
     accept_materiel: true;

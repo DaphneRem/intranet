@@ -6,6 +6,13 @@
     }
 }
 
+/deep/ .label-default {
+    background: #ffffff;
+    background-color: #ffffff !important;
+    color: #a8a8a8 !important;
+    border: 1px solid #a8a8a8;
+}
+
 /deep/ .customSwalBtn{
     background-color: rgb(23, 170, 178);
     border-left-color: rgb(23, 170, 178);

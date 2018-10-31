@@ -1,0 +1,45 @@
+$creationBtnColor :  #17AAB2;
+$creationBtnHoverColor :  #2eced6;
+
+// /deep/ .modal-content {
+//     border: 1px solid transparent;
+// }
+// /deep/ .acc {
+//     .card {
+//         margin-bottom: 5px;
+//         .card-header {
+//             padding: 15px;
+//             border: 1px solid #7f7f7f;
+//         }
+//     }
+// }
+
+// :host {
+//     display: flex;
+//     width: 40px;
+// }
+
+.history {
+    margin-left: 20px;
+    margin-top: -10px;
+    background: $creationBtnColor;
+    border-radius: 100%;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    &:hover {
+        background: $creationBtnHoverColor;
+    }
+    i {
+        color : #ffffff;
+        font-size: 2.5em;
+        margin-left: 1px;
+        margin-top: 3px;
+        // padding-top: 3px;
+        // padding-right: 3px;
+        // margin: auto;
+        // justify-content: center;
+        // align-items: center;
+        cursor: pointer;
+    }
+}

@@ -5,9 +5,14 @@
         <p class="deadline">
           <!-- ajouter une condition en fonction de la deadline (si proche ou lointaine) -->
           <i class="warning-icon icofont icofont-warning"></i>
-          DeadLine :
+          Deadline :
           <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
-            {{myFicheMateriel.Deadline ? myFicheMateriel.Deadline : messageEmptyField}}
+            <span *ngIf="myFicheMateriel.Deadline !== null">
+              {{myFicheMateriel.Deadline | date}}
+            </span>
+            <span *ngIf="myFicheMateriel.Deadline === null">
+              {{messageEmptyField}}
+            </span>
           </span>
         </p>
         <p class="user">Suivi par : 
@@ -40,9 +45,10 @@
         <span [ngClass]="!myFicheMateriel.Fiche_Mat_LibEtape.Libelle ? 'empty-field' : ''">
           {{myFicheMateriel.Fiche_Mat_LibEtape.Libelle}}
         </span>
-        <div class="history">
+        <history-steps-status-modal></history-steps-status-modal>
+        <!-- <div class="history"> 
           <i class="icofont icofont-history"></i>
-        </div>   
+        </div>    -->
       </div>
     </div>
     <div class="row fm-detail-body">
@@ -134,7 +140,12 @@
           <i class="icofont icofont-law section-icon"></i>
           <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
             <span [ngClass]="!myFicheAchatDetails.debut_des_droits ? 'empty-field' : ''">
-              {{myFicheAchatDetails.debut_des_droits ? myFicheAchatDetails.debut_des_droits : messageEmptyField}}
+              <span *ngIf="myFicheAchatDetails.debut_des_droits !== null">
+                {{myFicheAchatDetails.debut_des_droits | date}}
+              </span>
+              <span *ngIf="myFicheAchatDetails.debut_des_droits === null">
+                {{messageEmptyField}}
+              </span>
             </span>
           </p>
           <p *ngIf="!myFicheAchatDetailsExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
@@ -151,7 +162,12 @@
           <i class="icofont icofont-beaker section-icon"></i>
           <p>Réception accès labo: 
             <span [ngClass]="!myFicheMateriel.ReceptionAccesLabo ? 'empty-field' : ''">
-              {{myFicheMateriel.ReceptionAccesLabo ? myFicheMateriel.ReceptionAccesLabo : messageEmptyField}}
+              <span *ngIf="myFicheMateriel.ReceptionAccesLabo !== null">
+                {{myFicheMateriel.ReceptionAccesLabo | date}}
+              </span>
+              <span *ngIf="myFicheMateriel.ReceptionAccesLabo === null">
+                {{messageEmptyField}}
+              </span>
             </span>  
           </p>
           <p>Nom du labo: 
@@ -167,11 +183,19 @@
         </div>
         <div class="sections">
           <i class="icofont icofont-clock-time section-icon"></i>
-          <p>Date de livraison : 
-            <span [ngClass]="!myFicheMateriel.DateLivraison ? 'empty-field' : ''">
-              {{myFicheMateriel.DateLivraison ? myFicheMateriel.DateLivraison : messageEmptyField}}
-            </span>
-          </p>
+          <div style="display: flex;">
+            <p>Dernière date de livraison :
+              <span [ngClass]="!myFicheMateriel.DateLivraison ? 'empty-field' : ''">
+                <span *ngIf="myFicheMateriel.DateLivraison !== null">
+                  {{myFicheMateriel.DateLivraison | date}}
+                </span>
+                <span *ngIf="myFicheMateriel.DateLivraison === null">
+                  {{messageEmptyField}}
+                </span>
+              </span>
+            </p>
+            <history-delivery-date-modal *ngIf="myFicheMateriel.DateLivraison !== null"></history-delivery-date-modal>
+          </div>
 
           <p *ngIf="myFicheAchatDetailsExist">Délai de vérif :
             <span [ngClass]="!myFicheAchatDetails.delai_verification ? 'empty-field' : ''">
@@ -182,12 +206,22 @@
 
           <p>Date Acceptation : 
             <span [ngClass]="!myFicheMateriel.DateAcceptation ? 'empty-field' : ''">
-              {{myFicheMateriel.DateAcceptation ? myFicheMateriel.DateAcceptation : messageEmptyField}}
+              <span *ngIf="myFicheMateriel.DateAcceptation !== null">
+                {{myFicheMateriel.DateAcceptation | date}}
+              </span>
+              <span *ngIf="myFicheMateriel.DateAcceptation === null">
+                {{messageEmptyField}}
+              </span>
             </span>
           </p>
           <p>Date de première diff : 
             <span [ngClass]="!myFicheMateriel.DatePremiereDiff ? 'empty-field' : ''">
-              {{myFicheMateriel.DatePremiereDiff ? myFicheMateriel.DatePremiereDiff : messageEmptyField}}
+              <span *ngIf="myFicheMateriel.DatePremiereDiff !== null">
+                {{myFicheMateriel.DatePremiereDiff | date}}
+              </span>
+              <span *ngIf="myFicheMateriel.DatePremiereDiff === null">
+                {{messageEmptyField}}
+              </span>
             </span>
           </p>
         </div>
@@ -236,15 +270,20 @@
           <!-- Retour Ori => ajouter libellé plutot que number -->
 
           <p *ngIf="myFicheAchatDetailsExist">Durée du prêt : 
-            <span [ngClass]="!myFicheAchatDetails.duree_du_pret ? 'empty-field' : ''">
-              {{myFicheAchatDetails.duree_du_pret ? myFicheAchatDetails.duree_du_pret : messageEmptyField}}
+            <span [ngClass]="myFicheAchatDetails.duree_du_pret === null ? 'empty-field' : ''">
+              {{myFicheAchatDetails.duree_du_pret !== null ? myFicheAchatDetails.duree_du_pret + ' jour(s)' : messageEmptyField}}
             </span>
           </p>
           <p *ngIf="!myFicheAchatDetailsExist">Durée du prêt : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
           
           <p>Retour Ori dernier délai : 
             <span [ngClass]="!myFicheMateriel.RetourOriDernierDelai ? 'empty-field' : ''">
-              {{myFicheMateriel.RetourOriDernierDelai ? myFicheMateriel.RetourOriDernierDelai : messageEmptyField}}
+              <span *ngIf="myFicheMateriel.RetourOriDernierDelai !== null">
+                {{myFicheMateriel.RetourOriDernierDelai | date}}
+              </span>
+              <span *ngIf="myFicheMateriel.RetourOriDernierDelai === null">
+                {{messageEmptyField}}
+              </span>
             </span>
           </p>
         </div>
