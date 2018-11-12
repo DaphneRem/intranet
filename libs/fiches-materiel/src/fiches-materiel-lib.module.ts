@@ -56,6 +56,9 @@ import {
 import {
   ExpectedPackageModalComponent
 } from './fiche-materiel-details-view/expected-package-modal/expected-package-modal.component';
+import {
+  AffectedEpisodesModalComponent
+} from './fiches-materiel-modification-interface/affected-episodes-modal/affected-episodes-modal.component';
 
 
 @NgModule({
@@ -77,15 +80,19 @@ import {
     )
   ],
   declarations: [
+    AffectedEpisodesModalComponent,
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
     DisplayFichesAchatsComponent,
+    ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
     FicheMaterielDetailsViewComponent,
     FichesMaterielModificationComponent,
+    FichesMaterielModificationActionComponent,
+    FichesMaterielModificationInterfaceComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
     HistoryDeliveryDateModalComponent,
@@ -94,19 +101,21 @@ import {
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     SearchFormComponent,
-    FichesMaterielModificationInterfaceComponent,
-    FichesMaterielModificationActionComponent,
-    ExpectedPackageModalComponent,
   ],
   exports: [
+    AffectedEpisodesModalComponent,
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
     DisplayFichesAchatsComponent,
+    ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
+    FicheMaterielDetailsViewComponent,
     FichesMaterielModificationComponent,
+    FichesMaterielModificationActionComponent,
+    FichesMaterielModificationInterfaceComponent,
     FichesMaterielTableComponent,
     FichesMaterielWidgetViewComponent,
     HistoryDeliveryDateModalComponent,
@@ -114,7 +123,7 @@ import {
     ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
-    SearchFormComponent
+    SearchFormComponent,
   ]
 })
 export class FichesMaterielLibModule {}

@@ -1,0 +1,29 @@
+$creationBtnColor :  #17AAB2;
+$creationBtnHoverColor :  #2eced6;
+
+/deep/ .modal-content {
+    .eps-list {
+        .basic-list {
+            max-height: 200px;
+            overflow-y: scroll;
+            margin-bottom: 0;
+        }
+    }
+}
+
+.btn-open-modal, .btn-close-modal {
+    background-color: $creationBtnColor;
+    border-color: $creationBtnColor;
+    color: #ffffff;
+    background-image: none;
+    transition: all ease-in 0.3s;
+    font-size: 1em;
+    &:hover {
+        transition: all ease-in 0.3s;
+        background-color: $creationBtnHoverColor;
+        border-color: $creationBtnHoverColor;
+    }
+    i {
+        font-size: 1.4em;
+    }
+}

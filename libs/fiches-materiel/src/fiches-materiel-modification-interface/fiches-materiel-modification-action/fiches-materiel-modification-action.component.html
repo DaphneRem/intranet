@@ -1,5 +1,8 @@
 <div class="row creation">
-  <div class="col-lg-10"></div>
+  <div class="col-lg-2 affected-eps">
+    <affected-episodes-modal *ngIf="allFichesMateriel.length > 1" [allFichesMateriel]="allFichesMateriel"></affected-episodes-modal>
+  </div>
+  <div class="col-lg-8"></div>
   <div class="col-lg-2">
     <button class="btn btn-warning" (click)="modifFichesMateriel()">
       Enregistrer

@@ -1,0 +1,25 @@
+<ng-template #affectedEps let-c="close" let-d="dismiss" class="affected-eps-modal">
+  <div class="modal-header">
+    <h4 class="modal-title">Fiches Materiel concernées</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body eps-list">
+    <ul class="basic-list">
+      <li *ngFor="let fm of allFichesMateriel">
+        <h6>{{fm.TitreEpisodeVF !== null ? fm.TitreEpisodeVF : 'Aucun titre VF renseigné'}}</h6>
+        <p>Tire VO : {{fm.TitreEpisodeVO !== null ? fm.TitreEpisodeVO : 'champ non renseigné'}}</p>
+        <p>Distributeur : {{fm.distributeur !== null ? fm.distributeur : 'champ non renseigné'}}</p>
+        <p>N° Episode : {{fm.NumEpisode !== null ? fm.NumEpisode : 'champ non renseigné'}}</p>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Retour</button>
+  </div>
+</ng-template>
+
+<button class="btn btn-info btn-open-modal" (click)="openLg(affectedEps)">
+  Fiches Materiel concernées
+</button>
