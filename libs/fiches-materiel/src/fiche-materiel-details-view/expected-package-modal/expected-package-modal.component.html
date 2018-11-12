@@ -1,0 +1,28 @@
+<ng-template #expectedP let-c="close" let-d="dismiss" class="history-modal">
+  <div class="modal-header">
+    <h4 class="modal-title">Package attendu</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body acc">
+    <div onchange="expectedPackage">
+      <div *ngIf="expectedPackage.length === 0">
+        Aucun package n'est attendu
+      </div>
+      <div *ngIf="expectedPackage.length">
+        <ul>
+          <li *ngFor="let package of expectedPackage">{{package.libelle}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Retour</button>
+  </div>
+</ng-template>
+
+<button class="btn btn-info btn-open-modal" (click)="openLg(expectedP)">
+  <i class="icofont icofont-briefcase"></i> 
+  Package attendu
+</button>

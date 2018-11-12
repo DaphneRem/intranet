@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Observable } from 'rxjs/Observable';
@@ -8,22 +8,29 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
-import { urlFicheAchat, urlFicheAchatDetail, urlExpectedPackage} from '../../../../.privates-url';
+import { HistoryStepsStatus } from '../models/history-steps-status';
 
-import { ExpectedPackage } from '../models/expected-package';
+// temporary imports :
+import { urlFicheMateriel, urlHistoryStepsStatus } from '../../../../.privates-url';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+  })
+};
 
 @Injectable()
-export class ExpectedPackageService {
-
+export class HistoryStepsStatusService {
   constructor(private http: HttpClient) {}
 
-  getExpectedPackage(idDetailFicheAchat: number): Observable<ExpectedPackage[]> {
+  /* GET ONE FICHE MATERIEL BY ID */
+  getHistoryStepsStatus(idFicheMateriel): Observable<HistoryStepsStatus[]> {
     return this.http
-      .get(urlFicheAchat + urlFicheAchatDetail + urlExpectedPackage + idDetailFicheAchat)
+      .get(urlFicheMateriel + urlHistoryStepsStatus + idFicheMateriel)
       .map((res: any) => {
-        return res as ExpectedPackage[];
-      })
-      .catch(this.handleError);
+        console.log(res);
+        return res as HistoryStepsStatus[];
+      });
   }
 
   private handleError(error: HttpErrorResponse) {

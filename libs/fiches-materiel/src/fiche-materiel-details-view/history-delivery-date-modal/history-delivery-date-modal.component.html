@@ -6,24 +6,10 @@
     </button>
   </div>
   <div class="modal-body acc">
-    <ngb-accordion [closeOthers]="true">
-      <ngb-panel id="static-1">
+    <ngb-accordion [closeOthers]="true" onchange="historyDeliveryDate" *ngIf="historyDeliveryDate.length">
+      <ngb-panel id="static-{{i}}" *ngFor="let item of historyDeliveryDate; let i = index;">
         <ng-template ngbPanelTitle>
-          <span>03/04/18 par utilisateur 0 – Date de livraison : 05/10/18</span>
-        </ng-template>
-        <ng-template ngbPanelContent>
-          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
-          non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt
-          aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
-          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
-          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
-          labore sustainable VHS.
-        </ng-template>
-      </ngb-panel>
-
-      <ngb-panel id="static-2">
-        <ng-template ngbPanelTitle>
-          <span>01/04/18 par utilisateur 1 - Date de livraison : 02/11/18</span>
+          <span>{{item | json}}</span>
         </ng-template>
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
@@ -35,9 +21,12 @@
         </ng-template>
       </ngb-panel>
     </ngb-accordion>
+    <div *ngIf="historyDeliveryDate.length === 0">
+      Aucun changement n'a été effectué depuis la création de la fiche Matériel
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="c('Close click')">Retour</button>
+    <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Retour</button>
   </div>
 </ng-template>
 <div class="history" (click)="openLg(deliveryDateContent)">

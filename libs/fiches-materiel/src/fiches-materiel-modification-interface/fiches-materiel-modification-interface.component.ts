@@ -100,14 +100,14 @@ export class FichesMaterielModificationInterfaceComponent
 
   public qualite: any;
   public qualiteReady: Boolean = false;
-  public qualiteFicheMateriel: any = [];
-  public qualiteArrayIdExist: any = [];
+  public qualiteFicheMateriel = [];
+  public qualiteArrayIdExist = [];
   public qualitePresent;
-  public selectedQuality: any = [];
+  public selectedQuality = [];
 
-  public versionFicheMateriel: any = [];
+  public versionFicheMateriel = [];
   public versionLib: any;
-  public versionPresent: any;
+  public versionToFicheMateriel: any;
   public versionArrayIdExist: any = [];
   public selectedVersion: any = [];
 
@@ -284,6 +284,15 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
+  displayVersionChecked(idVersion) {
+    this.versionToFicheMateriel.map(item => {
+      if (idVersion === item.IdMat_Version) {
+        item.Isvalid = !item.Isvalid;
+        return item.Isvalid;
+      }
+    });
+  }
+
   displayOriLastDeadline(deliveryDate) {
     console.log(deliveryDate);
     const duree = this.ficheAchatDetail.duree_du_pret;
@@ -341,7 +350,7 @@ export class FichesMaterielModificationInterfaceComponent
     }
   }
 
-  displayVersionChecked(item) {
+  changeVersionChecked(item) {
     console.log(item);
     console.log(this.versionFicheMateriel);
     if (this.versionFicheMateriel === null) {
@@ -535,12 +544,12 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   // versionArrayIdExist
-  getVersionFicheMateriel(id) {
+  getVersionFicheMateriel(id) { // Get Version from Fiche Materiel
     this.versionService.getVersionFicheMateriel(id).subscribe(data => {
       if (data) {
+        this.versionToFicheMateriel = data;
         data.map(item => {
           console.log(item);
-          this.versionPresent = data;
           if (item.Isvalid) {
             this.versionArrayIdExist.push(item.IdFicheAch_Lib_Versions);
             this.versionLib.map(e => {
@@ -553,7 +562,7 @@ export class FichesMaterielModificationInterfaceComponent
           }
         });
       }
-      this.versionPresent = data;
+      this.versionToFicheMateriel = data;
       console.log(data);
     });
   }

@@ -53,6 +53,9 @@ import {
 import {
   HistoryDeliveryDateModalComponent
 } from './fiche-materiel-details-view/history-delivery-date-modal/history-delivery-date-modal.component';
+import {
+  ExpectedPackageModalComponent
+} from './fiche-materiel-details-view/expected-package-modal/expected-package-modal.component';
 
 
 @NgModule({
@@ -93,6 +96,7 @@ import {
     SearchFormComponent,
     FichesMaterielModificationInterfaceComponent,
     FichesMaterielModificationActionComponent,
+    ExpectedPackageModalComponent,
   ],
   exports: [
     CreativeFormFichesMaterielComponent,

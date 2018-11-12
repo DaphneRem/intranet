@@ -45,7 +45,7 @@
         <span [ngClass]="!myFicheMateriel.Fiche_Mat_LibEtape.Libelle ? 'empty-field' : ''">
           {{myFicheMateriel.Fiche_Mat_LibEtape.Libelle}}
         </span>
-        <history-steps-status-modal></history-steps-status-modal>
+        <history-steps-status-modal [myFicheMateriel]="myFicheMateriel" *ngIf="myFicheMaterielExist"></history-steps-status-modal>
         <!-- <div class="history"> 
           <i class="icofont icofont-history"></i>
         </div>    -->
@@ -194,7 +194,7 @@
                 </span>
               </span>
             </p>
-            <history-delivery-date-modal *ngIf="myFicheMateriel.DateLivraison !== null"></history-delivery-date-modal>
+            <history-delivery-date-modal *ngIf="myFicheMateriel.DateLivraison !== null" [myFicheMateriel]="myFicheMateriel" ></history-delivery-date-modal>
           </div>
 
           <p *ngIf="myFicheAchatDetailsExist">Délai de vérif :
@@ -256,7 +256,7 @@
           <div *ngIf="!myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel materiel-no-data">
             <span class="empty-field">Champ non renseigné dans la fiche Matériel</span>
           </div>
-          <button class="btn btn-info"><i class="icofont icofont-briefcase"></i> Package attendu</button>
+          <expected-package-modal *ngIf="dataDetailsReady" [myFicheAchatDetails]="myFicheAchatDetails"></expected-package-modal>
           <p>Commentraires : <span class="empty-field">{{messageEmptyField}}</span></p> 
           <!-- voir quel attribut correspond à ce commentaire -->
         </div>

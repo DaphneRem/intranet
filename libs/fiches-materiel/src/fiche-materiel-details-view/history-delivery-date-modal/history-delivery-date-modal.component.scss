@@ -43,3 +43,27 @@ $creationBtnHoverColor :  #2eced6;
         cursor: pointer;
     }
 }
+
+.btn-close-modal {
+    background-color: $creationBtnColor;
+    border-color: $creationBtnColor;
+    color: #ffffff;
+    background-image: none;
+    transition: all ease-in 0.3s;
+    font-size: 1em;
+    &:hover {
+        transition: all ease-in 0.3s;
+        background-color: $creationBtnHoverColor;
+        border-color: $creationBtnHoverColor;
+    }
+    i {
+        font-size: 1.4em;
+    }
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    // IE10+ CSS here
+    /deep/ .modal-content {
+        margin-top: 20%;
+    }
+}

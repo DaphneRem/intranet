@@ -6,24 +6,14 @@
     </button>
   </div>
   <div class="modal-body acc">
-    <ngb-accordion [closeOthers]="true" activeIds="static-1">
-      <ngb-panel id="static-1">
+    <ngb-accordion [closeOthers]="true" onchange="historyStepsStatus" *ngIf="historyStepsStatus.length">
+      <ngb-panel id="static-{{i}}" *ngFor="let item of historyStepsStatus; let i = index;">
         <ng-template ngbPanelTitle>
-          <span>03/04/18 par utilisateur 0 – Etape 0 – Non commandé</span>
-        </ng-template>
-        <ng-template ngbPanelContent>
-          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
-          non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt
-          aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-          beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat
-          craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable
-          VHS.
-        </ng-template>
-      </ngb-panel>
-
-      <ngb-panel id="static-2">
-        <ng-template ngbPanelTitle>
-          <span>01/04/18 par utilisateur 1 – Etape 0 – Non commandé</span>
+          <span>{{item.DateModification | date:'shortDate'}} 
+            par {{item.UserModification.length > 0 ? item.UserModification : 'utilisateur non spécifié'}} – 
+            Statut {{item.IdLibstatut}} : {{item.libelleStatus}} - 
+            Etape {{item.IdEtape}} : {{item.libelleStep}}
+          </span>
         </ng-template>
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
@@ -35,9 +25,12 @@
         </ng-template>
       </ngb-panel>
     </ngb-accordion>
+    <div *ngIf="historyStepsStatus.length === 0">
+      Aucun changement n'a été effectué depuis la création de la fiche Matériel
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="c('Close click')">Retour</button>
+    <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Retour</button>
   </div>
 </ng-template>
 <div class="history" (click)="openLg(content)">

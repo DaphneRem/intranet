@@ -238,13 +238,22 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
     // console.log('data columns :' + data[0]);
     this.customdatatablesOptions.columns = [
       {
-        title : 'num fiche',
+        title : 'n° Fiche Achat',
         data : 'numero_fiche',
         // className: 'long-data'
       },
       {
-        title : 'Date Modif',
-        data : 'Date_Modif',
+        title : 'Type fiche',
+        data : 'libelle_type_fiche',
+        // className: 'small-data'
+      },
+      {
+        title : 'Date publication',
+        data : 'Date_Publication'
+      },
+      {
+        title : 'Distributeur', // ayant droit
+        data : 'Distributeur',
       },
       {
         title : 'chaines',
@@ -252,47 +261,17 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
         // data: 'id_fiche'
       },
       {
-        title : 'Date Creation',
-        data : 'Date_Creation'
-      },
-      {
-        title : 'type fiche',
-        data : 'libelle_type_fiche',
-        // className: 'small-data'
-      },
-      // {
-      //   title : 'Resume Titre',
-      //   data : 'ResumeTitre'
-      // },
-      {
         title : 'Acheteur',
         data : 'Acheteur'
       },
       {
-        title : 'distributeur', // ayant droit
-        data : 'nom_ad',
-      },
-      // {
-      //   title : 'commentaire',
-      //   data : 'commentaire'
-      // },
-      // {
-      //   title : 'Producteur',
-      //   data : 'Producteur'
-      // },
-      // {
-      //   title : 'Ayant droit',
-      //   data : 'Distributeur'
-      // },
-      {
-        title : 'User Modif',
-        data : 'User_Modif',
+        title : 'Nom Cessionnaire',
+        data : 'nom_cessionnaire'
       },
       {
-        title : 'num cessionnaire',
-        data : 'num_cessionnaire'
+        title : 'Date Modif',
+        data : 'Date_Modif',
       },
-
     ];
   }
 
