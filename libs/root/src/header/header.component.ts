@@ -1,5 +1,12 @@
 import { animate, AUTO_STYLE, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit
+} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -82,7 +89,7 @@ import {rootUrl} from '../../../../.privates-url';
     ])
   ]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, AfterViewInit {
   @Input() headerTitle: string;
   @Input() logo: string;
   @Input() logout: Function;
@@ -147,6 +154,7 @@ export class HeaderComponent implements OnInit {
   /**********************************/
 
   navbarState: any;
+  public afterViewInit: Boolean;
 
   constructor(
     public menuItems: MenuItems,
@@ -191,6 +199,12 @@ export class HeaderComponent implements OnInit {
     if (innerWidth <= 992) {
       this.headerNav.emit(true);
     }
+    console.log(this.user);
+  }
+
+  ngAfterViewInit() {
+    this.afterViewInit = true;
+    console.log(this.user);
   }
 
   logOut() {

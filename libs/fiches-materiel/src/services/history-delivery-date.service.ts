@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
-import { HistoryStepsStatus } from '../models/history-steps-status';
+import { HistoryDeliveryDate } from '../models/history-delivery-date';
 
 // temporary imports :
 import { urlFicheMateriel, urlHistoryDeliveryDate } from '../../../../.privates-url';
@@ -24,12 +24,12 @@ export class HistoryDeliveryDateService {
   constructor(private http: HttpClient) {}
 
   /* GET ONE FICHE MATERIEL BY ID */
-  getHistoryDeliveryDate(idFicheMateriel): Observable<any[]> {
+  getHistoryDeliveryDate(idFicheMateriel): Observable<HistoryDeliveryDate[]> {
     return this.http
       .get(urlFicheMateriel + urlHistoryDeliveryDate + idFicheMateriel)
-      .map((res: any) => {
+      .map((res: HistoryDeliveryDate[]) => {
         console.log(res);
-        return res as any[];
+        return res as HistoryDeliveryDate[];
       });
   }
 

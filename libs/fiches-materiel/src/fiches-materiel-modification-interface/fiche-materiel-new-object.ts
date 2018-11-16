@@ -32,6 +32,8 @@ export class NewObject {
     UserModification: any;
     DateCreation: any;
     DateModification: any;
+    CommentairesDateLivraison: string;
+    CommentairesStatutEtape: string;
     Fiche_Mat_ElementsAnnexes: FichesElementsAnnexes[];
     Fiche_Mat_LibRetourOri: any;
     Fiche_Mat_LibStatutElementsAnnexes: any;

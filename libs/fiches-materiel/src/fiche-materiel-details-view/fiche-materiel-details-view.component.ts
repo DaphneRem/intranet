@@ -128,6 +128,15 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     console.log('click to open large modal');
   }
 
+  displayDeadlineIcon() {
+    const today = +new Date();
+    const deadLine = +new Date(this.myFicheMateriel.Deadline);
+    console.log(deadLine);
+    console.log(today);
+    console.log(deadLine <= today);
+    return deadLine <= today;
+  }
+
   getFicheMateriel(id: number) {
     this.fichesMaterielService
       .getOneFicheMateriel(id)
@@ -139,6 +148,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
           this.dataMaterielReady = true;
           this.myFicheMaterielExist = true;
           this.fichesMaterielModification.action = this.goToModifInterface();
+          this.displayDeadlineIcon();
         } else {
           this.myFicheMateriel = {};
           this.myFicheMaterielExist = false;

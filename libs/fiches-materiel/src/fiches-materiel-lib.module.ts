@@ -59,6 +59,15 @@ import {
 import {
   AffectedEpisodesModalComponent
 } from './fiches-materiel-modification-interface/affected-episodes-modal/affected-episodes-modal.component';
+import {
+  DeliveryDateCommentModalComponent
+} from './fiches-materiel-modification-interface/delivery-date-comment-modal/delivery-date-comment-modal.component';
+import {
+  StepsStatusCommentModalComponent
+} from './fiches-materiel-modification-interface/steps-status-comment-modal/steps-status-comment-modal.component';
+import {
+  WarningAcceptedStatusComponent
+} from './fiches-materiel-modification-interface/warning-accepted-status/warning-accepted-status.component';
 
 
 @NgModule({
@@ -74,7 +83,7 @@ import {
     SubHeaderModule,
     WidgetsModule,
     StoreModule.forFeature(
-      'ficheMaterielModification',
+      "ficheMaterielModification",
       ficheMaterielModificationReducer,
       { initialState: ficheMaterielModificationInitialState }
     )
@@ -83,6 +92,7 @@ import {
     AffectedEpisodesModalComponent,
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
+    DeliveryDateCommentModalComponent,
     DisplayFichesAchatsComponent,
     ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
@@ -101,12 +111,15 @@ import {
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     SearchFormComponent,
+    StepsStatusCommentModalComponent,
+    WarningAcceptedStatusComponent
   ],
   exports: [
     AffectedEpisodesModalComponent,
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
     DisplayFichesAchatsComponent,
+    DeliveryDateCommentModalComponent,
     ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
@@ -124,6 +137,8 @@ import {
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     SearchFormComponent,
+    StepsStatusCommentModalComponent,
+    WarningAcceptedStatusComponent
   ]
 })
 export class FichesMaterielLibModule {}

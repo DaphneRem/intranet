@@ -17,6 +17,9 @@ $iconColor : #7f7f7f;
                     margin-left: 20px;
                     &.user {
                         padding-left: 50px;
+                        &.no-warning {
+                            padding-left: 0px;
+                        }
                         .empty-field {
                             color : $creationBtnColor; 
                         }

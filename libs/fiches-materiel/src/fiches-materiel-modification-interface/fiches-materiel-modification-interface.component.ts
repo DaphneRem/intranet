@@ -8,7 +8,9 @@ import { FichesMaterielService } from '../services/fiches-materiel.service';
 import { FicheMateriel } from '../models/fiche-materiel';
 
 import { StepsLibService } from '../services/steps-lib.service';
+import { Step } from '../models/step';
 import { StatusLibService } from '../services/status-lib.service';
+import { Status } from '../models/status';
 
 import { AnnexElementsService } from '../services/annex-elements.service';
 import { AnnexElement } from '../models/annex-element';
@@ -57,6 +59,7 @@ export class FichesMaterielModificationInterfaceComponent
   implements OnInit, OnDestroy {
   public initialFichesMateriel = [];
 
+  public disabledDateAcceptation = false;
   public deadLineNgFormat: NgbDateStruct;
   public deadlineNewStringFormat;
   public livraisonDateNgFormat: NgbDateStruct;
@@ -79,6 +82,7 @@ export class FichesMaterielModificationInterfaceComponent
   public multiFichesAchat: boolean;
 
   public steps: any;
+  public allSteps: Step[];
   public stepsReady: Boolean = false;
   public initValueSteps: Boolean = true;
 
@@ -152,6 +156,8 @@ export class FichesMaterielModificationInterfaceComponent
     UserModification: this.valueNotToChangeLibelle,
     DateCreation: this.valueNotToChangeLibelle,
     DateModification: this.valueNotToChangeLibelle,
+    CommentairesDateLivraison: this.valueNotToChangeLibelle,
+    CommentairesStatutEtape: this.valueNotToChangeLibelle,
     Fiche_Mat_ElementsAnnexes: [
       {
         IdElementsAnnexes: 1705,
@@ -311,7 +317,9 @@ export class FichesMaterielModificationInterfaceComponent
     console.log(month);
     const dateString = new Date(deliveryDate.year + '-' + month + '-' + day);
     console.log(dateString);
-    const addDureeLendingDuration = dateString.setDate(dateString.getDate() + duree);
+    const addDureeLendingDuration = dateString.setDate(
+      dateString.getDate() + duree
+    );
     this.lendingDurationDate = new Date(addDureeLendingDuration);
     console.log(this.lendingDurationDate);
     this.newObject.RetourOriDernierDelai = {
@@ -544,7 +552,8 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   // versionArrayIdExist
-  getVersionFicheMateriel(id) { // Get Version from Fiche Materiel
+  getVersionFicheMateriel(id) {
+    // Get Version from Fiche Materiel
     this.versionService.getVersionFicheMateriel(id).subscribe(data => {
       if (data) {
         this.versionToFicheMateriel = data;
@@ -579,7 +588,6 @@ export class FichesMaterielModificationInterfaceComponent
   /************************** GET lib select Options ***************************/
 
   getLibs() {
-    this.getStepsLib();
     this.getStatusLib();
     this.getQualiteLib();
     this.getAnnexStatus();
@@ -608,15 +616,34 @@ export class FichesMaterielModificationInterfaceComponent
 
   getStepsLib() {
     this.stepsLibService.getStepsLib().subscribe(data => {
-      this.steps = data;
-      this.stepsReady = true;
+      // this.steps = data;
+      this.allSteps = data;
       console.log(data);
+      data.map(item => {
+        let id = `id${data[data.indexOf(item)].IdLibstatut}`;
+        this.steps[id].push(item);
+      });
+      this.stepsReady = true;
+      console.log(this.steps);
     });
   }
 
   getStatusLib() {
     this.statusLibService.getStatusLib().subscribe(data => {
       this.status = data;
+      this.steps = {};
+      for (let i = 0; i < this.status.length; i++) {
+        let id = `id${this.status[i].IdLibstatut}`;
+        this.steps[id] = [];
+        // Object.defineProperty(this.steps, id, {
+        //   value: [],
+        //   writable: true
+        // });
+        console.log(this.steps);
+        if (i === this.status.length - 1) {
+          this.getStepsLib();
+        }
+      }
       this.statusReady = true;
       console.log(data);
     });
@@ -667,6 +694,16 @@ export class FichesMaterielModificationInterfaceComponent
 
   clickStatusOptions() {
     this.initValueStatus = false;
+    this.newObject.IdLibEtape = this.steps['id' + this. newObject.IdLibstatut][0].IdLibEtape;
+  }
+
+  displayStepValue(step) {
+    console.log(step);
+    if (step.Libelle !== 'valueNotToChangeLibelle') {
+      return step.IdLibEtape;
+    } else {
+      return step.Libelle;
+    }
   }
 
   clickRetourOriOptions() {
@@ -679,18 +716,16 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   checkAcceptationSelectionRadio() {
-    if (
-      !this.newObject.Renouvellement ||
-      this.newObject.Renouvellement === null
-    ) {
-      return true;
-    } else {
+    if (this.disabledDateAcceptation) {
       return false;
+    } else {
+      return true;
     }
   }
 
   displayAcceptaionSelectionRadio() {
     this.newObject.Renouvellement = 0;
+    this.disabledDateAcceptation = false;
     console.log(this.newObject.Renouvellement);
   }
 
@@ -702,6 +737,7 @@ export class FichesMaterielModificationInterfaceComponent
 
   displayRenouvellementSelectionRadio() {
     this.newObject.Renouvellement = 1;
+    this.disabledDateAcceptation = true;
     console.log(this.newObject.Renouvellement);
   }
 
@@ -733,4 +769,20 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
   /********************************************************************************/
+
+  displayDeliveryDateModelComment(comment) {
+    this.newObject.CommentairesDateLivraison = comment;
+    console.log(
+      `Delivery Date Comment : '${this.newObject.CommentairesDateLivraison}'`
+    );
+    console.log(this.newObject);
+  }
+
+  displayStepsStatusModelComment(comment) {
+    this.newObject.CommentairesStatutEtape = comment;
+  }
+
+  displayPreviousStatus(lastStatus) {
+    this.newObject.IdLibstatut = lastStatus;
+  }
 }

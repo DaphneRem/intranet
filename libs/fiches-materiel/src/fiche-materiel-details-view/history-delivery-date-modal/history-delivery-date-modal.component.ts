@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { HistoryDeliveryDateService } from '../../services/history-delivery-date.service';
+import { HistoryDeliveryDate } from '../../models/history-delivery-date';
 
 @Component({
   selector: 'history-delivery-date-modal',
@@ -19,7 +20,7 @@ export class HistoryDeliveryDateModalComponent implements OnInit {
 
   closeResult: string;
 
-  public historyDeliveryDate;
+  public historyDeliveryDate: HistoryDeliveryDate[];
 
   constructor(
     private modalService: NgbModal,
@@ -38,7 +39,7 @@ export class HistoryDeliveryDateModalComponent implements OnInit {
   getHistoryDeliveryDate(idFicheMateriel) {
     this.historyDeliveryDateService
       .getHistoryDeliveryDate(idFicheMateriel)
-      .subscribe(data => {
+      .subscribe((data: HistoryDeliveryDate[]) => {
         console.log(data);
         this.historyDeliveryDate = data;
       });

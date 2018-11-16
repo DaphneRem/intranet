@@ -53,18 +53,41 @@
               <span *ngIf="stat.Libelle !== valueNotToChangeLibelle">{{stat.IdLibstatut}} - </span>{{stat.Libelle}}</option>
           </select>
         </div>
-      <div class="col-lg-3 step form-group">
+        <!-- <warning-accepted-status [status]="newObject.IdLibstatut" [retourOri]="newObject.RetourOri" [allFichesMateriel]="allFichesMateriel"></warning-accepted-status> -->
+      <div class="col-lg-3 step form-group" *ngIf="steps['id'+newObject.IdLibstatut].length">
         <label class="col-form-label">Etape : </label>
-          <select name="myStep" class="form-control" [(ngModel)]="newObject.IdLibEtape" (click)="clickStepOptions()" *ngIf="stepsReady">
+          <select name="myStep" class="form-control" 
+                  [(ngModel)]="newObject.IdLibEtape" 
+                  [disabled]="steps['id'+newObject.IdLibstatut].length > 0 ? false : true"
+                  (click)="clickStepOptions()" 
+                  *ngIf="stepsReady">
             <option *ngIf="initValueSteps" [ngValue]="newObject.IdLibEtape" [selected]="true">
-              <span *ngIf="newObject.IdLibEtape !== valueNotToChangeLibelle">{{newObject.IdLibEtape}} - {{steps[newObject.IdLibEtape-1].Libelle}}</span>
+              <span *ngIf="newObject.IdLibEtape !== valueNotToChangeLibelle">{{newObject.IdLibEtape}} - {{allSteps[newObject.IdLibEtape-1].Libelle}}</span>
               <span *ngIf="newObject.IdLibEtape === valueNotToChangeLibelle">{{newObject.IdLibEtape}}</span>
             </option>
-            <option *ngFor="let step of steps" [ngValue]="step.Libelle !== valueNotToChangeLibelle ? step.IdLibEtape : step.Libelle">
-              <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{step.IdLibEtape}} - </span>{{step.Libelle}}</option>
+            <option 
+              *ngFor="let step of steps['id'+newObject.IdLibstatut]; let i= index" 
+              [ngValue]="displayStepValue(step)"
+              [selected]="initValueSteps === false && i === 0 ? true : false">
+              <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{step.IdLibEtape}} - </span>{{step.Libelle}}
+            </option>
           </select>
       </div>
+      coucou
+      {{newObject.IdLibEtape}}
+/
+      {{newObject.IdLibstatut}}
+/
+      {{steps['id'+newObject.IdLibstatut] | json}}
     </div>
+    <steps-status-comment-modal
+      (newComment)="displayStepsStatusModelComment($event)"
+      (lastStatus)="displayPreviousStatus($event)"
+      [status]="newObject.IdLibstatut" 
+      [newObject]="newObject"
+      [allFichesMateriel]="allFichesMateriel"
+      [step]="newObject.IdLibEtape">
+    </steps-status-comment-modal>
     <div class="row fm-detail-body">
       <div class="col-lg-4 fm-content">
         <div class="sections info" [ngStyle]="{'min-height' : selectionType === 'one' ? '745px' : '495px'}" >
@@ -434,7 +457,10 @@
               </div>
             </div>
           </div>
-
+          <delivery-date-comment-modal 
+            [deliveryDate]="newObject.DateLivraison"
+            (newComment)="displayDeliveryDateModelComment($event)"
+            ></delivery-date-comment-modal>
           <p *ngIf="selectionType === 'one'">Délai de vérif :
             
             <span>Fiche Achat</span>
@@ -516,7 +542,10 @@
           <i class="icofont icofont-newspaper section-icon"></i>
           <div class="row form-group"  [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : '40px'}">
             <label class="col-form-label col-lg-5">Elements annexes :</label>
-            <select name="step" class="form-control col-lg-6" [(ngModel)]="newObject.IdStatutElementsAnnexes" (click)="clickAnnexElementOptions()">
+            <select name="step" class="form-control col-lg-6" 
+                    [disabled]="newObject.IdLibstatut === 3 ? true : false"
+                    [(ngModel)]="newObject.IdStatutElementsAnnexes" 
+                    (click)="clickAnnexElementOptions()">
               <option [ngValue]="newObject.IdStatutElementsAnnexes" *ngIf="initAnnexElements">
                 <span *ngIf="newObject.IdStatutElementsAnnexes !== valueNotToChangeLibelle">
                   {{newObject.IdStatutElementsAnnexes}} - {{annexElements[newObject.IdStatutElementsAnnexes-1].Libelle}}

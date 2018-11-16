@@ -64,17 +64,20 @@
               </a>
             </li> -->
           </ul>
-          <ul *ngIf="authentication" [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
+          <!-- <ul *ngIf="authentication" [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right"> -->
+          <ul [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
             <li class="header-notification" [ngClass]="liveNotificationClass" (click)="logOut()">
               <a href="javascript:" [placement]="'bottom'" [ngbTooltip]="'Déconnexion'">
                 <i class="icofont icofont-logout"></i>
               </a>
             </li>
           </ul>
-          <ul *ngIf="authentication && user.name" [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
+          <!-- <ul *ngIf="authentication && user.name" [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right"> -->
+          <ul [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
             <li class="header-notification">
               <a href="javascript:" class="user">
-                <i class="icofont icofont-user-alt-7"></i><span class="user-name">{{user.name}}</span>
+                <i class="icofont icofont-user-alt-7"></i>
+                <span *ngIf="afterViewInit" class="user-name">{{user.name}}</span>
               </a>
             </li>
           </ul>

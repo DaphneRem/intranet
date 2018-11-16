@@ -4,7 +4,7 @@
       <div class="col-lg-3 left-infos">
         <p class="deadline">
           <!-- ajouter une condition en fonction de la deadline (si proche ou lointaine) -->
-          <i class="warning-icon icofont icofont-warning"></i>
+          <i *ngIf="displayDeadlineIcon()" class="warning-icon icofont icofont-warning"></i>
           Deadline :
           <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
             <span *ngIf="myFicheMateriel.Deadline !== null">
@@ -15,7 +15,7 @@
             </span>
           </span>
         </p>
-        <p class="user">Suivi par : 
+        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Suivi par : 
           <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
             {{myFicheMateriel.SuiviPar}}
           </p>
