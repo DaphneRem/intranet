@@ -13,7 +13,12 @@ import { StatusLibService } from '../services/status-lib.service';
 import { Status } from '../models/status';
 
 import { AnnexElementsService } from '../services/annex-elements.service';
-import { AnnexElement } from '../models/annex-element';
+import {
+  AnnexElementStatus,
+  AnnexElementCategory,
+  AnnexElementSubCategory,
+  AnnexElementFicheMAteriel
+} from '../models/annex-element';
 
 import { QualiteService } from '../services/qualite.service';
 import { Qualite } from '../models/qualite';
@@ -90,10 +95,12 @@ export class FichesMaterielModificationInterfaceComponent
   public statusReady: Boolean = false;
   public initValueStatus: Boolean = true;
 
-  public annexElements: any;
+  public annexElementsStatus: any;
   public annexElementsReady: Boolean = false;
+  public annexElementsCategories;
   public initAnnexElements: Boolean = true;
   public annexElementsFicheMateriel: any;
+  public annexElementsAllSubCategories;
 
   public retourOri: any;
   public retourOriReady: Boolean = false;
@@ -159,90 +166,90 @@ export class FichesMaterielModificationInterfaceComponent
     CommentairesDateLivraison: this.valueNotToChangeLibelle,
     CommentairesStatutEtape: this.valueNotToChangeLibelle,
     Fiche_Mat_ElementsAnnexes: [
-      {
-        IdElementsAnnexes: 1705,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 1,
-        IsValid: null,
-        libelle: 'Trailer'
-      },
-      {
-        IdElementsAnnexes: 1706,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 2,
-        IsValid: null,
-        libelle: 'Script timecodé'
-      },
-      {
-        IdElementsAnnexes: 1707,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 3,
-        IsValid: null,
-        libelle: 'Music cue sheet'
-      },
-      {
-        IdElementsAnnexes: 1708,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 4,
-        IsValid: null,
-        libelle: 'Matériel publicitaire'
-      },
-      {
-        IdElementsAnnexes: 1709,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 5,
-        IsValid: null,
-        libelle: 'STL multilingue'
-      },
-      {
-        IdElementsAnnexes: 1710,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 6,
-        IsValid: null,
-        libelle: 'STL S&M'
-      },
-      {
-        IdElementsAnnexes: 1711,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 7,
-        IsValid: null,
-        libelle: 'Visuels'
-      },
-      {
-        IdElementsAnnexes: 1712,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 8,
-        IsValid: null,
-        libelle: 'Synopsis'
-      },
-      {
-        IdElementsAnnexes: 1713,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 9,
-        IsValid: null,
-        libelle: 'Crédits'
-      },
-      {
-        IdElementsAnnexes: 1714,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 10,
-        IsValid: null,
-        libelle: 'Autre(s)'
-      },
-      {
-        IdElementsAnnexes: 1715,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 11,
-        IsValid: null,
-        libelle: 'Making of'
-      },
-      {
-        IdElementsAnnexes: 1716,
-        IdFicheMateriel: 156,
-        IdPackageAttendu: 12,
-        IsValid: null,
-        libelle: 'Fichier audiodescription'
-      }
+      // {
+      //   IdElementsAnnexes: 1705,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 1,
+      //   IsValid: null,
+      //   libelle: 'Trailer'
+      // },
+      // {
+      //   IdElementsAnnexes: 1706,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 2,
+      //   IsValid: null,
+      //   libelle: 'Script timecodé'
+      // },
+      // {
+      //   IdElementsAnnexes: 1707,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 3,
+      //   IsValid: null,
+      //   libelle: 'Music cue sheet'
+      // },
+      // {
+      //   IdElementsAnnexes: 1708,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 4,
+      //   IsValid: null,
+      //   libelle: 'Matériel publicitaire'
+      // },
+      // {
+      //   IdElementsAnnexes: 1709,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 5,
+      //   IsValid: null,
+      //   libelle: 'STL multilingue'
+      // },
+      // {
+      //   IdElementsAnnexes: 1710,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 6,
+      //   IsValid: null,
+      //   libelle: 'STL S&M'
+      // },
+      // {
+      //   IdElementsAnnexes: 1711,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 7,
+      //   IsValid: null,
+      //   libelle: 'Visuels'
+      // },
+      // {
+      //   IdElementsAnnexes: 1712,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 8,
+      //   IsValid: null,
+      //   libelle: 'Synopsis'
+      // },
+      // {
+      //   IdElementsAnnexes: 1713,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 9,
+      //   IsValid: null,
+      //   libelle: 'Crédits'
+      // },
+      // {
+      //   IdElementsAnnexes: 1714,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 10,
+      //   IsValid: null,
+      //   libelle: 'Autre(s)'
+      // },
+      // {
+      //   IdElementsAnnexes: 1715,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 11,
+      //   IsValid: null,
+      //   libelle: 'Making of'
+      // },
+      // {
+      //   IdElementsAnnexes: 1716,
+      //   IdFicheMateriel: 156,
+      //   IdPackageAttendu: 12,
+      //   IsValid: null,
+      //   libelle: 'Fichier audiodescription'
+      // }
     ],
     // Fiche_Mat_LibEtape: {
     //   IdLibEtape: this.valueNotToChangeLibelle,
@@ -299,35 +306,41 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
+  displayDeadline() {
+    if ((this.newObject.IdLibstatut === 1) || (this.newObject.IdLibstatut === 3 && this.newObject.RetourOri === 1)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   displayOriLastDeadline(deliveryDate) {
     console.log(deliveryDate);
-    const duree = this.ficheAchatDetail.duree_du_pret;
-    let month, day;
-    if (deliveryDate.month < 10) {
-      month = `0${deliveryDate.month}`;
-    } else {
-      month = deliveryDate.month;
+    if (deliveryDate !== null && deliveryDate !== undefined) {
+      const duree = this.ficheAchatDetail.duree_du_pret;
+      let month, day;
+      if (deliveryDate.month < 10) {
+        month = `0${deliveryDate.month}`;
+      } else {
+        month = deliveryDate.month;
+      }
+      if (deliveryDate.day < 10) {
+        day = `0${deliveryDate.day}`;
+      } else {
+        day = deliveryDate.day;
+      }
+
+      const dateString = new Date(deliveryDate.year + '-' + month + '-' + day);
+      const addDureeLendingDuration = dateString.setDate(
+        dateString.getDate() + duree
+      );
+      this.lendingDurationDate = new Date(addDureeLendingDuration);
+      this.newObject.RetourOriDernierDelai = {
+        year: new Date(this.lendingDurationDate).getFullYear(),
+        month: new Date(this.lendingDurationDate).getMonth() + 1,
+        day: new Date(this.lendingDurationDate).getDate()
+      };
     }
-    if (deliveryDate.day < 10) {
-      day = `0${deliveryDate.day}`;
-    } else {
-      day = deliveryDate.day;
-    }
-    console.log(day);
-    console.log(month);
-    const dateString = new Date(deliveryDate.year + '-' + month + '-' + day);
-    console.log(dateString);
-    const addDureeLendingDuration = dateString.setDate(
-      dateString.getDate() + duree
-    );
-    this.lendingDurationDate = new Date(addDureeLendingDuration);
-    console.log(this.lendingDurationDate);
-    this.newObject.RetourOriDernierDelai = {
-      year: new Date(this.lendingDurationDate).getFullYear(),
-      month: new Date(this.lendingDurationDate).getMonth() + 1,
-      day: new Date(this.lendingDurationDate).getDate()
-    };
-    console.log(this.newObject.RetourOriDernierDelai);
   }
 
   displaySelectionMode(storeFichesToModif) {
@@ -576,35 +589,30 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
-  getAnnexElementsFicheMateriel(id) {
-    this.annexElementsService
-      .getAnnexElementsFicheMateriel(id)
-      .subscribe(data => {
-        this.annexElementsFicheMateriel = data;
-        console.log(data);
-      });
-  }
-
   /************************** GET lib select Options ***************************/
 
   getLibs() {
     this.getStatusLib();
-    this.getQualiteLib();
     this.getAnnexStatus();
     this.getRetourOriLib();
-    this.getVersionLib();
+    // this.getAnnexElementsCategories();
+    // this.getAnnexElementsAllSubCategories();
+    // this.getQualiteLib();
+    // this.getVersionLib();
   }
 
   displayLibValueNotToChange() {
-    this.steps.push({
-      IdLibEtape: this.valueNotToChangeLibelle,
-      Libelle: this.valueNotToChangeLibelle
-    });
-    this.status.push({
-      IdStatut: this.valueNotToChangeLibelle,
-      Libelle: this.valueNotToChangeLibelle
-    });
-    this.annexElements.push({
+    // console.log(this.steps);
+    // this.steps.push({
+    //   IdLibEtape: this.valueNotToChangeLibelle,
+    //   Libelle: this.valueNotToChangeLibelle
+    // });
+    // console.log(this.steps);
+    // this.status.push({
+    //   IdStatut: this.valueNotToChangeLibelle,
+    //   Libelle: this.valueNotToChangeLibelle
+    // });
+    this.annexElementsStatus.push({
       IdStatutElementsAnnexes: this.valueNotToChangeLibelle,
       Libelle: this.valueNotToChangeLibelle
     });
@@ -623,6 +631,13 @@ export class FichesMaterielModificationInterfaceComponent
         let id = `id${data[data.indexOf(item)].IdLibstatut}`;
         this.steps[id].push(item);
       });
+      if (this.selectionType === 'multi') {
+        let id = `id${this.valueNotToChangeLibelle}`;
+        this.steps[id].unshift({
+          IdLibEtape: this.valueNotToChangeLibelle,
+          Libelle: this.valueNotToChangeLibelle
+        });
+      }
       this.stepsReady = true;
       console.log(this.steps);
     });
@@ -631,7 +646,14 @@ export class FichesMaterielModificationInterfaceComponent
   getStatusLib() {
     this.statusLibService.getStatusLib().subscribe(data => {
       this.status = data;
+      console.log(this.status);
       this.steps = {};
+      if (this.selectionType === 'multi') {
+        this.status.unshift({
+          IdLibstatut: this.valueNotToChangeLibelle,
+          Libelle: this.valueNotToChangeLibelle
+        });
+      }
       for (let i = 0; i < this.status.length; i++) {
         let id = `id${this.status[i].IdLibstatut}`;
         this.steps[id] = [];
@@ -644,15 +666,16 @@ export class FichesMaterielModificationInterfaceComponent
           this.getStepsLib();
         }
       }
+
       this.statusReady = true;
       console.log(data);
     });
   }
 
   getAnnexStatus() {
-    this.annexElementsService.getAnnexElements().subscribe(data => {
-      this.annexElements = data;
-      console.log(this.annexElements);
+    this.annexElementsService.getAnnexElementsStatus().subscribe(data => {
+      this.annexElementsStatus = data;
+      console.log(this.annexElementsStatus);
       this.annexElementsReady = true;
     });
   }
@@ -681,7 +704,66 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
-  /*********************************************************************************************/
+  /***********************************************************************************/
+  /***************************** ANNEXES ELEMENTS ************************************/
+
+
+  getAnnexElementsFicheMateriel(IdFicheMateriel) { // lancée en même temps que le get FM
+    this.annexElementsService
+      .getAnnexElementsFicheMateriel(IdFicheMateriel)
+      .subscribe(data => {
+        this.annexElementsFicheMateriel = data;
+        console.log(data);
+      });
+  }
+
+  getAnnexElementsCategories() {
+    this.annexElementsService
+      .getAnnexElementsCategories()
+      .subscribe(data => {
+        this.annexElementsCategories = data;
+        console.log(data);
+      });
+  }
+
+  getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes) {
+    this.annexElementsService
+      .getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes)
+      .subscribe(data => {
+        console.log(data);
+      });
+  }
+
+  getAnnexElementsAllSubCategories() {
+    this.annexElementsService
+      .getAnnexElementsAllSubCategories()
+      .subscribe(data => {
+        console.log(data);
+        this.annexElementsAllSubCategories = data;
+      });
+  }
+
+  displayCheckedElements(id) {
+    // for (let i = 0; i < this.annexElementsFicheMateriel.length; i++) {
+    //   if (this.annexElementsFicheMateriel[i].IdPackageAttendu === id) {
+
+    //   }
+    // }
+    let checked = [];
+    this.annexElementsFicheMateriel.map(item => {
+      if (item.IdPackageAttendu === id && item.IsValid) {
+        console.log(item);
+        checked.push(item);
+      }
+    });
+    if (checked.length > 0) {
+      return true;
+    } else {
+      console.log('non non non non');
+      return false;
+    }
+  }
+  /***********************************************************************************/
 
   clickAnnexElementOptions() {
     this.initAnnexElements = false;
@@ -694,11 +776,18 @@ export class FichesMaterielModificationInterfaceComponent
 
   clickStatusOptions() {
     this.initValueStatus = false;
-    this.newObject.IdLibEtape = this.steps['id' + this. newObject.IdLibstatut][0].IdLibEtape;
+    if (this.steps['id' + this.newObject.IdLibstatut].length > 0) {
+      console.log(this.steps['id' + this.newObject.IdLibstatut]);
+      this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][0].IdLibEtape;
+    }
+      console.log(this.newObject.IdLibEtape);
+      console.log(this.steps);
+      console.log(this.newObject.IdLibstatut);
+      // this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][0].IdLibEtape;
   }
 
   displayStepValue(step) {
-    console.log(step);
+    // console.log(step);
     if (step.Libelle !== 'valueNotToChangeLibelle') {
       return step.IdLibEtape;
     } else {

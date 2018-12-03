@@ -9,8 +9,13 @@ $iconColor : #7f7f7f;
     padding : 15px 30px;
     .card {
         // padding-bottom: 20px;
+        .creation-top {
+            margin-top: 30px;
+            margin-bottom: -110px;
+            z-index: 1027;
+        }
         .top {
-            padding-top : 50px;
+            padding-top : 100px;
             .left-infos {
                 .input-group {
                     padding : 0;
@@ -39,6 +44,10 @@ $iconColor : #7f7f7f;
                             }
                         }
 
+                    }
+                    &.deadline-hidden {
+                        min-height: 80px;
+                        margin: 0;
                     }
                 }
             }
@@ -173,24 +182,45 @@ $iconColor : #7f7f7f;
                         }
                     }
                     &.livraison {
+                        min-height: 380px;
+                        .livraison-date {
+                            margin-top: 35px;
+                        }
                         p {
-                            margin-top: 5px;
+                            margin-top: 10px;
                             margin-bottom: 20px;
                         }
                         .acceptation {
+                            margin-top: 30px;
                             padding-left: 5px;
-                            .input-group {
-
-                            }
+                        }
+                        .renouvellement {
+                            margin-top: 10px;
+                            padding-left: 5px;
+                        }
+                        .diff {
+                            margin-top: 25px;
+                        }
+                    }
+                    &.droits {
+                        min-height: 150px;
+                        .deb-droits {
+                            margin-top: 30px;
+                        }
+                        .fin-droits {
+                            margin-top: 20px;
                         }
                     }
                     &.info {
-                        min-height : 400px;
+                        min-height : 740px;
                         p {
                             margin-top: 25px;
                         }
                         .form-group {
                             margin-top: 25px;
+                            &.first-label {
+                                margin-top: 30px;
+                            }
                             input {
                                 max-width: 250px;
                             }
@@ -225,8 +255,12 @@ $iconColor : #7f7f7f;
                         }
                     }
                     &.acces-vf {
-                        min-height: 140px;
-                        max-height: 140px;
+                        min-height: 190px;
+                        max-height: 190px;
+                        label {
+                            margin-top: 25px;
+                            margin-bottom: 10px;
+                        }
                         .form-group {
                             display: flex;
                             // flex-direction: column;
@@ -255,8 +289,12 @@ $iconColor : #7f7f7f;
                         }
                     }
                     &.press {
-                        min-height: 430px;
+                        min-height: 210px;
                         // max-height: 430px;
+                        .annexes-elements {
+                            padding-top: 15px;
+                            padding-left: 25px;
+                        }
                         .buttons {
                             button {
                                 margin: 10px;
@@ -273,8 +311,11 @@ $iconColor : #7f7f7f;
                             }
                         }
                         label {
-                            span {
-                                margin-left: 10px;
+                            &.row {
+                                margin-top: 0 !important;
+                                span {
+                                    margin-left: 10px;
+                                }
                             }
                         }
                         .form-group {
@@ -286,16 +327,23 @@ $iconColor : #7f7f7f;
                                 }
                             }
                         }
-                        .details {
-                            .left-details, .right-details {
-                                display: flex;
-                                flex-direction: column;
-                            }
+                    }
+                    &.labo {
+                        min-height: 310px;
+                        .section-labo {
+                            margin-top: 35px;
+                        }
+                        .form-labo {
+                            margin-top: 20px;
+                            margin-bottom: 35px;
                         }
                     }
                     &.ori {
-                        min-height: 175px;
-                        max-height: 175px;
+                        min-height: 195px;
+                        max-height: 195px;
+                        .retour-ori {
+                            margin-top: 30px;
+                        }
                     }
                     .section-icon {
                         color: grey;

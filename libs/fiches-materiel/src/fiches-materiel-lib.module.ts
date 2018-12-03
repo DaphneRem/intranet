@@ -68,6 +68,9 @@ import {
 import {
   WarningAcceptedStatusComponent
 } from './fiches-materiel-modification-interface/warning-accepted-status/warning-accepted-status.component';
+import {
+  AnnexesElementsModificationModalComponent
+} from './fiches-materiel-modification-interface/annexes-elements-modification-modal/annexes-elements-modification-modal.component';
 
 
 @NgModule({
@@ -83,13 +86,14 @@ import {
     SubHeaderModule,
     WidgetsModule,
     StoreModule.forFeature(
-      "ficheMaterielModification",
+      'ficheMaterielModification',
       ficheMaterielModificationReducer,
       { initialState: ficheMaterielModificationInitialState }
     )
   ],
   declarations: [
     AffectedEpisodesModalComponent,
+    AnnexesElementsModificationModalComponent,
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
     DeliveryDateCommentModalComponent,
@@ -112,10 +116,11 @@ import {
     MyFichesMaterielComponent,
     SearchFormComponent,
     StepsStatusCommentModalComponent,
-    WarningAcceptedStatusComponent
+    WarningAcceptedStatusComponent,
   ],
   exports: [
     AffectedEpisodesModalComponent,
+    AnnexesElementsModificationModalComponent,
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
     DisplayFichesAchatsComponent,

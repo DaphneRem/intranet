@@ -28,9 +28,19 @@
           {{myFicheMateriel.TitreEpisodeVO}}
         </h2>
       </div>
-      <div class="col-lg-3 warning-fa">
+      <!-- <div class="col-lg-3 warning-fa">
         <i *ngIf="!myFicheAchatGlobalExist" class="icofont icofont-ban"></i>
         <span *ngIf="!myFicheAchatGlobalExist" class="warning-no-fa">Aucune Fiche achat n'a été trouvée pour cette fiche Matériel</span>
+      </div> -->
+      <div class="col-lg-3 icons-links">
+        <custom-icon-badge *ngFor="let icon of icons" 
+          [littleIcon]="icon.littleIcon" 
+          [bigIcon]="icon.bigIcon" 
+          [link]="icon.link"
+          [action]="icon.action"
+          [tooltip]="icon.tooltip" 
+          [tooltipMessage]="icon.tooltipMessage">
+        </custom-icon-badge>
       </div>
     </div>
     <div class="row state-content">

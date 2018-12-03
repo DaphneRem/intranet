@@ -25,8 +25,8 @@ export class AffectedEpisodesModalComponent implements OnInit {
     console.log(this.sortFichesMateriel);
   }
 
-  openLg(expectedPackage) {
-    this.modalService.open(expectedPackage, { size: 'lg' , centered: true});
+  openLg(affectedEps) {
+    this.modalService.open(affectedEps, { size: 'lg' });
   }
 
   sortFichesMaterielByEps() {

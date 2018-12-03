@@ -2,9 +2,27 @@
 
 <div *ngIf="dataIdFicheMaterielReady" class="row form-group fm-details">
   <form class="card col-lg-12">
+    <fiches-materiel-modification-action 
+      class="creation-top"
+      [showAffectedEps]="false"
+      [allFichesMateriel]="allFichesMateriel"
+      [selectionType]="selectionType"
+      [multiOeuvre]="multiOeuvre"
+      [multiFichesAchat]="multiFichesAchat"
+      [initialFichesMateriel]="initialFichesMateriel"
+      [valueNotToChangeLibelle]="valueNotToChangeLibelle"
+      [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
+      [qualiteFicheMateriel]="qualiteFicheMateriel"
+      [qualitePresent]="qualitePresent"
+      [versionFicheMateriel]="versionFicheMateriel"
+      [versionPresent]="versionPresent"
+      [annexElementsFicheMateriel]="annexElementsFicheMateriel"
+      [newObject]="newObject">
+    </fiches-materiel-modification-action>
+    {{annexElementsFicheMateriel | json}}
     <div class="row top">
       <div class="col-lg-3 left-infos">
-        <div *ngIf="(newObject.IdLibstatut === 1) || (newObject.IdLibstatut === 3 && newObject.RetourOri === 1)" class="form-group row">
+        <div *ngIf="displayDeadline()" class="form-group row">
           <label class="deadline clo-lg-4 col-form-label">
             Deadline :</label>
               <div class="input-group col-lg-8">
@@ -20,6 +38,7 @@
                 </div>
               </div>
         </div>
+        <div *ngIf="displayDeadline() === false && selectionType === 'one'" class="form-group row deadline-hidden"></div>
         <div class="form-group row">
           <label class="user clo-lg-4 col-form-label">
             User :</label>
@@ -53,12 +72,11 @@
               <span *ngIf="stat.Libelle !== valueNotToChangeLibelle">{{stat.IdLibstatut}} - </span>{{stat.Libelle}}</option>
           </select>
         </div>
-        <!-- <warning-accepted-status [status]="newObject.IdLibstatut" [retourOri]="newObject.RetourOri" [allFichesMateriel]="allFichesMateriel"></warning-accepted-status> -->
-      <div class="col-lg-3 step form-group" *ngIf="steps['id'+newObject.IdLibstatut].length">
+      <div class="col-lg-3 step form-group" *ngIf="steps['id'+newObject.IdLibstatut] !== [] && newObject.IdLibstatut !== valueNotToChangeLibelle">
         <label class="col-form-label">Etape : </label>
           <select name="myStep" class="form-control" 
                   [(ngModel)]="newObject.IdLibEtape" 
-                  [disabled]="steps['id'+newObject.IdLibstatut].length > 0 ? false : true"
+                  [disabled]="steps['id'+newObject.IdLibstatut]!== [] ? false : true"
                   (click)="clickStepOptions()" 
                   *ngIf="stepsReady">
             <option *ngIf="initValueSteps" [ngValue]="newObject.IdLibEtape" [selected]="true">
@@ -73,12 +91,6 @@
             </option>
           </select>
       </div>
-      coucou
-      {{newObject.IdLibEtape}}
-/
-      {{newObject.IdLibstatut}}
-/
-      {{steps['id'+newObject.IdLibstatut] | json}}
     </div>
     <steps-status-comment-modal
       (newComment)="displayStepsStatusModelComment($event)"
@@ -90,12 +102,12 @@
     </steps-status-comment-modal>
     <div class="row fm-detail-body">
       <div class="col-lg-4 fm-content">
-        <div class="sections info" [ngStyle]="{'min-height' : selectionType === 'one' ? '745px' : '495px'}" >
+         <!-- custom height -->
+        <div class="sections info" [ngStyle]="selectionType === 'multi' ? {'min-height': '580px'} : {'min-height': '740px'}"> 
           <i class="icofont icofont-info-circle section-icon"></i>
           <p *ngIf="selectionType === 'one'"> N° fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.numero_fiche}}</span>
           </p>
-
           <p *ngIf="selectionType === 'one'">Type de fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.libelle_type_fiche}}</span>
           </p>
@@ -114,7 +126,7 @@
             </span>
           </p> -->
 
-          <div class="row form-group">
+          <div class="row form-group" [ngClass]="selectionType === 'multi' ? 'first-label' : ''">
             <label class="col-form-label col-lg-4">N° Episode Prod : </label>
             <input 
               [(ngModel)]="newObject.NumEpisodeProd"
@@ -301,15 +313,15 @@
             </span>
           </p> -->
           <p *ngIf="selectionType === 'one'">Chaînes concernées :
-            <span *ngIf="ficheAchatReady && ficheAchat.chaines">
+            <span *ngIf="ficheAchatReady && ficheAchat.hasOwnProperty(chaines) && ficheAchat.chaines !== null">
               {{ficheAchat.chaines}}
             </span>
-            <span *ngIf="!ficheAchat.chaines">/</span>
+            <span *ngIf="ficheAchatReady && (!ficheAchat.hasOwnProperty(chaines) || ficheAchat.chaines === null)">/</span>
           </p>
         </div>
 
 
-        <div class="sections ori" *ngIf="selectionType === 'multi'">
+        <!-- <div class="sections ori" *ngIf="selectionType === 'multi'">
           <i class="icofont icofont-space-shuttle section-icon"></i>
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Retour Ori : </label>
@@ -333,8 +345,11 @@
           </p>
         
           <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Retour Ori dernier délai :
-            <span>
+            <span *ngIf="lendingDurationDate ==! undefined">
               {{lendingDurationDate}}
+            </span>
+            <span *ngIf="lendingDurationDate === undefined">
+              /
             </span>
           </p>
           <div class="form-group row livraison-datepicker" *ngIf="newObject.RetourOri === 3">
@@ -355,93 +370,30 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
 
 
       </div>
       <div class="col-lg-4 fm-content">
-        <div class="sections" *ngIf="selectionType === 'one' && ficheAchatDetailReady">
+        <div class="sections droits" *ngIf="selectionType === 'one' && ficheAchatDetailReady">
           <i class="icofont icofont-law section-icon"></i>
 
-          <p>Date déb droits :
+          <p class="deb-droits">Date déb droits :
             <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.debut_des_droits">/</span>
           </p>
-          <p>Fin des droits :
+          <p class="fin-droits">Fin des droits :
             <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.expiration_droits">/</span>
           </p>
 
         </div>
-        <div class="sections" [ngStyle]="{'height' : selectionType === 'multi' ? '215px' : ''}">
-          <i class="icofont icofont-beaker section-icon"></i>
-          <div class="form-group row livraison-datepicker" [ngStyle]="{'margin-top' : selectionType === 'multi' ? '20px' : ''}">
-            <label class="col-lg-5 col-form-label">
-              Réception accès labo :
-            </label>
-            <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.ReceptionAccesLabo)}}" name="accLaboDate"
-                [(ngModel)]="newObject.ReceptionAccesLabo" ngbDatepicker #accLaboDate="ngbDatepicker">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="accLaboDate.toggle()" type="button">
-                  <i class="icofont icofont-calendar"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="row form-group">
-            <label class="col-form-label col-lg-4">Nom du labo :</label>
-            <input 
-              [(ngModel)]="newObject.NomLabo"
-              type="text" 
-              class="form-control col-lg-4" 
-              id="laboName" 
-              name="laboName"
-              autocomplete="off">
-              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
-                <i *ngIf="newObject.NomLabo !== ''"
-                  class="icofont icofont-close-line-circled delete"
-                  [placement]="'right'" 
-                  [ngbTooltip]="resetTooltipMessage"
-                  (click)="newObject.NomLabo = ''">
-                </i>
-                <i *ngIf="newObject.NomLabo !== valueNotToChangeLibelle"
-                  class="icofont icofont-ui-reply reply"
-                  [placement]="'right'" 
-                  [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.NomLabo = valueNotToChangeLibelle">
-                </i>
-              </div>
-          </div>
-          <div class="row form-group">
-            <label class="col-form-label col-lg-4">Coût labo :</label>
-            <input 
-              [(ngModel)]="newObject.CoutLabo"
-              type="text" 
-              class="form-control col-lg-4" 
-              id="laboCost" 
-              name="laboCost"
-              autocomplete="off">
-              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
-                <i *ngIf="newObject.CoutLabo !== ''"
-                  class="icofont icofont-close-line-circled delete"
-                  [placement]="'right'" 
-                  [ngbTooltip]="resetTooltipMessage"
-                  (click)="newObject.CoutLabo = ''">
-                </i>
-                <i *ngIf="newObject.CoutLabo !== valueNotToChangeLibelle"
-                  class="icofont icofont-ui-reply reply"
-                  [placement]="'right'" 
-                  [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.CoutLabo = valueNotToChangeLibelle">
-                </i>
-              </div>
-          </div>
-        </div>
-        <div class="sections livraison" [ngStyle]="{'height' : selectionType === 'one' ? '275px' : '255px'}" >
+
+
+        <div class="sections livraison">
           <i class="icofont icofont-clock-time section-icon"></i>
-          <div class="form-group row livraison-datepicker" [ngStyle]="{'margin-top' : selectionType === 'multi' ? '15px' : ''}">
+          <div class="form-group row livraison-datepicker livraison-date">
             <label class="col-lg-5 col-form-label">
               Date de livraison :
             </label>
@@ -483,7 +435,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group row acceptation">
+          <div class="form-group row renouvellement">
             <div class="form-check col-lg-12">
               <label class=" radio">
                 <input type="radio" name="radio" (click)="displayRenouvellementSelectionRadio()" checked="{{checkRenouvellementSelectionRadio()}}">
@@ -492,7 +444,7 @@
             </div>
           </div>
 
-          <div class="form-group row livraison-datepicker">
+          <div class="form-group row livraison-datepicker diff">
             <label class="col-lg-5 col-form-label">
               Date de première diff :
             </label>
@@ -507,12 +459,11 @@
             </div>
           </div>
         </div>
-        <div class="sections acces-vf" [ngStyle]="{'min-height' : selectionType === 'multi' ? '190px' : ''}">
+        <div class="sections acces-vf">
           <i class="icofont icofont-unlock section-icon"></i>
           <label class="col-form-label col-lg-4">Accès VF :</label>
           <div class="row form-group">
             <textarea 
-              [ngStyle]="{'height' : selectionType === 'multi' ? '110px' : ''}"
               [(ngModel)]="newObject.AccesVF"
               type="text" 
               class="form-control md-textarea col-lg-8" 
@@ -538,9 +489,9 @@
         </div>
       </div>
       <div class="col-lg-4 fm-content">
-        <div class="sections press" [ngStyle]="{'min-height' : selectionType === 'one' ? '560px' : '680px'}">
+        <div class="sections press" [ngStyle]="selectionType === 'multi' ? {'min-height': '145px'} : {'min-height': '210px'}">
           <i class="icofont icofont-newspaper section-icon"></i>
-          <div class="row form-group"  [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : '40px'}">
+          <div class="row form-group">
             <label class="col-form-label col-lg-5">Elements annexes :</label>
             <select name="step" class="form-control col-lg-6" 
                     [disabled]="newObject.IdLibstatut === 3 ? true : false"
@@ -548,41 +499,20 @@
                     (click)="clickAnnexElementOptions()">
               <option [ngValue]="newObject.IdStatutElementsAnnexes" *ngIf="initAnnexElements">
                 <span *ngIf="newObject.IdStatutElementsAnnexes !== valueNotToChangeLibelle">
-                  {{newObject.IdStatutElementsAnnexes}} - {{annexElements[newObject.IdStatutElementsAnnexes-1].Libelle}}
+                  {{newObject.IdStatutElementsAnnexes}} - {{annexElementsStatus[newObject.IdStatutElementsAnnexes-1].Libelle}}
                 </span>
                 <span *ngIf="newObject.IdStatutElementsAnnexes === valueNotToChangeLibelle">{{newObject.IdStatutElementsAnnexes}}</span>
               </option>
-              <option *ngFor="let element of annexElements" [ngValue]="element.IdStatutElementsAnnexes"><span *ngIf="element.Libelle !== valueNotToChangeLibelle">{{element.IdStatutElementsAnnexes}} - </span>{{element.Libelle}}</option>
+              <option *ngFor="let element of annexElementsStatus" [ngValue]="element.IdStatutElementsAnnexes"><span *ngIf="element.Libelle !== valueNotToChangeLibelle">{{element.IdStatutElementsAnnexes}} - </span>{{element.Libelle}}</option>
             </select>
           </div>
-
-          <p [ngClass]="selectionType === 'multi' ? 'multi' : ''">Détails : /</p>
-
-          <!-- <div class="details row form-group" *ngIf="selectionType === 'one'" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
-            <div class="left-details col-lg-6">
-              <div *ngFor="let item of annexElementsFicheMateriel; let i = index" class="checkbox-color checkbox-info">
-                <input *ngIf="i<6" id="{{item.IdElementsAnnexes}}" 
-                  name="{{item.libelle}}" 
-                  type="checkbox" 
-                  [checked]="annexElementsFicheMateriel[i].IsValid">
-                <label *ngIf="i<6" for="{{item.IdElementsAnnexes}}">
-                  {{item.libelle}}
-                </label>
-              </div>
-            </div>
-            <div class="right-details col-lg-6">
-              <div *ngFor="let item of annexElementsFicheMateriel; let i = index" class="checkbox-color checkbox-info">
-                <input *ngIf="i>5" id="{{item.IdElementsAnnexes}}" 
-                type="checkbox" 
-                name="{{item.libelle}}"
-                [checked]="annexElementsFicheMateriel[i].IsValid">
-                <label *ngIf="i>5" for="{{item.IdElementsAnnexes}}">
-                  {{item.libelle}}
-                </label>
-              </div>
-            </div>
-          </div> -->
-
+          <div class="row form-group annexes-elements">
+            <annexes-elements-modification-modal 
+              [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
+              [selectionType]="selectionType"
+              [annexElementsFicheMateriel]="annexElementsFicheMateriel">
+            </annexes-elements-modification-modal>
+          </div>
           <!-- <div class="details row form-group" *ngIf="selectionType === 'multi'">
             <div class="left-details col-lg-6">
               <div *ngFor="let item of newObject.Fiche_Mat_ElementsAnnexes; let i = index" class="checkbox-color checkbox-info">
@@ -627,41 +557,12 @@
             </button>
           </div> -->
 
-          <label class="col-form-label row" [ngStyle]="{'margin-top' : selectionType === 'one' ? '40px' : ''}">
-            <span class="label-comment"> 
-              Commentaires :
-            </span>
-          </label>
-          <div class="row form-group comment-textarea">
-            <textarea 
-              [ngStyle]="{'height' : selectionType === 'multi' ? '100px' : ''}"
-              [(ngModel)]="newObject.Commentaires"
-              type="text" 
-              class="form-control md-textarea col-lg-9" 
-              id="commentaires" 
-              name="commentaires"
-              autocomplete="off">
-            </textarea>
-            <div class="icons col-lg-3 textarea-icons" *ngIf="selectionType === 'multi'">
-              <i *ngIf="newObject.Commentaires !== ''"
-                class="icofont icofont-close-line-circled delete"
-                [placement]="'right'" 
-                [ngbTooltip]="resetTooltipMessage"
-                (click)="newObject.Commentaires = ''">
-              </i>
-              <i *ngIf="newObject.Commentaires !== valueNotToChangeLibelle"
-                class="icofont icofont-ui-reply reply"
-                [placement]="'right'" 
-                [ngbTooltip]="replyTooltipMessage"
-                (click)="newObject.Commentaires = valueNotToChangeLibelle">
-              </i>
-            </div>
-          </div>
+
           <!-- voir quel attribut correspond à ce commentaire -->
         </div>
-        <div class="sections ori" *ngIf="selectionType === 'one'">
+        <div class="sections ori" [ngStyle]="selectionType === 'multi' ? {'min-height': '140px'} : {'min-height': '195px'}">
           <i class="icofont icofont-space-shuttle section-icon"></i>
-          <div class="row form-group">
+          <div class="row form-group retour-ori" [ngStyle]="selectionType === 'multi' ? {'margin-top': '0'} : {'margin-top': '30px'}">
             <label class="col-form-label col-lg-3">Retour Ori : </label>
             <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
               <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
@@ -684,8 +585,11 @@
           </p>
 
           <p *ngIf="selectionType === 'one' && ficheAchatDetailReady && newObject.RetourOri === 1">Retour Ori dernier délai :
-            <span>
+            <span *ngIf="lendingDurationDate !== undefined">
               {{lendingDurationDate | date}}
+            </span>
+            <span *ngIf="lendingDurationDate === undefined">
+              /
             </span>
           </p>
           <div class="form-group row livraison-datepicker" *ngIf="newObject.RetourOri === 3">
@@ -703,6 +607,76 @@
             </div>
           </div>
         </div>
+
+<!--- ***************  SECTION RECEPTION LABO ***************** -->
+        <div class="sections labo" [ngStyle]="selectionType === 'multi' ? {'min-height': '250px'} : {'min-height': '310px'}">
+          <i class="icofont icofont-beaker section-icon"></i>
+          <div class="form-group row livraison-datepicker section-labo" [ngStyle]="selectionType === 'multi' ? {'margin-top': '10px'} : {'margin-top': '35px'}">
+            <label class="col-lg-5 col-form-label">
+              Réception accès labo :
+            </label>
+            <div class="input-group col-lg-6">
+              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.ReceptionAccesLabo)}}" name="accLaboDate"
+                [(ngModel)]="newObject.ReceptionAccesLabo" ngbDatepicker #accLaboDate="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="accLaboDate.toggle()" type="button">
+                  <i class="icofont icofont-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group form-labo">
+            <label class="col-form-label col-lg-4">Nom du labo :</label>
+            <input 
+              [(ngModel)]="newObject.NomLabo"
+              type="text" 
+              class="form-control col-lg-4" 
+              id="laboName" 
+              name="laboName"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.NomLabo !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.NomLabo = ''">
+                </i>
+                <i *ngIf="newObject.NomLabo !== valueNotToChangeLibelle"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NomLabo = valueNotToChangeLibelle">
+                </i>
+              </div>
+          </div>
+          <div class="row form-group form-labo">
+            <label class="col-form-label col-lg-4">Coût labo :</label>
+            <input 
+              [(ngModel)]="newObject.CoutLabo"
+              type="text" 
+              class="form-control col-lg-4" 
+              id="laboCost" 
+              name="laboCost"
+              autocomplete="off">
+              <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.CoutLabo !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.CoutLabo = ''">
+                </i>
+                <i *ngIf="newObject.CoutLabo !== valueNotToChangeLibelle"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.CoutLabo = valueNotToChangeLibelle">
+                </i>
+              </div>
+          </div>
+        </div>
+<!--- ******************************************************** -->
+
+
       </div>
     </div>
     <div class="row fm-detail-comment">
@@ -710,7 +684,6 @@
         <p>Commentaire :</p>
         <div class="comment-content row">
           <textarea 
-            [ngStyle]="{'height' : selectionType === 'multi' ? '100px' : ''}"
             [(ngModel)]="newObject.Commentaires"
             type="text" 
             class="form-control md-textarea col-lg-10" 
@@ -743,6 +716,7 @@
       </div>
     </div> -->
     <fiches-materiel-modification-action 
+      [showAffectedEps]="true"
       [allFichesMateriel]="allFichesMateriel"
       [selectionType]="selectionType"
       [multiOeuvre]="multiOeuvre"

@@ -8,10 +8,23 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
-import { AnnexElement } from '../models/annex-element';
+import {
+  AnnexElementStatus,
+  AnnexElementCategory,
+  AnnexElementSubCategory,
+  AnnexElementFicheMAteriel
+} from '../models/annex-element';
 
 // temporary imports :
-import { urlFicheMateriel, urlLibAnnexElements, urlFicheMatAnnexElements } from '../../../../.privates-url';
+import {
+  urlFicheMateriel,
+  urlIdFicheMateriel,
+  urlLibAnnexElements,
+  urlFicheMatAnnexElements,
+  urlCategoryAnnexElements,
+  urlAllSubCategoryAnnexElements,
+  urlSubCategoryByCategoryAnnexElements
+} from '../../../../.privates-url';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -23,25 +36,67 @@ const httpOptions = {
 export class AnnexElementsService {
   constructor(private http: HttpClient) {}
 
-  /* GET ONE FICHE MATERIEL BY ID */
-  getAnnexElements(): Observable<AnnexElement[]> {
+  /* GET ANNEXES ELEMENTS STATUS */
+  getAnnexElementsStatus(): Observable<AnnexElementStatus[]> {
     return this.http
       .get(urlFicheMateriel + urlLibAnnexElements)
       .map((res: any) => {
         console.log(res);
-        return res as AnnexElement[];
+        return res as AnnexElementStatus[];
       });
   }
 
-  getAnnexElementsFicheMateriel(id) {
+  /* GET ANNEXES ELEMENTS BY FM */
+  getAnnexElementsFicheMateriel(IdFicheMateriel): Observable<AnnexElementFicheMAteriel[]> {
     return this.http
-      .get(urlFicheMateriel + urlFicheMatAnnexElements + id)
+      .get(urlFicheMateriel + urlFicheMatAnnexElements + urlIdFicheMateriel + IdFicheMateriel)
       .map((res: any) => {
         console.log(res);
-        return res as AnnexElement[];
+        return res as AnnexElementFicheMAteriel[];
       });
   }
 
+  /* GET ANNEXES ELEMENTS LIB ALL CATEGORIES */
+  getAnnexElementsCategories(): Observable<AnnexElementCategory[]> {
+    return this.http
+      .get(urlFicheMateriel + urlCategoryAnnexElements)
+      .map((res: any) => {
+        console.log(res);
+        return res as AnnexElementCategory[];
+      });
+  }
+
+  /* GET ANNEXES ELEMENTS LIB ALL SUB-CATEGORIES */
+  getAnnexElementsAllSubCategories(): Observable<AnnexElementSubCategory[]> {
+    return this.http
+      .get(urlFicheMateriel + urlAllSubCategoryAnnexElements)
+      .map((res: any) => {
+        console.log(res);
+        return res as AnnexElementSubCategory[];
+      });
+  }
+
+  /* GET ANNEXES ELEMENTS LIB SUB-CATEGORIES BY CATEGORIES */
+  getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes): Observable<AnnexElementSubCategory[]> {
+    return this.http
+      .get(
+        urlFicheMateriel +  urlSubCategoryByCategoryAnnexElements + IdLibCategorieElementsAnnexes
+      )
+      .map((res: any) => {
+        console.log(res);
+        return res as AnnexElementSubCategory[];
+      });
+  }
+
+  /* PUT ANNEXES ELEMENTS TO FM */
+  putAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementFicheMAteriel[]> {
+    return this.http
+      .put<AnnexElementFicheMAteriel[]>(
+        urlFicheMateriel + urlFicheMatAnnexElements,
+        annexesElements
+      )
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(error: HttpErrorResponse) {
     console.log(error);

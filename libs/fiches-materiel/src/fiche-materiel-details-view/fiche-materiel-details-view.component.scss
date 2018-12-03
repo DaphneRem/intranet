@@ -11,6 +11,10 @@ $iconColor : #7f7f7f;
         // padding-bottom: 20px;
         .top {
             padding-top : 20px;
+            .icons-links {
+                display: flex;
+                justify-content: flex-end;
+            }
             .left-infos {
                 p {
                     font-size: 1.1em;

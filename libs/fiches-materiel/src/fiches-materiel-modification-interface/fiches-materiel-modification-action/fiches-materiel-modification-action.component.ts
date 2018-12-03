@@ -7,6 +7,9 @@ import { FicheMateriel } from '../../models/fiche-materiel';
 import { QualiteService } from '../../services/qualite.service';
 import { VersionService } from '../../services/version.service';
 
+import { AnnexElementsService } from '../../services/annex-elements.service';
+import { AnnexElementFicheMAteriel } from '../../models/annex-element';
+
 @Component({
   selector: 'fiches-materiel-modification-action',
   templateUrl: './fiches-materiel-modification-action.component.html',
@@ -17,6 +20,7 @@ import { VersionService } from '../../services/version.service';
   providers: [FichesMaterielService]
 })
 export class FichesMaterielModificationActionComponent implements OnInit {
+  @Input() showAffectedEps;
   @Input() newObject;
   @Input() allFichesMateriel;
   @Input() selectionType;
@@ -42,6 +46,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
 
   constructor(
     private fichesMaterielService: FichesMaterielService,
+    private annexElementsService: AnnexElementsService,
     private qualiteService: QualiteService,
     private versionService: VersionService,
     private location: Location
@@ -50,6 +55,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   ngOnInit() {
     console.log(this.newObject);
     console.log(this.allFichesMateriel);
+    console.log(this.annexElementsFicheMateriel);
   }
 
   modifFichesMateriel() {
@@ -296,8 +302,10 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     delete e.Fiche_Mat_LibEtape;
     delete e.Fiche_Mat_Qualite;
     delete e.Fiche_Mat_Version;
+    // delete e.Fiche_Mat_ElementsAnnexes;
     this.fichesMaterielService.updateFicheMateriel([e]).subscribe(data => {
       if (data) {
+
         this.goBack();
       } else {
         console.log('error');
@@ -305,6 +313,14 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       }
       console.log(data);
     });
+
+    // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
+          //   this.annexElementsService
+          // .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+          // .subscribe(annexesElements => {
+          //   console.log(annexesElements);
+          //   this.goBack();
+          // });
   }
 
   checkNewObjectModif() {
@@ -315,18 +331,18 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
   }
 
-  checkChanges(allId) {
+  checkChanges(allId) { // CALL IF SELECTION TYPE IS 'MULTI'
     // let changedValues = {};
     console.log(allId);
     this.resetDateFormat(this.newObject);
     for (let key in this.newObject) {
       if (this.newObject[key] !== this.valueNotToChangeLibelle) {
-        if (typeof this.newObject[key] !== 'object') {
+        if (typeof this.newObject[key] !== 'object') { // IF value is Object
           this.changedValues[key] = this.newObject[key];
           console.log(this.changedValues);
         } else if (
           typeof this.newObject[key] === 'object' &&
-          !Array.isArray(this.newObject[key])
+          !Array.isArray(this.newObject[key]) // IF value is Object but not Array
         ) {
           for (let i in this.newObject[key]) {
             if (this.newObject[key][i] !== this.valueNotToChangeLibelle) {
@@ -336,7 +352,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
           }
         } else if (
           typeof this.newObject[key] === 'object' &&
-          Array.isArray(this.newObject[key])
+          Array.isArray(this.newObject[key]) // IF value is Object and Array
         ) {
           let arrayChangedValues = [];
           this.newObject[key].map(item => {
