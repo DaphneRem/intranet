@@ -1,0 +1,37 @@
+<button class="btn open-btn" (click)="openLg(annexesElements)">Voir le détail des éléments annexes</button>
+
+<!--************* MODAL **************-->
+<ng-template #annexesElements let-c="close" let-d="dismiss" class="affected-annexes-modal">
+    <div class="modal-header">
+        <h4 class="modal-title">Détails des éléments annexes</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body elements-list">
+        <div class="details row form-group">
+            <div class="col-lg-12" class="categories row">
+                <div *ngFor="let category of annexElementsCategories; let i = index" class="category col-lg-6">
+                  <p class="badge badge-lg bg-info">{{category.Libelle}} :</p>
+                  <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="sub-category">
+                      <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
+                          <i *ngIf="checkElementIsValid(item.IdLibElementAnnexes)" class="icofont icofont-check-alt"></i>
+                          <!-- <i *ngIf="checkElementIsValid(item.IdLibElementAnnexes)" class="icofont icofont-check-alt"></i> -->
+                          <p [ngStyle]="checkElementIsValid(item.IdLibElementAnnexes) ? {'margin-left' : '5px'} : {'margin-left' : '25px'}" >
+                          {{item.Libelle}}
+                          </p>
+                      </div>
+                  </div>
+                  <label class="items-sub-category">Commentaires :</label>
+                  <p class="comment-sub-category">Commentaire provisoire</p>
+                  <label *ngIf="category.Libelle === 'Presse'" class="items-sub-category">Commentaires Presse:</label>
+                  <p *ngIf="category.Libelle === 'Presse'" class="comment-sub-category">Commentaire provisoire</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Valider</button>
+    </div>
+</ng-template>
+<!--*************************************-->

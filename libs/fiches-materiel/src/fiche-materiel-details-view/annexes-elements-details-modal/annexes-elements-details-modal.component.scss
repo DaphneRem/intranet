@@ -1,0 +1,58 @@
+$creationBtnColor :  #17AAB2;
+$creationBtnHoverColor :  #2eced6;
+
+.open-btn {
+    background-color: #17AAB2;
+    border-color: #17aab2;
+    color: #ffffff;
+    padding: 8px 10px;
+    &:hover {
+        background-color: #2eced6;
+        border-color: #2eced6;
+    }
+    &:focus, &:active, &:visited {
+        outline: none;
+        box-shadow: transparent;
+    }
+}
+button {
+    &:focus, &:active, &:visited {
+        outline: none;
+        box-shadow: transparent;
+    }
+}
+.details {
+    margin-top: 0;
+    padding-left: 25px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 500px;
+    // border: 1px solid #cbcbcb;
+    .categories {
+         width: 100%;
+        .badge {
+            width: 90%;
+        }
+        .category {
+            display: flex;
+            flex-direction: column;
+            .sub-category {
+                div {
+                    display: flex;
+                    i {
+                        font-size: 1.5em;
+                        font-weight: bold;
+                        color: rgb(105, 214, 105);
+                    }
+                }
+            }
+            .items-sub-category {
+                margin-left: 25px;
+                font-weight: bold;
+            }
+            .comment-sub-category {
+                margin-left: 30px;
+            }
+        }
+    }
+}
