@@ -13,7 +13,7 @@ import {
   selector: 'annexes-elements-modification-modal',
   templateUrl: './annexes-elements-modification-modal.component.html',
   styleUrls: ['./annexes-elements-modification-modal.component.scss'],
-    providers: [AnnexElementsService]
+  providers: [AnnexElementsService]
 })
 export class AnnexesElementsModificationModalComponent implements OnInit {
   // @Input() annexElementsCategories;
@@ -45,6 +45,8 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
     this.modalService.open(annexesElementsToModif, { size: 'lg' });
   }
 
+/*************************** selection Type === 'only' *****************************/
+
   displayCheckedElements(id) {
     let checked = [];
     console.log(this.annexElementsFicheMateriel);
@@ -72,7 +74,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
     });
   }
 
-/********************** selection Type === 'multi' ****************************/
+/***************************** selection Type === 'multi' ****************************/
   displayCheckedOption() {
 
   }

@@ -71,6 +71,9 @@ import {
 import {
   AnnexesElementsModificationModalComponent
 } from './fiches-materiel-modification-interface/annexes-elements-modification-modal/annexes-elements-modification-modal.component';
+import {
+  AnnexesElementsDetailsModalComponent
+} from './fiche-materiel-details-view/annexes-elements-details-modal/annexes-elements-details-modal.component';
 
 
 @NgModule({
@@ -117,6 +120,7 @@ import {
     SearchFormComponent,
     StepsStatusCommentModalComponent,
     WarningAcceptedStatusComponent,
+    AnnexesElementsDetailsModalComponent
   ],
   exports: [
     AffectedEpisodesModalComponent,
@@ -143,7 +147,8 @@ import {
     MyFichesMaterielComponent,
     SearchFormComponent,
     StepsStatusCommentModalComponent,
-    WarningAcceptedStatusComponent
+    WarningAcceptedStatusComponent,
+    AnnexesElementsDetailsModalComponent
   ]
 })
 export class FichesMaterielLibModule {}

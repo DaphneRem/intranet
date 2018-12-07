@@ -15,10 +15,20 @@
             </span>
           </span>
         </p>
+        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Création :
+          <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
+            le {{myFicheMateriel.DateCreation | date}} par {{myFicheMateriel.UserCreation}}
+        </p>
+        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Dernière modification : 
+        </p>
+        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Dernière modification : 
+          <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
+            le 20 août 2018 par {{myFicheMateriel.UserModification}}user2 (donnée fictive pour le moment)
+        </p>
         <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Suivi par : 
           <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
             {{myFicheMateriel.SuiviPar}}
-          </p>
+        </p>
       </div>
       <div class="col-lg-6 title">
         <h1 [ngClass]="!myFicheMateriel.TitreEpisodeVF ? 'empty-field' : ''">
@@ -247,7 +257,8 @@
           <p>Eléments annexes : {{myFicheMateriel.IdStatutElementsAnnexes ? myFicheMateriel.IdStatutElementsAnnexes : messageEmptyField}}</p> 
           <!-- Eléments annexes => ajouter libellé plutot que number -->
           <p>Détails :</p>
-          <div *ngIf="myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel">
+          <annexes-elements-details-modal [IdFicheMateriel]="myFicheMateriel.IdFicheMateriel" ></annexes-elements-details-modal>
+          <!-- <div *ngIf="myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel">
             <ul>
               <li *ngFor="let element of myFicheMateriel.Fiche_Mat_ElementsAnnexes; let i = index">
                 <span *ngIf="i<6">{{element.libelle}}
@@ -265,9 +276,10 @@
           </div>
           <div *ngIf="!myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel materiel-no-data">
             <span class="empty-field">Champ non renseigné dans la fiche Matériel</span>
-          </div>
+          </div> -->
+          <div class="materiel"></div>
           <expected-package-modal *ngIf="dataDetailsReady" [myFicheAchatDetails]="myFicheAchatDetails"></expected-package-modal>
-          <p>Commentraires : <span class="empty-field">{{messageEmptyField}}</span></p> 
+          <!-- <p>Commentraires : <span class="empty-field">{{messageEmptyField}}</span></p>  -->
           <!-- voir quel attribut correspond à ce commentaire -->
         </div>
         <div class="sections ori">

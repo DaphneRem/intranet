@@ -33,6 +33,14 @@
                     name="{{category}}" 
                     type="text">
                 </textarea>
+                <label *ngIf="category.Libelle === 'Presse'">Commentaires Presse :</label>
+                <textarea 
+                    *ngIf="category.Libelle === 'Presse'"
+                    class="form-control md-textarea col-lg-11" 
+                    id="{{category}}" 
+                    name="{{category}}" 
+                    type="text">
+                </textarea>
                 </div>
             </div>
         </div>
@@ -55,6 +63,14 @@
                 </div>
                 <label>Commentaires :</label>
                 <textarea 
+                    class="form-control md-textarea col-lg-11" 
+                    id="{{category}}" 
+                    name="{{category}}" 
+                    type="text">
+                </textarea>
+                <label *ngIf="category.Libelle === 'Presse'">Commentaires Press :</label>
+                <textarea 
+                    *ngIf="category.Libelle === 'Presse'"
                     class="form-control md-textarea col-lg-11" 
                     id="{{category}}" 
                     name="{{category}}" 

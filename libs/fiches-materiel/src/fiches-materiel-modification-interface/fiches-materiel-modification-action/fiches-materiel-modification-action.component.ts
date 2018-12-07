@@ -305,22 +305,31 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     // delete e.Fiche_Mat_ElementsAnnexes;
     this.fichesMaterielService.updateFicheMateriel([e]).subscribe(data => {
       if (data) {
-
+        console.log('succes PUT fiche materiel');
+        console.log(data);
         this.goBack();
       } else {
-        console.log('error');
+        console.log('error PUT fiche materiel');
         console.log(data);
       }
       console.log(data);
     });
 
     // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
-          //   this.annexElementsService
-          // .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
-          // .subscribe(annexesElements => {
-          //   console.log(annexesElements);
-          //   this.goBack();
-          // });
+    // this.annexElementsService
+    //   .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+    //   .subscribe(annexesElements => {
+    //     console.log(annexesElements);
+    //     if (annexesElements) {
+    //       console.log('succes PUT annexesElements');
+    //       console.log(annexesElements);
+    //       // this.goBack();
+    //     } else {
+    //       console.log('error PUT annexesElements');
+    //       console.log(annexesElements);
+    //     }
+    //     // this.goBack();
+    //   });
   }
 
   checkNewObjectModif() {
