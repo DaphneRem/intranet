@@ -16,27 +16,37 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
     {
       title: 'Mes Fiches Matériel en cours',
       icon: 'icofont icofont-spinner-alt-6',
-      size: 'col-md-12 col-lg-6 ',
+      size: 'col-md-12 col-lg-4',
       link: './my-material-sheets/0/asc',
       color: '#39ADB5'
     },
     {
+      title: 'Mes Deals en cours',
+      // icon: 'icofont icofont-attachment',
+      icon: 'icofont icofont-spinner-alt-6',
+      size: 'col-md-12 col-lg-4',
+      link: './all',
+      color: '#39ADB5'
+    },
+    {
       title: 'Mes Fiches Matériel archivées',
-      icon: 'icofont icofont-check-alt',
-      size: 'col-md-12 col-lg-6 ',
+      // icon: 'icofont icofont-check-alt',
+      icon: 'icofont icofont-archive',
+      size: 'col-md-12 col-lg-4',
       link: './all',
       color: '#17B978'
     },
     {
       title: 'Toutes mes Fiches Matériel',
-      icon: 'icofont icofont-file-text',
+      icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
       link: './all',
       color: '#5ED4FF'
     },
     {
       title: 'Toutes les Fiches Matériel',
-      icon: 'icofont icofont-file-text',
+      // icon: 'icofont icofont-file-text',
+      icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
       link: './all',
       color: '#1C2799'
