@@ -173,7 +173,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
             this.customdatatablesOptions.tableTitle = 'Fiches Achat non traitées';
             this.noData = false;
             this.dataReady = true;
-            this.displayColumns(data);
+            this.displayColumns();
             this.rerenderData =  data;
             console.log(this.rerenderData);
             console.log(this.customdatatablesOptions.data);
@@ -234,7 +234,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
           // ];
 
 
-  displayColumns(data) {
+  displayColumns() {
     // console.log('data columns :' + data[0]);
     this.customdatatablesOptions.columns = [
       {
@@ -249,7 +249,15 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       },
       {
         title : 'Date publication',
-        data : 'Date_Publication'
+        // data : 'Date_Publication'
+        data : function  (data, type, row, meta ) {
+          // return new Date(data.DateCreation).toLocaleString();
+          if  (data.Date_Publication !== null) {
+            return data.Date_Publication.slice(0, 10);
+          } else {
+            return data.Date_Publication;
+          }
+        }
       },
       {
         title : 'Distributeur', // ayant droit
@@ -270,7 +278,15 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       },
       {
         title : 'Date Modif',
-        data : 'Date_Modif',
+        // data : 'Date_Modif',
+        data : function  (data, type, row, meta ) {
+          // return new Date(data.DateCreation).toLocaleString();
+          if  (data.Date_Modif !== null) {
+            return data.Date_Modif.slice(0, 10);
+          } else {
+            return data.Date_Modif;
+          }
+        }
       },
     ];
   }

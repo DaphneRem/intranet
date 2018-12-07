@@ -24,6 +24,10 @@ import {
 import { StepsLibService } from '../../services/steps-lib.service';
 import { Step } from '../../models/step';
 
+// Status import
+import { StatusLibService } from '../../services/status-lib.service';
+import { Status } from '../../models/status';
+
 @Component({
   selector: 'fiches-materiel-table',
   templateUrl: './fiches-materiel-table.component.html',
@@ -31,6 +35,7 @@ import { Step } from '../../models/step';
   providers : [
     FichesMaterielService,
     FichesAchatService,
+    StatusLibService,
     StepsLibService,
     Store
   ]
@@ -63,6 +68,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   public stepLib: Step[];
   public stepLibReady: Boolean = false;
+  public statusLib: Status[];
+  public statusLibReady: Boolean = false;
 
   public selectedRows = [];
   public sortingData;
@@ -81,8 +88,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     columns: [],
     paging: true,
     search: true,
-    rowsMax: 10,
-    lenghtMenu: [5, 10, 15],
+    rowsMax: 50,
+    lenghtMenu: [10, 50, 100],
     theme: 'blue theme',
     responsive : true,
     defaultOrder: [],
@@ -113,7 +120,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<FicheMaterielModification>,
-    private stepsLibService: StepsLibService
+    private stepsLibService: StepsLibService,
+    private statusLibService: StatusLibService
   ) {}
 
   ngOnInit() {
@@ -128,6 +136,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     console.log(this.orderParams);
     this.getFichesMateriel();
     this.getStepsLib();
+    this.getStatusLib();
     this.checkLinks();
     this.displayAction();
     this.store.subscribe(data => (this.globalStore = data));
@@ -164,6 +173,16 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         this.stepLib = data;
         console.log(data);
         this.stepLibReady = true;
+      });
+  }
+
+  getStatusLib() {
+    this.statusLibService
+      .getStatusLib()
+      .subscribe(data => {
+        this.statusLib = data;
+        console.log(data);
+        this.statusLibReady = true;
       });
   }
 
@@ -233,7 +252,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       that.selectedOeuvre = [];
       that.customdatatablesOptions.data.map((item) => {
         console.log(item);
-        console.log(that.selectedRows[0].IdFicheDetail);
+        // console.log(that.selectedRows[0].IdFicheDetail);
         if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
           console.log(item.IdFicheDetail);
           that.selectedOeuvre.push(
@@ -334,13 +353,39 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.customdatatablesOptions.columns = [
       {
         title : 'Deadline',
-        data: 'Deadline'
-        // data : function ( data, type, row, meta ) {
-        //   return new Date(data.Deadline).toLocaleString();
-        // }
+        // data: 'Deadline'
+        data : function ( data, type, row, meta ) {
+          // return new Date(data.Deadline).toLocaleString();
+          // console.log(typeof data.Deadline);
+          return data.Deadline.slice(0, 10);
+        }
       },
       {
-        title : 'Suivi',
+        title : 'Statut',
+        data : function ( data, type, row, meta ) {
+          let currentItemLib;
+          that.statusLib.map(item => {
+            if (item.IdLibstatut === data.IdLibstatut) {
+              currentItemLib = item;
+            }
+          });
+          if (data.IdLibstatut === 1) {
+            return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibstatut === 2) {
+            return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibstatut === 3) {
+            return '<span class="label bg-succes">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibstatut === 4) {
+            return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>';
+          } else if (data.IdLibstatut === 5) {
+            return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
+          } else {
+            return '/';
+          }
+        }
+      },
+      {
+        title : 'Etape',
         data : function ( data, type, row, meta ) {
           let currentItemLib;
           that.stepLib.map(item => {
@@ -364,68 +409,49 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         }
       },
       {
-        title : 'type fiche achat',
-        data : 'NumEpisodeProd' // data manquante
-      },
-      {
         title : 'distributeur',
-        data : 'NumEpisodeProd' // data manquante
+        data : 'distributeur'
       },
       {
-        title : 'titre vf', // pour les tests
-        data : 'TitreEpisodeVF' // pour les tests
+        title : 'titre vf',
+        data : 'TitreEpisodeVF'
       },
       {
-        title : 'titre vo', // pour les tests
-        data : 'TitreEpisodeVO' // pour les tests
+        title : 'titre vo',
+        data : 'TitreEpisodeVO'
       },
-      {
-        title : 'date création', // pour les tests
-        data : 'DateCreation'
-        // data : function ( data, type, row, meta ) {
-        //   return new Date(data.DateCreation).toLocaleString();
-        // }
-      },
-      {
-        title : 'IdFicheAchat', // delete after tests ok
-        data : 'IdFicheAchat'
-      },
-      {
-        title : 'IdFicheMateriel', // delete after tests ok
-        data : 'IdFicheMateriel'
-      },
+      // {
+      //   title : 'IdFicheAchat', // delete after tests ok
+      //   data : 'IdFicheAchat'
+      // },
+      // {
+      //   title : 'IdFicheMateriel', // delete after tests ok
+      //   data : 'IdFicheMateriel'
+      // },
       {
         title : 'N° eps AB',
         data : 'NumEpisode',
       },
       {
-        title : 'N° eps Prod',
-        data : 'NumEpisodeProd',
-      },
-      {
         title : 'Date Livraison',
-        data : 'DateLivraison'
-        // data : function ( data, type, row, meta ) {
-        //   return new Date(data.DateLivraison).toLocaleString();
-        // }
+        // data : 'DateLivraison'
+        data : function ( data, type, row, meta ) {
+          // return new Date(data.DateLivraison).toLocaleString();
+          if  (data.DateLivraison !== null) {
+            return data.DateLivraison.slice(0, 10);
+          } else {
+            return data.DateLivraison;
+          }
+        }
       },
       {
-        title : 'Version',
-        data : 'Fiche_Mat_Version',
+        title : 'n°fiche achat',
+        data : 'NumEpisodeProd' // data manquante
       },
       {
-        title : 'Qualite',
-        data : 'Fiche_Mat_Qualite',
+        title : 'type fiche achat',
+        data : 'typefiche' // data manquante
       },
-      {
-        title : 'Date Acceptation',
-        data : 'DateAcceptation'
-        // data : function ( data, type, row, meta ) {
-        //   return new Date(data.DateAcceptation).toLocaleString();
-        // }
-      },
-
-
     ];
     console.log('display columns ok');
     this.dataReady = true;
