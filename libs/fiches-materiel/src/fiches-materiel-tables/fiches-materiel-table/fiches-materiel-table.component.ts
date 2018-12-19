@@ -357,7 +357,11 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         data : function ( data, type, row, meta ) {
           // return new Date(data.Deadline).toLocaleString();
           // console.log(typeof data.Deadline);
-          return data.Deadline.slice(0, 10);
+          if  (data.Deadline !== null) {
+            return data.Deadline.slice(0, 10);
+          } else {
+            return data.Deadline;
+          }
         }
       },
       {

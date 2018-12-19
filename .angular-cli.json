@@ -173,6 +173,12 @@
       "appRoot": ""
     },
     {
+      "name": "k-planner-lib",
+      "root": "libs/k-planner-lib/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "loaders",
       "root": "libs/loaders/src",
       "test": "../../../test.js",
@@ -277,6 +283,14 @@
     },
     {
       "project": "apps/fiches-materiel/e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/k-planner/src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/k-planner/e2e/tsconfig.e2e.json",
       "exclude": "**/node_modules/**"
     }
   ],

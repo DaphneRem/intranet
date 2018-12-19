@@ -82,6 +82,21 @@ export const MENUITEMS = [
                         route: `${distUrl_Materiel}/displaying-purchase-sheets`
                     }
                 ]
+            },
+            {
+                state: 'k-planner',
+                short_label: 'KP',
+                name: 'K Planner',
+                type: 'sub',
+                icon: 'icofont icofont-ui-calendar',
+                iconColor: '#DE5768',
+                children: [
+                    {
+                        state: 'Voir mon planning',
+                        name: 'Voir mon planning',
+                        route: `${distUrl_Materiel}/k-planner`
+                    }
+                ]
             }
         ]
     },
