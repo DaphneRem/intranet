@@ -94,7 +94,7 @@ export class SchedulerComponent  {
           const filteredPeople: { [key: string]: Object }[] =
               treeViewdata.filter((item: any) => item.Id !== parseInt(this.draggedItemId, 10));
           this.treeObj.fields.dataSource = filteredPeople;
-        //   this.treeObj.refresh();
+          this.treeObj.refresh();
           let elements: NodeListOf<HTMLElement> = document.querySelectorAll(".e-drag-item.treeview-external-drag") as NodeListOf<HTMLElement>;
           for (let i: number = 0; i < elements.length; i++) {
               remove(elements[i]);

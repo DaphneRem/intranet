@@ -13,6 +13,20 @@
     border: 1px solid #a8a8a8;
 }
 
+/deep/ .label-canceled {
+    background: #a8a8a8;
+    background-color: #a8a8a8 !important;
+    color: #ffffff !important;
+    border: 1px solid #a8a8a8;
+}
+
+/deep/ .label-other {
+    background: #774aa4;
+    background-color: #774aa4 !important;
+    color: #ffffff !important;
+    border: 1px solid #774aa4;
+}
+
 /deep/ .customSwalBtn{
     background-color: rgb(23, 170, 178);
     border-left-color: rgb(23, 170, 178);

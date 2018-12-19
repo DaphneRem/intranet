@@ -357,10 +357,10 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         data : function ( data, type, row, meta ) {
           // return new Date(data.Deadline).toLocaleString();
           // console.log(typeof data.Deadline);
-          if  (data.Deadline !== null) {
+          if (data.Deadline !== null) {
             return data.Deadline.slice(0, 10);
           } else {
-            return data.Deadline;
+            return '<span style="color: red">Aucune Deadline</span>';
           }
         }
       },
@@ -374,15 +374,15 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
             }
           });
           if (data.IdLibstatut === 1) {
-            return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>';
+            return `<span class="label bg-info">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 2) {
-            return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
+            return `<span class="label label-canceled">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 3) {
-            return '<span class="label bg-succes">' + currentItemLib.Libelle + '</span>';
+            return `<span class="label bg-success">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 4) {
-            return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>';
+            return `<span class="label bg-danger">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 5) {
-            return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
+            return `<span class="label label-other">${currentItemLib.Libelle}</span>`;
           } else {
             return '/';
           }
@@ -438,10 +438,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       },
       {
         title : 'Date Livraison',
-        // data : 'DateLivraison'
         data : function ( data, type, row, meta ) {
-          // return new Date(data.DateLivraison).toLocaleString();
-          if  (data.DateLivraison !== null) {
+          if  (data.DateLivraison !== null && data.DateLivraison !== undefined) {
             return data.DateLivraison.slice(0, 10);
           } else {
             return data.DateLivraison;

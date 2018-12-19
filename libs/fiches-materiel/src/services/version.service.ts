@@ -8,10 +8,13 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
-import { Version, VersionLib } from '../models/version';
+import { VersionFM, VersionLib } from '../models/version';
 
 // temporary imports :
 import { urlFicheMateriel, urlFicheMatVersion, urlFicheAchat, urlVersionLib, urlVersion } from '../../../../.privates-url';
+// export const urlVersionLib = '/FicheAchatLibVersion';
+// export const urlVersion = '/Fiche_Mat_Version';
+// export const urlFicheMatVersion = '/IdFicheMateriel/';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -23,16 +26,6 @@ const httpOptions = {
 export class VersionService {
   constructor(private http: HttpClient) {}
 
-
-  getVersionFicheMateriel(id): Observable<Version[]> {
-    return this.http
-      .get(urlFicheMateriel + urlVersion + urlFicheMatVersion + id)
-      .map((res: any) => {
-        console.log(res);
-        return res as Version[];
-      });
-  }
-
   getVersionLib(): Observable<VersionLib[]> {
     return this.http
       .get(urlFicheAchat + urlVersionLib)
@@ -40,6 +33,24 @@ export class VersionService {
         console.log(res);
         return res as VersionLib[];
       });
+  }
+
+  getVersionFicheMateriel(id): Observable<VersionFM[]> {
+    return this.http
+      .get(urlFicheMateriel + urlVersion + urlFicheMatVersion + id)
+      .map((res: any) => {
+        console.log(res);
+        return res as VersionFM[];
+      });
+  }
+
+  putVersion(version) {
+    return this.http
+      .put(
+        urlFicheMateriel + urlVersion,
+        version
+      )
+      .pipe(catchError(this.handleError));
   }
 
   postVersion(version) {

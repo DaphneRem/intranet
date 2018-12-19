@@ -29,11 +29,9 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() initialFichesMateriel;
   @Input() valueNotToChangeLibelle;
   @Input() allIdSelectedFichesMateriel;
-  @Input() qualiteFicheMateriel;
-  @Input() qualitePresent;
+  @Input() qualiteFM;
   @Input() annexElementsFicheMateriel;
   @Input() versionFicheMateriel;
-  @Input() versionPresent;
 
   public myFicheMateriel;
   public changedValues = {};
@@ -56,6 +54,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     console.log(this.newObject);
     console.log(this.allFichesMateriel);
     console.log(this.annexElementsFicheMateriel);
+    console.log(this.qualiteFM);
   }
 
   modifFichesMateriel() {
@@ -66,159 +65,48 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     this.location.back();
   }
 
-  changeQualiteFormat(id) {
-    console.log(this.qualiteFicheMateriel);
-    this.qualiteToPost = [];
-    this.qualiteToUpdate = [];
-
-    let qualiteIdToUpdateIsValid = [];
-    let qualiteIdToUpdateIsInvalid = [];
-    let numberIdQualiteIsValid = [];
-    let numberIdQualiteIsInvalid = [];
-
-    this.qualitePresent.map(item => {
-      console.log(item);
-      if (item.IsValid) {
-        qualiteIdToUpdateIsValid.push(item.idLibQualiteSup);
-        numberIdQualiteIsValid.push(item.IdMat_Qualite);
-        console.log(numberIdQualiteIsValid);
-      } else {
-        qualiteIdToUpdateIsInvalid.push(item.idLibQualiteSup);
-        numberIdQualiteIsInvalid.push(item.IdMat_Qualite);
-        console.log(numberIdQualiteIsInvalid);
-      }
-    });
-            let coco = [];
-
-    console.log('isValid = ' + qualiteIdToUpdateIsValid);
-    console.log('isInvalid = ' + qualiteIdToUpdateIsInvalid);
-    if (this.qualiteFicheMateriel.length > 0) {
-      console.log('qualiteFicheMat.length > 0');
-      this.qualiteFicheMateriel.forEach(item => {
-        for (let i = 0; i < qualiteIdToUpdateIsValid.length; i++) {
-          console.log(qualiteIdToUpdateIsValid[i]);
-          if (item.Code === qualiteIdToUpdateIsValid[i]) {
-            coco.push(item.Code);
-          };
-          if (i === (qualiteIdToUpdateIsValid.length - 1)) {
-              console.log(coco.includes(qualiteIdToUpdateIsValid[i]));
-              if (!coco.includes(qualiteIdToUpdateIsValid[i])) {
-                console.log('notInclude');
-                console.log(qualiteIdToUpdateIsValid[i]);
-                this.qualiteToUpdate.push({
-                  IdFicheMateriel: id,
-                  IdMat_Qualite: numberIdQualiteIsValid[i],
-                  idLibQualiteSup: qualiteIdToUpdateIsValid[i],
-                  IsValid: false
-                });
-                console.log(this.qualiteToUpdate);
-              }
-            }
+  putQualiteFicheMateriel(qualiteFM) {
+    this.qualiteService
+      .putQualite(qualiteFM)
+      .subscribe(qualite => {
+        console.log(qualite);
+        if (qualite) {
+          console.log('PUT qualite with succes');
+          console.log(qualite);
+        } else {
+          console.log('ERROR PUT qualite');
+          console.log(qualite);
         }
-        console.log(coco);
-        // for (let i = 0; i < qualiteIdToUpdateIsValid.length; i++) {
-        //   if (!coco.includes(qualiteIdToUpdateIsValid[i])) {
-        //     console.log('notInclude');
-        //     console.log(qualiteIdToUpdateIsValid[i]);
-        //     this.qualiteToUpdate.push({
-        //       IdFicheMateriel: id,
-        //       IdMat_Qualite: numberIdQualiteIsValid[i],
-        //       idLibQualiteSup: qualiteIdToUpdateIsValid[i],
-        //       IsValid: false
-        //     });
-        //     console.log(this.qualiteToUpdate);
-        //   }
-        // }
-        if (!qualiteIdToUpdateIsValid.includes(item.Code) && !qualiteIdToUpdateIsInvalid.includes(item.Code)) {
-          console.log('push to post isValid = true');
-          this.qualiteToPost.push({
-            IdFicheMateriel: id,
-            idLibQualiteSup: item.Code,
-            IsValid: true
-          });
-        // } else if (!qualiteIdToUpdateIsValid.includes(item.Code) && qualiteIdToUpdateIsValid.length > 0) {
-        //   console.log('push to patch isValid = false');
-        //   let index = qualiteIdToUpdateIsValid.indexOf(item.Code);
-        //   console.log(numberIdQualiteIsValid);
-        //   console.log(index);
-        //   this.qualiteToUpdate.push({
-        //     IdFicheMateriel: id,
-        //     IdMat_Qualite: numberIdQualiteIsValid[index],
-        //     idLibQualiteSup: item.Code,
-        //     IsValid: false
-        //   });
-        } else if (qualiteIdToUpdateIsInvalid.includes(item.Code) && qualiteIdToUpdateIsInvalid.length > 0) {
-          // les qualites Invalid apparaissent pas dans la selection donc patch pour les rendre true
-          console.log('push to patch isValid = true');
-          let index = qualiteIdToUpdateIsInvalid.indexOf(item.Code);
-          this.qualiteToUpdate.push({
-            IdFicheMateriel: id,
-            IdMat_Qualite: numberIdQualiteIsInvalid[index],
-            idLibQualiteSup: item.Code,
-            IsValid: true
-          });
-        }
-        // if (this.qualitePresent.length > 0) {
-        //   console.log('qualite presente : ');
-        //   console.log(this.qualitePresent);
-        //   this.qualitePresent.forEach(e => {
-        //     if (e.idLibQualiteSup === item.Code) {
-        //       e.IsValid = true;
-        //       this.qualiteToUpdate.push(e);
-        //     } else {
-        //       e.IsValid = false;
-        //       this.qualiteToUpdate.push(e);
-        //     }
-        //   });
-        //   this.qualiteToPost.push({
-        //     IdFicheMateriel: id,
-        //     idLibQualiteSup: item.Code,
-        //     LibQualiteSup: null,
-        //     IsValid: true
-        //   });
-        // }
-
       });
-    } else {
-      this.qualitePresent.map(item  => {
-        this.qualiteToUpdate.push({
-          IdFicheMateriel: id,
-          IdMat_Qualite: item.IdMat_Qualite,
-          idLibQualiteSup: item.idLibQualiteSup,
-          IsValid: false
-        });
-      });
-    }
-            console.log(this.qualiteToUpdate);
-            console.log(this.qualiteToPost);
   }
 
-  changeVersionFormat(id) {
-    console.log(this.versionPresent);
-    this.versionFicheMateriel.map(item => {
-      if (this.versionPresent.length > 0) {
-        this.versionPresent.map(e => {
-          if (e.IdFicheAch_Lib_Versions === item.id_version) {
-            e.Isvalid = true;
-            this.versionToUpdate.push(e);
-          } else {
-            e.Isvalid = false;
-            this.versionToUpdate.push(e);
-          }
-        });
-      }
-      this.versionToPost.push({
-        IdFicheMateriel: id,
-        IdFicheAch_Lib_Versions: item.id_version,
-        Isvalid: true
+  putVersionFicheMateriel(versionFM) {
+    this.versionService
+      .putVersion(versionFM)
+      .subscribe(version => {
+        console.log(version);
+        if (version) {
+          console.log('PUT version with succes');
+          console.log(version);
+        } else {
+          console.log('ERROR PUT version');
+          console.log(version);
+        }
       });
-    });
+  }
+
+  checkDeadline(newObject) {
+    if (newObject.IdLibEtape === 17 || newObject.IdLibstatut === 3 || newObject.IdLibstatut === 5) {
+      newObject.Deadline = null;
+    } else {
+      newObject.Deadline = `${newObject.Deadline.year}-${newObject.Deadline.month}-${newObject.Deadline.day}T00:00:00`;
+    }
   }
 
   resetDateFormat(newObject) {
     console.log(newObject.Deadline);
     if ((newObject.Deadline !== null) && (newObject.Deadline !== this.valueNotToChangeLibelle)) {
-      newObject.Deadline = `${newObject.Deadline.year}-${newObject.Deadline.month}-${newObject.Deadline.day}T00:00:00`;
+      this.checkDeadline(newObject);
     }
     if ((newObject.DateLivraison !== null) && (newObject.DateLivraison !== this.valueNotToChangeLibelle)) {
       newObject.DateLivraison = `${newObject.DateLivraison.year}-${newObject.DateLivraison.month}-${newObject.DateLivraison.day}T00:00:00`;
@@ -254,46 +142,15 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       } else {
         console.log('false');
         console.log(this.newObject);
-        if (this.newObject.Fiche_Mat_LibEtape.IdLibEtape !== this.newObject.IdLibEtape) {
-          this.newObject.Fiche_Mat_LibEtape = null;
-        }
-        if (this.newObject.Fiche_Mat_Libstatut.IdLibstatut !== this.newObject.IdLibstatut) {
-          this.newObject.Fiche_Mat_Libstatut = null;
-        }
+        // if (this.newObject.IdLibEtape !== this.newObject.IdLibEtape) {
+        //   this.newObject.Fiche_Mat_LibEtape = null;
+        // }
+        // if (this.newObject.Fiche_Mat_Libstatut.IdLibstatut !== this.newObject.IdLibstatut) {
+        //   this.newObject.Fiche_Mat_Libstatut = null;
+        // }
         this.resetDateFormat(this.newObject);
-        // this.updateQualityFicheMateriel(id);
-        // this.updateVersionFicheMateriel(id);
         this.updatePutFicheMateriel(this.newObject);
       }
-    });
-  }
-
-  updateQualityFicheMateriel(id) {
-    this.changeQualiteFormat(id);
-    console.log('quality to update = ' + this.qualiteToUpdate);
-    console.log('quality to post = ' + this.qualiteToPost);
-    if (this.qualiteToPost.length) {
-      this.qualiteService.postQualite(this.qualiteToPost).subscribe(data => {
-        console.log('post');
-        console.log(data);
-      });
-    }
-    if (this.qualiteToUpdate.length) {
-      this.qualiteService.patchQualite(this.qualiteToUpdate).subscribe(data => {
-        console.log('patch');
-        console.log(data);
-      });
-    }
-  }
-
-  updateVersionFicheMateriel(id) {
-    this.changeVersionFormat(id);
-    console.log(this.versionToUpdate);
-    this.versionService.postVersion(this.versionToPost).subscribe(data => {
-      console.log(data);
-    });
-    this.versionService.patchVersion(this.versionToUpdate).subscribe(data => {
-      console.log(data);
     });
   }
 
@@ -307,7 +164,21 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       if (data) {
         console.log('succes PUT fiche materiel');
         console.log(data);
-        this.goBack();
+        this.annexElementsService
+          .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+          .subscribe(annexesElements => {
+            console.log(annexesElements);
+            if (annexesElements) {
+              console.log('succes PUT annexesElements');
+              console.log(annexesElements);
+              this.goBack();
+            } else {
+              console.log('error PUT annexesElements');
+              console.log(annexesElements);
+            }
+          });
+          this.putQualiteFicheMateriel(this.qualiteFM);
+          this.putVersionFicheMateriel(this.versionFicheMateriel);
       } else {
         console.log('error PUT fiche materiel');
         console.log(data);
@@ -316,20 +187,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     });
 
     // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
-    // this.annexElementsService
-    //   .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
-    //   .subscribe(annexesElements => {
-    //     console.log(annexesElements);
-    //     if (annexesElements) {
-    //       console.log('succes PUT annexesElements');
-    //       console.log(annexesElements);
-    //       // this.goBack();
-    //     } else {
-    //       console.log('error PUT annexesElements');
-    //       console.log(annexesElements);
-    //     }
-    //     // this.goBack();
-    //   });
+
   }
 
   checkNewObjectModif() {

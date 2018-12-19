@@ -1,4 +1,4 @@
-export class Qualite {
+export class QualiteLib {
     Code: number;
     Libelle: string;
     Etat: boolean;
@@ -6,8 +6,11 @@ export class Qualite {
     FicheAch_FA_Det_Mat_Qualite: any;
 }
 
-export class QualiteByFM {
+export class QualiteFM {
+    IdMat_Qualite: number;
     IdFicheMateriel: number;
-    IsValid: boolean;
     idLibQualiteSup: number;
+    IsValid: boolean;
+    Fiche_Mat_Fichemateriel: any;
+    LibQualiteSup: any;
 }

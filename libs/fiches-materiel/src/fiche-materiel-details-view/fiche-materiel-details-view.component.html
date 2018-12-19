@@ -2,26 +2,26 @@
   <div class="card col-lg-12">
     <div class="row top">
       <div class="col-lg-3 left-infos">
-        <p class="deadline">
+        <p class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
           <!-- ajouter une condition en fonction de la deadline (si proche ou lointaine) -->
           <i *ngIf="displayDeadlineIcon()" class="warning-icon icofont icofont-warning"></i>
           Deadline :
           <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
-            <span *ngIf="myFicheMateriel.Deadline !== null">
+            <span>
               {{myFicheMateriel.Deadline | date}}
-            </span>
-            <span *ngIf="myFicheMateriel.Deadline === null">
-              {{messageEmptyField}}
             </span>
           </span>
         </p>
-        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Création :
+        <p class="user" 
+          [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''" 
+          [ngStyle]="myFicheMateriel.Deadline === null ? {'margin-top': '25px'} : {'margin-top': 0}" >
+          Création :
           <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
             le {{myFicheMateriel.DateCreation | date}} par {{myFicheMateriel.UserCreation}}
         </p>
-        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Dernière modification : 
+        <p class="user user-last-modif" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Dernière modification : 
         </p>
-        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Dernière modification : 
+        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">
           <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
             le 20 août 2018 par {{myFicheMateriel.UserModification}}user2 (donnée fictive pour le moment)
         </p>
@@ -37,6 +37,7 @@
         <h2 [ngClass]="!myFicheMateriel.TitreEpisodeVO ? 'empty-field' : ''">
           {{myFicheMateriel.TitreEpisodeVO}}
         </h2>
+        <h2>N° Episode AB : {{myFicheMateriel.NumEpisodeAB ? myFicheMateriel.NumEpisodeAB : messageEmptyField}}</h2>
       </div>
       <!-- <div class="col-lg-3 warning-fa">
         <i *ngIf="!myFicheAchatGlobalExist" class="icofont icofont-ban"></i>
@@ -56,19 +57,21 @@
     <div class="row state-content">
       <div class="col-lg-6 state">
         <label for="">Statut : </label>
-        <span [ngClass]="!myFicheMateriel.Fiche_Mat_Libstatut.Libelle ? 'empty-field' : ''">
-          {{myFicheMateriel.Fiche_Mat_Libstatut.Libelle}}
+        <span *ngIf="statusActiveExist">
+          {{statusActive.Libelle}}
         </span>
       </div>
       <div class="col-lg-6 step">
         <label for="">Etape : </label>
-        <span [ngClass]="!myFicheMateriel.Fiche_Mat_LibEtape.Libelle ? 'empty-field' : ''">
-          {{myFicheMateriel.Fiche_Mat_LibEtape.Libelle}}
+        <span *ngIf="stepActiveExist">
+          {{stepActive.Libelle}}
         </span>
-        <history-steps-status-modal [myFicheMateriel]="myFicheMateriel" *ngIf="myFicheMaterielExist"></history-steps-status-modal>
-        <!-- <div class="history"> 
-          <i class="icofont icofont-history"></i>
-        </div>    -->
+        <history-steps-status-modal 
+          [myFicheMateriel]="myFicheMateriel"
+          [statusLib]="statusLib"
+          [stepLib]="stepLib" 
+          *ngIf="myFicheMaterielExist"
+          ></history-steps-status-modal>
       </div>
     </div>
     <div class="row fm-detail-body">
@@ -115,28 +118,27 @@
           <p>Titre épisode VF : {{myFicheMateriel.TitreEpisodeVF ? myFicheMateriel.TitreEpisodeVF : messageEmptyField}}</p>
           <p>Titre épisode VO : {{myFicheMateriel.TitreEpisodeVO ? myFicheMateriel.TitreEpisodeVO : messageEmptyField}}</p>
 
-          <p *ngIf="myFicheMateriel.Fiche_Mat_Version">Version : 
-            <span *ngFor="let item of myFicheMateriel.Fiche_Mat_Version; let x = index">
-              {{x === 0 ? item.libelle : ', '+item.libelle}}
+          <p *ngIf="versionExist.length > 0">Version :
+            <span *ngFor="let item of versionFicheMateriel">
+              <span *ngFor="let version of versionLib">
+                <span *ngIf="version.id_version === item.IdFicheAch_Lib_Versions && item.Isvalid" class="label bg-info">
+                  {{version.version_mat}}
+                </span>
+              </span>
             </span>
           </p>
-          <p *ngIf="!myFicheMateriel.Fiche_Mat_Version">Version : 
-            <span class="empty-field">
-              {{messageEmptyField}}
-            </span>
-          </p>
+          <p *ngIf="!versionExist.length">Version : /</p>
 
-          <p *ngIf="myFicheMateriel.Fiche_Mat_Qualite">Qualité : 
-            <span *ngFor="let item of myFicheMateriel.Fiche_Mat_Qualite; let x = index">
-              {{x === 0 ? item.libelle : ', '+item.libelle}}
+          <p *ngIf="qualiteExist.length > 0">Qualité :
+            <span *ngFor="let item of qualiteFM">
+              <span *ngFor="let qualite of qualiteLib">
+                <span *ngIf="qualite.Code === item.idLibQualiteSup && item.IsValid" class="label bg-info">
+                  {{qualite.Libelle}}
+                </span>
+              </span>
             </span>
           </p>
-          <p *ngIf="!myFicheMateriel.Fiche_Mat_Qualite">Qualité : 
-            <span class="empty-field">
-              {{messageEmptyField}}
-            </span>
-          </p>
-
+          <p *ngIf="!qualiteExist.length">Qualité : /</p>
           <p>Support : 
             <span  [ngClass]="!myFicheMateriel.IdSupport ? 'empty-field' : ''">
               {{myFicheMateriel.IdSupport ? myFicheMateriel.IdSupport : messageEmptyField}}

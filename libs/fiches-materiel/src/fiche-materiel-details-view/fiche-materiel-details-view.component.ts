@@ -13,6 +13,16 @@ import { FicheAchat } from '@ab/fiches-achat';
 import { FichesMaterielService } from '../services/fiches-materiel.service';
 import { FicheMateriel } from '../models/fiche-materiel';
 
+import { QualiteService } from '../services/qualite.service';
+import { QualiteLib, QualiteFM } from '../models/qualite';
+
+import { VersionService } from '../services/version.service';
+
+import { StepsLibService } from '../services/steps-lib.service';
+import { Step } from '../models/step';
+import { StatusLibService } from '../services/status-lib.service';
+import { Status } from '../models/status';
+
 import { CustomIconBadge } from '@ab/custom-icons';
 
 @Component({
@@ -25,6 +35,10 @@ import { CustomIconBadge } from '@ab/custom-icons';
   providers : [
     FichesAchatService,
     FichesMaterielService,
+    QualiteService,
+    StatusLibService,
+    StepsLibService,
+    VersionService,
     Store
   ]
 })
@@ -33,6 +47,23 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   public sub;
   public idParamsFicheMateriel;
   public idParamsFicheAchat;
+
+  public stepLib;
+  public statusLib;
+  public qualiteLib;
+
+  public qualiteFM;
+  public qualiteExist;
+
+  public versionFicheMateriel;
+  public versionLib;
+  public versionExist;
+  public versionFmReady: Boolean = false;
+
+  public stepActive;
+  public stepActiveExist = false;
+  public statusActive;
+  public statusActiveExist = false;
 
   public globalStore;
   public storeFichesToModif;
@@ -104,7 +135,11 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
         private fichesAchatService: FichesAchatService,
         private fichesMaterielService: FichesMaterielService,
         private store: Store<FicheMaterielModification>,
-        private modalService: NgbModal
+        private qualiteService: QualiteService,
+        private modalService: NgbModal,
+        private statusLibService: StatusLibService,
+        private stepsLibService: StepsLibService,
+        private versionService: VersionService
   ) {}
 
   ngOnInit() {
@@ -131,11 +166,103 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   displayDeadlineIcon() {
     const today = +new Date();
     const deadLine = +new Date(this.myFicheMateriel.Deadline);
-    console.log(deadLine);
-    console.log(today);
-    console.log(deadLine <= today);
+    // console.log(deadLine);
+    // console.log(today);
+    // console.log(deadLine <= today);
     return deadLine <= today;
   }
+
+  getQualiteFicheMateriel(id) {
+    this.qualiteExist = [];
+    this.qualiteService
+      .getQualiteFicheMateriel(id)
+      .subscribe(data => {
+        this.qualiteFM = data;
+        console.log('qualité from FM :');
+        console.log(data);
+        this.qualiteFM.map(item => {
+          if (item.IsValid) {
+            this.qualiteExist.push(item);
+          }
+        });
+      });
+  }
+
+  getVersionFicheMateriel(id) {
+    this.versionExist = [];
+    this.versionService
+      .getVersionFicheMateriel(id)
+      .subscribe(data => {
+        this.versionFicheMateriel = data;
+        this.versionFmReady = true;
+        this.versionFicheMateriel.map(item => {
+          if (item.Isvalid) {
+            this.versionExist.push(item);
+          }
+        });
+        console.log(data);
+    });
+  }
+
+
+  /*********************** GET LIBS ******************/
+
+  getQualiteLib() {
+    this.qualiteService
+      .getQualiteLib()
+      .subscribe(data => {
+        this.qualiteLib = data;
+        console.log(data);
+      });
+  }
+
+  getVersionLib() {
+    this.versionService
+      .getVersionLib()
+      .subscribe(data => {
+        this.versionLib = data;
+        console.log(data);
+      });
+  }
+
+  getStepLib() {
+    this.stepsLibService
+      .getStepsLib()
+      .subscribe(data => {
+        console.log(data);
+        this.stepLib = data;
+        this.getActiveStep();
+      });
+  }
+
+  getStatusLib() {
+    this.statusLibService
+      .getStatusLib()
+      .subscribe(data => {
+        console.log(data);
+        this.statusLib = data;
+        this.getActiveStatus();
+      });
+  }
+
+  /* check active step and status */
+  getActiveStep() {
+    this.stepLib.map(item => {
+      if (item.IdLibEtape === this.myFicheMateriel.IdLibEtape) {
+        this.stepActive = item;
+        this.stepActiveExist = true;
+      }
+    });
+  }
+  getActiveStatus() {
+    this.statusLib.map(item => {
+      if (item.IdLibstatut === this.myFicheMateriel.IdLibstatut) {
+        this.statusActive = item;
+        this.statusActiveExist = true;
+      }
+    });
+  }
+  /************************************************/
 
   getFicheMateriel(id: number) {
     this.fichesMaterielService
@@ -149,6 +276,12 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
           this.myFicheMaterielExist = true;
           this.fichesMaterielModification.action = this.goToModifInterface();
           this.displayDeadlineIcon();
+          this.getStatusLib();
+          this.getStepLib();
+          this.getQualiteLib();
+          this.getVersionLib();
+          this.getQualiteFicheMateriel(id);
+          this.getVersionFicheMateriel(id);
         } else {
           this.myFicheMateriel = {};
           this.myFicheMaterielExist = false;

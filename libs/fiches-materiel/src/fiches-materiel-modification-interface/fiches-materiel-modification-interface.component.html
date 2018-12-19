@@ -12,25 +12,26 @@
       [initialFichesMateriel]="initialFichesMateriel"
       [valueNotToChangeLibelle]="valueNotToChangeLibelle"
       [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
-      [qualiteFicheMateriel]="qualiteFicheMateriel"
-      [qualitePresent]="qualitePresent"
+      [qualiteFM]="qualiteFM"
       [versionFicheMateriel]="versionFicheMateriel"
-      [versionPresent]="versionPresent"
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
     <!-- {{annexElementsFicheMateriel | json}} -->
     <div class="row top">
       <div class="col-lg-3 left-infos">
-        <div *ngIf="displayDeadline()" class="form-group row">
+        <div class="form-group row">
           <label class="deadline clo-lg-4 col-form-label">
             Deadline :</label>
               <div class="input-group col-lg-8">
                 {{deadlineNewStringFormat}}
                 <input class="form-control" 
                   placeholder="{{displayPlaceholderDatepicker(newObject.Deadline)}}" 
-                  name="deadlineDate" [(ngModel)]="newObject.Deadline" 
-                  ngbDatepicker #deadlineDate="ngbDatepicker">
+                  name="deadlineDate" 
+                  [(ngModel)]="newObject.Deadline" 
+                  [disabled]="disabledDeadline()"
+                  ngbDatepicker 
+                  #deadlineDate="ngbDatepicker">
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary" (click)="deadlineDate.toggle()" type="button">
                     <i class="icofont icofont-calendar"></i>
@@ -38,7 +39,6 @@
                 </div>
               </div>
         </div>
-        <div *ngIf="displayDeadline() === false && selectionType === 'one'" class="form-group row deadline-hidden"></div>
         <div class="form-group row">
           <label class="user clo-lg-4 col-form-label">
             User :</label>
@@ -54,6 +54,32 @@
         <h2>
            {{newObject.TitreEpisodeVO}}
         </h2>
+          <div class="eps-ab">
+            <label class="col-form-label">N° Episode AB : </label>
+            <input 
+              [(ngModel)]="newObject.NumEpisodeAB"
+              type="text" 
+              class="form-control" 
+              id="epAb" 
+              name="epAb"
+              autocomplete="off">              
+              <div class="icons col-lg-6" *ngIf="selectionType === 'multi'">
+                <i *ngIf="newObject.NumEpisodeAB !== ''"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="resetTooltipMessage"
+                  (click)="newObject.NumEpisodeAB = ''">
+                </i>
+                <i *ngIf="newObject.NumEpisodeAB !== valueNotToChangeLibelle"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NumEpisodeAB = valueNotToChangeLibelle">
+                </i>
+              </div>
+          </div>
+
+
       </div>
       <div class="col-lg-3 warning-fa">
         <span class="warning-no-fa"></span>
@@ -246,8 +272,18 @@
 <!-- {{versionFicheMateriel | json}} -->
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Version : </label>
-            <div class="right-details col-lg-6">/</div>
             <div class="right-details col-lg-6">
+              <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
+                <input 
+                  id="{{item.version_mat}}"
+                  type="checkbox"
+                  (click)="changeModelVersion(item.id_version)"
+                  [checked]="displayCheckedVersion(item.id_version)"
+                  name="{{item.version_mat}}">
+                <label for="{{item.version_mat}}">
+                  {{item.version_mat}}
+                </label>
+              </div>
               <!-- <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
                 <input 
                   (click)="changeVersionChecked(item.id_version)"
@@ -264,24 +300,22 @@
 
 
 
-          <div class="row form-group">
+          <div class="row form-group" *ngIf="qualiteFmReady">
             <label class="col-form-label col-lg-3">Qualité : </label>
-            <div class="right-details col-lg-6">/</div>
-            <!-- <div class="right-details col-lg-6">
-              <div *ngFor="let item of qualite; let i = index" class="checkbox-color checkbox-info">
+            <div *ngIf="qualiteReady" class="right-details col-lg-6">
+              <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-info">
                 <input 
-                  (click)="displayQualiteChecked(item)"
                   id="{{item.Libelle}}"
                   type="checkbox"
-                  [checked]="qualiteArrayIdExist.includes(item.Code)"
+                  (click)="changeModelQualite(item.Code)"
+                  [checked]="displayCheckedQualite(item.Code)"
                   name="{{item.Libelle}}">
                 <label for="{{item.Libelle}}">
                   {{item.Libelle}}
                 </label>
               </div>
-            </div> -->
+            </div>
           </div>
-          <!-- {{qualiteFicheMateriel | json}} -->
 
           <div class="row form-group">
             <label class="col-form-label col-lg-4">Support :</label>
@@ -724,10 +758,8 @@
       [initialFichesMateriel]="initialFichesMateriel"
       [valueNotToChangeLibelle]="valueNotToChangeLibelle"
       [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
-      [qualiteFicheMateriel]="qualiteFicheMateriel"
-      [qualitePresent]="qualitePresent"
+      [qualiteFM]="qualiteFM"
       [versionFicheMateriel]="versionFicheMateriel"
-      [versionPresent]="versionPresent"
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>

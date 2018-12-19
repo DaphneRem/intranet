@@ -8,11 +8,13 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
-import { Qualite, QualiteByFM } from '../models/qualite';
+import { QualiteLib, QualiteFM } from '../models/qualite';
 
 // temporary imports :
-import { urlFicheMateriel, urlLibQualite, urlFicheMatQualite, urlQualite } from '../../../../.privates-url';
-
+import { urlFicheMateriel, urlQualite, urlFicheMatQualite, urlLibQualite } from '../../../../.privates-url';
+// export const urlQualite = '/Fiche_Mat_Qualite';
+// export const urlLibQualite = '/LibQualiteSup';
+// export const urlFicheMatQualite = urlQualite + '/IdFicheMateriel/';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json'
@@ -24,27 +26,36 @@ export class QualiteService {
   constructor(private http: HttpClient) {}
 
   /* GET ONE FICHE MATERIEL BY ID */
-  getQualite(): Observable<Qualite[]> {
+  getQualiteLib(): Observable<QualiteLib[]> {
     return this.http
       .get(urlFicheMateriel + urlLibQualite)
       .map((res: any) => {
         console.log(res);
-        return res as Qualite[];
+        return res as QualiteLib[];
       });
   }
 
-  getQualiteFicheMateriel(id): Observable<QualiteByFM[]> {
+  getQualiteFicheMateriel(id): Observable<QualiteFM[]> {
     return this.http
       .get(urlFicheMateriel + urlFicheMatQualite + id)
       .map((res: any) => {
         console.log(res);
-        return res as QualiteByFM[];
+        return res as QualiteFM[];
       });
   }
 
   postQualite(qualite) {
     return this.http
       .post(
+        urlFicheMateriel + urlQualite,
+        qualite
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  putQualite(qualite) {
+    return this.http
+      .put(
         urlFicheMateriel + urlQualite,
         qualite
       )

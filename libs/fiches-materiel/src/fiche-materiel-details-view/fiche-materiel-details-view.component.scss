@@ -21,6 +21,9 @@ $iconColor : #7f7f7f;
                     margin-left: 20px;
                     &.user {
                         padding-left: 50px;
+                        &.user-last-modif {
+                            margin-bottom: 0;
+                        }
                         &.no-warning {
                             padding-left: 0px;
                         }
@@ -55,6 +58,9 @@ $iconColor : #7f7f7f;
                         color :  $creationBtnColor;
                     }
                 }
+                .eps-ab {
+                    width: 300px;
+                }
             }
             .warning-fa {
                 text-align: center;
@@ -71,9 +77,15 @@ $iconColor : #7f7f7f;
             font-size: 1.2em;
             .state {
                 text-align: right;
+                span {
+                    margin-left: 10px;
+                }
             }
             .step {
                 display: flex;
+                span {
+                    margin-left: 10px;
+                }
                 .empty-field {
                     color :  $creationBtnColor;
                 }

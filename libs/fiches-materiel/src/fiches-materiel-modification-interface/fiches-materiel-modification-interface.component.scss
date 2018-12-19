@@ -65,6 +65,14 @@ $iconColor : #7f7f7f;
                         color :  $creationBtnColor;
                     }
                 }
+                .eps-ab {
+                    display: flex;
+                    justify-content: center;
+                    input {
+                        width: 100px;
+                        margin-left: 10px;
+                    }
+                }
             }
             .warning-fa {
                 text-align: center;

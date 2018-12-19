@@ -15,9 +15,10 @@
                   <p class="badge badge-lg bg-info">{{category.Libelle}} :</p>
                   <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="sub-category">
                       <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
-                          <i *ngIf="checkElementIsValid(item.IdLibElementAnnexes)" class="icofont icofont-check-alt"></i>
                           <!-- <i *ngIf="checkElementIsValid(item.IdLibElementAnnexes)" class="icofont icofont-check-alt"></i> -->
-                          <p [ngStyle]="checkElementIsValid(item.IdLibElementAnnexes) ? {'margin-left' : '5px'} : {'margin-left' : '25px'}" >
+                        <i class="icofont" [ngClass]="checkElementIsValid(item.IdLibElementAnnexes) ? 'icofont-check-alt valid' : 'icofont-close-line not-valid'" ></i>
+                          <!-- <i *ngIf="checkElementIsValid(item.IdLibElementAnnexes)" class="icofont icofont-check-alt"></i> -->
+                          <p>
                           {{item.Libelle}}
                           </p>
                       </div>

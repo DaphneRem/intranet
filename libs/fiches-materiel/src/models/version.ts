@@ -1,4 +1,4 @@
- export class Version {
+ export class VersionFM {
     IdMat_Version: number;
     IdFicheMateriel: number;
     IdFicheAch_Lib_Versions: number;

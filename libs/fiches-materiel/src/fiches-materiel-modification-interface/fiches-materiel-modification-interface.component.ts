@@ -21,10 +21,10 @@ import {
 } from '../models/annex-element';
 
 import { QualiteService } from '../services/qualite.service';
-import { Qualite } from '../models/qualite';
+import { QualiteLib, QualiteFM } from '../models/qualite';
 
 import { VersionService } from '../services/version.service';
-import { Version, VersionLib } from '../models/version';
+import { VersionFM, VersionLib } from '../models/version';
 
 import { RetourOriLibService } from '../services/retour-ori-lib.service';
 
@@ -37,6 +37,7 @@ import { NewObject } from './fiche-materiel-new-object';
 import {
   FicheMaterielModification
 } from '@ab/fiches-materiel/src/fiches-materiel-modification-interface/+state/fiche-materiel-modification.interfaces';
+import { identifierModuleUrl } from '@angular/compiler';
 
 @Component({
   selector: 'fiches-materiel-modification-interface',
@@ -109,18 +110,14 @@ export class FichesMaterielModificationInterfaceComponent
   public lendingDurationDate;
   public lendingDurationDatepicker;
 
-  public qualite: any;
+  public qualiteLib: any;
   public qualiteReady: Boolean = false;
-  public qualiteFicheMateriel = [];
-  public qualiteArrayIdExist = [];
-  public qualitePresent;
-  public selectedQuality = [];
+  public qualiteFM;
+  public qualiteFmReady: Boolean = false;
 
   public versionFicheMateriel = [];
   public versionLib: any;
-  public versionToFicheMateriel: any;
-  public versionArrayIdExist: any = [];
-  public selectedVersion: any = [];
+  public versionFmReady: Boolean = false;
 
   public valueNotToChangeLibelle = 'Valeur d\'origine';
   public resetTooltipMessage = 'Vider le champs';
@@ -297,17 +294,9 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
-  displayVersionChecked(idVersion) {
-    this.versionToFicheMateriel.map(item => {
-      if (idVersion === item.IdMat_Version) {
-        item.Isvalid = !item.Isvalid;
-        return item.Isvalid;
-      }
-    });
-  }
 
-  displayDeadline() {
-    if ((this.newObject.IdLibstatut === 1) || (this.newObject.IdLibstatut === 3 && this.newObject.RetourOri === 1)) {
+  disabledDeadline() { // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
+    if (this.newObject.IdLibEtape === 17 || this.newObject.IdLibstatut === 3 || this.newObject.IdLibstatut === 5) {
       return true;
     } else {
       return false;
@@ -350,45 +339,6 @@ export class FichesMaterielModificationInterfaceComponent
     console.log('selection Type : ' + this.selectionType);
     console.log('multi oeuvre : ' + this.multiOeuvre);
     console.log('multi fiches achat : ' + this.multiFichesAchat);
-  }
-
-  displayQualiteChecked(item) {
-    console.log(item);
-    if (this.qualiteFicheMateriel === null) {
-      console.log('null');
-      this.selectedQuality = [item];
-    } else if (this.qualiteFicheMateriel.indexOf(item) !== -1) {
-      console.log(this.qualiteFicheMateriel.indexOf(item));
-      this.qualiteFicheMateriel.splice(
-        this.qualiteFicheMateriel.indexOf(item),
-        1
-      );
-      console.log('true');
-      console.log(this.qualiteFicheMateriel);
-    } else {
-      console.log('else');
-      this.qualiteFicheMateriel.push(item);
-    }
-  }
-
-  changeVersionChecked(item) {
-    console.log(item);
-    console.log(this.versionFicheMateriel);
-    if (this.versionFicheMateriel === null) {
-      console.log('null');
-      this.selectedVersion = [item];
-    } else if (this.versionFicheMateriel.indexOf(item) !== -1) {
-      console.log(this.versionFicheMateriel.indexOf(item));
-      this.versionFicheMateriel.splice(
-        this.versionFicheMateriel.indexOf(item),
-        1
-      );
-      console.log('true');
-      console.log(this.versionFicheMateriel);
-    } else {
-      console.log('else');
-      this.versionFicheMateriel.push(item);
-    }
   }
 
   checkAllIdSelected() {
@@ -541,51 +491,25 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   getQualiteFicheMateriel(id) {
-    this.qualiteService.getQualiteFicheMateriel(id).subscribe(data => {
-      if (data) {
-        data.map(item => {
-          console.log(item);
-          console.log('____________________________________');
-          this.qualitePresent = data;
-          if (item.IsValid) {
-            this.qualiteArrayIdExist.push(item.idLibQualiteSup);
-            this.qualite.map(e => {
-              if (e.Code === item.idLibQualiteSup) {
-                this.qualiteFicheMateriel.push(e);
-                console.log(this.qualiteFicheMateriel);
-              }
-            });
-            console.log(this.qualiteArrayIdExist);
-          }
-        });
-      }
-      this.qualitePresent = data;
-      console.log(data);
-    });
+    this.qualiteService
+      .getQualiteFicheMateriel(id)
+      .subscribe(data => {
+        this.qualiteFM = data;
+        this.qualiteFmReady = true;
+        console.log('qualité from FM :');
+        console.log(data);
+      });
   }
 
   // versionArrayIdExist
   getVersionFicheMateriel(id) {
     // Get Version from Fiche Materiel
-    this.versionService.getVersionFicheMateriel(id).subscribe(data => {
-      if (data) {
-        this.versionToFicheMateriel = data;
-        data.map(item => {
-          console.log(item);
-          if (item.Isvalid) {
-            this.versionArrayIdExist.push(item.IdFicheAch_Lib_Versions);
-            this.versionLib.map(e => {
-              if (e.id_version === item.IdFicheAch_Lib_Versions) {
-                this.versionFicheMateriel.push(e);
-                console.log(this.versionFicheMateriel);
-              }
-            });
-            console.log(this.versionArrayIdExist);
-          }
-        });
-      }
-      this.versionToFicheMateriel = data;
-      console.log(data);
+    this.versionService
+      .getVersionFicheMateriel(id)
+      .subscribe(data => {
+        this.versionFicheMateriel = data;
+        this.versionFmReady = true;
+        console.log(data);
     });
   }
 
@@ -595,10 +519,10 @@ export class FichesMaterielModificationInterfaceComponent
     this.getStatusLib();
     this.getAnnexStatus();
     this.getRetourOriLib();
+    this.getQualiteLib();
+    this.getVersionLib();
     // this.getAnnexElementsCategories();
     // this.getAnnexElementsAllSubCategories();
-    // this.getQualiteLib();
-    // this.getVersionLib();
   }
 
   displayLibValueNotToChange() {
@@ -619,6 +543,64 @@ export class FichesMaterielModificationInterfaceComponent
     this.retourOri.push({
       IdLibRetourOri: this.valueNotToChangeLibelle,
       Libelle: this.valueNotToChangeLibelle
+    });
+  }
+
+
+  displayCheckedQualite(id) {
+    let checked = [];
+    // console.log(this.qualiteFM);
+    this.qualiteFM.map(item => {
+      if (item.idLibQualiteSup === id && item.IsValid) {
+        // console.log(item);
+        checked.push(item);
+      }
+    });
+    if (checked.length > 0) {
+      return true;
+    } else {
+      // console.log('non non non non qualité');
+      return false;
+    }
+  }
+
+  changeModelQualite(id) {
+    this.qualiteFM.map(item => {
+      if (item.idLibQualiteSup === id) {
+        // console.log(item);
+        item.IsValid = !item.IsValid;
+        // console.log(item.isValid);
+      }
+    });
+  }
+
+                  //   (click)="changeModelVersion(item.id_version)"
+                  // [checked]="displayCheckedVersion(item.id_version)"
+  displayCheckedVersion(id) {
+    let checked = [];
+    console.log(this.versionFicheMateriel);
+    this.versionFicheMateriel.map(item => {
+      console.log(item);
+      if (item.IdFicheAch_Lib_Versions === id && item.Isvalid) {
+        console.log(item);
+        checked.push(item);
+      }
+    });
+    if (checked.length > 0) {
+      return true;
+    } else {
+      console.log('non non non version');
+      return false;
+    }
+  }
+
+  changeModelVersion(id) {
+    this.versionFicheMateriel.map(item => {
+      if (item.IdFicheAch_Lib_Versions === id) {
+        console.log(item);
+        item.Isvalid = !item.Isvalid;
+        console.log(item.Isvalid);
+      }
     });
   }
 
@@ -681,27 +663,33 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   getRetourOriLib() {
-    this.retourOriLibService.getRetourOri().subscribe(data => {
-      this.retourOri = data;
-      console.log(data);
-      this.retourOriReady = true;
-    });
+    this.retourOriLibService
+      .getRetourOri()
+      .subscribe(data => {
+        this.retourOri = data;
+        console.log(data);
+        this.retourOriReady = true;
+      });
   }
 
   getQualiteLib() {
-    this.qualiteService.getQualite().subscribe(data => {
-      this.qualite = data;
-      console.log('qualité');
-      console.log(data);
-      this.qualiteReady = true;
-    });
+    this.qualiteService
+      .getQualiteLib()
+      .subscribe(data => {
+        this.qualiteLib = data;
+        console.log('get qualité lib :');
+        console.log(data);
+        this.qualiteReady = true;
+      });
   }
 
   getVersionLib() {
-    this.versionService.getVersionLib().subscribe(data => {
-      this.versionLib = data;
-      console.log(data);
-    });
+    this.versionService
+      .getVersionLib()
+      .subscribe(data => {
+        this.versionLib = data;
+        console.log(data);
+      });
   }
 
   /***********************************************************************************/
