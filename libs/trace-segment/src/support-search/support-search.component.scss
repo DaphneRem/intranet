@@ -1,0 +1,113 @@
+@import '../../../../libs/shared/colors-theme';
+$customColorHover: #4ac2c9;
+
+:host {
+    .row {
+        margin : 15px;
+        min-height : 150px;
+        .card {
+            margin-bottom: 0;
+            .loader {
+                top: 0;
+            }
+            .no-file {
+                height : 100px;
+                p {
+                    margin-right : 20px;
+                    span {
+                        font-weight: bold;
+                    }
+                }
+            }
+            .title {
+                // margin-top: -40px;
+                // margin-bottom: 20px;
+                // hr {
+                //     width: 50%;
+                //     margin-top: -15px;
+                //     margin-bottom: 20px;
+                // }
+                // position: absolute;
+                // bottom: 0;
+                margin-top : -50px;
+                width: 100%;
+                padding-bottom: 10px;
+                font-size : 1.5em;
+                h4 {
+                    color: $blueThemeColor;
+                    // color: #ffa600;
+                    &.subtitle {
+                        color: $customColorButton;
+                    }
+                }
+            }
+            .form-group {
+                display : inherit;
+                margin : auto;
+                .field {
+                    display: flex;
+                    margin : auto;
+                    height: 70px;
+                    label {
+                        padding : 5px 10px 0 10px;
+                    }
+                    input {
+                        height : 35px;
+                    }
+                    .ng-valid[required], .ng-valid.required  {
+                        border-color: $validColor;
+                        &.ng-untouched {
+                            border-color: $diseableColor;
+                        }
+                    }
+                    .ng-invalid:not(form)  {
+                        border-color: $invalidColor;
+                        &.ng-untouched {
+                            border-color: $diseableColor;
+                        }
+                    }
+                }
+            }
+            .submit {
+                height: 70px;
+                margin : auto;
+                button {
+                    padding: 5px 10px;
+                    background: $blueThemeColor;
+                    border-color: $blueThemeColor;
+                    &:hover {
+                        background: $customColorHover;
+                        border-color: $customColorHover;
+                    }
+                    &:disabled {
+                        background: $diseableColor;
+                        cursor :default;
+                        border-color : $diseableColor;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+@media (max-width: 990px) {
+    :host {
+        .row {
+            min-height :400px;
+            .card {
+                .form-group {
+                    height : 70px;
+                    padding :10px;
+                }
+                .submit {
+                    text-align: center;
+                }
+            }
+
+        }
+    }
+}

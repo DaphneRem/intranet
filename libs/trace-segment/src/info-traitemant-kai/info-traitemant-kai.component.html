@@ -1,0 +1,18 @@
+<loader-animation *ngIf="!dataInfoReady && !dataTraitementReady"></loader-animation>
+<div *ngIf="dataInfoReady && dataTraitementReady" class="row">
+    <widget-data
+        class="col-lg-{{item.size}} col-xl-{{item.size}}" 
+        *ngFor="let item of widgetsInfosData" 
+        [data]="widgetsInfosData[widgetsInfosData.indexOf(item)]"
+        [error]="errorInfos"
+        [errorMessage]="errorMessage">
+    </widget-data>
+    <widget-data
+        class="col-lg-{{item.size}} col-xl-{{item.size}}" 
+        *ngFor="let item of widgetTraitementData" 
+        [data]="widgetTraitementData[widgetTraitementData.indexOf(item)]"
+        [error]="errorTraitement"
+        [errorMessage]="errorMessage">
+    </widget-data>
+</div>
+

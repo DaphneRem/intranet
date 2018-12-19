@@ -1,0 +1,11 @@
+<!-- <div class="row modif-btns">
+  <button *ngIf="showModifBtn" class="btn btn-warning modif">Modifier</button>
+  <button *ngIf="showModifAllEps" class="btn btn-warning eps-modif">Modifier tous les épisodes</button>
+</div> -->
+
+
+<loader-animation *ngIf="!dataReady"></loader-animation>
+<div *ngIf="dataReady">
+  <custom-datatables [customdatatablesOptions]="customdatatablesOptions" (selectRows)="AllSelectedRows($event)"></custom-datatables>
+</div>
+

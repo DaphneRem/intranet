@@ -1,0 +1,33 @@
+$bgLink: rgba(150, 149, 149, 0.5);
+$bgLinkHover: rgba(78, 78, 78, 0.5);
+
+:host {
+    position: fixed;
+    bottom: 200px;
+    right: 0px;
+    width: auto;
+    height: auto;
+    a {
+        position : absolute;
+        right : 0;
+        cursor: pointer;
+        border-radius : 100% 0 0 100% ;
+        margin : 0;
+        width: 45px;
+        height: 45px;
+        cursor: pointer;
+        text-align: center;
+        background: $bgLink;
+        transition: all 0.3s ease-in-out;
+        color: #fff;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+        padding: 8px 3px 0 3px;
+        &:hover {
+            transition: all 0.3s ease-in-out;
+            background: $bgLinkHover;
+        }
+        i {
+            font-size : 2em;
+        }
+    }
+}

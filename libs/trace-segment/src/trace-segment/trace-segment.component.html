@@ -1,0 +1,6 @@
+<sub-header *ngIf="file.autoPath" [goBack]="true" [title]="title" ></sub-header>
+<sub-header *ngIf="!file.autoPath" [title]="title" ></sub-header>
+
+<support-search [(file)]="file"></support-search>
+<!-- <step-in-process [file]="file" *ngIf="file.exist"></step-in-process> -->
+<support-segment *ngIf="file.exist" [file]="file"></support-segment>

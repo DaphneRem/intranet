@@ -1,0 +1,13 @@
+<sub-header 
+  [tableView]="tableView" 
+  [changeView]="changeView" 
+  [link]="link">
+</sub-header>
+<div class="page-body">
+  <div class="container">
+    <div class="row">
+      <widget-link *ngFor="let widget of widgets" class="p-0" [ngClass]="widget.size" [widget]="widget">
+      </widget-link>
+    </div>
+  </div>
+</div>

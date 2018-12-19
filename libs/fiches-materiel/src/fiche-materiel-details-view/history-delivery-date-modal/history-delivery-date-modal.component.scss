@@ -1,0 +1,69 @@
+$creationBtnColor :  #17AAB2;
+$creationBtnHoverColor :  #2eced6;
+
+// /deep/ .modal-content {
+//     border: 1px solid transparent;
+// }
+// /deep/ .acc {
+//     .card {
+//         margin-bottom: 5px;
+//         .card-header {
+//             padding: 15px;
+//             border: 1px solid #7f7f7f;
+//         }
+//     }
+// }
+
+// :host {
+//     display: flex;
+//     width: 40px;
+// }
+
+.history {
+    margin-left: 20px;
+    margin-top: -10px;
+    background: $creationBtnColor;
+    border-radius: 100%;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    &:hover {
+        background: $creationBtnHoverColor;
+    }
+    i {
+        color : #ffffff;
+        font-size: 2.5em;
+        margin-left: 1px;
+        margin-top: 3px;
+        // padding-top: 3px;
+        // padding-right: 3px;
+        // margin: auto;
+        // justify-content: center;
+        // align-items: center;
+        cursor: pointer;
+    }
+}
+
+.btn-close-modal {
+    background-color: $creationBtnColor;
+    border-color: $creationBtnColor;
+    color: #ffffff;
+    background-image: none;
+    transition: all ease-in 0.3s;
+    font-size: 1em;
+    &:hover {
+        transition: all ease-in 0.3s;
+        background-color: $creationBtnHoverColor;
+        border-color: $creationBtnHoverColor;
+    }
+    i {
+        font-size: 1.4em;
+    }
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    // IE10+ CSS here
+    /deep/ .modal-content {
+        margin-top: 20%;
+    }
+}

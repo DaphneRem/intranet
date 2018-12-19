@@ -1,0 +1,23 @@
+<sub-header></sub-header>
+<div class="card">
+  <div class="row icons">
+    <div class="col-lg-11">
+    </div>
+    <div class="table-top col-lg-1">
+      <custom-icon-badge 
+        *ngFor="let icon of icons" 
+        [littleIcon]="icon.littleIcon" 
+        [bigIcon]="icon.bigIcon" 
+        [link]="icon.link"
+        [tooltip]="icon.tooltip"
+        [tooltipMessage]="icon.tooltipMessage">
+      </custom-icon-badge>
+    </div>
+  </div>
+    <fiches-achat-table 
+      [headerTableLinkExist]="false" 
+      [stateFIcheAchat]="stateFIcheAchat"
+      [displayActionType]="displayActionType"
+      [modalName]="modalName">
+    </fiches-achat-table>
+</div>

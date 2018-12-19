@@ -1,0 +1,245 @@
+@import '../../../../libs/shared/colors-theme';
+// // ingests data
+// export const blueThemeColor = '#39ADB5'; // in progress
+// export const greenThemeColor = '#17B978'; // completed
+// export const redThemeColor = '#FF5F5F'; // kai
+// export const yellowThemeColor = '#FDB44B'; // karina
+
+// // general data
+// export const exploitableData = '#2ed8b6';
+
+// // btn
+// export const diseableColor =  '#d6d6d6';
+// export const validColor = '#2ed8b6';
+// export const invalidColor = ' #FF5370';
+
+// // navbar
+// export const customColorButton = '#3b4650';
+// export const customColorHover = '#696e72';
+
+$headerColor: $blueThemeColor;
+$inProgressColor: $blueThemeColor;
+$karinaWaitingColor: $yellowThemeColor;
+$kaiWaitingColor: $redThemeColor;
+$completedColor: $blueThemeColor;
+$diseableColorLight:  #d6d6d6;
+$disabledGradient: rgb(160, 160, 160);
+$disabledBorder: rgb(145, 145, 145);
+$disabledColor: rgb(131, 131, 131);
+
+@mixin disabled-round() {
+    background: $disabledGradient;
+    border : 2px solid $disabledBorder;
+}
+
+:host {
+    .row {
+        margin: 15px ;
+        padding : 0px;
+        .card {
+            padding :0;
+            margin: 0;
+            .large-widget {
+                width : 100%;
+                // margin : auto;
+                .card-header {
+                    padding :10px;
+                    background: #ffff;
+                    border: 2px solid $headerColor;
+                    h5 {
+                        font-size: 1.1em;
+                        color :  $headerColor;
+                    }
+                    .card-header-right {
+                        padding :0;
+                        margin-top: -25px;
+                        i {
+                            color : $headerColor;
+                            font-size: 2em;
+                        }
+                    }
+                }
+                hr {
+                    margin-top: 0;                }
+                .large-card {
+                    padding : 0;
+                    // padding-bottom: 40px;
+                    margin-top: -35px;
+                    .wizard {
+                        height : 150px;
+                        ul {
+                            display: inline-flex;
+                            max-width: 80%;
+                            width : 80%;
+                            margin-top: 5px;
+                            margin-bottom: 0;
+                            // margin: auto;
+                            li {
+                                padding : 0;
+                                &.step {
+                                    z-index: 1;
+                                    margin-top: 45px;
+                                    .step-round {
+                                        height : 60px;
+                                        width: 60px;
+                                        border-radius: 100%;
+                                        // background: #ffffff;
+                                        // border: 2px solid rgb(131, 131, 131);
+                                        margin-right : 0;
+                                        padding-top: 15px;
+                                        transition: all 0.1s ease-out;
+                                        i {
+                                            color : #ffffff;
+                                            font-size: 2em;
+                                            transition: all 0.1s ease-out;
+                                        }
+                                        &.bc-c-blue {
+                                            background: $inProgressColor;
+                                        }
+                                         &.bc-c-yellow {
+                                            background: $karinaWaitingColor;
+                                            border: 2px solid $karinaWaitingColor;
+                                        }
+                                        &.bc-c-pink {
+                                            background: $kaiWaitingColor;
+                                        }
+                                        &.bc-c-green {
+                                            background: $completedColor;
+                                            border: 2px solid $completedColor;
+                                        }
+                                        &.disabled {
+                                            @include disabled-round();
+                                        }
+                                        // &:hover {
+                                        //     height : 65px;
+                                        //     width: 65px;
+                                        //     margin-right: -5px;
+                                        //     margin-bottom: -5px;
+                                        //     transition: all 0.1s ease-out;
+                                        //     i {
+                                        //         font-size: 2.3em;
+                                        //         transition: all 0.1s ease-out;
+                                        //     }
+                                        // }
+                                    }
+                                    p {
+                                        width: 60px;
+                                        padding-top: 5px;
+                                        margin-bottom: 4px;
+                                        &.disabled {
+                                            color: $disabledColor;
+                                        }
+                                        &.c-blue {
+                                            color: $inProgressColor;
+                                        }
+                                         &.c-yellow {
+                                            color: $karinaWaitingColor;
+                                        }
+                                        &.c-pink {
+                                            color: $kaiWaitingColor;
+                                        }
+                                        &.c-green {
+                                            color: $completedColor;
+                                        }
+                                    }
+                                    .triangle {
+                                        // margin-bottom: -18px;
+                                        text-align: start;
+                                        padding-left: 25px;
+                                        .my-triangle {
+                                            width: 0;
+                                            height: 0;
+                                            border-style: solid;
+                                            border-width: 0 7.5px 13.0px 7.5px;
+                                            border-color: transparent transparent $completedColor transparent;
+                                        }
+                                    }
+                                }
+                                &.line {
+                                    z-index: 0;
+                                    height : 2px;
+                                    margin : auto;
+                                    width: 100%;
+                                    margin-right: 0;
+                                    margin-left: -50px;
+                                    &.disabled {
+                                        background: $disabledColor;
+                                    }
+                                    &.success {
+                                        background:  $completedColor;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    hr {
+                        max-width: 60%;
+                        width: 60%;
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+@media( max-width : 1200px ) {
+    :host {
+        .row {
+            .card {
+                .large-widget {
+                    .large-card {
+                        margin-top: 0;
+                        .wizard {
+                            ul {
+                                max-width: 100%;
+                                width: 100%;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@media( max-width : 990px ) {
+    :host {
+        .row {
+            .card {
+                .large-widget {
+                    .large-card {
+                        margin-top: 0;
+                        .circle-step {
+                            height: 100px;
+                            width: 100px;
+                            border-radius: 100%;
+                            margin: auto;
+                            padding-top: 20px;
+                            margin-top: 10px;
+                            &.bc-c-blue {
+                                background: $inProgressColor;
+                            }
+                            &.bc-c-yellow {
+                                background: $karinaWaitingColor;
+                            }
+                            &.bc-c-pink {
+                                background: $kaiWaitingColor;
+                            }
+                            &.bc-c-green {
+                                background: $completedColor;
+                                border: 2px solid $completedColor;
+                            }
+                            i {
+                                color : #ffff;
+                                font-size: 4em;
+                            }
+                        }
+                        p {
+                            font-size: 1.5em;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}

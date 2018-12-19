@@ -1,0 +1,53 @@
+@import '../../../../libs/shared/colors-theme';
+
+$headerColor : $redThemeColor;
+$errorColor: #8b8b8b;
+
+:host {
+    .row {
+        margin: 15px 20px 30px 20px;
+        // margin-bottom: 30px;
+        padding : 0px;
+        .card {
+            padding :0;
+            margin: 0;
+            .large-widget {
+                width : 100%;
+                margin : auto;
+                .card-header {
+                    padding :10px;
+                    border: 2px solid $headerColor;
+                    background: #ffff;
+                    h5 {
+                        font-size: 1.1em;
+                        color: $headerColor;
+                    }
+                    .card-header-right {
+                        padding :0;
+                        margin-top: -25px;
+                        i {
+                            color: $headerColor;
+                            font-size: 2em;
+                        }
+                    }
+                }
+                .card-block {
+                    padding: 5px;
+                    .row {
+                        margin: 0;
+                    }
+                    .error {
+                        .error-message {
+                            width: 100%;
+                            text-align: center;
+                            color: $errorColor;
+                        }
+                    }
+                }
+                hr {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+}

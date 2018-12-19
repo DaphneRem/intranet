@@ -1,0 +1,201 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$cancelBtnColor : #989797;
+$importantColor : #fd5f5f;
+$warningColor : #ffa834;
+
+.scroll-content {
+    &.scroll {
+        overflow-y: scroll;
+        max-height: 370px;   
+    }
+}
+
+.oeuvres {
+    margin-top: 30px;
+    // padding-bottom: 180px;
+    .title {
+        display: flex;
+        .number {
+            height: 25px;
+            width: 25px;
+            background: $creationBtnColor;
+            color: #ffffff;
+            border-radius : 100%;
+            padding-left: 8px;
+        }
+        h4 {
+            font-size: 1em;
+            margin : 3px 0 0 10px;
+        }
+        p {
+            padding : 0 10px;
+        }
+        .warning-icon {
+            font-size: 2em;
+            color: $warningColor;
+            margin-top: -5px;
+            margin-left: -14px;
+            margin-right: 8px;
+        }
+        .warning-icon-false {
+            width: 27px;
+        }
+    }
+    .details {
+        margin : auto;
+        margin-left: 0;
+        margin-top: 10px;
+        display: flex;
+        .space {
+            width : 120px;
+            margin-left: 60px;
+        }
+        .oeuvre-details {
+            padding: 0;
+            font-size: 1em;
+            input {
+                width: 40px;
+                &[disabled] {
+                    border: 0;
+                    background: #ffffff;
+                    margin-left: 10px;
+                    font-weight: bold;
+                    color: #000000;
+                    width: 35px;
+                    /* margin-right: -10p*/
+                }
+                &.disabled {
+                    border: 0;
+                    background: #ffffff;
+                    margin-left: 10px;
+                    font-weight: bold;
+                    color: #000000;
+                    width: 35px;
+                }
+                &[readondy] {
+                    border: 0;
+                    background: #ffffff;
+                    margin-left: 10px;
+                    font-weight: bold;
+                    color: #000000;
+                    width: 35px;
+                }
+            }
+        }
+        .add {
+            color : #ffffff;
+            background: $creationBtnColor;
+            height: 27px;
+            width: 27px;
+            border-radius: 100%;
+            font-size: 0.9em;
+            padding-top: 3px;
+            padding-left: 6px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        .modif {
+            height : 27px;
+            width: 27px;
+            background: $warningColor;
+            border-radius: 100%;
+            color: #ffffff;
+            font-size: 1em;
+            padding-left: 5px;
+            // margin-top: -5px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        .delete-icon {
+            color : #ffffff;
+            background: $importantColor;
+            height: 27px;
+            width: 27px;
+            border-radius: 100%;
+            font-size: 0.9em;
+            padding-top: 3px;
+            padding-left: 6px;
+            margin-left: 15px;
+            cursor: pointer; 
+        }
+        .form-txt-danger {
+            width: 100%;
+            margin-left: 120px;
+        }
+    }
+    .rest-episodes {
+        .remaining {
+            color : $importantColor;
+            margin-left: 60px;
+        }
+    }
+}
+.valid {
+    background-color: $creationBtnColor;
+    border-color: $creationBtnColor;
+    height: 33px;
+    margin-left : 10px;
+    margin-right: 0;
+    color: #ffffff;
+    background-image: none;
+    transition: all ease-in 0.3s;
+    border-radius: 2px;
+    font-size: 1em;
+    padding: 5px 10px;
+}
+
+.invalid {
+    background-color: $cancelBtnColor;
+    border-color: $cancelBtnColor;
+    height: 33px;
+    margin-left : 10px;
+    margin-right: 0;
+    color: #ffffff;
+    background-image: none;
+    transition: all ease-in 0.3s;
+    border-radius: 2px;
+    font-size: 1em;
+    padding: 5px 10px;
+    i {
+        margin-right: 10px;
+        font-weight: 100;
+    }
+}
+
+.delete {
+    background-color: $cancelBtnColor;
+    border-color: $cancelBtnColor;
+    height: 33px;
+    margin-left: 10px;
+    // margin-left : 10px;
+    color: #ffffff;
+    background-image: none;
+    transition: all ease-in 0.3s;
+    border-radius: 2px;
+    font-size: 1em;
+    padding: 5px 10px;
+}
+
+.gap-error {
+    width: 100%;
+    .error-message {
+        font-size: 0.9em;
+        &.invalid-message{
+            color: $importantColor;
+        }
+        &.warning-message {
+            color: $warningColor;
+        }
+        &.same-value {
+            font-size: 1em;
+        }
+    }
+}
+
+button {
+    &.creation-off {
+        background-color: $cancelBtnColor;
+        border-color: $cancelBtnColor;
+    }
+}

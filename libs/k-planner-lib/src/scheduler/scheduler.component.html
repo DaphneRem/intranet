@@ -1,0 +1,70 @@
+<div class="control-section">
+  <div class="drag-sample-wrapper">
+      <div class="schedule-container">
+          <div class="title-container">
+              <h1 class="title-text"> K PLANNER </h1>
+          </div>
+          <ejs-schedule #scheduleObj cssClass='schedule-drag-drop' width='100%' height='650px' [group]="group"
+              [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours" [eventSettings]="eventSettings"
+              (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete()" (drag)="onItemDrag($event)">
+              <e-resources>
+                  <e-resource field='DepartmentID' title='Department' name='Departments' [dataSource]='departmentDataSource'
+                      textField='Text' idField='Id' colorField='Color'>
+                  </e-resource>
+                  <e-resource field='ConsultantID' title='Consultant' name='Consultants' [dataSource]='consultantDataSource'
+                      [allowMultiple]='allowMultiple' textField='Text' idField='Id' groupIDField="GroupId" colorField='Color'>
+                  </e-resource>
+              </e-resources>
+              <ng-template #resourceHeaderTemplate let-data>
+                  <div class="template-wrap">
+                      <div class="specialist-category">
+                          <div *ngIf="getConsultantStatus(data)">
+                              <img src="https://ej2.syncfusion.com/angular/demos/src/schedule/images/{{getConsultantImageName(data)}}.png" class="specialist-image" />
+                          </div>
+                          <div class="specialist-name">{{getConsultantName(data)}}</div>
+                      </div>
+                  </div>
+              </ng-template >
+              <e-views  >
+                  <e-view option='TimelineDay'  >
+                        <ng-template #eventTemplate let-data  >
+                                <div  class='template-wrap' style="border-top: solid red; width:100%">
+                                <div  >
+                                    <div class="subject" style="margin-top: 0px;" >
+                                    <u>{{data.Name }} </u>
+                                    <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" />
+                                    <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png">
+                                    <i >utilisateur 1 </i>
+                                </div>
+                                    <div  *ngIf="!data.AzaIsPere" 
+                                      class="show-user" 
+                                      style="background-color: #282a2c;height: 50px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                      <p style="padding-top: 5px;">{{data.Name }}  </p>
+                                    </div>
+                                </div>
+                                  </div>
+                        </ng-template>
+                  </e-view>
+                  <e-view option='TimelineMonth'></e-view>
+              </e-views>
+          </ejs-schedule>
+      </div>
+      <div class="treeview-container">
+          <div class="title-container">
+              <h1 class="title-text">Back Log</h1>
+          </div>
+          <ejs-treeview #treeObj [fields]='field' cssClass='treeview-external-drag' [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)"
+              (nodeDragging)="onItemDrag($event)">
+              <ng-template #nodeTemplate="" let-data="">
+                  <div id="waiting">
+                      <div id="waitdetails">
+                          <div id="waitlist">{{data.Name}}</div>
+                          <div id="waitcategory">{{data.DepartmentName}} - {{data.Description}}</div>
+                      </div>
+                  </div>
+              </ng-template>
+          </ejs-treeview>
+      </div>
+  </div>
+</div>
+

@@ -1,0 +1,369 @@
+{
+  "$schema": "./node_modules/@nrwl/schematics/src/schema.json",
+  "project": {
+    "name": "ab-project",
+    "npmScope": "ab-project",
+    "latestMigration": "20171213-update-tsconfig-spec-to-exclude-e2e"
+  },
+  "apps": [
+    {
+      "name": "diffusions-dates",
+      "root": "apps/diffusions-dates/src",
+      "outDir": "dist/apps/diffusions-dates",
+      "assets": [
+        "assets",
+        "../../../assets",
+        "Web.config"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "../../../test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "../../../tsconfig.spec.json",
+      "prefix": "diff",
+      "styles": [
+        "styles.scss",
+        "../../../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+        "../../../node_modules/font-awesome-scss/scss/font-awesome.scss",
+        "./../../../styles/style.scss",
+        "../../../node_modules/datatables.net-select-dt/css/select.dataTables.css",
+        "../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css"
+      ],
+      "scripts": [
+        "../../../node_modules/jquery/dist/jquery.min.js",
+        "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+        "../../../node_modules/datatables.net/js/jquery.dataTables.js",
+        "../../../node_modules/datatables.net-select/js/dataTables.select.js",
+        "../../../node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.colVis.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.flash.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.html5.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.print.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    },
+    {
+      "name": "fiches-materiel",
+      "root": "apps/fiches-materiel/src",
+      "outDir": "dist/apps/fiches-materiel",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "../../../test.js",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "../../../tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.scss",
+        "../../../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+        "../../../node_modules/font-awesome-scss/scss/font-awesome.scss",
+        "./../../../styles/style.scss",
+        "../../../node_modules/datatables.net-select-dt/css/select.dataTables.css",
+        "../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+        "../../../node_modules/datatables.net-responsive-dt/css/responsive.dataTables.css"
+      ],
+      "scripts": [
+        "../../../node_modules/jquery/dist/jquery.min.js",
+        "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+        "../../../node_modules/datatables.net/js/jquery.dataTables.js",
+        "../../../node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.colVis.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.flash.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.html5.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.print.js",
+        "../../../node_modules/datatables.net-select/js/dataTables.select.js",
+        "../../../node_modules/datatables.net-responsive/js/dataTables.responsive.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    },
+    {
+      "name": "k-planner",
+      "root": "apps/k-planner/src",
+      "outDir": "dist/apps/k-planner",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "../../../test.js",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "../../../tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.scss",
+        "../../../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+        "../../../node_modules/font-awesome-scss/scss/font-awesome.scss",
+        "./../../../styles/style.scss",
+        "../../../node_modules/datatables.net-select-dt/css/select.dataTables.css",
+        "../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+        "../../../node_modules/@syncfusion/ej2-base/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-buttons/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-popups/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-calendars/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-lists/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-schedule/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-schedule/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-navigations/styles/material.css"
+
+      ],
+      "scripts": [
+        "../../../node_modules/jquery/dist/jquery.min.js",
+        "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+        "../../../node_modules/datatables.net/js/jquery.dataTables.js",
+        "../../../node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.colVis.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.flash.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.html5.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.print.js",
+        "../../../node_modules/datatables.net-select/js/dataTables.select.js",
+        "../../../node_modules/datatables.net-responsive/js/dataTables.responsive.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    },
+    {
+      "name": "suivi-ingests",
+      "root": "apps/suivi-ingests/src",
+      "outDir": "dist/apps/suivi-ingests",
+      "assets": [
+        "assets",
+        "../../../assets",
+        "Web.config"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "../../../test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "../../../tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.scss",
+        "../../../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+        "../../../node_modules/font-awesome-scss/scss/font-awesome.scss",
+        "./../../../styles/style.scss",
+        "../../../node_modules/datatables.net-select-dt/css/select.dataTables.css",
+        "../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css"
+      ],
+      "scripts": [
+        "../../../node_modules/jquery/dist/jquery.min.js",
+        "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+        "../../../node_modules/datatables.net/js/jquery.dataTables.js",
+        "../../../node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.colVis.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.flash.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.html5.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.print.js",
+        "../../../node_modules/datatables.net-select/js/dataTables.select.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    },
+    {
+      "name": "custom-datatables",
+      "root": "libs/custom-datatables/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "custom-icons",
+      "root": "libs/custom-icons/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "diffusions-dates-lib",
+      "root": "libs/diffusions-dates/src",
+      "test": "../../../test.ts",
+      "appRoot": ""
+    },
+    {
+      "name": "error-pages",
+      "root": "libs/error-pages/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "fiches-achat-lib",
+      "root": "libs/fiches-achat/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "fiches-materiel-lib",
+      "root": "libs/fiches-materiel/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "ingests",
+      "root": "libs/ingests/src",
+      "test": "../../../test.ts",
+      "appRoot": ""
+    },
+    {
+      "name": "k-planner-lib",
+      "root": "libs/k-planner-lib/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "loaders",
+      "root": "libs/loaders/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "modals",
+      "root": "libs/modals/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "notifications",
+      "root": "libs/notifications/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "playlists",
+      "root": "libs/playlists/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "pub",
+      "root": "libs/pub/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "root",
+      "root": "libs/root/src",
+      "test": "../../../test.ts",
+      "appRoot": ""
+    },
+    {
+      "name": "router-state",
+      "root": "libs/router-state/src",
+      "test": "../../../test.ts",
+      "appRoot": ""
+    },
+    {
+      "name": "scroll-to-top",
+      "root": "libs/scroll-to-top/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "shared",
+      "root": "libs/shared/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "sub-header",
+      "root": "libs/sub-header/src",
+      "test": "../../../test.ts",
+      "appRoot": ""
+    },
+    {
+      "name": "trace-segment",
+      "root": "libs/trace-segment/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "widgets",
+      "root": "libs/widgets/src",
+      "test": "../../../test.ts",
+      "appRoot": ""
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "./tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/suivi-ingests/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/suivi-ingests/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/diffusions-dates/src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/diffusions-dates/e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/fiches-materiel/src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/fiches-materiel/e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/k-planner/src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "apps/k-planner/e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "scss",
+    "component": {},
+    "schematics": {
+      "collection": "@nrwl/schematics",
+      "postGenerate": "npm run format",
+      "newProject": [
+        "app",
+        "lib"
+      ]
+    }
+  },
+  "warnings": {
+    "typescriptMismatch": false
+  }
+}

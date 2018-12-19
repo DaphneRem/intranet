@@ -1,0 +1,31 @@
+<ng-template #deliveryDateContent let-c="close" let-d="dismiss" class="history-modal">
+  <div class="modal-header">
+    <h4 class="modal-title">Historique des changements de date de livraison</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body acc">
+    <ngb-accordion [closeOthers]="true" onchange="historyDeliveryDate" *ngIf="historyDeliveryDate.length">
+      <ngb-panel id="static-{{i}}" *ngFor="let item of historyDeliveryDate; let i = index;">
+        <ng-template ngbPanelTitle>
+          <span>{{item.DateModification | date:'shortDate'}} par {{item.UserModification.length > 0 ? item.UserModification : 'utilisateur
+            non spécifié'}} – Date de livraison : {{item.DateLivraison | date:'shortDate'}}
+          </span>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          {{item.Commentaires === null ? 'Aucun commentaire' : item.Commentaires}}
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+    <div *ngIf="historyDeliveryDate.length === 0">
+      Aucun changement n'a été effectué depuis la création de la fiche Matériel
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Retour</button>
+  </div>
+</ng-template>
+<div class="history" (click)="openLg(deliveryDateContent)">
+  <i class="icofont icofont-history"></i>
+</div>

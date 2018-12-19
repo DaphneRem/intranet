@@ -1,0 +1,64 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$cancelBtnColor : #989797;
+
+.h3 {
+    font-size: 2em;
+}
+.modal-content {
+    &.my-content {
+        // padding: 0 40px 30px;
+        // min-height: 230px;
+        padding-bottom: 50px;
+        padding-top : 0;
+    }
+    button {
+        &.creation-btn {
+            background-color: $creationBtnColor;
+            border-color: $creationBtnColor;
+            margin-right: 80px;
+            // float: right;
+            color: #ffffff;
+            background-image: none;
+            transition: all ease-in 0.3s;
+            border-radius: 2px;
+            text-transform: capitalize;
+            font-size: 1em;
+            padding: 8px 10px;
+            // margin-right: 80px;
+            margin-bottom: -42px;
+        }
+        &.return-btn {
+            margin-right: 0;
+            float: right;
+            color: #ffffff;
+            background-color: $cancelBtnColor;
+            background-image: none;
+            border-color: $cancelBtnColor;
+            transition: all ease-in 0.3s;
+            border-radius: 2px;
+            text-transform: capitalize;
+            font-size: 1em;
+            padding: 8px 10px;
+        }
+    }
+    .icon {
+        display : block;
+        .creation-icon {
+            width: 70px;
+            float: right;
+            margin-right: 70px;
+            margin-bottom: -43px;
+        }
+    }
+}
+
+.close-icon {
+    font-size: 2em;
+}
+
+/deep/ .swal2-popup .swal2-actions .swal2-styled.swal2-confirm {
+    padding: 8px 10px;
+    background-color: $creationBtnColor;
+    border-color: $creationBtnColor;
+}

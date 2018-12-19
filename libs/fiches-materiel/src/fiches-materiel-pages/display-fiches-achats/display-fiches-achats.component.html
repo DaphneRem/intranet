@@ -1,0 +1,36 @@
+<sub-header></sub-header>
+
+<div class="row card">
+  <p class="col-lg-2">Voir Fiches Achat : </p>
+  <div class="col-lg-3 search-form">
+    <div class="form-radio">
+      <form>
+        <div class="radio radio-inline" *ngFor="let view of views">
+          <label>
+            <input type="radio" name="view.name" checked="checked" (click)="select(view)">
+            <i class="helper"></i>{{view.label}}
+          </label>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="search-btn col-lg-5">
+    <button class="btn btn-info" (click)="submitView()">Rechercher</button>
+  </div>
+  <div class="table-top col-lg-2">
+    <custom-icon-badge 
+      *ngFor="let icon of icons" 
+      [littleIcon]="icon.littleIcon" 
+      [bigIcon]="icon.bigIcon" 
+      [link]="icon.link"
+      [tooltip]="icon.tooltip"
+      [tooltipMessage]="icon.tooltipMessage">
+    </custom-icon-badge>
+  </div>
+</div>
+<fiches-achat-table 
+  [headerTableLinkExist]="false" 
+  [stateFIcheAchat]="stateFIcheAchat"
+  [displayActionType]="displayActionType"
+  [modalName]="modalName">
+</fiches-achat-table>

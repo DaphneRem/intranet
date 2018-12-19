@@ -1,0 +1,56 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$creationBtnHoverColor :  #2eced6;
+$cancelBtnColor : #c9c9c9;
+$importantColor : #fd5f5f;
+
+.card {
+    flex-direction: inherit;
+    margin : 10px;
+    p {
+        margin : 0;
+        margin-top: 7px;
+        padding : 20px;
+        width: 150px;
+        text-align: right;
+    }
+    .search-form {
+        .form-radio {
+            // display: flex;
+            // justify-content: center;
+            form {
+                // width: max-content;
+                .radio {
+                    padding: 10px;
+                    margin-top: 15px;
+                    .helper::after {
+                        border: 0.125rem solid $creationBtnColor;
+                        background-color:  $creationBtnColor;
+                        border-color:  $creationBtnColor;
+                    }
+                    .helper::before {
+                        border: 0.125rem solid $creationBtnColor;
+                    }
+                }
+            }
+        }
+    }
+    .search-btn {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        button {
+            &:hover {
+                background-color: $creationBtnHoverColor;
+                border-color: $creationBtnHoverColor;
+            }
+        }
+    }
+    .table-top {
+        display : flex;
+        justify-content: flex-end;
+        padding-left: 0;
+        padding: 10px;
+    }
+
+}

@@ -1,0 +1,29 @@
+:host {
+    height : 100%;
+    a {
+        height : 100%;
+        .card {
+            height : 270px;
+            color : #fff;
+            // border-radius: 0;
+            margin : 10px;
+            border: 1px solid;
+            border-radius: 5px;
+            
+            &:hover {
+                box-shadow: 0 0px 25px 0 rgb(126, 125, 125);
+            }
+            .card-block {
+                height: 100%;
+                padding-top : 50px;
+                i {
+                    font-size : 8em;
+                    font-weight: 100;
+                }
+                h4 {
+                    margin: 20px;
+                }
+            }
+        }
+    }
+}

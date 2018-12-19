@@ -1,0 +1,46 @@
+.modif-btns {
+    margin: 20px 15px 10px 15px;
+    padding-left: 20px;
+    .modif {
+        margin-right: 10px;
+    }
+}
+
+/deep/ .label-default {
+    background: #ffffff;
+    background-color: #ffffff !important;
+    color: #a8a8a8 !important;
+    border: 1px solid #a8a8a8;
+}
+
+/deep/ .customSwalBtn{
+    background-color: rgb(23, 170, 178);
+    border-left-color: rgb(23, 170, 178);
+    border-right-color: rgb(23, 170, 178);
+    padding: 13px 30px;
+    border: 0;
+    border-radius: 3px;
+    box-shadow: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 500;
+    margin: 30px 5px 0px 5px;
+    // padding: 10px 32px;
+    &:hover {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
+    }
+}
+
+/deep/ .swal2-popup .swal2-actions {
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin: 40px 0 0;
+}
+
+/deep/ .swal2-close {
+    &:focus, &:active {
+        border: 0px solid;
+        outline: none;
+    }
+}

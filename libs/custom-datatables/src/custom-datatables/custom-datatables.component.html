@@ -1,0 +1,68 @@
+<loader-animation *ngIf="!dataReady"></loader-animation>
+<div class= "custom-datatables row" id="datatable">
+  <!-- ************** If data exist ************** -->
+  <div *ngIf="data.length" class="card">
+    <!-- Header Buttons -->
+    <div class="header-buttons">
+      <a *ngIf="headerTableLinkExist" 
+          class="btn btn-primary btn-outline-primary" 
+          [ngStyle]="buttonViewMore"
+          [routerLink]="headerTableLink" 
+          placement="right" 
+          ngbTooltip="Voir fichiers sur les 3 derniers jours">
+        Voir plus...
+      </a>
+    </div> 
+    <!-- Header Table -->
+    <div 
+      class="datatables-header text-center middle" 
+      [ngStyle]="headerColor"
+      [ngClass]="paging || search ? 'down-header' : ''">
+      <div 
+        class="header-title text-uppercase title"
+        [placement]="data[0].id && data[0].noseg >= 0 ? 'bottom' : '' "
+        [ngbTooltip]="tooltipHeader ? tooltipHeader : ''">
+        {{tableTitle}}
+      </div>
+    </div>
+    <!-- Body Table => datatables -->
+    <table 
+      datatable
+      id="datatable"
+      [dtOptions]="dtOptions" 
+      [dtTrigger]="dtTrigger"
+      class="table table-styling row-border hover"
+      [ngStyle]="firstColumnColor">
+    </table>
+  </div>
+  <!-- ************* If !data exist ************* -->
+  <div *ngIf="!data.length" class="card no-data">
+    <!-- Header Buttons -->
+    <div class="header-buttons">
+      <a *ngIf="headerTableLinkExist" 
+          class="btn btn-primary btn-outline-primary"
+          [ngStyle]="buttonViewMore"
+          [routerLink]="headerTableLink" 
+          placement="right" 
+          ngbTooltip="Voir fichiers sur les 3 derniers jours">
+        Voir plus...
+      </a>
+    </div>
+    <!-- Header Table -->
+    <div 
+      class="datatables-header text-center middle"
+      [ngStyle]="headerColor">
+      <div class="header-title no-data-alert text-uppercase">
+         {{tableTitle}}
+      </div>
+    </div>
+    <!-- Body Table (error) if server responds [] -->
+    <div *ngIf="data != 0 || data.length === 0" class="alert text-center" [ngStyle]="alertColor">
+      <p> Il n'y a pas de fichiers {{tableTitle}}</p>
+    </div>
+    <!-- Body Table (error) if server responds 0 -->
+    <div *ngIf="data === 0" class="alert text-center" [ngStyle]="alertColor">
+      <p> Les fichiers {{tableTitle}} sont momentanément indisponibles, merci de réessayer plus tard.</p>
+    </div>
+  </div>
+</div>

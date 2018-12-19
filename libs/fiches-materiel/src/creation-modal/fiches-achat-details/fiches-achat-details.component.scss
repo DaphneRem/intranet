@@ -1,0 +1,46 @@
+$navbarColor : #3b4650;
+$creationBtnColor :  #17AAB2;
+$cancelBtnColor : #989797;
+$importantColor : #fd5f5f;
+
+.nbr-oeuvre {
+   margin-bottom : 25px; 
+}
+.scroll-content {
+    &.scroll {
+        overflow-y: scroll;
+        max-height: 355px;   
+    }
+    .oeuvre {
+        padding-left: 27px;
+        .title {
+            display: flex;
+            .number {
+                height: 25px;
+                width: 25px;
+                background: $creationBtnColor;
+                color: #ffffff;
+                border-radius : 100%;
+                padding-left: 8px;
+            }
+            h4 {
+                font-size: 1em;
+                margin : 3px 0 0 10px;
+            }
+        }
+        .details {
+            margin : 5px 0 10px 35px;
+            .oeuvre-details {
+                padding: 0;
+                span {
+                    &.important {
+                        color : $importantColor;
+                        font-weight: 100;
+                    }
+                }
+            }
+        }
+    }
+}
+
+

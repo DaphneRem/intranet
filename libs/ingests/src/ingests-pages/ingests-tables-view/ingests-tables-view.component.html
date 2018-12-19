@@ -1,0 +1,32 @@
+<!-- <sub-header 
+  [tableView]="true" 
+  [changeView]="true"
+  [link]="link">
+</sub-header> -->
+<sub-header></sub-header>
+<ingests-errors
+   [headerTableLinkExist]="false" 
+   [headerTableLink]="inProgressTableLink" 
+   [daysTableView]="view72h">
+</ingests-errors>
+<ingests-in-progress 
+  [headerTableLinkExist]="false"
+  [headerTableLink]="inProgressTableLink"
+  [daysTableView]="view72h">
+</ingests-in-progress>
+<!-- <kai-waiting
+   [headerTableLinkExist]="headerTableLinkExist" 
+   [headerTableLink]="kaiTableLink" 
+   [daysTableView]="daysTableView">
+  </kai-waiting>
+<karina-waiting
+   [headerTableLinkExist]="headerTableLinkExist" 
+   [headerTableLink]="karinaTableLink" 
+   [daysTableView]="daysTableView">
+</karina-waiting> -->
+<ingests-completed
+   [headerTableLinkExist]="true" 
+   [headerTableLink]="completedTableLink" 
+   [daysTableView]="view24h">
+</ingests-completed>
+<scroll-to-top></scroll-to-top>

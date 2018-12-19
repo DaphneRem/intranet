@@ -1,0 +1,84 @@
+  <div class="row">
+    <div class="card col-lg-12">
+      <form #searchFile="ngForm" class="form-group row justify-content-center">
+        <div class="form-group col-lg-4 col-md-12">
+          <div class="field">
+            <label for="support">Support</label>
+            <div>
+              <input [(ngModel)]="file.idSupport" pattern="^[0-9]*$" required minlength="8" maxlength="8" id="support"
+                name="support" class="form-control" #name="ngModel">
+              <div *ngIf="name.invalid && (name.dirty || name.touched)" class="col-form-label form-txt-danger">
+                <div *ngIf="name.errors.required">
+                  n° de support requis
+                </div>
+                <div *ngIf="name.errors.minlength">
+                  8 caractères requis
+                </div>
+                <div *ngIf="name.errors.pattern && !name.errors.minlength">
+                  chiffres uniquement
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-lg-4 col-md-11">
+          <div class="field">
+            <label for="segment">Segment</label>
+            <div>
+              <input [(ngModel)]="file.numSegment" required id="segment" pattern="^[0-9]*$" name="segment" class="form-control" maxlength="3"
+                #segment="ngModel">
+              <div *ngIf="segment.invalid && (segment.dirty || segment.touched)" class="col-form-label form-txt-danger">
+                <div *ngIf="segment.errors.required">
+                   n° de segment requis
+                </div>
+                <div *ngIf="segment.errors.pattern && !segment.errors.minlength">
+                   chiffres uniquement
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 submit">
+          <button *ngIf="searchFile.invalid && !file.autoPath" (click)="checkRouteExist()" type="submit" class="btn btn-primary check-route" [disabled]="searchFile.invalid">
+            Rechercher
+          </button>
+          <button *ngIf="!searchFile.invalid && !file.autoPath" (click)="checkRouteExist()" type="submit" class="btn btn-primary check-route" [disabled]="searchFile.invalid">
+            Rechercher
+          </button>
+          <button *ngIf="file.autoPath" (click)="newSearch()" type="submit" class="btn btn-primary new-search">
+            Nouvelle recherche
+          </button>
+          <!-- <button *ngIf="!searchFile.invalid" (click)="checkRouteExist()" type="submit" class="btn btn-primary" [disabled]="searchFile.invalid">
+                          <a  *ngIf="supportExist" routerLink="./support/{{file.idSupport}}/seg/{{file.numSegment}}">Search</a>
+                          <a *ngIf="!supportExist && automaticFilling" routerLink=" ['../../detail-file']">Search</a>
+  
+                      </button> -->
+        </div>
+      </form>
+      <div *ngIf="file.exist" class="title">
+        <!-- <hr> -->
+        <h4 class="text-center subtitle">TO : {{oeuvreTitle}}</h4>
+        <h4 class="text-center">TS : {{segmentTitle}}</h4>
+      </div>
+      <!-- <loader-animation *ngIf="file.exist === false && search.statut && error.statut===false" class="loader"></loader-animation> -->
+      <div *ngIf="searchStore.error" class="no-file text-center">
+        <p>
+          Aucun fichier ne correspond au support
+          <span class="text-warning">{{searchStore.idSupport}}</span>
+          et segment
+          <span class="text-warning">{{searchStore.numSeg}}</span>
+        </p>
+      </div>
+      <!-- <div *ngIf="file.exist === false && search.statut && error.statut && error.message === ''" class="no-file text-center">
+        <p>
+          Aucun fichier ne correspond au support
+          <span class="text-warning">{{search.idSupport}}</span>
+          et segment
+          <span class="text-warning">{{search.numSegment}}</span>
+        </p>
+      </div>
+      <div *ngIf="file.exist === false && search.statut && error.statut && error.message.length" class="no-file text-center">
+        <p>{{error.message}}</p>
+      </div> -->
+    </div>
+  </div>

@@ -1,0 +1,22 @@
+.card {
+    margin-bottom: 0;
+    border-radius: 0;
+    color: rgb(168, 168, 168);
+    &:hover {
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+    }
+    .card-block {
+        padding : 0;     
+        h2 {
+            padding-top : 15px;
+            font-weight: 100;
+            font-size: 1.5em;
+            margin : 0;
+            height : 50px;
+        }
+        .right-btn {
+            margin-top: -50px;
+        }
+    }
+}
+

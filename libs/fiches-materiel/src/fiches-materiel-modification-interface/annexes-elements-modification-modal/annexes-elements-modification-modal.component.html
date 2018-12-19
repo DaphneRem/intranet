@@ -1,0 +1,72 @@
+<button class="btn open-btn" (click)="openLg(annexesElementsToModif)">Modifier détails éléments annexes</button>
+
+<!--************* MODAL **************-->
+<ng-template #annexesElementsToModif let-c="close" let-d="dismiss" class="affected-annexes-modal">
+    <div class="modal-header">
+        <h4 class="modal-title">Détails des éléments annexes</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body elements-list">
+        <!-- SELECTION TYPE ONE -->
+        <div class="details row form-group" *ngIf="selectionType === 'one'">
+            <div class="col-lg-12" class="categories row">
+                <div *ngFor="let category of annexElementsCategories; let i = index" class="category col-lg-6">
+                <label class="badge badge-lg bg-info">{{category.Libelle}} :</label>
+                <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="checkbox-color checkbox-info">
+                    <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
+                        <input id="{{item.IdLibElementAnnexes}}" 
+                        name="{{item.Libelle}}" 
+                        type="checkbox"
+                        (click)="changeModel(item.IdLibElementAnnexes)"
+                        [checked]="displayCheckedElements(item.IdLibElementAnnexes)">
+                        <label for="{{item.IdLibElementAnnexes}}">
+                        {{item.Libelle}}
+                        </label>
+                    </div>
+                </div>
+                <label>Commentaires :</label>
+                <textarea 
+                    class="form-control md-textarea col-lg-11" 
+                    id="{{category}}" 
+                    name="{{category}}" 
+                    type="text">
+                </textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- SELECTION TYPE MULTI -->
+        <div class="details row form-group" *ngIf="selectionType === 'multi'">
+            <div class="col-lg-12" class="categories row">
+                <div *ngFor="let category of annexElementsCategories; let i = index" class="category col-lg-6">
+                <label class="badge badge-lg bg-info">{{category.Libelle}} :</label>
+                <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="checkbox-color checkbox-info">
+                    <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
+                        <input 
+                            id="{{item.IdLibElementAnnexes}}" 
+                            name="{{item.Libelle}}" 
+                            type="checkbox">
+                        <label for="{{item.IdLibElementAnnexes}}">
+                        {{item.Libelle}}
+                        </label>
+                    </div>
+                </div>
+                <label>Commentaires :</label>
+                <textarea 
+                    class="form-control md-textarea col-lg-11" 
+                    id="{{category}}" 
+                    name="{{category}}" 
+                    type="text">
+                </textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Valider</button>
+    </div>
+</ng-template>
+<!--*************************************-->
