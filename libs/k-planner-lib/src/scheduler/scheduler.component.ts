@@ -81,7 +81,7 @@ export class SchedulerComponent  {
       }
       if (event.name === 'nodeDragging') {
           let dragElementIcon: NodeListOf<HTMLElement> =
-              document.querySelectorAll('.e-drag-item.treeview-external-drag .e-icon-expandable');
+              document.querySelectorAll('.e-drag-item.treeview-external-drag .e-icon-expandable') as NodeListOf<HTMLElement>;
           for (let i: number = 0; i < dragElementIcon.length; i++) {
               dragElementIcon[i].style.display = 'none';
           }
@@ -95,7 +95,7 @@ export class SchedulerComponent  {
               treeViewdata.filter((item: any) => item.Id !== parseInt(this.draggedItemId, 10));
           this.treeObj.fields.dataSource = filteredPeople;
         //   this.treeObj.refresh();
-          let elements: NodeListOf<HTMLElement> = document.querySelectorAll('.e-drag-item.treeview-external-drag');
+          let elements: NodeListOf<HTMLElement> = document.querySelectorAll(".e-drag-item.treeview-external-drag") as NodeListOf<HTMLElement>;
           for (let i: number = 0; i < elements.length; i++) {
               remove(elements[i]);
           }

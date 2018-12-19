@@ -90,6 +90,57 @@
       }
     },
     {
+      "name": "k-planner",
+      "root": "apps/k-planner/src",
+      "outDir": "dist/apps/k-planner",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "../../../test.js",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "../../../tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.scss",
+        "../../../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+        "../../../node_modules/font-awesome-scss/scss/font-awesome.scss",
+        "./../../../styles/style.scss",
+        "../../../node_modules/datatables.net-select-dt/css/select.dataTables.css",
+        "../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+        "../../../node_modules/@syncfusion/ej2-base/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-buttons/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-popups/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-calendars/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-lists/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-schedule/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-schedule/styles/material.css",
+        "../../../node_modules/@syncfusion/ej2-angular-navigations/styles/material.css"
+      ],
+      "scripts": [
+        "../../../node_modules/jquery/dist/jquery.min.js",
+        "../../../node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+        "../../../node_modules/datatables.net/js/jquery.dataTables.js",
+        "../../../node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.colVis.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.flash.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.html5.js",
+        "../../../node_modules/datatables.net-buttons/js/buttons.print.js",
+        "../../../node_modules/datatables.net-select/js/dataTables.select.js",
+        "../../../node_modules/datatables.net-responsive/js/dataTables.responsive.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    },
+    {
       "name": "suivi-ingests",
       "root": "apps/suivi-ingests/src",
       "outDir": "dist/apps/suivi-ingests",
