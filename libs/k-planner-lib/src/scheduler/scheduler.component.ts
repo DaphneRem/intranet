@@ -29,17 +29,19 @@ export class SchedulerComponent  {
   public currentView: View = 'TimelineDay';
   public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
   public departmentDataSource: Object[] = [
-      { Text: 'REGIE1', Id: 1, Color: '#008eaa' },
-      { Text: 'REGIE2', Id: 2, Color: '#008eaa' }
+      { Text: 'REGIEA', Id: 1, Color: '#008eaa' },
+      { Text: 'REGIEB', Id: 2, Color: '#008eaa' },
+      { Text: 'REGIEC', Id: 3, Color: '#008eaa' },
+      { Text: 'REGIED', Id: 4, Color: '#008eaa' }
   ];
-  public consultantDataSource: Object[] = [
-      { Text: 'global', Id: 1, GroupId: 1, Color: '#008eaa' },
-      { Text: 'detail', Id: 2, GroupId: 1, Color: '#008eaa' },
-      { Text: 'global', Id: 3, GroupId: 2, Color: '#008eaa' },
+//   public consultantDataSource: Object[] = [
+//       { Text: 'global', Id: 1, GroupId: 1, Color: '#008eaa' },
+//       { Text: 'detail', Id: 2, GroupId: 1, Color: '#008eaa' },
+//       { Text: 'global', Id: 3, GroupId: 2, Color: '#008eaa' },
 
 /*      { Text: 'Laura', Id: 5, GroupId: 1, Color: '#bbdc00' },
       { Text: 'Margaret', Id: 6, GroupId: 2, Color: '#9e5fff' }*/
-  ];
+
   public group: GroupModel = { enableCompactView: false, resources: ['Departments', 'Consultants'] };
   public allowMultiple: Boolean = false;
   public eventSettings: EventSettingsModel = {
@@ -64,7 +66,7 @@ export class SchedulerComponent  {
   getConsultantStatus(value: ResourceDetails): boolean {
       let resourceName: string =
           (value as ResourceDetails).resourceData[(value as ResourceDetails).resource.textField] as string;
-      if (resourceName === 'REGIE1' || resourceName === 'REGIE2') {
+      if (resourceName === 'REGIEA' || resourceName === 'REGIE2'|| resourceName === 'REGIE3'|| resourceName === 'REGIE4') {
           return false;
       } else {
           return true;
@@ -128,7 +130,7 @@ export class SchedulerComponent  {
                       EndTime: cellData.endTime,
                       IsAllDay: false,
                       Description: filteredData[0].Description,
-                      DepartmentID: resourceDetails.resourceData.GroupId,
+                      DepartmentID: resourceDetails.resourceData.Id,
                       ConsultantID: resourceDetails.resourceData.Id,
                       AzaIsPere: true,
                       AzaNumGroupe:filteredData[0].AzaNumGroupe
@@ -152,7 +154,7 @@ export class SchedulerComponent  {
                       EndTime: endDate,
                       IsAllDay: cellData.isAllDay,
                       Description: filteredData[0].Description,
-                      DepartmentID: resourceDetails.resourceData.GroupId,
+                      DepartmentID: resourceDetails.resourceData.Id,
                       ConsultantID: intconsultant,
                       AzaIsPere: false,
                       AzaNumGroupe:filteredData[0].AzaNumGroupe

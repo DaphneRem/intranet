@@ -9,13 +9,13 @@
               (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete()" (drag)="onItemDrag($event)">
               <e-resources>
                   <e-resource field='DepartmentID' title='Department' name='Departments' [dataSource]='departmentDataSource'
-                      textField='Text' idField='Id' colorField='Color'>
-                  </e-resource>
-                  <e-resource field='ConsultantID' title='Consultant' name='Consultants' [dataSource]='consultantDataSource'
+                      textField='Text' idField='Id' colorField='Color' groupIDField="Id" [allowMultiple]='allowMultiple'>
+                  </e-resource> 
+                  <!-- <e-resource field='ConsultantID' title='Consultant' name='Consultants' [dataSource]='consultantDataSource'
                       [allowMultiple]='allowMultiple' textField='Text' idField='Id' groupIDField="GroupId" colorField='Color'>
-                  </e-resource>
+                  </e-resource> -->
               </e-resources>
-              <ng-template #resourceHeaderTemplate let-data>
+              <!-- <ng-template #resourceHeaderTemplate let-data>
                   <div class="template-wrap">
                       <div class="specialist-category">
                           <div *ngIf="getConsultantStatus(data)">
@@ -24,7 +24,7 @@
                           <div class="specialist-name">{{getConsultantName(data)}}</div>
                       </div>
                   </div>
-              </ng-template >
+              </ng-template > -->
               <e-views  >
                   <e-view option='TimelineDay'  >
                         <ng-template #eventTemplate let-data  >
@@ -32,9 +32,10 @@
                                 <div  >
                                     <div class="subject" style="margin-top: 0px;" >
                                     <u>{{data.Name }} </u>
-                                    <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" />
-                                    <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png">
-                                    <i >utilisateur 1 </i>
+                                    <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
+                                   
+                                    <button type="reset" class="float-right btn-warning mt-1 ">monteur 1   </button>
+                                    <img style="height: 30px; width: 30px; margin: 0px"  src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png" class="float-right  fixed mr-1">
                                 </div>
                                     <div  *ngIf="!data.AzaIsPere" 
                                       class="show-user" 
@@ -45,7 +46,10 @@
                                   </div>
                         </ng-template>
                   </e-view>
+                  <e-view option="TimelineWeek"></e-view>
+            
                   <e-view option='TimelineMonth'></e-view>
+                  <e-view option="Agenda"></e-view>
               </e-views>
           </ejs-schedule>
       </div>
