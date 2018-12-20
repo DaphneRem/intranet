@@ -4,7 +4,7 @@
           <div class="title-container">
               <h1 class="title-text"> K PLANNER </h1>
           </div>
-          <ejs-schedule #scheduleObj cssClass='schedule-drag-drop' width='100%' height='650px' [group]="group"
+          <ejs-schedule #scheduleObj (popupOpen)="onPopupOpen($event)" cssClass='schedule-drag-drop' width='100%' height='650px' [group]="group"
               [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours" [eventSettings]="eventSettings"
               (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete()" (drag)="onItemDrag($event)">
               <e-resources>

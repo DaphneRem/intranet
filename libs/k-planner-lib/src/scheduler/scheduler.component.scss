@@ -1,3 +1,20 @@
+
+/deep/ .schedule-drag-drop .e-quick-popup-wrapper .e-event-popup .e-popup-content .e-sub-object-list {
+    margin-top: 10px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+/deep/ .schedule-drag-drop .e-quick-popup-wrapper .e-event-popup .e-popup-content .e-sub-object-list div{
+    margin: 5px;
+    background-color: #008ba6;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 3px;
+    color: #ffffff;
+}
+
+
 .drag-sample-wrapper {
     display: flex;
 }

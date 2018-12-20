@@ -1,8 +1,16 @@
 import { Component,  ViewChild } from '@angular/core';
-import { extend, closest, remove } from '@syncfusion/ej2-base';
+import { extend, closest, remove, createElement } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
 import {
-  EventSettingsModel, View, GroupModel, WorkHoursModel,  ResourceDetails, ScheduleComponent, ActionEventArgs, CellClickEventArgs
+  PopupOpenEventArgs,
+  EventSettingsModel,
+  View,
+  GroupModel,
+  WorkHoursModel,
+  ResourceDetails,
+  ScheduleComponent,
+  ActionEventArgs,
+  CellClickEventArgs
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
 import { TreeViewComponent } from '@syncfusion/ej2-angular-navigations';
@@ -11,7 +19,7 @@ import { TreeViewComponent } from '@syncfusion/ej2-angular-navigations';
   templateUrl: './scheduler.component.html',
   styleUrls: ['./scheduler.component.scss']
 })
-export class SchedulerComponent  {
+export class SchedulerComponent {
 
   title = 'syncfusion7';
 
@@ -57,7 +65,36 @@ export class SchedulerComponent  {
   public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
   public allowDragAndDrop: boolean = true;
 
-  
+    onPopupOpen(args: PopupOpenEventArgs) {
+        let workOrders = [];
+        console.log(args.type);
+        console.log(args);
+        if (args.data.AzaIsPere) {
+            console.log('is PERE');
+            this.data.map(item => {
+                if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false) {
+                    workOrders.push(item);
+                }
+            });
+            console.log(workOrders);
+            let row: HTMLElement = createElement('div', { className: 'e-sub-object-list' });
+            console.log(row);
+            let elementParent: HTMLElement = <HTMLElement>args.element.querySelector('.e-popup-content');
+            elementParent.appendChild(row);
+            for (let i = 0; i < workOrders.length; i++) {
+              row.innerHTML += `<div id="id${i}">${workOrders[i].Name}</div>`;
+              console.log(i);
+              console.log(row.children[i]);
+            }
+            // for (let e = 0; e < args.data.subObject.length; e++) {
+            //     let child = document.getElementById(`id${e}`);
+            //     child.addEventListener('click', () => {
+            //         console.log('id' + e);
+            //         this.openDialog(args.data, args.data.subObject[e], this.categoryDataSource);
+            //     });
+            // }
+        }
+    }
 
   getConsultantName(value: ResourceDetails): string {
       return (value as ResourceDetails).resourceData[(value as ResourceDetails).resource.textField] as string;
