@@ -203,7 +203,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.afterViewInit = true;
+    setTimeout(() => {
+      this.afterViewInit = true;
+    });
     console.log(this.user);
   }
 
