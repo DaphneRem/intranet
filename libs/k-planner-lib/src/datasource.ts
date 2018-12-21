@@ -1,6 +1,7 @@
 /**
  * Schedule datasource
  */
+import { HospitalData } from './models/hospital-data';
 
 export let scheduleData: Object[] = [
     {
@@ -4430,7 +4431,7 @@ export let headerRowData: Object[] = [
     }
 ];
 
-export let hospitalData: Object[] = [
+export let hospitalData: HospitalData[] = [
     {
         Id: 10,
         Name: 'Fabrication Volume DVD',
