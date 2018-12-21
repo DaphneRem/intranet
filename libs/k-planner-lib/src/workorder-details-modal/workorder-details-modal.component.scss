@@ -1,8 +1,28 @@
-// /deep/ .cdk-overlay-container {
-//     position: absolute;
-//     top: 0;
-// }
+/deep/ .cdk-overlay-container {
+    position: absolute;
+    width: 100%;
+    min-height: 100vh;
+    top: 0;
+    &.hidden {
+        display: none;
+    }
+}
+
+/deep/ .cdk-global-overlay-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
 
 /deep/ .mat-dialog-container {
     overflow: unset;
+    background-color: #ffffff;
+}
+
+.title {
+    font-size: 12px;
+    margin: 26px 0 0 15px;
 }
