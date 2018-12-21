@@ -230,6 +230,12 @@
       "appRoot": ""
     },
     {
+      "name": "liste-planning",
+      "root": "libs/liste-planning/src",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
       "name": "loaders",
       "root": "libs/loaders/src",
       "test": "../../../test.js",

@@ -24,7 +24,7 @@ import { ErrorPagesModule } from '@ab/error-pages';
   KPlannerLibModule,
   AppRoutingModule,
   RootModule,
-  SubHeaderModule,
+
   ErrorPagesModule,
   
   StoreModule.forRoot({

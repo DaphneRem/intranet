@@ -19,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SubHeaderModule } from '@ab/sub-header';
 import { MonPlanningComponent } from './kplanner-pages/mon-planning/mon-planning.component';
 import { WorkorderDetailsModalComponent } from './workorder-details-modal/workorder-details-modal.component';
+import { ListePlanningComponent } from './liste-planning/liste-planning.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { WorkorderDetailsModalComponent } from './workorder-details-modal/workor
   declarations: [
     SchedulerComponent,
     MonPlanningComponent,
-    WorkorderDetailsModalComponent
+    WorkorderDetailsModalComponent,
+    ListePlanningComponent
   ],
   entryComponents: [
     MonPlanningComponent,
