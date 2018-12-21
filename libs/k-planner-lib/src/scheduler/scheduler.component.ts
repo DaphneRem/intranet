@@ -11,7 +11,8 @@ import {
   ResourceDetails,
   ScheduleComponent,
   ActionEventArgs,
-  CellClickEventArgs
+  CellClickEventArgs,
+  
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
 import { TreeViewComponent } from '@syncfusion/ej2-angular-navigations';
@@ -34,13 +35,14 @@ export class SchedulerComponent {
   public scheduleObj: ScheduleComponent;
   @ViewChild('treeObj')
   public treeObj: TreeViewComponent;
+  
 
   public isTreeItemDropped: boolean = false;
   public draggedItemId: string = '';
   public timelineResourceDataOut:Object[];
 
   public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
-  public selectedDate: Date = new Date(2018, 7, 1);
+  public selectedDate: Date = new Date();
   public currentView: View = 'TimelineDay';
   public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
   public departmentDataSource: Object[] = [
@@ -72,9 +74,15 @@ export class SchedulerComponent {
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
     public allowDragAndDrop: boolean = true;
     public cancelObjectModal = false;
+ 
+    constructor(public dialog: MatDialog) {
 
-    constructor(public dialog: MatDialog) {}
-
+        // ej.Schedule.Locale["fr-FR"]=
+        // {
+        //     TODAY:"aujourd'hui"
+        // }
+        
+    }
     onPopupOpen(args) {
         let workOrders = [];
         console.log(args.type);
