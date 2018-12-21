@@ -13,8 +13,12 @@ import { DropDownListAllModule, MultiSelectAllModule } from '@syncfusion/ej2-ang
 import { TreeViewModule, TabModule } from '@syncfusion/ej2-angular-navigations';
 import { ListViewModule } from '@syncfusion/ej2-angular-lists';
 
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+
 import { SubHeaderModule } from '@ab/sub-header';
 import { MonPlanningComponent } from './kplanner-pages/mon-planning/mon-planning.component';
+import { WorkorderDetailsModalComponent } from './workorder-details-modal/workorder-details-modal.component';
 
 
 @NgModule({
@@ -26,20 +30,29 @@ import { MonPlanningComponent } from './kplanner-pages/mon-planning/mon-planning
     RecurrenceEditorAllModule,
     NumericTextBoxAllModule,
     DatePickerAllModule,
-    TimePickerAllModule, 
+    TimePickerAllModule,
     DateTimePickerAllModule,
-    CheckBoxAllModule, 
-    ToolbarAllModule, 
-    MaskedTextBoxModule, 
-    DropDownListAllModule, 
-    MultiSelectAllModule, 
-    TreeViewModule, 
+    CheckBoxAllModule,
+    ToolbarAllModule,
+    MaskedTextBoxModule,
+    DropDownListAllModule,
+    MultiSelectAllModule,
+    TreeViewModule,
     TabModule,
     ListViewModule,
     SubHeaderModule,
-  
+    MatDialogModule,
+    MatButtonModule
   ],
-  declarations: [SchedulerComponent, MonPlanningComponent]
+  declarations: [
+    SchedulerComponent,
+    MonPlanningComponent,
+    WorkorderDetailsModalComponent
+  ],
+  entryComponents: [
+    MonPlanningComponent,
+    SchedulerComponent,
+    WorkorderDetailsModalComponent
+  ]
 })
-export class KPlannerLibModule {
-}
+export class KPlannerLibModule {}

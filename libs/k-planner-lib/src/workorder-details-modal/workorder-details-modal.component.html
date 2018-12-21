@@ -1,0 +1,18 @@
+<div style="margin: -25px;height: 299px; overflow-y: hidden; overflow-x: hidden;">
+    <div style="padding: 10px; background-color: #3f51b5; color: #ffffff;height: 65px;">
+        <!-- <h1 mat-dialog-title style="margin: 26px 0 0 15px;">{{data.subObject.title}}</h1> -->
+        <h1 mat-dialog-title style="margin: 26px 0 0 15px;">WorkOrder Details</h1>
+    </div>
+    <div mat-dialog-content style="margin: 0; height: 150px;">
+        <!-- <p>{{data.object.StartTime | date}} ({{ data.object.StartTime | date:'shortTime' }} - {{ data.object.EndTime | date:'shortTime' }})</p>
+        <p>{{data.category.text}}</p>
+        <p>{{data.subObject.description}}</p> -->
+        <p>Time</p>
+        <p>Title</p>
+        <p>Description</p>
+    </div>
+    <div mat-dialog-actions style="padding-left: 20px;">
+        <!-- <button mat-button (click)="onNoClick()" color="primary">No Thanks</button> -->
+        <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Fermer</button>
+    </div>
+</div>

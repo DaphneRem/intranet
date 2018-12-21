@@ -1,6 +1,7 @@
 import { Component,  ViewChild } from '@angular/core';
 import { extend, closest, remove, createElement } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
+import { HospitalData } from '../models/hospital-data';
 import {
   PopupOpenEventArgs,
   EventSettingsModel,
@@ -14,11 +15,17 @@ import {
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
 import { TreeViewComponent } from '@syncfusion/ej2-angular-navigations';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
+
+
 @Component({
   selector: 'scheduler',
   templateUrl: './scheduler.component.html',
   styleUrls: ['./scheduler.component.scss']
 })
+
 export class SchedulerComponent {
 
   title = 'syncfusion7';
@@ -32,7 +39,7 @@ export class SchedulerComponent {
   public draggedItemId: string = '';
   public timelineResourceDataOut:Object[];
 
-  public data: Object[] = <Object[]>extend([], hospitalData, null, true);
+  public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
   public selectedDate: Date = new Date(2018, 7, 1);
   public currentView: View = 'TimelineDay';
   public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
@@ -62,38 +69,67 @@ export class SchedulerComponent {
       }
   };
 
-  public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
-  public allowDragAndDrop: boolean = true;
+    public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
+    public allowDragAndDrop: boolean = true;
+    public cancelObjectModal = false;
 
-    onPopupOpen(args: PopupOpenEventArgs) {
+    constructor(public dialog: MatDialog) {}
+
+    onPopupOpen(args) {
         let workOrders = [];
         console.log(args.type);
         console.log(args);
-        if (args.data.AzaIsPere) {
-            console.log('is PERE');
-            this.data.map(item => {
-                if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false) {
+        if (args.data.hasOwnProperty('AzaIsPere')) {
+            if (args.data.AzaIsPere) {
+                console.log('is PERE');
+                this.data.map(item => {
+                  if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false) {
                     workOrders.push(item);
+                  }
+                });
+                console.log(workOrders);
+                let row: HTMLElement = createElement('div', {
+                  className: 'e-sub-object-list'
+                });
+                console.log(row);
+                let elementParent: HTMLElement = <HTMLElement>args.element.querySelector('.e-popup-content');
+                elementParent.appendChild(row);
+                for (let i = 0; i < workOrders.length; i++) {
+                  row.innerHTML += `<div id='id${i}'>${workOrders[i].Name}</div>`;
+                  console.log(i);
+                  console.log(row.children[i]);
                 }
-            });
-            console.log(workOrders);
-            let row: HTMLElement = createElement('div', { className: 'e-sub-object-list' });
-            console.log(row);
-            let elementParent: HTMLElement = <HTMLElement>args.element.querySelector('.e-popup-content');
-            elementParent.appendChild(row);
-            for (let i = 0; i < workOrders.length; i++) {
-              row.innerHTML += `<div id="id${i}">${workOrders[i].Name}</div>`;
-              console.log(i);
-              console.log(row.children[i]);
-            }
-            // for (let e = 0; e < args.data.subObject.length; e++) {
-            //     let child = document.getElementById(`id${e}`);
-            //     child.addEventListener('click', () => {
-            //         console.log('id' + e);
-            //         this.openDialog(args.data, args.data.subObject[e], this.categoryDataSource);
-            //     });
-            // }
+                // for (let e = 0; e < workOrders.length; e++) {
+                //     let child = document.getElementById(`id${e}`);
+                //     child.addEventListener('click', () => {
+                //         console.log('id' + e);
+                //         this.openDialog(args.data, workOrders[e], this.departmentDataSource);
+                //     });
+                // }
+              }
         }
+    }
+
+    openDialog(object, subObject, categories): void {
+        let category;
+        categories.map(item => {
+            if (object.TaskId === item.id) {
+               category = item;
+            }
+        });
+        const dialogRef = this.dialog.open(WorkorderDetailsModalComponent, {
+          width: '365px',
+          data: {
+              object: object,
+              subObject: subObject,
+              category: category
+          }
+        });
+        console.log('openDialogSubObject fucntion');
+        console.log(this.cancelObjectModal);
+        setTimeout(() => {
+            this.cancelObjectModal = false;
+        }, 1000);
     }
 
   getConsultantName(value: ResourceDetails): string {
@@ -134,7 +170,7 @@ export class SchedulerComponent {
               treeViewdata.filter((item: any) => item.Id !== parseInt(this.draggedItemId, 10));
           this.treeObj.fields.dataSource = filteredPeople;
           this.treeObj.refresh();
-          let elements: NodeListOf<HTMLElement> = document.querySelectorAll(".e-drag-item.treeview-external-drag") as NodeListOf<HTMLElement>;
+          let elements: NodeListOf<HTMLElement> = document.querySelectorAll('.e-drag-item.treeview-external-drag') as NodeListOf<HTMLElement>;
           for (let i: number = 0; i < elements.length; i++) {
               remove(elements[i]);
           }
@@ -178,7 +214,7 @@ export class SchedulerComponent {
                   let intconsultant= resourceDetails.resourceData.Id;  
                   for (var _i = 0; _i < 4; _i++) {
                     let cpt =(Number(filteredData[0].Id)+ _i + 100);
-                    console.log("intconsultant:"+intconsultant);
+                    console.log('intconsultant:'+intconsultant);
                     if (intconsultant==1){
                       intconsultant=2;
                     }else{
@@ -186,7 +222,7 @@ export class SchedulerComponent {
                     }
                     let tempData= {
                       Id:cpt,
-                      Name: "PARTIE "+_i,
+                      Name: 'PARTIE '+_i,
                       StartTime: startDate,
                       EndTime: endDate,
                       IsAllDay: cellData.isAllDay,
@@ -218,7 +254,7 @@ export class SchedulerComponent {
        console.log('2');
        const properties= Object.getOwnPropertyNames(entry);
        for (let property of properties){
-           //if (property=="AzaNumGroupe"){
+           //if (property=='AzaNumGroupe'){
            if (property==column){
                if ((entry[property]==value)){
                    console.log('entry:'+entry);
@@ -240,7 +276,7 @@ getCountByAzaNumgroupe(objectin :Object[], column:string, value:any):number{
       
       const properties= Object.getOwnPropertyNames(entry);
       for (let property of properties){
-          //if (property=="AzaNumGroupe"){
+          //if (property=='AzaNumGroupe'){
           if (property==column){
               if ((entry[property]==value)){
                   
@@ -261,10 +297,10 @@ public deleteobject(objectin :any, tabin:Object[]){
        for (var i = 0; i < tabin.length; i++) {
        console.log('deleteobject :'+i);
        console.log('objectin.Id:'+objectin.Id);
-       console.log('tabin[i]:'+tabin[i]["Id"]);
+       console.log('tabin[i]:'+tabin[i]['Id']);
        //const properties= Object.getOwnPropertyNames(objectin[i]);
            
-               if (objectin.Id==tabin[i]["Id"]){
+               if (objectin.Id==tabin[i]['Id']){
                    console.log(' delete entry:'+objectin);
                    console.log(' delete entry:'+objectin.Id);
                    objectOut.splice(i, 1);
@@ -282,9 +318,9 @@ public isStartDifferent(objectin :any, tabin:Object[]):boolean{
       for (var i = 0; i < tabin.length; i++) {
       console.log('isStartDifferent :'+i);
       console.log('objectin.Id:'+objectin.Id);
-      console.log('tabin[i]:'+tabin[i]["Id"]);
-      if (objectin.Id==tabin[i]["Id"]){
-           if (objectin.StartTime==tabin[i]["StartTime"]){
+      console.log('tabin[i]:'+tabin[i]['Id']);
+      if (objectin.Id==tabin[i]['Id']){
+           if (objectin.StartTime==tabin[i]['StartTime']){
                console.log('false');
                isdiff=false; 
                break;
@@ -306,9 +342,9 @@ console.log('isStartDifferent');
   for (var i = 0; i < tabin.length; i++) {
   console.log('isStartDifferent :'+i);
   console.log('objectin.Id:'+objectin.Id);
-  console.log('tabin[i]:'+tabin[i]["Id"]);
-  if (objectin.Id==tabin[i]["Id"]){
-       if (objectin.EndTime==tabin[i]["EndTime"]){
+  console.log('tabin[i]:'+tabin[i]['Id']);
+  if (objectin.Id==tabin[i]['Id']){
+       if (objectin.EndTime==tabin[i]['EndTime']){
            isdiff=false;    
            break
        }else{
@@ -328,9 +364,9 @@ public getmindateNumgroupe(objectin :Object[], numgroupe:number, column:string, 
   for (let entry of objectin){
       console.log('entry');
       const properties= Object.getOwnPropertyNames(entry);
-      if( entry["AzaNumGroupe"]==value){
+      if( entry['AzaNumGroupe']==value){
       for (let property of properties){
-          //if (property=="AzaNumGroupe"){
+          //if (property=='AzaNumGroupe'){
           if (property==column){
               
               if (entry[property]<mindate){
@@ -347,7 +383,7 @@ public getmindateNumgroupe(objectin :Object[], numgroupe:number, column:string, 
        console.log('istartdifferent');
    if (Objupdate !=null){
        console.log('Objupdate');
-       if (Objupdate["AzaNumGroupe"]==numgroupe){
+       if (Objupdate['AzaNumGroupe']==numgroupe){
            console.log('Objupdate[column]< mindate');
            mindate =Objupdate[column]
        }
@@ -361,7 +397,7 @@ public getmaxdateNumgroupe(objectin :Object[], numgroupe: number, column:string,
    let maxdate:Date= new Date(2000, 3, 5, 0, 0)
   for (let entry of objectin){
       const properties= Object.getOwnPropertyNames(entry);
-      if( entry["AzaNumGroupe"]==value){
+      if( entry['AzaNumGroupe']==value){
       for (let property of properties){
           if (property==column){
               if (entry[property]>maxdate){
@@ -375,7 +411,7 @@ public getmaxdateNumgroupe(objectin :Object[], numgroupe: number, column:string,
   if (isUpdate) {
    if (benddifferent) {
    if (Objupdate !=null){
-       if (Objupdate["AzaNumGroupe"]==numgroupe){
+       if (Objupdate['AzaNumGroupe']==numgroupe){
            maxdate =Objupdate[column]
        }
    }
@@ -391,18 +427,18 @@ public calcultimesforalljobs(timelineResourceDatain,numgroup:number, mindate:Dat
    for (let entry of timelineResourceDatain){
        if (entry.AzaNumGroupe==numgroup){
            const properties= Object.getOwnPropertyNames(entry);
-           if ( entry["AzaIsPere"]==true){
+           if ( entry['AzaIsPere']==true){
                console.log('is pere mindate:'+mindate);
                console.log('is pere maxdate:'+maxdate);
-                   entry["StartTime"]=mindate;
-                   entry["EndTime"]=maxdate;
+                   entry['StartTime']=mindate;
+                   entry['EndTime']=maxdate;
                }else{
                    console.log('not is pere mindate:'+tempmindate);
                    console.log('not is pere maxdate:'+tempmaxdate);
-                   entry["StartTime"]=tempmindate;
+                   entry['StartTime']=tempmindate;
                    let tempdate=new Date(tempmindate.getTime()+Seconds_for_a_job*1000) ;
                    console.log('tempdate:'+tempdate);
-                   entry["EndTime"]=tempdate;
+                   entry['EndTime']=tempdate;
                    tempmindate=tempdate;
                }
                
@@ -413,17 +449,17 @@ public calcultimesforalljobs(timelineResourceDatain,numgroup:number, mindate:Dat
 
 }
 public calculDateGroup(atimelineResourceData:Object[], numGroup:number, isUpdate:boolean, Objupdate:Object[], bstartdifferent:boolean, benddifferent:boolean):Object[] {
-   //atimelineResourceData=this.getObjectByAzaNumgroupe(atimelineResourceData, "AzaNumGroupe", 100);
-   //atimelineResourceData=atimelineResourceData.concat( this.getObjectByAzaNumgroupe(atimelineResourceData, "AzaNumGroupe", 101));
+   //atimelineResourceData=this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 100);
+   //atimelineResourceData=atimelineResourceData.concat( this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 101));
    console.log('calculDateGroup:'+JSON.stringify(atimelineResourceData));
-   let mindate=this.getmindateNumgroupe(atimelineResourceData, numGroup,  "StartTime", numGroup, isUpdate, Objupdate, bstartdifferent);
-   let maxdate=this.getmaxdateNumgroupe(atimelineResourceData, numGroup,  "EndTime", numGroup, isUpdate, Objupdate, benddifferent);
+   let mindate=this.getmindateNumgroupe(atimelineResourceData, numGroup,  'StartTime', numGroup, isUpdate, Objupdate, bstartdifferent);
+   let maxdate=this.getmaxdateNumgroupe(atimelineResourceData, numGroup,  'EndTime', numGroup, isUpdate, Objupdate, benddifferent);
    console.log('calculDateGroup mindate:'+mindate);
    console.log('calculDateGroup maxdate:'+maxdate);
    var dif = maxdate.getTime() - mindate.getTime();
    var Seconds_from_T1_to_T2 = dif / 1000;
    var Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
-   var cpt=this.getCountByAzaNumgroupe(atimelineResourceData,  "AzaNumGroupe", numGroup);
+   var cpt=this.getCountByAzaNumgroupe(atimelineResourceData,  'AzaNumGroupe', numGroup);
    console.log('calculDateGroup cpt:'+cpt)    ;
    var Seconds_for_a_job = Seconds_Between_Dates / (cpt-1);
    console.log('avant calcul mindate  '+mindate+'-maxdate '+ maxdate+'-Seconds_for_a_job '+ Seconds_for_a_job )    ;
@@ -433,8 +469,8 @@ public calculDateGroup(atimelineResourceData:Object[], numGroup:number, isUpdate
    return atimelineResourceData;
 }
 public calculDateAll(atimelineResourceData:Object[],  isUpdate:boolean, Objupdate:Object[], bstartdifferent:boolean, benddifferent:boolean):Object[]{
-   //let atimelineResourceDatatemp=this.getObjectByAzaNumgroupe(atimelineResourceData, "AzaNumGroupe", 100);
-   //atimelineResourceData=atimelineResourceDatatemp.concat( this.getObjectByAzaNumgroupe(atimelineResourceData, "AzaNumGroupe", 101));
+   //let atimelineResourceDatatemp=this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 100);
+   //atimelineResourceData=atimelineResourceDatatemp.concat( this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 101));
   //atimelineResourceData=this.timelineResourceDataOut;
    this.timelineResourceDataOut=this.calculDateGroup(atimelineResourceData, 100, isUpdate, Objupdate, bstartdifferent, benddifferent);
    this.timelineResourceDataOut=this.calculDateGroup(atimelineResourceData, 101, isUpdate, Objupdate, bstartdifferent, benddifferent);
@@ -451,7 +487,7 @@ public calculDateAll(atimelineResourceData:Object[],  isUpdate:boolean, Objupdat
 public azaactionBegin(args: any) { 
   //let  adatasource= this.eventSettings.dataSource;
   //adatasource.push(args) ;
-  if (args.requestType!="toolbarItemRendering"){
+  if (args.requestType!='toolbarItemRendering'){
       console.log('********************************************************************************actionBegin');
       console.log(''+args);
       console.log(''+this.timelineResourceDataOut);
