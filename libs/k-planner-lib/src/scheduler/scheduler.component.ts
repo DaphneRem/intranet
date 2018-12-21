@@ -1,4 +1,4 @@
-import { Component,  ViewChild } from '@angular/core';
+import { Component,  ViewChild, Inject } from '@angular/core';
 import { extend, closest, remove, createElement } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
 import { HospitalData } from '../models/hospital-data';
@@ -87,6 +87,9 @@ export class SchedulerComponent {
         let workOrders = [];
         console.log(args.type);
         console.log(args);
+        if (this.cancelObjectModal) {
+            args.cancel = true;
+        }
         if (args.data.hasOwnProperty('AzaIsPere')) {
             if (args.data.AzaIsPere) {
                 console.log('is PERE');
@@ -107,37 +110,43 @@ export class SchedulerComponent {
                   console.log(i);
                   console.log(row.children[i]);
                 }
-                // for (let e = 0; e < workOrders.length; e++) {
-                //     let child = document.getElementById(`id${e}`);
-                //     child.addEventListener('click', () => {
-                //         console.log('id' + e);
-                //         this.openDialog(args.data, workOrders[e], this.departmentDataSource);
-                //     });
-                // }
+                for (let e = 0; e < workOrders.length; e++) {
+                    let child = document.getElementById(`id${e}`);
+                    child.addEventListener('click', () => {
+                        console.log('id' + e);
+                        console.log(args.cancel);
+                        args.cancel = true;
+                        console.log(args);
+                        this.openDialog(args, args.data, workOrders[e], this.departmentDataSource);
+                    });
+                }
               }
         }
     }
 
-    openDialog(object, subObject, categories): void {
+    openDialog(args, object, subObject, categories): void {
+        let containerModal = document.getElementsByClassName('cdk-overlay-container');
+            console.log(containerModal);
+        for (let i = 0; i < containerModal.length; i++) {
+            containerModal[i].classList.remove('hidden');
+        }
         let category;
         categories.map(item => {
-            if (object.TaskId === item.id) {
-               category = item;
+            if (object.DepartmentID === item.Id) {
+              category = item;
             }
         });
+        console.log(categories);
+        console.log(category);
         const dialogRef = this.dialog.open(WorkorderDetailsModalComponent, {
           width: '365px',
-          data: {
-              object: object,
-              subObject: subObject,
-              category: category
+          data : {
+            workorder: object,
+            regie: category
           }
         });
         console.log('openDialogSubObject fucntion');
         console.log(this.cancelObjectModal);
-        setTimeout(() => {
-            this.cancelObjectModal = false;
-        }, 1000);
     }
 
   getConsultantName(value: ResourceDetails): string {
@@ -524,3 +533,18 @@ public onActionComplete() {
 
 
 }
+// @Component({
+//   selector: 'workorder-details-modal',
+//   templateUrl: '..//workorder-details-modal/workorder-details-modal.component.html',
+//   styleUrls: ['..//workorder-details-modal/workorder-details-modal.component.scss']
+// })
+// export class WorkorderDetailsModalComponent {
+//   constructor(
+//     public dialogRef: MatDialogRef<WorkorderDetailsModalComponent>,
+//     @Inject(MAT_DIALOG_DATA) public data
+//   ) {}
+
+//   onNoClick(): void {
+//     this.dialogRef.close();
+//   }
+// }

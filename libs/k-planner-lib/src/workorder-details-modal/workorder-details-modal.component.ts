@@ -17,4 +17,12 @@ export class WorkorderDetailsModalComponent {
   onNoClick(): void {
     this.dialogRef.close();
   }
+  close() {
+    let containerModal = document.getElementsByClassName('cdk-overlay-container');
+    console.log(containerModal);
+    for (let i = 0; i < containerModal.length ; i++) {
+      containerModal[i].className += ' hidden';
+    }
+  }
+
 }
