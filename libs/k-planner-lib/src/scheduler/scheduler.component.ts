@@ -42,7 +42,7 @@ export class SchedulerComponent {
   public timelineResourceDataOut:Object[];
 
   public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
-  public selectedDate: Date = new Date();
+  public selectedDate: Date = new Date(2018, 7, 1);
   public currentView: View = 'TimelineDay';
   public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
   public departmentDataSource: Object[] = [

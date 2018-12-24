@@ -12,7 +12,7 @@ export class ListePlanningComponent implements OnInit {
   ngOnInit() {
   }
   public planningListe: Object[] = [
-    { Nom:"Voir autre planning ", Id: 1 },
+    { Nom:"Voir autres plannings ", Id: 1 },
     { Nom:"Planning 1", Id: 2 },
     { Nom:"Planning 2", Id: 3 },
     { Nom:"Planning 3", Id: 4 },
