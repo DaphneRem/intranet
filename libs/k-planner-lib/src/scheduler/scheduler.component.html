@@ -1,20 +1,20 @@
+<div class="control-section">
+    <div class="drag-sample-wrapper">
+        <div class="schedule-container">
+            <div class="title-container">
 
-        <div class="control-section">
-            <div class="drag-sample-wrapper">
-                <div class="schedule-container">
-                    <div class="title-container">
-                     
-                    </div>
-                    <ejs-schedule #scheduleObj (popupOpen)="onPopupOpen($event)" cssClass='schedule-drag-drop' width='100%' height='650px' [group]="group"
-                        [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours" [eventSettings]="eventSoettings"
-                        (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete()" (drag)="onItemDrag($event)" >
-                        <e-resources>
-                            <e-resource field='DepartmentID' title='Department' name='Departments' [dataSource]='departmentDataSource'
-                                textField='Text' idField='Id' colorField='Color' groupIDField="Id" [allowMultiple]='allowMultiple'>
-                            </e-resource> 
-                         
-                        </e-resources>
-                        <!-- <ng-template #resourceHeaderTemplate let-data>
+            </div>
+            <ejs-schedule #scheduleObj (popupOpen)="onPopupOpen($event)" cssClass='schedule-drag-drop' width='100%'
+                height='650px' [group]="group" [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours"
+                [eventSettings]="eventSettings" (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete()"
+                (drag)="onItemDrag($event)">
+                <e-resources>
+                    <e-resource field='DepartmentID' title='Department' name='Departments' [dataSource]='departmentDataSource'
+                        textField='Text' idField='Id' colorField='Color' groupIDField="Id" [allowMultiple]='allowMultiple'>
+                    </e-resource>
+
+                </e-resources>
+                <!-- <ng-template #resourceHeaderTemplate let-data>
                             <div class="template-wrap">
                                 <div class="specialist-category">
                                     <div *ngIf="getConsultantStatus(data)">
@@ -24,69 +24,93 @@
                                 </div>
                             </div>
                         </ng-template > -->
-                        <e-views  >
-                            <e-view option='TimelineDay'  >
-                                  <ng-template #eventTemplate let-data  >
-                                          <div  class='template-wrap' style="border-top: solid red; width:100%">
-                                          <div  >
-                                              <div class="subject" style="margin-top: 0px;" >
-                                              <u>{{data.Name }} </u>
-                                              <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                             
-                                              <button type="reset" class="float-right btn-warning mt-1 ">monteur 1   </button>
-                                              <img style="height: 30px; width: 30px; margin: 0px"  src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png" class="float-right  fixed mr-1">
-                                          </div>
-                                              <div  *ngIf="!data.AzaIsPere" 
-                                                class="show-user" 
-                                                style="background-color: #282a2c;height: 50px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                                <p style="padding-top: 5px;">{{data.Name }}  </p>
-                                              </div>
-                                          </div>
-                                            </div>
-                                  </ng-template>
-                            </e-view>
-                            <e-view option="TimelineWeek"></e-view>
-                      
-                            <e-view option='TimelineMonth'></e-view>
-                            <e-view option="Agenda"></e-view>
-                        </e-views>
-                    </ejs-schedule>
-                </div>
-                <ejs-tab id="element">
-                    <e-tabitems>
-                             <e-tabitem [header]='headerText[0]'>
-                                 <ng-template #content>
-                <div class="treeview-container">
-                   
-                    <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Filtrer...">
-                            <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
-                          </div>
-                    <ejs-treeview #treeObj [fields]='field' cssClass='treeview-external-drag' [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)"
-                        (nodeDragging)="onItemDrag($event)">
-                        <ng-template #nodeTemplate="" let-data="">
-                            <div id="waiting">
-                                <div id="waitdetails">
-                                    <div id="waitlist">{{data.Name}}</div>
-                                    <div id="waitcategory">{{data.DepartmentName}} - {{data.Description}}</div>
+                <e-views>
+                    <e-view option='TimelineDay'>
+                        <ng-template #eventTemplate let-data>
+                            <div class='template-wrap' style="border-top: solid red; width:100%">
+                                <div>
+                                    <div class="subject" style="margin-top: 0px;">
+                                        <u>{{data.Name }} </u>
+                                        <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
+
+                                        <button type="reset" class="float-right btn-warning mt-1 ">monteur 1 </button>
+                                        <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
+                                            class="float-right  fixed mr-1">
+                                    </div>
+                                    <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 50px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                        <p style="padding-top: 5px;">{{data.Name }} </p>
+                                    </div>
                                 </div>
                             </div>
                         </ng-template>
-                    </ejs-treeview>
-                </div>
-            </ng-template>
-        </e-tabitem>
-        <e-tabitem [header]='headerText[1]'>
-            <ng-template #content>
-               <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Filtrer...">
-                            <span class="input-group-addon " id="basic-addon1"><i class="icofont icofont-search"></i></span>
-                          </div>
-                </ng-template>
-            </e-tabitem>
-        </e-tabitems>
-    </ejs-tab>
-            </div>
-          </div>
+                    </e-view>
+                    <e-view option="TimelineWeek"></e-view>
 
+                    <e-view option='TimelineMonth'></e-view>
+                    <e-view option="Agenda"></e-view>
+                </e-views>
+            </ejs-schedule>
+        </div>
+        <ejs-tab id="element">
+            <e-tabitems>
+                <e-tabitem [header]='headerText[0]'>
+                    <ng-template #content>
+                        <div class="treeview-container">
+                            <div class="title-container">
 
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Filtrer...">
+                                <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
+                            </div>
+                            <ejs-treeview #treeObj [fields]='field' cssClass='treeview-external-drag'
+                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)"
+                                (nodeDragging)="onItemDrag($event)">
+                                <ng-template #nodeTemplate="" let-data="">
+                                    <div id="waiting">
+                                        <div id="waitdetails">
+                                            <div id="waitlist">{{data.Name}}</div>
+                                            <div id="waitcategory">{{data.DepartmentName}} - {{data.Description}}</div>
+
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ejs-treeview>
+                        </div>
+                    </ng-template>
+                </e-tabitem>
+                <e-tabitem [header]='headerText[1]'>
+                    <ng-template #content>
+
+                        <div class="treeview-container">
+                            <div class="title-container">
+
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Filtrer...">
+                                <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
+                            </div>
+                            <ejs-treeview #treeObj [fields]='fieldMonteur' cssClass='treeview-external-drag'
+                                [allowDragAndDrop]='allowDragAndDrop'>
+                                <ng-template #nodeTemplate="" let-data="">
+                                    <div id="waiting">
+                                        <div id="waitdetails">
+                                            <div id="monteurslist">{{dataMonteur.Username }}</div>
+
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ejs-treeview>
+                        </div>
+                        <select class="form-control ">
+                            <option *ngFor="let liste of monteurListe">{{liste.Nom}}</option>
+                        </select>
+                       
+                    </ng-template>
+                </e-tabitem>
+                
+            </e-tabitems>
+            
+        </ejs-tab>
+    </div>
+</div>

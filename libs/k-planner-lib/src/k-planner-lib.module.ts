@@ -20,7 +20,7 @@ import { SubHeaderModule } from '@ab/sub-header';
 import { MonPlanningComponent } from './kplanner-pages/mon-planning/mon-planning.component';
 import { WorkorderDetailsModalComponent } from './workorder-details-modal/workorder-details-modal.component';
 import { ListePlanningComponent } from './liste-planning/liste-planning.component';
-import { BacklogsComponent } from './backlogs/backlogs.component';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
@@ -53,7 +53,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MonPlanningComponent,
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
-    BacklogsComponent,
+  
     
     ButtonComponent
   ],

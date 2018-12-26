@@ -20,12 +20,15 @@ import { TreeViewComponent,TabComponent } from '@syncfusion/ej2-angular-navigati
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
+import { MonteursData } from '../models/monteurs-data';
+import { monteurs } from '../data/monteur';
 
 
 @Component({
   selector: 'scheduler',
   templateUrl: './scheduler.component.html',
-  styleUrls: ['./scheduler.component.scss']
+  styleUrls: ['./scheduler.component.scss',
+  '../../../../assets/icon/icofont/css/icofont.scss']
 })
 
 export class SchedulerComponent {
@@ -44,6 +47,8 @@ export class SchedulerComponent {
  
 
   public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
+  public dataMonteur: MonteursData[] = <MonteursData[]>extend([],monteurs , null, true);
+  
   public selectedDate: Date = new Date();
   public currentView: View = 'TimelineDay';
   public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
@@ -65,6 +70,7 @@ export class SchedulerComponent {
   public allowMultiple: Boolean = false;
   public eventSettings: EventSettingsModel = {
       dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false ), null, true ),
+    
       fields: {
           subject: { title: 'Patient Name', name: 'Name' },
           startTime: { title: 'From', name: 'StartTime' },
@@ -74,6 +80,7 @@ export class SchedulerComponent {
   };
 
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
+    public fieldMonteur: Object = { dataSource: monteurs, text: 'Username' };
     public allowDragAndDrop: boolean = true;
     public cancelObjectModal = false;
  
@@ -537,7 +544,14 @@ public onActionComplete() {
 
 public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Monteur' }];
 
-
+public monteurListe: Object[] = [
+    { Nom:"Ajouter un monteur ", Id: 1 },
+    { Nom:"Monteur 1", Id: 2 },
+    { Nom:"Monteur 2", Id: 3 },
+    { Nom:"Monteur 3", Id: 4 },
+    { Nom:"Monteur 4", Id: 5 },
+    { Nom:"Monteur 5", Id: 6 },
+];
 
 }
 // @Component({

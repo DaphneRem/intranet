@@ -11,6 +11,7 @@ export class ListePlanningComponent implements OnInit {
 
   ngOnInit() {
   }
+  
   public planningListe: Object[] = [
     { Nom:"Voir autres plannings ", Id: 1 },
     { Nom:"Planning 1", Id: 2 },

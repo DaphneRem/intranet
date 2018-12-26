@@ -200,3 +200,23 @@
          white-space: nowrap;
          overflow: hidden;
 }
+
+.icofont-search{
+    color:rgb(100, 99, 99);
+    width:50%
+}
+
+.input-group{
+    position:relative;
+}
+.input-group i {
+    position:absolute;
+    left: 90%;
+    top:10px
+}
+
+.e-item {
+    max-height: 70vh;
+  
+    overflow: auto
+}
