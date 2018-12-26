@@ -6,15 +6,13 @@
                      
                     </div>
                     <ejs-schedule #scheduleObj (popupOpen)="onPopupOpen($event)" cssClass='schedule-drag-drop' width='100%' height='650px' [group]="group"
-                        [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours" [eventSettings]="eventSettings"
-                        (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete()" (drag)="onItemDrag($event)"  >
+                        [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours" [eventSettings]="eventSoettings"
+                        (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete()" (drag)="onItemDrag($event)" >
                         <e-resources>
                             <e-resource field='DepartmentID' title='Department' name='Departments' [dataSource]='departmentDataSource'
                                 textField='Text' idField='Id' colorField='Color' groupIDField="Id" [allowMultiple]='allowMultiple'>
                             </e-resource> 
-                            <!-- <e-resource field='ConsultantID' title='Consultant' name='Consultants' [dataSource]='consultantDataSource'
-                                [allowMultiple]='allowMultiple' textField='Text' idField='Id' groupIDField="GroupId" colorField='Color'>
-                            </e-resource> -->
+                         
                         </e-resources>
                         <!-- <ng-template #resourceHeaderTemplate let-data>
                             <div class="template-wrap">
@@ -54,10 +52,16 @@
                         </e-views>
                     </ejs-schedule>
                 </div>
+                <ejs-tab id="element">
+                    <e-tabitems>
+                             <e-tabitem [header]='headerText[0]'>
+                                 <ng-template #content>
                 <div class="treeview-container">
-                    <div class="title-container">
-                        
-                    </div>
+                   
+                    <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Filtrer...">
+                            <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
+                          </div>
                     <ejs-treeview #treeObj [fields]='field' cssClass='treeview-external-drag' [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)"
                         (nodeDragging)="onItemDrag($event)">
                         <ng-template #nodeTemplate="" let-data="">
@@ -70,6 +74,18 @@
                         </ng-template>
                     </ejs-treeview>
                 </div>
+            </ng-template>
+        </e-tabitem>
+        <e-tabitem [header]='headerText[1]'>
+            <ng-template #content>
+               <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Filtrer...">
+                            <span class="input-group-addon " id="basic-addon1"><i class="icofont icofont-search"></i></span>
+                          </div>
+                </ng-template>
+            </e-tabitem>
+        </e-tabitems>
+    </ejs-tab>
             </div>
           </div>
 

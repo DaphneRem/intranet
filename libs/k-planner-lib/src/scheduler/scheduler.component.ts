@@ -12,10 +12,11 @@ import {
   ScheduleComponent,
   ActionEventArgs,
   CellClickEventArgs,
+  RenderCellEventArgs,
   
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
-import { TreeViewComponent } from '@syncfusion/ej2-angular-navigations';
+import { TreeViewComponent,TabComponent } from '@syncfusion/ej2-angular-navigations';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
@@ -40,9 +41,10 @@ export class SchedulerComponent {
   public isTreeItemDropped: boolean = false;
   public draggedItemId: string = '';
   public timelineResourceDataOut:Object[];
+ 
 
   public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
-  public selectedDate: Date = new Date(2018, 7, 1);
+  public selectedDate: Date = new Date();
   public currentView: View = 'TimelineDay';
   public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
   public departmentDataSource: Object[] = [
@@ -123,6 +125,7 @@ export class SchedulerComponent {
               }
         }
     }
+
 
     openDialog(args, object, subObject, categories): void {
         let containerModal = document.getElementsByClassName('cdk-overlay-container');
@@ -225,6 +228,7 @@ export class SchedulerComponent {
                       AzaIsPere: true,
                       AzaNumGroupe:filteredData[0].AzaNumGroupe
                   };
+        
                  
                   this.timelineResourceDataOut.push( eventData );//filteredData[0]
                 //   intconsultant : Number;
@@ -530,6 +534,9 @@ public onActionComplete() {
     dataSource:<Object[]>extend([], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false ), null, true )
 };
 }
+
+public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Monteur' }];
+
 
 
 }

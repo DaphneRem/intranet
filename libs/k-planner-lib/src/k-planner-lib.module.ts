@@ -6,10 +6,10 @@ import { AppRoutingModule } from 'apps/k-planner/src/app/app-routing.module';
 import { ScheduleAllModule, RecurrenceEditorAllModule } from '@syncfusion/ej2-angular-schedule';
 import { DatePickerAllModule, TimePickerAllModule, DateTimePickerAllModule } from '@syncfusion/ej2-angular-calendars';
 import { NumericTextBoxAllModule } from '@syncfusion/ej2-angular-inputs';
-import { CheckBoxAllModule } from '@syncfusion/ej2-angular-buttons';
+import { CheckBoxAllModule, ButtonComponent } from '@syncfusion/ej2-angular-buttons';
 import { ToolbarAllModule } from '@syncfusion/ej2-angular-navigations';
 import { MaskedTextBoxModule } from '@syncfusion/ej2-angular-inputs';
-import { DropDownListAllModule, MultiSelectAllModule } from '@syncfusion/ej2-angular-dropdowns';
+import { DropDownListAllModule, MultiSelectAllModule} from '@syncfusion/ej2-angular-dropdowns';
 import { TreeViewModule, TabModule } from '@syncfusion/ej2-angular-navigations';
 import { ListViewModule } from '@syncfusion/ej2-angular-lists';
 
@@ -20,6 +20,8 @@ import { SubHeaderModule } from '@ab/sub-header';
 import { MonPlanningComponent } from './kplanner-pages/mon-planning/mon-planning.component';
 import { WorkorderDetailsModalComponent } from './workorder-details-modal/workorder-details-modal.component';
 import { ListePlanningComponent } from './liste-planning/liste-planning.component';
+import { BacklogsComponent } from './backlogs/backlogs.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -43,13 +45,17 @@ import { ListePlanningComponent } from './liste-planning/liste-planning.componen
     ListViewModule,
     SubHeaderModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    NgbModule
   ],
   declarations: [
     SchedulerComponent,
     MonPlanningComponent,
     WorkorderDetailsModalComponent,
-    ListePlanningComponent
+    ListePlanningComponent,
+    BacklogsComponent,
+    
+    ButtonComponent
   ],
   entryComponents: [
     MonPlanningComponent,
