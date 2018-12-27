@@ -92,7 +92,7 @@
                             </div>
                             <ejs-treeview #treeObj [fields]='fieldMonteur' cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop'>
-                                <ng-template #nodeTemplate="" let-data="">
+                                <ng-template #nodeTemplate="" let-dataMonteur="">
                                     <div id="waiting">
                                         <div id="waitdetails">
                                             <div id="monteurslist">{{dataMonteur.Username }}</div>
@@ -108,7 +108,6 @@
                        
                     </ng-template>
                 </e-tabitem>
-                
             </e-tabitems>
             
         </ejs-tab>
