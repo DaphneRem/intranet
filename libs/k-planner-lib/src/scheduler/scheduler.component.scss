@@ -14,6 +14,10 @@
     color: #ffffff;
 }
 
+/deep/ .e-schedule .e-timeline-view .e-appointment .e-appointment-details,
+.e-schedule .e-timeline-month-view .e-appointment .e-appointment-details {
+    padding: 0;
+}
 
 .drag-sample-wrapper {
     display: flex;

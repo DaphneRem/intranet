@@ -13,10 +13,9 @@ import {
   ActionEventArgs,
   CellClickEventArgs,
   RenderCellEventArgs,
-  
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
-import { TreeViewComponent,TabComponent } from '@syncfusion/ej2-angular-navigations';
+import { TreeViewComponent, TabComponent } from '@syncfusion/ej2-angular-navigations';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
@@ -27,16 +26,14 @@ import { monteurs } from '../data/monteur';
 @Component({
   selector: 'scheduler',
   templateUrl: './scheduler.component.html',
-  styleUrls: ['./scheduler.component.scss',
-  '../../../../assets/icon/icofont/css/icofont.scss']
+  styleUrls: [
+    './scheduler.component.scss',
+    '../../../../assets/icon/icofont/css/icofont.scss'
+  ]
 })
 
 export class SchedulerComponent {
 
-  title = 'syncfusion7';
-
-
-  
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
     @ViewChild('treeObj')
@@ -73,16 +70,17 @@ export class SchedulerComponent {
     public allowDragAndDrop: boolean = true;
     public cancelObjectModal = false;
 
-
+// EDIT EVENT CONFIG
     public eventSettings: EventSettingsModel = {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false ), null, true ),
         fields: {
             subject: { title: 'Patient Name', name: 'Name' },
             startTime: { title: 'From', name: 'StartTime' },
             endTime: { title: 'To', name: 'EndTime' },
-            description: { title: 'Reason', name: 'Description' }
+            description: { title: 'description', name: 'Description' }
         }
     };
+
     constructor(public dialog: MatDialog) {
         // ej.Schedule.Locale["fr-FR"]=
         // {
@@ -92,6 +90,7 @@ export class SchedulerComponent {
 
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
+        args.element.hidden = false;
         console.log(args.type);
         console.log(args);
         if (this.cancelObjectModal) {
@@ -124,10 +123,14 @@ export class SchedulerComponent {
                         console.log(args.cancel);
                         args.cancel = true;
                         console.log(args);
+                        args.element.hidden = true;
                         this.openDialog(args, args.data, workOrders[e], this.departmentDataSource);
                     });
                 }
               }
+        }
+        if (args.data.name === 'cellClick') {
+            console.log('cell click');
         }
     }
 
@@ -149,7 +152,7 @@ export class SchedulerComponent {
         const dialogRef = this.dialog.open(WorkorderDetailsModalComponent, {
           width: '365px',
           data : {
-            workorder: object,
+            workorder: subObject,
             regie: category
           }
         });
@@ -157,30 +160,11 @@ export class SchedulerComponent {
         console.log(this.cancelObjectModal);
     }
 
-    // NOT USED
-    // getConsultantName(value: ResourceDetails): string {
-    //     return (value as ResourceDetails).resourceData[(value as ResourceDetails).resource.textField] as string;
-    // };
-
-    // NOT USED
-    // getConsultantStatus(value: ResourceDetails): boolean {
-    //     let resourceName: string =
-    //         (value as ResourceDetails).resourceData[(value as ResourceDetails).resource.textField] as string;
-    //     if (resourceName === 'REGIEA' || resourceName === 'REGIE2'|| resourceName === 'REGIE3'|| resourceName === 'REGIE4') {
-    //         return false;
-    //     } else {
-    //         return true;
-    //     }
-    // };
-
-    // NOT USED
-    // getConsultantImageName(value: ResourceDetails): string{
-    //     return this.getConsultantName(value).toLowerCase();
-    // }
-
 /****************** DRAG AND DROP  ******************/
 
     onItemDrag(event: any): void { // FUCNTION FROM TEMPLATE
+        console.log('onItemDrag');
+        console.log(event)
         if (document.body.style.cursor === 'not-allowed') {
             document.body.style.cursor = '';
         }
@@ -193,7 +177,106 @@ export class SchedulerComponent {
         }
     }
 
+    onTreeDragStop(event: DragAndDropEventArgs): void {
+        console.log(event);
+        console.log(this.treeObj);
+        let treeElement = closest(event.target, '.e-treeview');
+
+        let classElement = this.scheduleObj.element.querySelector('.e-device-hover');
+        if (classElement) {
+            classElement.classList.remove('e-device-hover');
+        }
+
+        if (!treeElement) {
+            event.cancel = true;
+            let scheduleElement: Element = <Element>closest(event.target, '.e-content-wrap');
+            if (scheduleElement) {
+                let treeviewData: { [key: string]: Object }[] =
+                    this.treeObj.fields.dataSource as { [key: string]: Object }[];
+                    console.log(treeviewData);
+                    console.log(event);
+                    console.log(event.draggedNodeData.id);
+                if (event.target.classList.contains('e-work-cells')) {
+                    const filteredData: { [key: string]: Object }[] =
+                        treeviewData.filter((item: any) => item.Id === parseInt(event.draggedNodeData.id as string, 10));
+                        console.log('filtered data ___________________');
+                        console.log(filteredData);
+                    let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
+                    let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
+                    let containerData = { // DISPLAY DATA FOR CONTAINER
+                        Id: filteredData[0].Id,
+                        Name: 'Title',
+                        StartTime: cellData.startTime,
+                        EndTime: cellData.endTime,
+                        IsAllDay: false,
+                        DepartmentID: resourceDetails.resourceData.Id,
+                        ConsultantID: resourceDetails.resourceData.Id,
+                        AzaIsPere: true,
+                        AzaNumGroupe: filteredData[0].AzaNumGroupe,
+                    };
+                    let eventData = { // DISPLAY DATA FOR EVENT
+                        Id: filteredData[0].Id,
+                        Name: filteredData[0].Name,
+                        StartTime: cellData.startTime,
+                        EndTime: cellData.endTime,
+                        IsAllDay: false,
+                        Description: filteredData[0].Description,
+                        DepartmentID: resourceDetails.resourceData.Id,
+                        ConsultantID: resourceDetails.resourceData.Id,
+                        AzaIsPere: false,
+                        AzaNumGroupe: filteredData[0].AzaNumGroupe
+                    };
+                    this.timelineResourceDataOut.push(containerData); // filteredData[0]
+
+                //   intconsultant : Number;
+                    let intconsultant = resourceDetails.resourceData.Id;
+                    // for (let _i = 0; _i < 4; _i++) {
+                    //     let cpt = (Number(filteredData[0].Id) + _i + 100);
+                    //     console.log('intconsultant:' + intconsultant);
+                    //     if (intconsultant === 1) {
+                    //         intconsultant = 2;
+                    //     } else {
+                    //         intconsultant = intconsultant;
+                    //     }
+                    //     let tempData = {
+                    //         Id: cpt,
+                    //         Name: 'PARTIE ' + _i,
+                    //         StartTime: startDate,
+                    //         EndTime: endDate,
+                    //         IsAllDay: cellData.isAllDay,
+                    //         Description: filteredData[0].Description,
+                    //         DepartmentID: resourceDetails.resourceData.Id,
+                    //         ConsultantID: intconsultant,
+                    //         AzaIsPere: false,
+                    //         AzaNumGroupe: filteredData[0].AzaNumGroupe
+                    //     };
+                    //     this.timelineResourceDataOut.push(tempData);
+                    // }
+                    this.timelineResourceDataOut.push(eventData);
+                    this.scheduleObj.openEditor(eventData, 'Add', true);
+                    this.isTreeItemDropped = true;
+                    this.draggedItemId = event.draggedNodeData.id as string;
+                    console.log(this.data);
+                }
+            }
+        }
+    }
+
+/*********************** ACTION BEGIN FUNCTION *********************/
+
     onActionBegin(event: ActionEventArgs): void {
+        console.log('action Begin');
+        console.log(event);
+        console.log(this.isTreeItemDropped);
+        // if (event.requestType === 'eventChange' && event.data.AzaIsPere) {
+        //     console.log('event change action');
+        // }
+        // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
+        //     console.log('is not pere');
+        // }
+        if (event.requestType === 'eventCreate' && !this.isTreeItemDropped) { // CREATE CONTAINER ON CELL WITHOUT EVENT CLICK
+            event.data[0]['AzaIsPere'] = true;
+        }
         if (event.requestType === 'eventCreate' && this.isTreeItemDropped) { // FUNCTION FROM TEMPLATE
             console.log('function from template: onActionBegin()');
             let treeViewdata: { [key: string]: Object }[] = this.treeObj.fields.dataSource as { [key: string]: Object }[];
@@ -213,101 +296,80 @@ export class SchedulerComponent {
         }
     }
 
-    onTreeDragStop(event: DragAndDropEventArgs): void {
-        let treeElement: Element = <Element>closest(event.target, '.e-treeview');
-        if (!treeElement) {
-            event.cancel = true;
-            let scheduleElement: Element = <Element>closest(event.target, '.e-content-wrap');
-            if (scheduleElement) {
-                let treeviewData: { [key: string]: Object }[] =
-                    this.treeObj.fields.dataSource as { [key: string]: Object }[];
-                if (event.target.classList.contains('e-work-cells')) {
-                    const filteredData: { [key: string]: Object }[] =
-                        treeviewData.filter((item: any) => item.Id === parseInt(event.draggedNodeData.id as string, 10));
-                        console.log(filteredData);
-                    let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
-                    let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
-                    let startDate = cellData.startTime;
-                    let endDate = cellData.endTime;
-                    let eventData: { [key: string]: Object } = {
-                        Id: filteredData[0].Id,
-                        Name: filteredData[0].Name,
-                        StartTime: cellData.startTime,
-                        EndTime: cellData.endTime,
-                        IsAllDay: false,
-                        Description: filteredData[0].Description,
-                        DepartmentID: resourceDetails.resourceData.Id,
-                        ConsultantID: resourceDetails.resourceData.Id,
-                        AzaIsPere: true,
-                        AzaNumGroupe: filteredData[0].AzaNumGroupe
-                    };
-                    this.timelineResourceDataOut.push( eventData ); // filteredData[0]
-                //   intconsultant : Number;
-                    let intconsultant = resourceDetails.resourceData.Id;
-                    for (let _i = 0; _i < 4; _i++) {
-                        let cpt = (Number(filteredData[0].Id) + _i + 100);
-                        console.log('intconsultant:' + intconsultant);
-                        if (intconsultant === 1) {
-                            intconsultant = 2;
-                        } else {
-                            intconsultant = intconsultant;
-                        }
-                        let tempData = {
-                            Id: cpt,
-                            Name: 'PARTIE ' + _i,
-                            StartTime: startDate,
-                            EndTime: endDate,
-                            IsAllDay: cellData.isAllDay,
-                            Description: filteredData[0].Description,
-                            DepartmentID: resourceDetails.resourceData.Id,
-                            ConsultantID: intconsultant,
-                            AzaIsPere: false,
-                            AzaNumGroupe: filteredData[0].AzaNumGroupe
-                        };
-                        this.timelineResourceDataOut.push(tempData);
-                    }
-                    this.scheduleObj.openEditor(eventData, 'Add', true);
-                    this.isTreeItemDropped = true;
-                    this.draggedItemId = event.draggedNodeData.id as string;
-                }
-            }
+    azaactionBegin(args: any) {
+        if (args.requestType !== 'toolbarItemRendering') {
+            console.log('****************************************** Custom action Begin function');
+            console.log(args);
+            console.log(this.timelineResourceDataOut);
+            let bstartdifferent = this.isStartDifferent(args.data, this.timelineResourceDataOut);
+            let benddifferent = this.isEndDifferent(args.data, this.timelineResourceDataOut);
+            this.timelineResourceDataOut = this.eventSettings.dataSource as Object[];
+            // let atimelineResourceData1 = this.deleteobject(args.data, this.timelineResourceDataOut);
+            // atimelineResourceData1.push(args.data);
+            this.eventSettings = {
+                dataSource: <Object[]>extend(
+                    // [], this.calculDateAll(atimelineResourceData1, true, args.data, bstartdifferent, benddifferent ), null, true
+                    [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, bstartdifferent, benddifferent ), null, true
+
+                )
+            };
+            // console.log('datasource:' + JSON.stringify(this.eventSettings.dataSource));
         }
     }
-/****************************************************/
 
+/*********************** ACTION COMPLETE FUNCTION *********************/
 
-    // NOT USED
-    // getObjectByAzaNumgroupe(objectin: Object[], column:string, value:any){
-    //     let objectOut:Object[] = [];
-    //     // objectOut.clear();
-    //     console.log('getObjectByAzaNumgroupe');
-    //     for (let entry of objectin) {
-    //         console.log('2');
-    //         const properties = Object.getOwnPropertyNames(entry);
-    //         for (let property of properties) {
-    //             //if (property=='AzaNumGroupe'){
-    //             if (property == column) {
-    //                 if ((entry[property] == value)){
-    //                     console.log('entry:' + entry);
-    //                     objectOut.push(entry);
-    //                 }
-    //             }
+    onActionComplete(e) {
+        console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& On Action Complete Function');
+        console.log(e);
+        this.isTreeItemDropped = false;
+        this.eventSettings = {
+            dataSource: <Object[]>extend(
+                [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false ), null, true
+            )
+        };
+    }
+
+/************************ DELETE ********************/
+
+    deleteobject(argsData: any, timelineResourceDataOut: Object[]) {
+    //     let objectOut: Object[] = timelineResourceDataOut;
+    //     for (let i = 0; i < timelineResourceDataOut.length; i++) {
+    //         if (argsData.Id === timelineResourceDataOut[i]['Id']) {
+    //             // objectOut.splice(i, 1);
     //         }
     //     }
-    //     return objectOut;
-    // }
+    //    return objectOut;
+    }
 
-/************************ CALCUL ********************/
+
+/************************ DATES CALCUL ********************/
+
+    calculDateAll(
+        atimelineResourceData: Object[], isUpdate: boolean, Objupdate: Object[], bstartdifferent: boolean, benddifferent: boolean
+    ): Object[] {
+        this.timelineResourceDataOut = this.calculDateGroup(
+            atimelineResourceData, 100, isUpdate, Objupdate, bstartdifferent, benddifferent);
+        this.timelineResourceDataOut = this.calculDateGroup(
+            atimelineResourceData, 101, isUpdate, Objupdate, bstartdifferent, benddifferent);
+        this.timelineResourceDataOut = this.calculDateGroup(
+            atimelineResourceData, 102, isUpdate, Objupdate, bstartdifferent, benddifferent);
+        this.timelineResourceDataOut = this.calculDateGroup(
+            atimelineResourceData, 103, isUpdate, Objupdate, bstartdifferent, benddifferent);
+        this.timelineResourceDataOut = this.calculDateGroup(
+            atimelineResourceData, 104, isUpdate, Objupdate, bstartdifferent, benddifferent);
+        this.timelineResourceDataOut = this.calculDateGroup(
+            atimelineResourceData, 105, isUpdate, Objupdate, bstartdifferent, benddifferent);
+        return this.timelineResourceDataOut;
+    }
 
     getCountByAzaNumgroupe(objectin: Object[], column: string, value: any): number {
        let objectOut: Object[] = [];
        let cpt = 0;
-        // objectOut.clear();
         console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++getCountByAzaNumgroupe');
         for (let entry of objectin) {
             const properties = Object.getOwnPropertyNames(entry);
             for (let property of properties){
-                // if (property == 'AzaNumGroupe') {
                 if (property === column) {
                     if ((entry[property] === value)) {
                     cpt = cpt + 1;
@@ -318,111 +380,28 @@ export class SchedulerComponent {
         return cpt;
     }
 
-/************************ DELETE ********************/
-
-    deleteobject(objectin: any, tabin: Object[]) {
-        let objectOut: Object[] = tabin;
-        // objectOut.clear();
-        console.log('deleteobject');
-        // for (let entry of objectin){
-        for (let i = 0; i < tabin.length; i++) {
-           console.log('deleteobject :' + i);
-           console.log('objectin.Id:' + objectin.Id);
-           console.log('tabin[i]:' + tabin[i]['Id']);
-           // const properties= Object.getOwnPropertyNames(objectin[i]);
-
-            if (objectin.Id === tabin[i]['Id']) {
-                console.log(' delete entry:' + objectin);
-                console.log(' delete entry:' + objectin.Id);
-                objectOut.splice(i, 1);
-            }
-        }
-       return objectOut;
-    }
-
-
-    isStartDifferent(objectin: any, tabin: Object[]): boolean {
-       let objectOut: Object[] = tabin;
-       let isdiff: boolean = false;
-      // objectOut.clear();
-      console.log('isStartDifferent');
-      // for (let entry of objectin){
-          for (let i = 0; i < tabin.length; i++) {
-          console.log('isStartDifferent :' + i);
-          console.log('objectin.Id:' + objectin.Id);
-          console.log('tabin[i]:' + tabin[i]['Id']);
-          if (objectin.Id === tabin[i]['Id']) {
-               if (objectin.StartTime === tabin[i]['StartTime']) {
-                   console.log('false');
-                   isdiff = false;
-                   break;
-               } else {
-                   console.log('true');
-                   isdiff = true;
-                   break;
-               }
-           }
-        }
-        return isdiff;
-    }
-
-    isEndDifferent(objectin: any, tabin: Object[]): boolean {
-        let objectOut: Object[] = tabin;
-        let isdiff: boolean = false;
-        // objectOut.clear();
-        console.log('isStartDifferent');
-        // for (let entry of objectin){
-          for (let i = 0; i < tabin.length; i++) {
-          console.log('isStartDifferent :' + i);
-          console.log('objectin.Id:' + objectin.Id);
-          console.log('tabin[i]:' + tabin[i]['Id']);
-          if (objectin.Id === tabin[i]['Id']) {
-               if (objectin.EndTime === tabin[i]['EndTime']) {
-                   isdiff = false;
-                   break;
-               } else {
-                   isdiff = true;
-                   break;
-               }
-           }
-        }
-        return isdiff;
-    }
-
-
-/************************ DATES CALCUL ********************/
-
 // GET MINIMUM DATE FROM GROUP
     getmindateNumgroupe(
         objectin: Object[], numgroupe: number, column: string, value: any,isUpdate: boolean, Objupdate: Object[], bstartdifferent: boolean
     ) {
         let objectOut: Object[] = [];
         let mindate: Date = new Date(2050, 3, 4, 0, 0);
-        // objectOut.clear();
-        console.log('getmindatemindateNumgroupe');
         for (let entry of objectin) {
-            console.log('entry');
             const properties = Object.getOwnPropertyNames(entry);
             if ( entry['AzaNumGroupe'] === value) {
                 for (let property of properties) {
-                    //if (property=='AzaNumGroupe'){
                     if (property === column) {
                         if (entry[property] < mindate) {
                             mindate = entry[property];
-                            console.log('getmindate:' + mindate);
                         }
                     }
                 }
            }
         }
         if (isUpdate) {
-            console.log('isupdate:');
             if (bstartdifferent) {
-                console.log('istartdifferent');
-                if (Objupdate !== null) {
-                    console.log('Objupdate');
+                if (Objupdate != null) {
                     if (Objupdate['AzaNumGroupe'] === numgroupe) {
-                        console.log('Objupdate[column]< mindate');
                         mindate = Objupdate[column];
                     }
                 }
@@ -444,7 +423,6 @@ export class SchedulerComponent {
                     if (property === column) {
                         if (entry[property] > maxdate) {
                         maxdate = entry[property];
-                        console.log('getmaxdate:' + maxdate);
                         }
                     }
                 }
@@ -470,17 +448,12 @@ export class SchedulerComponent {
         for (let entry of timelineResourceDatain) {
             if (entry.AzaNumGroupe === numgroup) {
                 const properties = Object.getOwnPropertyNames(entry);
-                if ( entry['AzaIsPere'] === true) {
-                    console.log('is pere mindate:' + mindate);
-                    console.log('is pere maxdate:' + maxdate);
+                if ( entry['AzaIsPere'] === true) { // IF CONTAINER DISPLAY STARTTIME AND ENDTIME MAX
                         entry['StartTime'] = mindate;
                         entry['EndTime'] = maxdate;
                     } else {
-                        console.log('not is pere mindate:' + tempmindate);
-                        console.log('not is pere maxdate:' + tempmaxdate);
                         entry['StartTime'] = tempmindate;
                         let tempdate = new Date(tempmindate.getTime() + Seconds_for_a_job * 1000) ;
-                        console.log('tempdate:' + tempdate);
                         entry['EndTime'] = tempdate;
                         tempmindate = tempdate;
                     }
@@ -493,92 +466,101 @@ export class SchedulerComponent {
         atimelineResourceData: Object[], numGroup: number, isUpdate: boolean,
         Objupdate: Object[], bstartdifferent: boolean, benddifferent: boolean)
         : Object[] {
-            // atimelineResourceData=this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 100);
-            // atimelineResourceData=atimelineResourceData.concat(this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 101));
-            // console.log('calculDateGroup:' + JSON.stringify(atimelineResourceData));
-            console.log('calculDateGroup function call');
-            let mindate = this.getmindateNumgroupe(
+            let minDateGroup = this.getmindateNumgroupe(
                 atimelineResourceData, numGroup,  'StartTime', numGroup, isUpdate, Objupdate, bstartdifferent
             );
             let maxdate = this.getmaxdateNumgroupe(
                 atimelineResourceData, numGroup,  'EndTime', numGroup, isUpdate, Objupdate, benddifferent
             );
-            console.log('calculDateGroup mindate:' + mindate);
-            console.log('calculDateGroup maxdate:' + maxdate);
-            let diff = maxdate.getTime() - mindate.getTime();
+
+            let diff = maxdate.getTime() - minDateGroup.getTime();
             let Seconds_from_T1_to_T2 = diff / 1000;
             let Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
             let cpt = this.getCountByAzaNumgroupe(atimelineResourceData,  'AzaNumGroupe', numGroup);
-            console.log('calculDateGroup cpt:' + cpt);
             let Seconds_for_a_job = Seconds_Between_Dates / (cpt - 1);
-            console.log('avant calcul mindate  ' + mindate + '-maxdate ' + maxdate + '-Seconds_for_a_job ' + Seconds_for_a_job );
-            atimelineResourceData = this.calcultimesforalljobs(atimelineResourceData, numGroup, mindate, maxdate, Seconds_for_a_job );
-            // console.log(atimelineResourceData);
+            atimelineResourceData = this.calcultimesforalljobs(atimelineResourceData, numGroup, minDateGroup, maxdate, Seconds_for_a_job );
             this.timelineResourceDataOut = atimelineResourceData;
             return atimelineResourceData;
     }
 
-    calculDateAll(
-        atimelineResourceData: Object[], isUpdate: boolean, Objupdate: Object[], bstartdifferent: boolean, benddifferent: boolean
-    ): Object[] {
-       // let atimelineResourceDatatemp=this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 100);
-       // atimelineResourceData=atimelineResourceDatatemp.concat( this.getObjectByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', 101));
-      // atimelineResourceData=this.timelineResourceDataOut;
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 100, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 101, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 102, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 103, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 104, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 105, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        return this.timelineResourceDataOut;
-    }
 
-public monteurListe: Object[] = [
-    { Nom:"Ajouter un monteur ", Id: 1 },
-    { Nom:"Monteur 1", Id: 2 },
-    { Nom:"Monteur 2", Id: 3 },
-    { Nom:"Monteur 3", Id: 4 },
-    { Nom:"Monteur 4", Id: 5 },
-    { Nom:"Monteur 5", Id: 6 },
-];
-    azaactionBegin(args: any) {
-      // let  adatasource= this.eventSettings.dataSource;
-      // adatasource.push(args) ;
-        if (args.requestType !== 'toolbarItemRendering') {
-            console.log('********************************************************************************actionBegin');
-            console.log('args = ' + args);
-            console.log('this.timelineResourceDataOut' + this.timelineResourceDataOut);
-            let bstartdifferent = this.isStartDifferent(args.data, this.timelineResourceDataOut);
-            console.log('bstartdifferent:' + bstartdifferent);
-            let benddifferent = this.isEndDifferent(args.data, this.timelineResourceDataOut);
-            console.log('benddifferent:' + bstartdifferent);
-            this.timelineResourceDataOut = this.eventSettings.dataSource as Object[];
-            console.log('timelineResourceDataOut:' + JSON.stringify( this.timelineResourceDataOut));
-            let atimelineResourceData1 = this.deleteobject(args.data, this.timelineResourceDataOut);
-            console.log('splice:' + atimelineResourceData1);
-            atimelineResourceData1.push(args.data);
-            console.log('push:' + JSON.stringify(atimelineResourceData1));
-            this.eventSettings = {
-                dataSource: <Object[]>extend(
-                    [], this.calculDateAll(atimelineResourceData1, true, args.data, bstartdifferent, benddifferent ), null, true
-                )
-            };
-            console.log('datasource:' + JSON.stringify(this.eventSettings.dataSource));
+    isStartDifferent(argsData: any, timelineResourceDataOut: Object[]): boolean {
+       let objectOut: Object[] = timelineResourceDataOut;
+       let isdiff: boolean = false;
+          for (let i = 0; i < timelineResourceDataOut.length; i++) {
+          if (argsData.Id === timelineResourceDataOut[i]['Id']) {
+               if (argsData.StartTime === timelineResourceDataOut[i]['StartTime']) {
+                   isdiff = false;
+                   break;
+               } else {
+                   isdiff = true;
+                   break;
+               }
+           }
         }
+        return isdiff;
     }
 
-    onActionComplete() {
-        this.eventSettings = {
-            dataSource: <Object[]>extend(
-                [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false ), null, true
-            )
-        };
+    isEndDifferent(argsData: any, timelineResourceDataOut: Object[]): boolean {
+        let objectOut: Object[] = timelineResourceDataOut;
+        let isdiff: boolean = false;
+          for (let i = 0; i < timelineResourceDataOut.length; i++) {
+          if (argsData.Id === timelineResourceDataOut[i]['Id']) {
+               if (argsData.EndTime === timelineResourceDataOut[i]['EndTime']) {
+                   isdiff = false;
+                   break;
+               } else {
+                   isdiff = true;
+                   break;
+               }
+           }
+        }
+        return isdiff;
     }
+
+
+/**********************************************************************/
+
+    // NOT USED
+    // getObjectByAzaNumgroupe(objectin: Object[], column:string, value:any){
+    //     let objectOut:Object[] = [];
+    //     // objectOut.clear();
+    //     console.log('getObjectByAzaNumgroupe');
+    //     for (let entry of objectin) {
+    //         console.log('2');
+    //         const properties = Object.getOwnPropertyNames(entry);
+    //         for (let property of properties) {
+    //             //if (property=='AzaNumGroupe'){
+    //             if (property == column) {
+    //                 if ((entry[property] == value)){
+    //                     console.log('entry:' + entry);
+    //                     objectOut.push(entry);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return objectOut;
+    // }
+
+    // NOT USED
+    // getConsultantName(value: ResourceDetails): string {
+    //     return (value as ResourceDetails).resourceData[(value as ResourceDetails).resource.textField] as string;
+    // };
+
+    // NOT USED
+    // getConsultantStatus(value: ResourceDetails): boolean {
+    //     let resourceName: string =
+    //         (value as ResourceDetails).resourceData[(value as ResourceDetails).resource.textField] as string;
+    //     if (resourceName === 'REGIEA' || resourceName === 'REGIE2'|| resourceName === 'REGIE3'|| resourceName === 'REGIE4') {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // };
+
+    // NOT USED
+    // getConsultantImageName(value: ResourceDetails): string{
+    //     return this.getConsultantName(value).toLowerCase();
+    // }
 
 }
