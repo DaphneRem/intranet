@@ -81,35 +81,59 @@
                 </e-tabitem>
                 <e-tabitem [header]='headerText[1]'>
                     <ng-template #content>
-
+                         
                         <div class="treeview-container">
                             <div class="title-container">
 
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filtrer...">
+                                <input type="text" class="form-control" placeholder="Filtrer..."  #search  (keyup)="filterMonteurs($event.target.value)"  [(ngModel)]="searchText">
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
+                            
+                            <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
+                                   <option >Plus de monteurs </option>
+                                     <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
+                                 </select>
+                            <div *ngIf="select.value=='Plus de monteurs' ">
                             <ejs-treeview #treeObj [fields]='fieldMonteur' cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop'>
                                 <ng-template #nodeTemplate="" let-dataMonteur="">
                                     <div id="waiting">
                                         <div id="waitdetails">
-                                            <div id="monteurslist">{{dataMonteur.Username }}</div>
+                                                <br>
+                                            <div id="monteurslist mt-2">{{dataMonteur.Username }}</div>
 
                                         </div>
                                     </div>
                                 </ng-template>
                             </ejs-treeview>
                         </div>
-                        <select class="form-control ">
-                            <option *ngFor="let liste of monteurListe">{{liste.Nom}}</option>
-                        </select>
-                       
+                        <div *ngIf="selectedValue!='' ">
+                            <ejs-treeview #treeObj [fields]='fieldnewDataMonteur' cssClass='treeview-external-drag'
+                                [allowDragAndDrop]='allowDragAndDrop'>
+                                <ng-template #nodeTemplate="" let-dataMonteur="">
+                                    <div id="waiting">
+                                        <div id="waitdetails">
+                                            <br>
+                                            <div id="monteurslist mt-2 ">{{dataMonteur.Username }}
+                                            <!-- <span *ngIf="select.value=== dataMonteur.Username" (click)="deleteMonteur(select.value)" ><i class="icofont icofont-close float-right" ></i></span> -->
+                                        </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ejs-treeview>
+                        
+                        </div>
+                        </div>
+                      
                     </ng-template>
+                   
                 </e-tabitem>
+               
             </e-tabitems>
-            
+           
         </ejs-tab>
+      
     </div>
 </div>

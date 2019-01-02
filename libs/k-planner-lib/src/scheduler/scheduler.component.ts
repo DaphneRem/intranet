@@ -1,4 +1,4 @@
-import { Component,  ViewChild, Inject } from '@angular/core';
+import { Component,  ViewChild, Inject, Input } from '@angular/core';
 import { extend, closest, remove, createElement } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
 import { HospitalData } from '../models/hospital-data';
@@ -12,17 +12,16 @@ import {
   ScheduleComponent,
   ActionEventArgs,
   CellClickEventArgs,
-  RenderCellEventArgs,
+ 
   
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
 import { TreeViewComponent,TabComponent } from '@syncfusion/ej2-angular-navigations';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog,  } from '@angular/material';
 
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
 import { MonteursData } from '../models/monteurs-data';
 import { monteurs } from '../data/monteur';
-
 
 @Component({
   selector: 'scheduler',
@@ -35,7 +34,7 @@ export class SchedulerComponent {
 
   title = 'syncfusion7';
 
-
+@Input() searchText:string
   
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
@@ -49,7 +48,7 @@ export class SchedulerComponent {
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([],monteurs , null, true);
     public currentView: View = 'TimelineDay';
     public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
-
+   
 // ROWS INIT
     public departmentDataSource: Object[] = [
         { Text: 'REGIEA', Id: 1, Color: '#008eaa' },
@@ -70,6 +69,7 @@ export class SchedulerComponent {
 
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
     public fieldMonteur: Object = { dataSource: monteurs, text: 'Username' };
+   
     public allowDragAndDrop: boolean = true;
     public cancelObjectModal = false;
 
@@ -539,13 +539,12 @@ export class SchedulerComponent {
         return this.timelineResourceDataOut;
     }
 
-public monteurListe: Object[] = [
-    { Nom:"Ajouter un monteur ", Id: 1 },
-    { Nom:"Monteur 1", Id: 2 },
-    { Nom:"Monteur 2", Id: 3 },
-    { Nom:"Monteur 3", Id: 4 },
-    { Nom:"Monteur 4", Id: 5 },
-    { Nom:"Monteur 5", Id: 6 },
+public monteurListe:MonteursData[] = [
+    { Code: 1, Username: "Monteur 1", CodeSalle: null, IsRH: 1, NomSalle: "" },
+    { Code: 2, Username: "Monteur 2", CodeSalle: null, IsRH: 1, NomSalle: "" },
+    { Code: 3, Username: "Monteur 3", CodeSalle: null, IsRH: 1, NomSalle: "" },
+    { Code: 4, Username: "Monteur 4", CodeSalle: null, IsRH: 1, NomSalle: "" },
+    { Code: 5, Username: "Monteur 5", CodeSalle: null, IsRH: 1, NomSalle: "" },
 ];
     azaactionBegin(args: any) {
       // let  adatasource= this.eventSettings.dataSource;
@@ -580,5 +579,35 @@ public monteurListe: Object[] = [
             )
         };
     }
+    // filterMonteurs(value:string){
+    //     this.dataMonteur = this.dataMonteur.filter (monteurs => {
+    //       return monteurs.Username === value;
+          
+    //     });
+     
+    //     }
+  
+    public fieldnewDataMonteur: Object
+        onSelect(value){
+            for (let i=0; i<this.monteurListe.length;i++)
+            {
+                if(value){
+                    if(value===this.monteurListe[i].Username)
 
+                    {      this.fieldnewDataMonteur = { dataSource: this.dataMonteur.concat(this.monteurListe[i]), text: 'Username' };                
+                       this.dataMonteur.push(this.monteurListe[i]);
+                   
+                    }
+                    
+                }
+            }
+              console.log(this.dataMonteur)
+        }
+     deleteMonteur(value: MonteursData){
+        const index: number = this.dataMonteur.indexOf(value);
+        if (index !== -1) {
+            this.dataMonteur.splice(index, 1);
+        } 
+        console.log("aaaaaaaaaaaaa")
+     }
 }

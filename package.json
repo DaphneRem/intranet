@@ -45,6 +45,7 @@
     "@syncfusion/ej2-angular-buttons": "^16.4.42",
     "@syncfusion/ej2-angular-calendars": "^16.4.42",
     "@syncfusion/ej2-angular-dropdowns": "^16.4.42",
+    "@syncfusion/ej2-angular-grids": "^16.4.44",
     "@syncfusion/ej2-angular-inputs": "^16.4.42",
     "@syncfusion/ej2-angular-lists": "^16.4.42",
     "@syncfusion/ej2-angular-navigations": "^16.4.42",

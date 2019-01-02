@@ -22,6 +22,8 @@ import { WorkorderDetailsModalComponent } from './workorder-details-modal/workor
 import { ListePlanningComponent } from './liste-planning/liste-planning.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+
 
 
 @NgModule({
@@ -46,7 +48,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     SubHeaderModule,
     MatDialogModule,
     MatButtonModule,
-    NgbModule
+    NgbModule,
+    FormsModule,
+    
   ],
   declarations: [
     SchedulerComponent,
@@ -61,6 +65,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MonPlanningComponent,
     SchedulerComponent,
     WorkorderDetailsModalComponent
-  ]
+  ],
+  
 })
 export class KPlannerLibModule {}
