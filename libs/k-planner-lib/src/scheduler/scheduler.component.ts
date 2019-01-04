@@ -1,9 +1,9 @@
-import { Component,  ViewChild, Inject, Input } from '@angular/core';
+import { Component,  ViewChild } from '@angular/core';
 import { extend, closest, remove, createElement } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
 import { HospitalData } from '../models/hospital-data';
 import {
-  PopupOpenEventArgs,
+  
   EventSettingsModel,
   View,
   GroupModel,
@@ -12,11 +12,11 @@ import {
   ScheduleComponent,
   ActionEventArgs,
   CellClickEventArgs,
-  RenderCellEventArgs,
+  
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
-import { TreeViewComponent, TabComponent } from '@syncfusion/ej2-angular-navigations';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { TreeViewComponent} from '@syncfusion/ej2-angular-navigations';
+import { MatDialog } from '@angular/material';
 
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
 import { MonteursData } from '../models/monteurs-data';
@@ -32,7 +32,7 @@ import { monteurs } from '../data/monteur';
 })
 
 export class SchedulerComponent {
-
+  
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
     @ViewChild('treeObj')
@@ -261,6 +261,10 @@ export class SchedulerComponent {
             }
         }
     }
+
+
+    
+
 
 /*********************** ACTION BEGIN FUNCTION *********************/
 
@@ -540,18 +544,41 @@ export class SchedulerComponent {
 
                     {      this.fieldnewDataMonteur = { dataSource: this.dataMonteur.concat(this.monteurListe[i]), text: 'Username' };                
                        this.dataMonteur.push(this.monteurListe[i]);
-                   
+                    
                     }
                     
                 }
             }
               console.log(this.dataMonteur)
         }
-     deleteMonteur(value: MonteursData){
-        const index: number = this.dataMonteur.indexOf(value);
-        if (index !== -1) {
-            this.dataMonteur.splice(index, 1);
-        } 
+     
+     deleteMonteur(){
+        //  let index:any
+        // if (index !== -1) {
+        //     this.dataMonteur.splice(index, 1);
+        // } 
         console.log("aaaaaaaaaaaaa")
      }
+
+
+     getBorder(value){
+        for (let i=0; i<this.monteurListe.length;i++)
+        {
+          
+                if(value===this.monteurListe[i].Username)
+
+                {      
+                   return 'red 2px solid'
+                }
+                
+            
+        }
+     }
+  
+    
+ 
+
+ 
+
+
 }

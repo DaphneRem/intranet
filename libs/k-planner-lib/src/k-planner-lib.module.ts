@@ -23,6 +23,7 @@ import { ListePlanningComponent } from './liste-planning/liste-planning.componen
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
+import { FilterPipe } from './filter.pipe';
 
 
 
@@ -58,7 +59,7 @@ import { FormsModule } from '@angular/forms';
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
   
-    
+    FilterPipe ,
     ButtonComponent
   ],
   entryComponents: [

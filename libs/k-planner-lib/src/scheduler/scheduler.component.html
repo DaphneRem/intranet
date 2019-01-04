@@ -30,15 +30,16 @@
                             <div class='template-wrap' style="width: 100%">
                                 <div>
                                     <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere">
-                                        <u>{{data.Name }} </u>
+                                        <u>{{data.Name }} </u> 
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-
+                                        <span style="padding-top: 5px; width: 100%">{{dataMonteur.Username }} </span>
                                         <button type="reset" class="float-right btn-warning mt-1 ">monteur 1 </button>
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                             class="float-right  fixed mr-1"> -->
                                     </div>
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
                                         <span style="padding-top: 5px; width: 100%">{{data.Name }} </span>
+                                        <span style="padding-top: 5px; width: 100%">{{dataMonteur.Username }} </span>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +70,7 @@
                                 <ng-template #nodeTemplate="" let-data="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
-                                            <div id="waitlist">{{data.Name}}</div>
+                                            <div id="waitlist">{{data.Name }}</div>
                                             <div id="waitcategory">{{data.DepartmentName}} - {{data.Description}}</div>
 
                                         </div>
@@ -87,9 +88,10 @@
 
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filtrer..."  #search  (keyup)="filterMonteurs($event.target.value)"  [(ngModel)]="searchText">
+                                <input type="text" class="form-control" placeholder="Filtrer..."  #search    [(ngModel)]="searchText" >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
+                            
                             
                             <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
                                    <option >Plus de monteurs </option>
@@ -97,12 +99,12 @@
                                  </select>
                             <div *ngIf="select.value=='Plus de monteurs' ">
                             <ejs-treeview #treeObj [fields]='fieldMonteur' cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop'>
-                                <ng-template #nodeTemplate="" let-dataMonteur="">
+                                [allowDragAndDrop]='allowDragAndDrop'  (nodeDragStop)="onTreeDragStopMonteur($event)"   (nodeDragging)="onItemDrag($event)">
+                                <ng-template #nodeTemplate="" let-dataMonteur="" >
                                     <div id="waiting">
                                         <div id="waitdetails">
                                                 <br>
-                                            <div id="monteurslist mt-2">{{dataMonteur.Username }}</div>
+                                            <div id="monteurslist" class="ml-2">{{dataMonteur.Username}} </div>
 
                                         </div>
                                     </div>
@@ -111,13 +113,13 @@
                         </div>
                         <div *ngIf="selectedValue!='' ">
                             <ejs-treeview #treeObj [fields]='fieldnewDataMonteur' cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop'>
+                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)" (nodeDragging)="onItemDrag($event)">
                                 <ng-template #nodeTemplate="" let-dataMonteur="">
-                                    <div id="waiting">
+                                    <div id="waiting"  [ngStyle]="{'border':getBorder(dataMonteur.Username)}">
                                         <div id="waitdetails">
                                             <br>
-                                            <div id="monteurslist mt-2 ">{{dataMonteur.Username }}
-                                            <!-- <span *ngIf="select.value=== dataMonteur.Username" (click)="deleteMonteur(select.value)" ><i class="icofont icofont-close float-right" ></i></span> -->
+                                            <div id="monteurslist" class="ml-2" >{{dataMonteur.Username }}
+                                            <!-- <button  class="float-right" style="border:none" *ngIf="dataMonteur.Username == select.value" (click)="deleteMonteur()" ><i class="icofont icofont-close float-right" ></i></button> -->
                                         </div>
                                         </div>
                                     </div>
