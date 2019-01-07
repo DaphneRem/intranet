@@ -4609,9 +4609,7 @@ export let waitingList: { [key: string]: Object }[] = [
         Description: 'RECTIF PADI     MERCI DE FAIRE UN GENE ACCELERE ET LE REFERENCER DS KARINA ',
         DepartmentName: 'PADI NASCAR TEXAS 2014',
         AzaIsPere: true,
-        AzaNumGroupe:103,
-        IconUrl: 'https://www.diabetesatschool.ca/uploads/img/icon-awareness.png',
-        className: 'event1',
+        AzaNumGroupe:103
     },
     {
         Id: 26,

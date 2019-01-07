@@ -66,7 +66,7 @@ export class SchedulerComponent {
     public group: GroupModel = { enableCompactView: false, resources: ['Departments', 'Consultants'] };
     public allowMultiple: Boolean = false;
 
-    public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
+    public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
     public fieldMonteur: Object = { dataSource: monteurs,id: 'Code', text: 'Username' };
    
     public allowDragAndDrop: boolean = true;
@@ -226,7 +226,6 @@ export class SchedulerComponent {
                     this.timelineResourceDataOut.push(containerData);
                     this.timelineResourceDataOut.push(eventData);
                     this.scheduleObj.openEditor(containerData, 'Add', true);
-                    this.scheduleObj.openEditor(eventData, 'Add', true);
                     this.isTreeItemDropped = true;
                     this.draggedItemId = event.draggedNodeData.id as string;
                     console.log(this.data);
@@ -321,16 +320,27 @@ export class SchedulerComponent {
         }
         if (event.requestType === 'eventCreate' && this.isTreeItemDropped) { // FUNCTION FROM TEMPLATE
             console.log('function from template: onActionBegin()');
+
+
+
+
+
+            // A VOIR  EN PRIORITE : PROBLEME DE CREATION CONTAINER ET WORKORDER
             let treeViewdata: { [key: string]: Object }[] = this.treeObj.fields.dataSource as { [key: string]: Object }[];
             const filteredPeople: { [key: string]: Object }[] =
                 treeViewdata.filter((item: any) => item.Id !== parseInt(this.draggedItemId, 10));
             this.treeObj.fields.dataSource = filteredPeople;
-            this.treeObj.refresh();
+            // this.treeObj.refresh();
             let elements: NodeListOf<HTMLElement> =
                 document.querySelectorAll('.e-drag-item.treeview-external-drag') as NodeListOf<HTMLElement>;
             for (let i: number = 0; i < elements.length; i++) {
                 remove(elements[i]);
             }
+
+
+
+
+
         } else { // CUSTOM FUNCTION
             console.log(event.requestType);
             console.log('custom function: onActionBegin()');

@@ -33,7 +33,7 @@
                                         <u>{{data.Name }} </u> 
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                         
-                                        <button type="reset" class="float-right btn-warning mt-1 ">{{data.Operateur}}</button>
+                                        <button *ngIf="data.Operateur" type="reset" class="float-right btn-warning mt-1 ">{{data.Operateur}}</button>
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                             class="float-right  fixed mr-1"> -->
                                     </div>
@@ -65,13 +65,12 @@
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
                             <ejs-treeview #treeObj [fields]='field' cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)"
-                                (nodeDragging)="onItemDrag($event)">
-                                <ng-template #nodeTemplate="" let-data="">
+                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)" (nodeDragging)="onItemDrag($event)">
+                                <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
-                                            <div id="waitlist">{{data.Name }}</div>
-                                            <div id="waitcategory">{{data.DepartmentName}} - {{data.Description}}</div>
+                                            <div id="waitlist">{{dataWorkOrder.Name }}</div>
+                                            <div id="waitcategory">{{dataWorkOrder.Description}}</div>
 
                                         </div>
                                     </div>
@@ -102,7 +101,7 @@
                                 [allowDragAndDrop]='allowDragAndDrop'  (nodeDragStop)="onTreeDragStopMonteur($event)"   (nodeDragging)="onItemDrag($event)">
                                 <ng-template #nodeTemplate=""  let-dataMon="" >
                                         <!-- let-dataMonteur="" -->
-                                    <div id="waiting">
+                                   <div id="waiting">
                                         <div id="waitdetails">
                                                 <br>
                                             <div id="monteurslist" class="ml-2">{{dataMon.Username}} </div>
