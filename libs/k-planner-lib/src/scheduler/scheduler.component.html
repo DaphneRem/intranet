@@ -25,21 +25,21 @@
                             </div>
                         </ng-template > -->
                 <e-views>
-                    <e-view option='TimelineDay'>
+                    <e-view option='TimelineDay' >
                         <ng-template #eventTemplate let-data  class="event">
                             <div class='template-wrap' style="width: 100%">
                                 <div>
                                     <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere">
                                         <u>{{data.Name }} </u> 
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                        <span style="padding-top: 5px; width: 100%">{{dataMonteur.Username }} </span>
-                                        <button type="reset" class="float-right btn-warning mt-1 ">monteur 1 </button>
+                                        
+                                        <button type="reset" class="float-right btn-warning mt-1 ">{{data.Operateur}}</button>
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                             class="float-right  fixed mr-1"> -->
                                     </div>
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
                                         <span style="padding-top: 5px; width: 100%">{{data.Name }} </span>
-                                        <span style="padding-top: 5px; width: 100%">{{dataMonteur.Username }} </span>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -98,13 +98,14 @@
                                      <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                                  </select>
                             <div *ngIf="select.value=='Plus de monteurs' ">
-                            <ejs-treeview #treeObj [fields]='fieldMonteur' cssClass='treeview-external-drag'
+                            <ejs-treeview #treeObjMonteur [fields]='fieldMonteur' cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop'  (nodeDragStop)="onTreeDragStopMonteur($event)"   (nodeDragging)="onItemDrag($event)">
-                                <ng-template #nodeTemplate="" let-dataMonteur="" >
+                                <ng-template #nodeTemplate=""  let-dataMon="" >
+                                        <!-- let-dataMonteur="" -->
                                     <div id="waiting">
                                         <div id="waitdetails">
                                                 <br>
-                                            <div id="monteurslist" class="ml-2">{{dataMonteur.Username}} </div>
+                                            <div id="monteurslist" class="ml-2">{{dataMon.Username}} </div>
 
                                         </div>
                                     </div>
@@ -112,8 +113,8 @@
                             </ejs-treeview>
                         </div>
                         <div *ngIf="selectedValue!='' ">
-                            <ejs-treeview #treeObj [fields]='fieldnewDataMonteur' cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)" (nodeDragging)="onItemDrag($event)">
+                            <ejs-treeview #treeObjMonteur [fields]='fieldnewDataMonteur' cssClass='treeview-external-drag'
+                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStopMonteur($event)" (nodeDragging)="onItemDrag($event)">
                                 <ng-template #nodeTemplate="" let-dataMonteur="">
                                     <div id="waiting"  [ngStyle]="{'border':getBorder(dataMonteur.Username)}">
                                         <div id="waitdetails">

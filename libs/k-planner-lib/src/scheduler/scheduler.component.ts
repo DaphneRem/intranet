@@ -37,6 +37,8 @@ export class SchedulerComponent {
     public scheduleObj: ScheduleComponent;
     @ViewChild('treeObj')
     public treeObj: TreeViewComponent;
+    @ViewChild('treeObjMonteur')
+    public treeObjMonteur: TreeViewComponent;
 
 /******** SCHEDULER INIT *******/
     public selectedDate: Date = new Date();
@@ -55,7 +57,7 @@ export class SchedulerComponent {
     ];
 
 // BACKLOG INIT
-    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Monteur' }];
+    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
 
     public isTreeItemDropped: boolean = false;
     public draggedItemId: string = '';
@@ -65,7 +67,7 @@ export class SchedulerComponent {
     public allowMultiple: Boolean = false;
 
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name' };
-    public fieldMonteur: Object = { dataSource: monteurs, text: 'Username' };
+    public fieldMonteur: Object = { dataSource: monteurs,id: 'Code', text: 'Username' };
    
     public allowDragAndDrop: boolean = true;
     public cancelObjectModal = false;
@@ -163,8 +165,8 @@ export class SchedulerComponent {
 /****************** DRAG AND DROP  ******************/
 
     onItemDrag(event: any): void { // FUCNTION FROM TEMPLATE
-        console.log('onItemDrag');
-        console.log(event)
+        // console.log('onItemDrag');
+        // console.log(event)
         if (document.body.style.cursor === 'not-allowed') {
             document.body.style.cursor = '';
         }
@@ -175,11 +177,15 @@ export class SchedulerComponent {
                 dragElementIcon[i].style.display = 'none';
             }
         }
+        
+
     }
 
     onTreeDragStop(event: DragAndDropEventArgs): void {
         console.log(event);
         console.log(this.treeObj);
+        
+        
         let treeElement = closest(event.target, '.e-treeview');
 
         let classElement = this.scheduleObj.element.querySelector('.e-device-hover');
@@ -203,6 +209,7 @@ export class SchedulerComponent {
                         console.log(filteredData);
                     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
                     let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
+                   
                     let containerData = { // DISPLAY DATA FOR CONTAINER
                         Id: filteredData[0].Id,
                         Name: 'Title',
@@ -258,12 +265,79 @@ export class SchedulerComponent {
                     this.draggedItemId = event.draggedNodeData.id as string;
                     console.log(this.data);
                 }
+              
             }
         }
     }
 
 
-    
+    /********************************* DRAG AND DROP MONTEUR************** */
+    onTreeDragStopMonteur(event: DragAndDropEventArgs): void {
+        console.log(event);
+        console.log(this.treeObjMonteur);
+        
+        let treeElement = closest(event.target, '.e-treeview');
+
+        let classElement = this.scheduleObj.element.querySelector('.e-device-hover');
+        if (classElement) {
+            classElement.classList.remove('e-device-hover');
+        }
+
+        if (!treeElement) {
+            event.cancel = true;
+            let scheduleElement: Element = <Element>closest(event.target, '.e-content-wrap');
+            if (scheduleElement) {
+                let treeviewData: { [key: string]: Object }[] =
+                    this.treeObjMonteur.fields.dataSource as { [key: string]: Object }[];
+                    console.log(treeviewData);
+                    console.log(event);
+                    console.log(event.draggedNodeData.id);
+                if (event.target.classList.contains('e-work-cells')) {
+                    const filteredData: { [key: string]: Object }[] =
+                        treeviewData.filter((item: any) => item.Code === parseInt(event.draggedNodeData.id as string, 10));
+                        console.log('filtered data ___________________');
+                        console.log(filteredData);
+                    let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
+                    let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
+                  
+                    let containerData = { // DISPLAY DATA FOR CONTAINER
+                        Id: filteredData[0].Code,
+                        Name: 'Title',
+                        StartTime: cellData.startTime,
+                        EndTime: cellData.endTime,
+                        IsAllDay: false,
+                        DepartmentID: resourceDetails.resourceData.Id,
+                        ConsultantID: resourceDetails.resourceData.Id,
+                        AzaIsPere: true,
+                        AzaNumGroupe: filteredData[0].Code,
+                        Operateur:filteredData[0].Username,
+                        
+                    };
+                    // let eventData = { // DISPLAY DATA FOR EVENT
+                    //     Id: filteredData[0].Id,
+                    //     Name: filteredData[0].Name,
+                    //     StartTime: cellData.startTime,
+                    //     EndTime: cellData.endTime,
+                    //     IsAllDay: false,
+                    //     Description: filteredData[0].Description,
+                    //     DepartmentID: resourceDetails.resourceData.Id,
+                    //     ConsultantID: resourceDetails.resourceData.Id,
+                    //     AzaIsPere: false,
+                    //     AzaNumGroupe: filteredData[0].AzaNumGroupe
+                    // };
+                    this.timelineResourceDataOut.push(containerData); // filteredData[0]
+
+                    // this.timelineResourceDataOut.push(containerData);
+                    this.scheduleObj.openEditor(containerData, 'Add', true);
+                    this.isTreeItemDropped = true;
+                    this.draggedItemId = event.draggedNodeData.id as string;
+                    console.log(this.data);
+                }
+               
+            }
+        }
+    }
+
 
 
 /*********************** ACTION BEGIN FUNCTION *********************/
