@@ -616,7 +616,7 @@ export class SchedulerComponent {
                 if(value){
                     if(value===this.monteurListe[i].Username)
 
-                    {      this.fieldnewDataMonteur = { dataSource: this.dataMonteur.concat(this.monteurListe[i]), text: 'Username' };                
+                    {      this.fieldMonteur = { dataSource: this.dataMonteur.concat(this.monteurListe[i]), text: 'Username' };                
                        this.dataMonteur.push(this.monteurListe[i]);
                     
                     }

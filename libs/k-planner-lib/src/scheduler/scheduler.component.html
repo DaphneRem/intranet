@@ -113,7 +113,7 @@
                             </ejs-treeview>
                         </div>
                         <div *ngIf="selectedValue!='' ">
-                            <ejs-treeview #treeObjMonteur [fields]='fieldnewDataMonteur' cssClass='treeview-external-drag'
+                            <ejs-treeview #treeObjMonteur [fields]='fieldMonteur' cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStopMonteur($event)" (nodeDragging)="onItemDrag($event)">
                                 <ng-template #nodeTemplate="" let-dataMonteur="">
                                     <div id="waiting"  [ngStyle]="{'border':getBorder(dataMonteur.Username)}">
