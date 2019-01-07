@@ -573,7 +573,7 @@ export class SchedulerComponent {
      
     //     }
   
-    public fieldnewDataMonteur: Object
+
         onSelect(value){
             for (let i=0; i<this.monteurListe.length;i++)
             {

@@ -1,4 +1,4 @@
-<div class="control-section">
+<div class="control-section" >
     <div class="drag-sample-wrapper">
         <div class="schedule-container">
             <div class="title-container">
@@ -113,7 +113,7 @@
                             </ejs-treeview>
                         </div>
                         <div *ngIf="selectedValue!='' ">
-                            <ejs-treeview #treeObjMonteur [fields]='fieldMonteur' cssClass='treeview-external-drag'
+                            <ejs-treeview #treeObjMonteur [fields]='fieldMonteur | filter: searchText' cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStopMonteur($event)" (nodeDragging)="onItemDrag($event)">
                                 <ng-template #nodeTemplate="" let-dataMonteur="">
                                     <div id="waiting"  [ngStyle]="{'border':getBorder(dataMonteur.Username)}">
