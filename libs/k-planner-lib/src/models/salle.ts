@@ -5,5 +5,6 @@ export class Salle {
     CodeSalle: number;
     IsRH: number;
     NomSalle: string;
-
+    Nom?: string;
+    Prenom?: string;
 }

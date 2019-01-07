@@ -5,6 +5,8 @@ import { NxModule } from '@nrwl/nx';
 import { Adal5Service, Adal5HTTPService } from 'adal-angular5';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 
 import { RootModule, navbarReducer } from '@ab/root';
 import { SubHeaderModule } from '@ab/sub-header';
@@ -17,6 +19,7 @@ import { CustomDatatablesModule } from '@ab/custom-datatables';
 import { AppRoutingModule } from './app-routing.module';
 import { ErrorPagesModule } from '@ab/error-pages';
 
+registerLocaleData(localeFr, 'fr');
 
 @NgModule({
   imports: [
@@ -24,14 +27,11 @@ import { ErrorPagesModule } from '@ab/error-pages';
   KPlannerLibModule,
   AppRoutingModule,
   RootModule,
-
   ErrorPagesModule,
-  
   StoreModule.forRoot({
     navbar: navbarReducer,
   }),
   StoreDevtoolsModule.instrument({
-
     maxAge: 25 // Retains last 25 states
   }),
   SubHeaderModule,
@@ -39,11 +39,9 @@ import { ErrorPagesModule } from '@ab/error-pages';
   EffectsModule.forRoot([]),
   HttpClientModule,
   CustomDatatablesModule,
-  NxModule.forRoot()],
-
-
+  NxModule.forRoot()
+  ],
   providers: [
-
     { provide: LOCALE_ID, useValue: 'fr' },
     Adal5Service,
     { provide: Adal5HTTPService, useFactory: Adal5HTTPService.factory, deps: [HttpClient, Adal5Service] }

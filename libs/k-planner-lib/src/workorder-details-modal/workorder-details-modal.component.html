@@ -5,7 +5,11 @@
     </div>
     <div mat-dialog-content style="margin: 0; height: 150px;">
         <!-- <p>{{data.StartTime}} ({{ data.StartTime}} - {{ data.EndTime}})</p> -->
-        <p>{{data.workorder.StartTime}} - {{data.workorder.EndTime}}</p>
+        <p class="date">
+            {{ changeDateFormat(data.workorder.StartTime) | date }} - 
+            ( {{ changeDateFormat(data.workorder.StartTime) | date:'shortTime' }} - 
+            {{ changeDateFormat(data.workorder.EndTime) | date:'shortTime' }} )
+        </p>
         <p>{{data.workorder.Description}}</p>
         <p>{{data.regie.Text}}</p>
     </div>

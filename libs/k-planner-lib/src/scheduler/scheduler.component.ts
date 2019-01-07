@@ -1,5 +1,5 @@
 import { Component,  ViewChild } from '@angular/core';
-import { extend, closest, remove, createElement } from '@syncfusion/ej2-base';
+import { extend, closest, remove, createElement, addClass } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
 import { HospitalData } from '../models/hospital-data';
 import {
@@ -177,22 +177,13 @@ export class SchedulerComponent {
                 dragElementIcon[i].style.display = 'none';
             }
         }
-        
 
     }
 
     onTreeDragStop(event: DragAndDropEventArgs): void {
         console.log(event);
         console.log(this.treeObj);
-        
-        
         let treeElement = closest(event.target, '.e-treeview');
-
-        let classElement = this.scheduleObj.element.querySelector('.e-device-hover');
-        if (classElement) {
-            classElement.classList.remove('e-device-hover');
-        }
-
         if (!treeElement) {
             event.cancel = true;
             let scheduleElement: Element = <Element>closest(event.target, '.e-content-wrap');
@@ -208,8 +199,7 @@ export class SchedulerComponent {
                         console.log('filtered data ___________________');
                         console.log(filteredData);
                     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
-                    let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
-                   
+                    let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);                   
                     let containerData = { // DISPLAY DATA FOR CONTAINER
                         Id: filteredData[0].Id,
                         Name: 'Title',
@@ -221,7 +211,7 @@ export class SchedulerComponent {
                         AzaIsPere: true,
                         AzaNumGroupe: filteredData[0].AzaNumGroupe,
                     };
-                    let eventData = { // DISPLAY DATA FOR EVENT
+                    let eventData: {[key: string]: Object} = { // DISPLAY DATA FOR EVENT
                         Id: filteredData[0].Id,
                         Name: filteredData[0].Name,
                         StartTime: cellData.startTime,
@@ -233,33 +223,9 @@ export class SchedulerComponent {
                         AzaIsPere: false,
                         AzaNumGroupe: filteredData[0].AzaNumGroupe
                     };
-                    this.timelineResourceDataOut.push(containerData); // filteredData[0]
-
-                //   intconsultant : Number;
-                    let intconsultant = resourceDetails.resourceData.Id;
-                    // for (let _i = 0; _i < 4; _i++) {
-                    //     let cpt = (Number(filteredData[0].Id) + _i + 100);
-                    //     console.log('intconsultant:' + intconsultant);
-                    //     if (intconsultant === 1) {
-                    //         intconsultant = 2;
-                    //     } else {
-                    //         intconsultant = intconsultant;
-                    //     }
-                    //     let tempData = {
-                    //         Id: cpt,
-                    //         Name: 'PARTIE ' + _i,
-                    //         StartTime: startDate,
-                    //         EndTime: endDate,
-                    //         IsAllDay: cellData.isAllDay,
-                    //         Description: filteredData[0].Description,
-                    //         DepartmentID: resourceDetails.resourceData.Id,
-                    //         ConsultantID: intconsultant,
-                    //         AzaIsPere: false,
-                    //         AzaNumGroupe: filteredData[0].AzaNumGroupe
-                    //     };
-                    //     this.timelineResourceDataOut.push(tempData);
-                    // }
+                    this.timelineResourceDataOut.push(containerData);
                     this.timelineResourceDataOut.push(eventData);
+                    this.scheduleObj.openEditor(containerData, 'Add', true);
                     this.scheduleObj.openEditor(eventData, 'Add', true);
                     this.isTreeItemDropped = true;
                     this.draggedItemId = event.draggedNodeData.id as string;
@@ -299,7 +265,6 @@ export class SchedulerComponent {
                         console.log(filteredData);
                     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
                     let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
-                  
                     let containerData = { // DISPLAY DATA FOR CONTAINER
                         Id: filteredData[0].Code,
                         Name: 'Title',
@@ -310,9 +275,8 @@ export class SchedulerComponent {
                         ConsultantID: resourceDetails.resourceData.Id,
                         AzaIsPere: true,
                         AzaNumGroupe: filteredData[0].Code,
-                        Operateur:filteredData[0].Username,
-                        
-                    };
+                        Operateur: filteredData[0].Username,
+                };
                     // let eventData = { // DISPLAY DATA FOR EVENT
                     //     Id: filteredData[0].Id,
                     //     Name: filteredData[0].Name,

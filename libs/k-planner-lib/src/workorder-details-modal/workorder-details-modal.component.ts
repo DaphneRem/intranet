@@ -17,6 +17,12 @@ export class WorkorderDetailsModalComponent {
   onNoClick(): void {
     this.dialogRef.close();
   }
+
+  changeDateFormat(date) {
+    let newDate = new Date(date);
+    return newDate;
+  }
+
   close() {
     let containerModal = document.getElementsByClassName('cdk-overlay-container');
     console.log(containerModal);
