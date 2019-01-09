@@ -4,11 +4,18 @@ $creationBtnHoverColor :  #2eced6;
 $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
 $iconColor : #7f7f7f;
+$modificationColor: #FFB64D;
 
 .fm-details {
     padding : 15px 30px;
     .card {
         // padding-bottom: 20px;
+        border: 1px solid $modificationColor;
+        .modif-header {
+            font-size: 1.3em;
+            background-color: $modificationColor;
+            color: white;
+        }
         .creation-top {
             margin-top: 30px;
             margin-bottom: -110px;
@@ -138,7 +145,7 @@ $iconColor : #7f7f7f;
                     padding: 20px;
                     margin: 10px;
                     padding-bottom : 10px;
-                    border : 1px solid $iconColor;
+                    border : 1px solid $modificationColor;
                     .form-group {
                         // margin-bottom : 0;
                         &.livraison-datepicker {
@@ -354,7 +361,7 @@ $iconColor : #7f7f7f;
                         }
                     }
                     .section-icon {
-                        color: grey;
+                        color: $modificationColor;
                         float: right;
                         font-size: 2em;
                     }
@@ -421,7 +428,7 @@ $iconColor : #7f7f7f;
                     margin-left : 10px;
                 }
                 .comment-content {
-                    border : solid 1px $iconColor;
+                    border : solid 1px $modificationColor;
                     margin: 10px;
                     padding : 10px;
                     &.empty-field {

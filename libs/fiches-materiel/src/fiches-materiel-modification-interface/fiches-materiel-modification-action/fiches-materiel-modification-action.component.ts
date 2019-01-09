@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
@@ -20,6 +20,7 @@ import { AnnexElementFicheMAteriel } from '../../models/annex-element';
   providers: [FichesMaterielService]
 })
 export class FichesMaterielModificationActionComponent implements OnInit {
+
   @Input() showAffectedEps;
   @Input() newObject;
   @Input() allFichesMateriel;
@@ -33,11 +34,14 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() annexElementsFicheMateriel;
   @Input() versionFicheMateriel;
 
+  @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
+
   public myFicheMateriel;
   public changedValues = {};
   public multiDataToUpdate;
   public qualiteToUpdate = [];
   public qualiteToPost = [];
+  public closeInterface: boolean;
 
   public versionToUpdate: any = [];
   public versionToPost: any = [];
@@ -57,7 +61,12 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     console.log(this.qualiteFM);
   }
 
-  modifFichesMateriel() {
+  modifFichesMateriel(closeAction) {
+    if (closeAction === 'close') {
+      this.closeInterface = true;
+    } else {
+      this.closeInterface = false;
+    }
     this.checkNewObjectModif();
   }
 
@@ -65,66 +74,117 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     this.location.back();
   }
 
+  actionAfterSave() {
+    console.log(this.newObject);
+    if (this.closeInterface) {
+      this.goBack();
+    } else {
+      let now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      this.modificationMessage.emit(`Dernières modifications enregistrées à ${hours}:${minutes}`);
+    }
+  }
+
   putQualiteFicheMateriel(qualiteFM) {
-    this.qualiteService
-      .putQualite(qualiteFM)
-      .subscribe(qualite => {
+    this.qualiteService.putQualite(qualiteFM).subscribe(qualite => {
+      console.log(qualite);
+      if (qualite) {
+        console.log('PUT qualite with succes');
         console.log(qualite);
-        if (qualite) {
-          console.log('PUT qualite with succes');
-          console.log(qualite);
-        } else {
-          console.log('ERROR PUT qualite');
-          console.log(qualite);
-        }
-      });
+      } else {
+        console.log('ERROR PUT qualite');
+        console.log(qualite);
+      }
+    });
   }
 
   putVersionFicheMateriel(versionFM) {
-    this.versionService
-      .putVersion(versionFM)
-      .subscribe(version => {
+    this.versionService.putVersion(versionFM).subscribe(version => {
+      console.log(version);
+      if (version) {
+        console.log('PUT version with succes');
         console.log(version);
-        if (version) {
-          console.log('PUT version with succes');
-          console.log(version);
-        } else {
-          console.log('ERROR PUT version');
-          console.log(version);
-        }
-      });
+      } else {
+        console.log('ERROR PUT version');
+        console.log(version);
+      }
+    });
   }
 
   checkDeadline(newObject) {
-    if (newObject.IdLibEtape === 17 || newObject.IdLibstatut === 3 || newObject.IdLibstatut === 5) {
+    console.log(newObject.Deadline);
+    if (
+      newObject.IdLibEtape === 17 ||
+      newObject.IdLibstatut === 3 ||
+      newObject.IdLibstatut === 5
+    ) {
       newObject.Deadline = null;
     } else {
-      newObject.Deadline = `${newObject.Deadline.year}-${newObject.Deadline.month}-${newObject.Deadline.day}T00:00:00`;
+      newObject.Deadline = `${newObject.Deadline.year}-${
+        newObject.Deadline.month
+      }-${newObject.Deadline.day}T00:00:00`;
     }
   }
 
   resetDateFormat(newObject) {
     console.log(newObject.Deadline);
-    if ((newObject.Deadline !== null) && (newObject.Deadline !== this.valueNotToChangeLibelle)) {
+    if (
+      newObject.Deadline !== null &&
+      newObject.Deadline !== this.valueNotToChangeLibelle
+    ) {
       this.checkDeadline(newObject);
     }
-    if ((newObject.DateLivraison !== null) && (newObject.DateLivraison !== this.valueNotToChangeLibelle)) {
-      newObject.DateLivraison = `${newObject.DateLivraison.year}-${newObject.DateLivraison.month}-${newObject.DateLivraison.day}T00:00:00`;
+    if (
+      newObject.DateLivraison !== null &&
+      newObject.DateLivraison !== this.valueNotToChangeLibelle
+    ) {
+      newObject.DateLivraison = `${newObject.DateLivraison.year}-${
+        newObject.DateLivraison.month
+      }-${newObject.DateLivraison.day}T00:00:00`;
     }
-    if ((newObject.DatePremiereDiff !== null) && (newObject.DatePremiereDiff !== this.valueNotToChangeLibelle)) {
-      newObject.DatePremiereDiff = `${newObject.DatePremiereDiff.year}-${newObject.DatePremiereDiff.month}-${newObject.DatePremiereDiff.day}T00:00:00`;
+    if (
+      newObject.DatePremiereDiff !== null &&
+      newObject.DatePremiereDiff !== this.valueNotToChangeLibelle
+    ) {
+      newObject.DatePremiereDiff = `${newObject.DatePremiereDiff.year}-${
+        newObject.DatePremiereDiff.month
+      }-${newObject.DatePremiereDiff.day}T00:00:00`;
     }
-    if ((newObject.DateAcceptation !== null) && (newObject.DateAcceptation !== this.valueNotToChangeLibelle)) {
-      newObject.DateAcceptation = `${newObject.DateAcceptation.year}-${newObject.DateAcceptation.month}-${newObject.DateAcceptation.day}T00:00:00`;
+    if (
+      newObject.DateAcceptation !== null &&
+      newObject.DateAcceptation !== this.valueNotToChangeLibelle
+    ) {
+      newObject.DateAcceptation = `${newObject.DateAcceptation.year}-${
+        newObject.DateAcceptation.month
+      }-${newObject.DateAcceptation.day}T00:00:00`;
     }
-    if ((newObject.ReceptionAccesLabo !== null) && (newObject.ReceptionAccesLabo !== this.valueNotToChangeLibelle)) {
-      newObject.ReceptionAccesLabo = `${newObject.ReceptionAccesLabo.year}-${newObject.ReceptionAccesLabo.month}-${newObject.ReceptionAccesLabo.day}T00:00:00`;
+    if (
+      newObject.ReceptionAccesLabo !== null &&
+      newObject.ReceptionAccesLabo !== this.valueNotToChangeLibelle
+    ) {
+      newObject.ReceptionAccesLabo = `${newObject.ReceptionAccesLabo.year}-${
+        newObject.ReceptionAccesLabo.month
+      }-${newObject.ReceptionAccesLabo.day}T00:00:00`;
+      // newObject.ReceptionAccesLabo = new Date(newObject.ReceptionAccesLabo.year, newObject.ReceptionAccesLabo.month - 1, newObject.ReceptionAccesLabo.day).toDateString();
     }
-    if ((newObject.DateRetourOri !== null) && (newObject.DateRetourOri !== this.valueNotToChangeLibelle)) {
-      newObject.DateRetourOri = `${newObject.DateRetourOri.year}-${newObject.DateRetourOri.month}-${newObject.DateRetourOri.day}T00:00:00`;
+    if (
+      newObject.DateRetourOri !== null &&
+      newObject.DateRetourOri !== this.valueNotToChangeLibelle
+    ) {
+      newObject.DateRetourOri = `${newObject.DateRetourOri.year}-${
+        newObject.DateRetourOri.month
+      }-${newObject.DateRetourOri.day}T00:00:00`;
     }
-    if ((newObject.RetourOriDernierDelai !== null) && (newObject.RetourOriDernierDelai !== this.valueNotToChangeLibelle)) {
-      newObject.RetourOriDernierDelai = `${newObject.RetourOriDernierDelai.year}-${newObject.RetourOriDernierDelai.month}-${newObject.RetourOriDernierDelai.day}T00:00:00`;
+    if (
+      newObject.RetourOriDernierDelai !== null &&
+      newObject.RetourOriDernierDelai !== this.valueNotToChangeLibelle
+    ) {
+      newObject.RetourOriDernierDelai = `${
+        newObject.RetourOriDernierDelai.year
+      }-${newObject.RetourOriDernierDelai.month}-${
+        newObject.RetourOriDernierDelai.day
+      }T00:00:00`;
     }
   }
 
@@ -171,14 +231,14 @@ export class FichesMaterielModificationActionComponent implements OnInit {
             if (annexesElements) {
               console.log('succes PUT annexesElements');
               console.log(annexesElements);
-              this.goBack();
+              this.actionAfterSave();
             } else {
               console.log('error PUT annexesElements');
               console.log(annexesElements);
             }
           });
-          this.putQualiteFicheMateriel(this.qualiteFM);
-          this.putVersionFicheMateriel(this.versionFicheMateriel);
+        this.putQualiteFicheMateriel(this.qualiteFM);
+        this.putVersionFicheMateriel(this.versionFicheMateriel);
       } else {
         console.log('error PUT fiche materiel');
         console.log(data);
@@ -187,7 +247,6 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     });
 
     // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
-
   }
 
   checkNewObjectModif() {
@@ -198,13 +257,15 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
   }
 
-  checkChanges(allId) { // CALL IF SELECTION TYPE IS 'MULTI'
+  checkChanges(allId) {
+    // CALL IF SELECTION TYPE IS 'MULTI'
     // let changedValues = {};
     console.log(allId);
     this.resetDateFormat(this.newObject);
     for (let key in this.newObject) {
       if (this.newObject[key] !== this.valueNotToChangeLibelle) {
-        if (typeof this.newObject[key] !== 'object') { // IF value is Object
+        if (typeof this.newObject[key] !== 'object') {
+          // IF value is Object
           this.changedValues[key] = this.newObject[key];
           console.log(this.changedValues);
         } else if (
@@ -254,7 +315,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       .patchFicheMateriel(fichesMateriel)
       .subscribe(data => {
         if (data) {
-          this.goBack();
+          this.actionAfterSave();
         }
         console.log(data);
       });

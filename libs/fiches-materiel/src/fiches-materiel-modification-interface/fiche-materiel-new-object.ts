@@ -34,14 +34,14 @@ export class NewObject {
     DateModification: any;
     CommentairesDateLivraison: string;
     CommentairesStatutEtape: string;
-    Fiche_Mat_ElementsAnnexes: FichesElementsAnnexes[];
-    Fiche_Mat_LibRetourOri: any;
-    Fiche_Mat_LibStatutElementsAnnexes: any;
-    Fiche_Mat_HistoriqueDateLivraison: any;
-    Fiche_Mat_HistoriqueStatutEtape: any;
-    Fiche_Mat_Qualite: any;
-    Fiche_Mat_StatutElementsAnnexes: any;
-    Fiche_Mat_Version: any;
+    Fiche_Mat_ElementsAnnexes?: FichesElementsAnnexes[];
+    Fiche_Mat_LibRetourOri?: any;
+    Fiche_Mat_LibStatutElementsAnnexes?: any;
+    Fiche_Mat_HistoriqueDateLivraison?: any;
+    Fiche_Mat_HistoriqueStatutEtape?: any;
+    Fiche_Mat_Qualite?: any;
+    Fiche_Mat_StatutElementsAnnexes?: any;
+    Fiche_Mat_Version?: any;
 
 }
 

@@ -2,10 +2,13 @@
   <div class="col-lg-2 affected-eps">
     <affected-episodes-modal *ngIf="(allFichesMateriel.length > 1) && showAffectedEps" [allFichesMateriel]="allFichesMateriel"></affected-episodes-modal>
   </div>
-  <div class="col-lg-8"></div>
-  <div class="col-lg-2">
-    <button class="btn btn-warning" (click)="modifFichesMateriel()">
+  <div class="col-lg-6"></div>
+  <div class="col-lg-4">
+    <button class="btn btn-warning" (click)="modifFichesMateriel('dontClose')">
       Enregistrer
+    </button>
+    <button class="btn btn-warning" (click)="modifFichesMateriel('close')">
+      Enregistrer et Fermer
     </button>
     <button class="btn" (click)="goBack()">
       Annuler
