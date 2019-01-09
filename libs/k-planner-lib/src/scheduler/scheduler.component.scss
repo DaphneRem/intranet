@@ -1,3 +1,6 @@
+$operatorColor: '#BDBDBD';
+
+
 /deep/ .schedule-drag-drop .e-quick-popup-wrapper .e-event-popup .e-popup-content .e-sub-object-list {
     margin-top: 10px;
     font-size: 14px;
@@ -194,7 +197,7 @@
     padding: 10px 25%;
     display: flex;
 }
- .timeline-resource-grouping.e-schedule .template-wrap .subject {
+.timeline-resource-grouping.e-schedule .template-wrap .subject {
          font-weight: 600;
          font-size: 15px;
          padding: 4px 4px 4px;
@@ -202,8 +205,18 @@
          text-overflow: ellipsis;
          white-space: nowrap;
          overflow: hidden;
+             .operateur {
+        background-color: red;
+    }
 }
-
+/deep/ .e-schedule .e-timeline-view .e-appointment .e-appointment-details .template-wrap div .subject {
+    .operateur {
+        background-color: $operatorColor;
+        margin-right: 5px;
+        padding: 3px;
+        border: 1px solid #ffffff;
+    }
+}
 .icofont-search{
     color:rgb(100, 99, 99);
     width:50%

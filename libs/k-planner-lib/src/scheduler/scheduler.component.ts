@@ -61,7 +61,7 @@ export class SchedulerComponent {
 
     public isTreeItemDropped: boolean = false;
     public draggedItemId: string = '';
-    public timelineResourceDataOut: Object[];
+    public timelineResourceDataOut;
 
     public group: GroupModel = { enableCompactView: false, resources: ['Departments', 'Consultants'] };
     public allowMultiple: Boolean = false;
@@ -239,8 +239,10 @@ export class SchedulerComponent {
     /********************************* DRAG AND DROP MONTEUR************** */
     onTreeDragStopMonteur(event: DragAndDropEventArgs): void {
         console.log(event);
+        console.log(event.event.timeStamp);
+        console.log(event.target);
         console.log(this.treeObjMonteur);
-        
+        let timeStampEvent = event.event.timeStamp;
         let treeElement = closest(event.target, '.e-treeview');
 
         let classElement = this.scheduleObj.element.querySelector('.e-device-hover');
@@ -257,9 +259,12 @@ export class SchedulerComponent {
                     console.log(treeviewData);
                     console.log(event);
                     console.log(event.draggedNodeData.id);
-                if (event.target.classList.contains('e-work-cells')) {
+                    console.log(this.timelineResourceDataOut);
                     const filteredData: { [key: string]: Object }[] =
                         treeviewData.filter((item: any) => item.Code === parseInt(event.draggedNodeData.id as string, 10));
+                if (event.target.classList.contains('e-work-cells')) {
+                    console.log('emplacement libre');
+
                         console.log('filtered data ___________________');
                         console.log(filteredData);
                     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
@@ -295,10 +300,33 @@ export class SchedulerComponent {
                     this.isTreeItemDropped = true;
                     this.draggedItemId = event.draggedNodeData.id as string;
                     console.log(this.data);
+                } else { // Emplacement déjà pris par un event (container)
+                    console.log('emplacement déjà attribué');
+                    console.log(event.target.id);
+                    console.log(this.timelineResourceDataOut);
+                    let indexContainerEvent = this.findIndexEventById(event.target.id);
+                    this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = filteredData[0].Username;
+                    // Operateur: filteredData[0].Username,
+                    console.log(indexContainerEvent);
+                    console.log(this.timelineResourceDataOut[indexContainerEvent]);
+                    this.scheduleObj.openEditor( this.timelineResourceDataOut[indexContainerEvent], 'Add', true);
+                    this.isTreeItemDropped = true;
                 }
-               
             }
         }
+    }
+
+    findIndexEventById(id) {
+        let selectedEvent;
+        let indexEvent;
+        this.timelineResourceDataOut.forEach(item => {
+            if ((item.Id === +id) && (item.AzaIsPere)) {
+                console.log(item);
+                selectedEvent = item;
+                indexEvent = this.timelineResourceDataOut.indexOf(item);
+            }
+        });
+        return indexEvent;
     }
 
 
@@ -320,27 +348,15 @@ export class SchedulerComponent {
         }
         if (event.requestType === 'eventCreate' && this.isTreeItemDropped) { // FUNCTION FROM TEMPLATE
             console.log('function from template: onActionBegin()');
-
-
-
-
-
-            // A VOIR  EN PRIORITE : PROBLEME DE CREATION CONTAINER ET WORKORDER
             let treeViewdata: { [key: string]: Object }[] = this.treeObj.fields.dataSource as { [key: string]: Object }[];
             const filteredPeople: { [key: string]: Object }[] =
                 treeViewdata.filter((item: any) => item.Id !== parseInt(this.draggedItemId, 10));
             this.treeObj.fields.dataSource = filteredPeople;
-            // this.treeObj.refresh();
             let elements: NodeListOf<HTMLElement> =
                 document.querySelectorAll('.e-drag-item.treeview-external-drag') as NodeListOf<HTMLElement>;
             for (let i: number = 0; i < elements.length; i++) {
                 remove(elements[i]);
             }
-
-
-
-
-
         } else { // CUSTOM FUNCTION
             console.log(event.requestType);
             console.log('custom function: onActionBegin()');
