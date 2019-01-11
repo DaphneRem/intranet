@@ -7,13 +7,23 @@
             <ejs-schedule #scheduleObj (popupOpen)="onPopupOpen($event)" cssClass='schedule-drag-drop' width='100%'
                 height='650px' [group]="group" [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours"
                 [eventSettings]="eventSettings" (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete($event)"
-                (drag)="onItemDrag($event)">
+                (drag)="onItemDrag($event)" (renderCell)="onRenderCell($event)"   >
                 <e-resources>
-                    <e-resource field='DepartmentID' title='Department' name='Departments' [dataSource]='departmentDataSource'
-                        textField='Text' idField='Id' colorField='Color' groupIDField="Id" [allowMultiple]='allowMultiple'>
+                    <e-resource 
+                    field='DepartmentID' 
+                    title='Department' 
+                    name='Departments'
+                     [dataSource]='departmentDataSource'
+                     textField='Text' 
+                     idField='Id' 
+                     colorField='Color' 
+                     groupIDField="Id" 
+                     [allowMultiple]='allowMultiple'>
                     </e-resource>
-
+                    
+                   
                 </e-resources>
+                
                 <!-- <ng-template #resourceHeaderTemplate let-data>
                             <div class="template-wrap">
                                 <div class="specialist-category">
@@ -61,10 +71,10 @@
 
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filtrer...">
+                                <input type="text" class="form-control" placeholder="Filtrer..." #searchWO>
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
-                            <ejs-treeview #treeObj [fields]='field' cssClass='treeview-external-drag'
+                            <ejs-treeview #treeObj [fields]='field ' cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)" (nodeDragging)="onItemDrag($event)">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
@@ -87,46 +97,50 @@
 
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filtrer..."  #search    [(ngModel)]="searchText" >
+                                <input type="text" class="form-control" placeholder="Filtrer..."  #search   [(ngModel)]="searchText"  (change)="onFilter(searchText)"     >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
                             
-                            
-                            <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
+                          
+                          <select class="form-control form-control-inverse" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
                                    <option >Plus de monteurs </option>
                                      <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
-                                 </select>
-                            <div *ngIf="select.value=='Plus de monteurs' ">
-                            <ejs-treeview #treeObjMonteur [fields]='fieldMonteur' cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop'  (nodeDragStop)="onTreeDragStopMonteur($event)"   (nodeDragging)="onItemDrag($event)">
-                                <ng-template #nodeTemplate=""  let-dataMon="" >
-                                        <!-- let-dataMonteur="" -->
-                                   <div id="waiting">
+                                 </select>  
+                                
+                            <div  >
+            
+            <ejs-treeview #treeObjMonteur [fields]="fieldMonteur" cssClass='treeview-external-drag'  id="treeView"
+                                [allowDragAndDrop]='allowDragAndDrop'  (nodeDragStop)="onTreeDragStopMonteur($event)"  (nodeDragging)="onItemDrag($event)"   >
+                                <ng-template #nodeTemplate=""  let-dataMon=""  >
+                                  
+                                         
+                                   <div id="waiting"  [ngStyle]="{'border':getBorder(dataMon.Username)}">
                                         <div id="waitdetails">
                                                 <br>
                                             <div id="monteurslist" class="ml-2">{{dataMon.Username}} </div>
-
+                                            <button  class="float-right" style="border:none" *ngIf="dataMon.Username == select.value"><i class="icofont icofont-close float-right" ></i> </button>
                                         </div>
                                     </div>
-                                </ng-template>
+                                </ng-template> 
                             </ejs-treeview>
                         </div>
-                        <div *ngIf="selectedValue!='' ">
-                            <ejs-treeview #treeObjMonteur [fields]='fieldMonteur | filter: searchText' cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStopMonteur($event)" (nodeDragging)="onItemDrag($event)">
-                                <ng-template #nodeTemplate="" let-dataMonteur="">
+
+                         <!-- <div >
+                            <ejs-treeview #treeObjMonteur [fields]="fieldMonteur " cssClass='treeview-external-drag'
+                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStopMonteur($event)" (nodeDragging)="onItemDrag($event)"  >
+                                <ng-template #nodeTemplate="" let-dataMonteur="" >
                                     <div id="waiting"  [ngStyle]="{'border':getBorder(dataMonteur.Username)}">
                                         <div id="waitdetails">
                                             <br>
                                             <div id="monteurslist" class="ml-2" >{{dataMonteur.Username }}
-                                            <!-- <button  class="float-right" style="border:none" *ngIf="dataMonteur.Username == select.value" (click)="deleteMonteur()" ><i class="icofont icofont-close float-right" ></i></button> -->
+                                            <button  class="float-right" style="border:none" *ngIf="dataMonteur.Username == select.value"><i class="icofont icofont-close float-right" ></i> </button>
                                         </div>
                                         </div>
                                     </div>
                                 </ng-template>
                             </ejs-treeview>
                         
-                        </div>
+                        </div>  -->
                         </div>
                       
                     </ng-template>
