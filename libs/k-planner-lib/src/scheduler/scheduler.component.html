@@ -109,7 +109,7 @@
                                 <option >Plus de monteurs </option>
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select>
-                            <div *ngIf="select.value=='Plus de monteurs' ">
+                            <div  >
                                 <ejs-treeview 
                                     #treeObjMonteur 
                                     [fields]='fieldMonteur' 
@@ -119,11 +119,12 @@
                                     (nodeDragging)="onItemDrag($event)">
                                     <ng-template #nodeTemplate=""  let-dataMon="" >
                                         <!-- let-dataMonteur="" -->
-                                   <div id="waiting">
+                                   <div id="waiting" [ngStyle]="{'border':getBorder(dataMon.Username)}">
                                         <div id="waitdetails">
                                                 <br>
+                                                <button  class="float-right" style="border:none" *ngIf="dataMon.Username == select.value"><i class="icofont icofont-close float-right" ></i> </button>
+
                                             <div id="monteurslist" class="ml-2">{{dataMon.Username}} </div>
-                                            <button  class="float-right" style="border:none" *ngIf="dataMon.Username == select.value"><i class="icofont icofont-close float-right" ></i> </button>
                                         </div>
                                     </div>
                                 </ng-template> 
