@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { extend, closest, remove, createElement, addClass } from '@syncfusion/ej2-base';
+import { Component,  ViewChild, OnInit } from '@angular/core';
+import { extend, closest, remove, createElement, addClass, L10n, loadCldr } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
 import { HospitalData } from '../models/hospital-data';
 import {
@@ -25,6 +25,16 @@ import { MonteursData } from '../models/monteurs-data';
 import { monteurs } from '../data/monteur';
 import { ButtonComponent } from '@syncfusion/ej2-angular-buttons';
 
+const localeFrenchData = require('./scheduler-fr.json');
+const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
+const gregorian = require('cldr-data/main/fr-CH/ca-gregorian.json');
+const numbers = require('cldr-data/main/fr-CH/numbers.json');
+const timeZoneNames = require('cldr-data/main/fr-CH/timeZoneNames.json');
+
+loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
+
+  L10n.load(localeFrenchData);
+
 @Component({
     selector: 'scheduler',
     templateUrl: './scheduler.component.html',
@@ -34,7 +44,7 @@ import { ButtonComponent } from '@syncfusion/ej2-angular-buttons';
     ]
 })
 
-export class SchedulerComponent   {
+export class SchedulerComponent implements OnInit {
 
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
@@ -92,13 +102,15 @@ export class SchedulerComponent   {
     };
 
     constructor(public dialog: MatDialog) {
-        // ej.Schedule.Locale["fr-FR"]=
+        // ej.Schedule.Locale['fr-FR']=
         // {
-        //     TODAY:"aujourd'hui"
+        //     TODAY:'aujourd'hui'
         // }
     }
-    
-  
+    ngOnInit() {
+        console.log(this.scheduleObj);
+    }
+
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         args.element.hidden = false;
@@ -375,20 +387,21 @@ export class SchedulerComponent   {
         }
     }
 
-    azaactionBegin(args: any) {
+    azaactionBegin(args: any) { // CUSTOM ACTION BEGIN
         if (args.requestType !== 'toolbarItemRendering') {
-            console.log('****************************************** Custom action Begin function');
+            console.log('event Change !');
+            console.log('==> Custom action Begin function : azaactionBegin(args: any)');
             console.log(args);
             console.log(this.timelineResourceDataOut);
-            let bstartdifferent = this.isStartDifferent(args.data, this.timelineResourceDataOut);
-            let benddifferent = this.isEndDifferent(args.data, this.timelineResourceDataOut);
-            this.timelineResourceDataOut = this.eventSettings.dataSource as Object[];
+            let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+            let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+            this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
             // let atimelineResourceData1 = this.deleteobject(args.data, this.timelineResourceDataOut);
             // atimelineResourceData1.push(args.data);
             this.eventSettings = {
                 dataSource: <Object[]>extend(
                     // [], this.calculDateAll(atimelineResourceData1, true, args.data, bstartdifferent, benddifferent ), null, true
-                    [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, bstartdifferent, benddifferent), null, true
+                    [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
 
                 )
             };
@@ -396,13 +409,27 @@ export class SchedulerComponent   {
         }
     }
 
-    /*********************** ACTION COMPLETE FUNCTION *********************/
+    checkDiffExistById(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute): boolean {
+        let diffExist: boolean = false;
+        for (let i = 0; i < arrayObject.length; i++) {
+            if (object.Id === arrayObject[i]['Id']) {
+                if (object[objectAttribute] === arrayObject[i][arrayItemAttribute]) {
+                  diffExist = false;
+                } else {
+                  diffExist = true;
+                }
+            }
+        }
+        return diffExist;
+    }
+
+/*********************** ACTION COMPLETE FUNCTION *********************/
 
     onActionComplete(e) {
         console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& On Action Complete Function');
         console.log(e);
         this.isTreeItemDropped = false;
-        this.eventSettings = {
+        this.eventSettings = { // Réinitialise les events affichés dans le scheduler
             dataSource: <Object[]>extend(
                 [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
             )
@@ -425,183 +452,159 @@ export class SchedulerComponent   {
     /************************ DATES CALCUL ********************/
 
     calculDateAll(
-        atimelineResourceData: Object[], isUpdate: boolean, Objupdate: Object[], bstartdifferent: boolean, benddifferent: boolean
+        atimelineResourceData: Object[], needUpdate: boolean, itemToUpdate: Object[], startDifferent: boolean, endDifferent: boolean
     ): Object[] {
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 100, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 101, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 102, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 103, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 104, isUpdate, Objupdate, bstartdifferent, benddifferent);
-        this.timelineResourceDataOut = this.calculDateGroup(
-            atimelineResourceData, 105, isUpdate, Objupdate, bstartdifferent, benddifferent);
+        // CALL ONINT => this.calculDateAll(this.data, false, null, false, false )
+        // CALL ONRESIZE => this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true;
+        console.log(needUpdate);
+        let groupe = [], i;
+        for (i = 0; i < atimelineResourceData.length; i++) {
+            if (!groupe.includes(atimelineResourceData[i]['AzaNumGroupe'])) {
+                groupe.push(atimelineResourceData[i]['AzaNumGroupe']);
+            }
+        }
+        groupe.forEach(item => {
+            console.log(item);
+            this.timelineResourceDataOut = this.calculDateGroup(atimelineResourceData, +item, needUpdate, itemToUpdate, startDifferent, endDifferent);
+        });
+        console.log(groupe);
         return this.timelineResourceDataOut;
     }
 
-    getCountByAzaNumgroupe(objectin: Object[], column: string, value: any): number {
-        let objectOut: Object[] = [];
-        let cpt = 0;
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++getCountByAzaNumgroupe');
-        for (let entry of objectin) {
-            const properties = Object.getOwnPropertyNames(entry);
-            for (let property of properties) {
-                if (property === column) {
-                    if ((entry[property] === value)) {
-                        cpt = cpt + 1;
-                    }
-                }
-            }
-        }
-        return cpt;
+    calculDateGroup(
+        atimelineResourceData: Object[], numGroup: number, needUpdate: boolean,
+        itemToUpdate: Object[], startDifferent: boolean, endDifferent: boolean)
+    : Object[] {
+        console.log('calcul date groupr function');
+        let minDateGroup = this.getMinMaxNumgroupe(
+            atimelineResourceData, numGroup, 'StartTime', needUpdate, itemToUpdate
+        );
+        let maxDateGroup = this.getMinMaxNumgroupe(
+            atimelineResourceData, numGroup, 'EndTime', needUpdate, itemToUpdate
+        );
+        let diffMinMax = +maxDateGroup - +minDateGroup;
+        console.log(diffMinMax);
+        let Seconds_from_T1_to_T2 = diffMinMax / 1000;
+        console.log(Seconds_from_T1_to_T2);
+        let Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
+        console.log(Seconds_Between_Dates);
+        let countWorkorderSameGroup = this.getCountWorkOrderByGroup(atimelineResourceData, 'AzaNumGroupe', +numGroup);
+        let Seconds_for_a_job = Seconds_Between_Dates / countWorkorderSameGroup;
+        atimelineResourceData = this.calcultimesforalljobs(atimelineResourceData, numGroup, minDateGroup, maxDateGroup, Seconds_for_a_job);
+        this.timelineResourceDataOut = atimelineResourceData;
+        return atimelineResourceData;
     }
 
-    // GET MINIMUM DATE FROM GROUP
-    getmindateNumgroupe(
-        objectin: Object[], numgroupe: number, column: string, value: any, isUpdate: boolean, Objupdate: Object[], bstartdifferent: boolean
+    getCountWorkOrderByGroup(objectin: Object[], property: string, numGroup: number): number {
+        console.log('check count workorder same group');
+        let countWorkorderSameGroup = 0;
+        objectin.forEach(item => {
+            if (item[property] === numGroup) {
+                if (!item['AzaIsPere']) {
+                    countWorkorderSameGroup++;
+                }
+            }
+        });
+        console.log(countWorkorderSameGroup);
+        return countWorkorderSameGroup;
+    }
+
+// GET MINIMUM DATE FROM GROUP
+    getMinMaxNumgroupe(
+        atimelineResourceData, numGroup: number, timePosition: string, isUpdate: boolean, Objupdate: Object[]
     ) {
-        let objectOut: Object[] = [];
-        let mindate: Date = new Date(2050, 3, 4, 0, 0);
-        for (let entry of objectin) {
-            const properties = Object.getOwnPropertyNames(entry);
-            if (entry['AzaNumGroupe'] === value) {
-                for (let property of properties) {
-                    if (property === column) {
-                        if (entry[property] < mindate) {
-                            mindate = entry[property];
-                        }
-                    }
+        let mindate;
+        let maxDate;
+        let regie: number;
+        let arrayDatesGroup = [];
+        atimelineResourceData.forEach(item => {
+            if (+item.AzaNumGroupe === numGroup) {
+                arrayDatesGroup.push(+item[timePosition]);
+                if (item.AzaIsPere) {
+                    console.log(item);
+                    regie = item.DepartmentID;
                 }
             }
-        }
-        if (isUpdate) {
-            if (bstartdifferent) {
+        });
+        atimelineResourceData.forEach(item => {
+            if (+item.AzaNumGroupe === numGroup) {
+                if (!item.AzaIsPere) {
+                    item.DepartmentID = regie;
+                }
+            }
+        });
+        let min = Math.min(...arrayDatesGroup);
+        let max = Math.max(...arrayDatesGroup);
+        console.log(min);
+        console.log(new Date(min));       
+        console.log(arrayDatesGroup);
+        mindate = new Date(min);
+        maxDate = new Date(max);
+        if (timePosition === 'StartTime') {
+            if (isUpdate) {
+                console.log('isUpdate');
                 if (Objupdate != null) {
-                    if (Objupdate['AzaNumGroupe'] === numgroupe) {
-                        mindate = Objupdate[column];
+                    if (+Objupdate['AzaNumGroupe'] === numGroup) {
+                        mindate = Objupdate[timePosition];
                     }
                 }
+            } else {
+                console.log('not update for startTime');
             }
+            console.log(mindate);
+            return mindate;
+        } else if (timePosition === 'EndTime') {
+            if (isUpdate) {
+                if (Objupdate != null) {
+                    if (+Objupdate['AzaNumGroupe'] === numGroup) {
+                        maxDate = Objupdate[timePosition];
+                    }
+                }
+            } else {
+                console.log('not update for endTime');
+            }
+            console.log(maxDate);
+            return maxDate;
         }
-        return mindate;
     }
 
-    // GET MAXIMUM DATE FROM GROUP
-    getmaxdateNumgroupe(
-        objectin: Object[], numgroupe: number, column: string, value: any, isUpdate: boolean, Objupdate: Object[], benddifferent: boolean
-    ) {
-        let objectOut: Object[] = [];
-        let maxdate: Date = new Date(2000, 3, 5, 0, 0);
-        for (let entry of objectin) {
-            const properties = Object.getOwnPropertyNames(entry);
-            if (entry['AzaNumGroupe'] === value) {
-                for (let property of properties) {
-                    if (property === column) {
-                        if (entry[property] > maxdate) {
-                            maxdate = entry[property];
-                        }
-                    }
-                }
-            }
-        }
-        if (isUpdate) {
-            if (benddifferent) {
-                if (Objupdate != null) {
-                    if (Objupdate['AzaNumGroupe'] === numgroupe) {
-                        maxdate = Objupdate[column];
-                    }
-                }
-            }
-        }
-        return maxdate;
-    }
-
-
-    calcultimesforalljobs(timelineResourceDatain, numgroup: number, mindate: Date, maxdate: Date, Seconds_for_a_job) {
-        let atimelineResourceDataout = timelineResourceDatain;
-        let tempmindate = mindate;
-        let tempmaxdate = maxdate;
-        for (let entry of timelineResourceDatain) {
-            if (entry.AzaNumGroupe === numgroup) {
+    calcultimesforalljobs(atimelineResourceData, numGroup: number, minDateGroup: Date, maxDateGroup: Date, Seconds_for_a_job) {
+        // this.calcultimesforalljobs(atimelineResourceData, numGroup, minDateGroup, maxDateGroup, Seconds_for_a_job);
+        let tempmindate = minDateGroup;
+        let tempmaxdate = maxDateGroup;
+        for (let entry of atimelineResourceData) {
+            if (entry.AzaNumGroupe === numGroup) {
                 const properties = Object.getOwnPropertyNames(entry);
-                if (entry['AzaIsPere'] === true) { // IF CONTAINER DISPLAY STARTTIME AND ENDTIME MAX
-                    entry['StartTime'] = mindate;
-                    entry['EndTime'] = maxdate;
+                if (entry['AzaIsPere']) { // IF CONTAINER DISPLAY STARTTIME AND ENDTIME MAX
+                    entry['StartTime'] = minDateGroup;
+                    entry['EndTime'] = maxDateGroup;
                 } else {
                     entry['StartTime'] = tempmindate;
-                    let tempdate = new Date(tempmindate.getTime() + Seconds_for_a_job * 1000);
+                    let tempdate = new Date(tempmindate.getTime() + Seconds_for_a_job * 1000) ;
                     entry['EndTime'] = tempdate;
                     tempmindate = tempdate;
                 }
             }
         }
-        return atimelineResourceDataout;
-    }
-
-    calculDateGroup(
-        atimelineResourceData: Object[], numGroup: number, isUpdate: boolean,
-        Objupdate: Object[], bstartdifferent: boolean, benddifferent: boolean)
-        : Object[] {
-        let minDateGroup = this.getmindateNumgroupe(
-            atimelineResourceData, numGroup, 'StartTime', numGroup, isUpdate, Objupdate, bstartdifferent
-        );
-        let maxdate = this.getmaxdateNumgroupe(
-            atimelineResourceData, numGroup, 'EndTime', numGroup, isUpdate, Objupdate, benddifferent
-        );
-
-        let diff = maxdate.getTime() - minDateGroup.getTime();
-        let Seconds_from_T1_to_T2 = diff / 1000;
-        let Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
-        let cpt = this.getCountByAzaNumgroupe(atimelineResourceData, 'AzaNumGroupe', numGroup);
-        let Seconds_for_a_job = Seconds_Between_Dates / (cpt - 1);
-        atimelineResourceData = this.calcultimesforalljobs(atimelineResourceData, numGroup, minDateGroup, maxdate, Seconds_for_a_job);
-        this.timelineResourceDataOut = atimelineResourceData;
         return atimelineResourceData;
     }
-    public monteurListe: MonteursData[] = [
-        { Code: 1, Username: "Monteur 1", CodeSalle: null, IsRH: 1, NomSalle: "" },
-        { Code: 2, Username: "Monteur 2", CodeSalle: null, IsRH: 1, NomSalle: "" },
-        { Code: 3, Username: "Monteur 3", CodeSalle: null, IsRH: 1, NomSalle: "" },
-        { Code: 4, Username: "Monteur 4", CodeSalle: null, IsRH: 1, NomSalle: "" },
-        { Code: 5, Username: "Monteur 5", CodeSalle: null, IsRH: 1, NomSalle: "" },
+
+    public monteurListe:MonteursData[] = [
+        { Code: 1, Username: 'Monteur 1', CodeSalle: null, IsRH: 1, NomSalle: '' },
+        { Code: 2, Username: 'Monteur 2', CodeSalle: null, IsRH: 1, NomSalle: '' },
+        { Code: 3, Username: 'Monteur 3', CodeSalle: null, IsRH: 1, NomSalle: '' },
+        { Code: 4, Username: 'Monteur 4', CodeSalle: null, IsRH: 1, NomSalle: '' },
+        { Code: 5, Username: 'Monteur 5', CodeSalle: null, IsRH: 1, NomSalle: '' },
     ];
 
-    isStartDifferent(argsData: any, timelineResourceDataOut: Object[]): boolean {
-        let objectOut: Object[] = timelineResourceDataOut;
-        let isdiff: boolean = false;
-        for (let i = 0; i < timelineResourceDataOut.length; i++) {
-            if (argsData.Id === timelineResourceDataOut[i]['Id']) {
-                if (argsData.StartTime === timelineResourceDataOut[i]['StartTime']) {
-                    isdiff = false;
-                    break;
-                } else {
-                    isdiff = true;
-                    break;
-                }
-            }
-        }
-        return isdiff;
-    }
 
-    isEndDifferent(argsData: any, timelineResourceDataOut: Object[]): boolean {
-        let objectOut: Object[] = timelineResourceDataOut;
-        let isdiff: boolean = false;
-        for (let i = 0; i < timelineResourceDataOut.length; i++) {
-            if (argsData.Id === timelineResourceDataOut[i]['Id']) {
-                if (argsData.EndTime === timelineResourceDataOut[i]['EndTime']) {
-                    isdiff = false;
-                    break;
-                } else {
-                    isdiff = true;
-                    break;
-                }
-            }
-        }
-        return isdiff;
-    }
+    // filterMonteurs(value:string){
+    //     this.dataMonteur = this.dataMonteur.filter (monteurs => {
+    //       return monteurs.Username === value;
+          
+    //     });
+     
+    //     }
   
 
     onSelect(value) {
@@ -614,12 +617,9 @@ export class SchedulerComponent   {
                 }
 
             }
-        }
-        console.log(this.dataMonteur)
+              console.log(this.dataMonteur)
+        }    
     }
-
-  
-    
 
 
     getBorder(value) {
