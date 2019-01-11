@@ -2,7 +2,13 @@
 
 <div *ngIf="dataIdFicheMaterielReady" class="row form-group fm-details">
   <form class="card col-lg-12">
-    <fiches-materiel-modification-action 
+    <div class="row">
+      <div class="col-lg-12 text-center modif-header">
+        {{modificationMessage}}
+      </div>
+    </div>
+    <fiches-materiel-modification-action
+      (modificationMessage)="displayModificationMessage($event)"
       class="creation-top"
       [showAffectedEps]="false"
       [allFichesMateriel]="allFichesMateriel"
@@ -26,7 +32,7 @@
               <div class="input-group col-lg-8">
                 {{deadlineNewStringFormat}}
                 <input class="form-control" 
-                  placeholder="{{displayPlaceholderDatepicker(newObject.Deadline)}}" 
+                  placeholder="{{newObject.Deadline}}" 
                   name="deadlineDate" 
                   [(ngModel)]="newObject.Deadline" 
                   [disabled]="disabledDeadline()"
@@ -433,7 +439,7 @@
             </label>
             <div class="input-group col-lg-6" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
               <input class="form-control" 
-                placeholder="{{displayPlaceholderDatepicker(newObject.DateLivraison)}}" 
+                placeholder="{{newObject.DateLivraison}}" 
                 name="livDate" [(ngModel)]="newObject.DateLivraison" 
                 ngbDatepicker #livDate="ngbDatepicker">
               <div class="input-group-append">
@@ -460,7 +466,7 @@
               </label>
             </div>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.DateAcceptation)}}" name="acceptDate"
+              <input class="form-control" placeholder="{{newObject.DateAcceptation}}" name="acceptDate"
                 [(ngModel)]="newObject.DateAcceptation" ngbDatepicker #acceptDate="ngbDatepicker" disabled="{{!checkAcceptationSelectionRadio()}}">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="acceptDate.toggle()" type="button">
@@ -483,7 +489,7 @@
               Date de première diff :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.DatePremiereDiff)}}" name="diffDate"
+              <input class="form-control" placeholder="{{newObject.DatePremiereDiff}}" name="diffDate"
                 [(ngModel)]="newObject.DatePremiereDiff" ngbDatepicker #diffDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="diffDate.toggle()" type="button">
@@ -619,7 +625,7 @@
           </p>
 
           <p *ngIf="selectionType === 'one' && ficheAchatDetailReady && newObject.RetourOri === 1">Retour Ori dernier délai :
-            <span *ngIf="lendingDurationDate !== undefined">
+            <span *ngIf="lendingDurationDate !== undefined ">
               {{lendingDurationDate | date}}
             </span>
             <span *ngIf="lendingDurationDate === undefined">
@@ -631,7 +637,7 @@
               Date de retour :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(this.newObject.DateRetourOri)}}" name="rDate"
+              <input class="form-control" placeholder="{{this.newObject.DateRetourOri}}" name="rDate"
                 [(ngModel)]="this.newObject.DateRetourOri" ngbDatepicker #retourDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="retourDate.toggle()" type="button">
@@ -650,7 +656,7 @@
               Réception accès labo :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{displayPlaceholderDatepicker(newObject.ReceptionAccesLabo)}}" name="accLaboDate"
+              <input class="form-control" placeholder="{{newObject.ReceptionAccesLabo}}" name="accLaboDate"
                 [(ngModel)]="newObject.ReceptionAccesLabo" ngbDatepicker #accLaboDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="accLaboDate.toggle()" type="button">
@@ -749,7 +755,8 @@
         </custom-icon-badge>
       </div>
     </div> -->
-    <fiches-materiel-modification-action 
+    <fiches-materiel-modification-action
+      (modificationMessage)="displayModificationMessage($event)"
       [showAffectedEps]="true"
       [allFichesMateriel]="allFichesMateriel"
       [selectionType]="selectionType"

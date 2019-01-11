@@ -65,6 +65,7 @@ export class FichesMaterielModificationInterfaceComponent
   implements OnInit, OnDestroy {
   public initialFichesMateriel = [];
 
+  public modificationMessage: string = 'Modifications';
   public disabledDateAcceptation = false;
   public deadLineNgFormat: NgbDateStruct;
   public deadlineNewStringFormat;
@@ -122,7 +123,14 @@ export class FichesMaterielModificationInterfaceComponent
   public valueNotToChangeLibelle = 'Valeur d\'origine';
   public resetTooltipMessage = 'Vider le champs';
   public replyTooltipMessage = 'Retour aux valeurs d\'origines';
-
+  public arrayDateFicheMateriel = [
+    'Deadline',
+    'DateRetourOri',
+    'DateLivraison',
+    'DatePremiereDiff',
+    'DateAcceptation',
+    'ReceptionAccesLabo'
+  ];
   public allFichesMateriel = [];
   public allIdSelectedFichesMateriel = [];
   public dataIdFicheMaterielReady = false;
@@ -162,107 +170,14 @@ export class FichesMaterielModificationInterfaceComponent
     DateModification: this.valueNotToChangeLibelle,
     CommentairesDateLivraison: this.valueNotToChangeLibelle,
     CommentairesStatutEtape: this.valueNotToChangeLibelle,
-    Fiche_Mat_ElementsAnnexes: [
-      // {
-      //   IdElementsAnnexes: 1705,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 1,
-      //   IsValid: null,
-      //   libelle: 'Trailer'
-      // },
-      // {
-      //   IdElementsAnnexes: 1706,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 2,
-      //   IsValid: null,
-      //   libelle: 'Script timecodé'
-      // },
-      // {
-      //   IdElementsAnnexes: 1707,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 3,
-      //   IsValid: null,
-      //   libelle: 'Music cue sheet'
-      // },
-      // {
-      //   IdElementsAnnexes: 1708,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 4,
-      //   IsValid: null,
-      //   libelle: 'Matériel publicitaire'
-      // },
-      // {
-      //   IdElementsAnnexes: 1709,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 5,
-      //   IsValid: null,
-      //   libelle: 'STL multilingue'
-      // },
-      // {
-      //   IdElementsAnnexes: 1710,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 6,
-      //   IsValid: null,
-      //   libelle: 'STL S&M'
-      // },
-      // {
-      //   IdElementsAnnexes: 1711,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 7,
-      //   IsValid: null,
-      //   libelle: 'Visuels'
-      // },
-      // {
-      //   IdElementsAnnexes: 1712,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 8,
-      //   IsValid: null,
-      //   libelle: 'Synopsis'
-      // },
-      // {
-      //   IdElementsAnnexes: 1713,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 9,
-      //   IsValid: null,
-      //   libelle: 'Crédits'
-      // },
-      // {
-      //   IdElementsAnnexes: 1714,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 10,
-      //   IsValid: null,
-      //   libelle: 'Autre(s)'
-      // },
-      // {
-      //   IdElementsAnnexes: 1715,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 11,
-      //   IsValid: null,
-      //   libelle: 'Making of'
-      // },
-      // {
-      //   IdElementsAnnexes: 1716,
-      //   IdFicheMateriel: 156,
-      //   IdPackageAttendu: 12,
-      //   IsValid: null,
-      //   libelle: 'Fichier audiodescription'
-      // }
-    ],
-    // Fiche_Mat_LibEtape: {
-    //   IdLibEtape: this.valueNotToChangeLibelle,
-    //   Libelle: this.valueNotToChangeLibelle
-    // },
-    Fiche_Mat_LibRetourOri: this.valueNotToChangeLibelle,
-    // Fiche_Mat_Libstatut: {
-    //   IdStatut: this.valueNotToChangeLibelle,
-    //   Libelle: this.valueNotToChangeLibelle
-    // },
-    Fiche_Mat_LibStatutElementsAnnexes: this.valueNotToChangeLibelle,
-    Fiche_Mat_HistoriqueDateLivraison: this.valueNotToChangeLibelle,
-    Fiche_Mat_HistoriqueStatutEtape: this.valueNotToChangeLibelle,
-    Fiche_Mat_Qualite: this.valueNotToChangeLibelle,
-    Fiche_Mat_StatutElementsAnnexes: this.valueNotToChangeLibelle,
-    Fiche_Mat_Version: this.valueNotToChangeLibelle
+    // Fiche_Mat_ElementsAnnexes: [],
+    // Fiche_Mat_LibRetourOri: this.valueNotToChangeLibelle,
+    // Fiche_Mat_LibStatutElementsAnnexes: this.valueNotToChangeLibelle,
+    // Fiche_Mat_HistoriqueDateLivraison: this.valueNotToChangeLibelle,
+    // Fiche_Mat_HistoriqueStatutEtape: this.valueNotToChangeLibelle,
+    // Fiche_Mat_Qualite: this.valueNotToChangeLibelle,
+    // Fiche_Mat_StatutElementsAnnexes: this.valueNotToChangeLibelle,
+    // Fiche_Mat_Version: this.valueNotToChangeLibelle
   };
 
   constructor(
@@ -292,6 +207,17 @@ export class FichesMaterielModificationInterfaceComponent
       type: 'DELETE_ALL_FICHE_MATERIEL_IN_MODIF',
       payload: {}
     });
+  }
+
+  displayModificationMessage(event) {
+    this.modificationMessage = event;
+        this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
+
+    // this.changeDateFormat(event);
+    // this.ngOnInit();
+    
+    // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
+    console.log(this.newObject);
   }
 
 
@@ -382,74 +308,98 @@ export class FichesMaterielModificationInterfaceComponent
 
   /************************ Datepicker / Date functions ********************/
 
-  displayPlaceholderDatepicker(e) {
-    if (this.selectionType === 'one') {
-      if (e !== undefined && e !== null) {
-        return e;
-      }
-      return 'dd-mm-yyyy';
-    } else {
-      return this.valueNotToChangeLibelle;
-    }
-  }
+  changeDateFormat(originalDate) {
+    // console.log(originalDate);
+    // let date = new Date(this.newObject[originalDate]);
+    // console.log(new Date(this.newObject[originalDate]));
+    // let defaultFormat = 'dd-mm-yyyy';
+    // if (this.selectionType === 'one') {
+    //   if (this.newObject[originalDate] !== undefined && this.newObject[originalDate] !== null) { // DATE RETOUR ORI
+    //     console.log(date.getFullYear());
+    //     let dateNgFormat = {
+    //       year: new Date(this.newObject[originalDate]).getFullYear(),
+    //       month: new Date(this.newObject[originalDate]).getMonth() + 1,
+    //       day: new Date(this.newObject[originalDate]).getDate()
+    //     };
+    //     this.newObject[originalDate] = dateNgFormat;
+    //   } else {
+    //     this.newObject[originalDate] = defaultFormat;
+    //   }
+    // } else {
+    //   this.newObject[originalDate] = this.valueNotToChangeLibelle;
+    // }
+    // console.log(originalDate);
 
-  changeDateFormat() {
-    if (this.newObject.DateRetourOri) {
-      this.retourDateOriNgFormat = {
-        year: new Date(this.newObject.DateRetourOri).getFullYear(),
-        month: new Date(this.newObject.DateRetourOri).getMonth() + 1,
-        day: new Date(this.newObject.DateRetourOri).getDate()
-      };
-      this.newObject.DateRetourOri = this.retourDateOriNgFormat;
-    }
-    if (this.newObject.Deadline) {
-      // '2018-08-20T11:50:23'
-      console.log(this.newObject.Deadline);
-      this.deadLineNgFormat = {
-        year: new Date(this.newObject.Deadline).getFullYear(),
-        month: new Date(this.newObject.Deadline).getMonth() + 1,
-        day: new Date(this.newObject.Deadline).getDate()
-      };
-      this.newObject.Deadline = this.deadLineNgFormat;
-      console.log(
-        `${this.newObject.Deadline.year}-${this.newObject.Deadline.month}-${
-          this.newObject.Deadline.day
-        }T00:00:00`
-      );
-    }
-    if (this.newObject.DateLivraison !== null) {
-      console.log('date de livraison : ');
-      console.log(this.newObject.DateLivraison);
-      this.livraisonDateNgFormat = {
-        year: new Date(this.newObject.DateLivraison).getFullYear(),
-        month: new Date(this.newObject.DateLivraison).getMonth() + 1,
-        day: new Date(this.newObject.DateLivraison).getDate()
-      };
-      this.newObject.DateLivraison = this.livraisonDateNgFormat;
-    }
-    if (this.newObject.DatePremiereDiff !== null) {
-      this.diffDateNgFormat = {
-        year: new Date(this.newObject.DatePremiereDiff).getFullYear(),
-        month: new Date(this.newObject.DatePremiereDiff).getMonth() + 1,
-        day: new Date(this.newObject.DatePremiereDiff).getDate()
-      };
-      this.newObject.DatePremiereDiff = this.diffDateNgFormat;
-    }
-    if (this.newObject.DateAcceptation !== null) {
-      this.acceptationDateNgFormat = {
-        year: new Date(this.newObject.DateAcceptation).getFullYear(),
-        month: new Date(this.newObject.DateAcceptation).getMonth() + 1,
-        day: new Date(this.newObject.DateAcceptation).getDate()
-      };
-      this.newObject.DateAcceptation = this.acceptationDateNgFormat;
-    }
-    if (this.newObject.ReceptionAccesLabo !== null) {
-      this.accLaboDateNgFormat = {
-        year: new Date(this.newObject.ReceptionAccesLabo).getFullYear(),
-        month: new Date(this.newObject.ReceptionAccesLabo).getMonth() + 1,
-        day: new Date(this.newObject.ReceptionAccesLabo).getDate()
-      };
-      this.newObject.ReceptionAccesLabo = this.accLaboDateNgFormat;
+    let defaultFormat = 'dd-mm-yyyy';
+    if (this.selectionType === 'one') {
+      if (this.newObject.DateRetourOri !== undefined && this.newObject.DateRetourOri !== null) { // DATE RETOUR ORI
+        this.retourDateOriNgFormat = {
+          year: new Date(this.newObject.DateRetourOri).getFullYear(),
+          month: new Date(this.newObject.DateRetourOri).getMonth() + 1,
+          day: new Date(this.newObject.DateRetourOri).getDate()
+        };
+        this.newObject.DateRetourOri = this.retourDateOriNgFormat;
+      } else {
+        this.newObject.DateRetourOri = defaultFormat;
+      }
+      if (this.newObject.Deadline !== undefined && this.newObject.Deadline !== null) {// DATE DEADLINE
+        this.deadLineNgFormat = {
+          year: new Date(this.newObject.Deadline).getFullYear(),
+          month: new Date(this.newObject.Deadline).getMonth() + 1,
+          day: new Date(this.newObject.Deadline).getDate()
+        };
+        this.newObject.Deadline = this.deadLineNgFormat;
+        console.log(`${this.newObject.Deadline.year}-${this.newObject.Deadline.month}-${this.newObject.Deadline.day}T00:00:00`);
+      } else {
+        this.newObject.Deadline = defaultFormat;
+      }
+      if (this.newObject.DateLivraison !== undefined && this.newObject.DateLivraison !== null) {// DATE LIVRAISON
+        this.livraisonDateNgFormat = {
+          year: new Date(this.newObject.DateLivraison).getFullYear(),
+          month: new Date(this.newObject.DateLivraison).getMonth() + 1,
+          day: new Date(this.newObject.DateLivraison).getDate()
+        };
+        this.newObject.DateLivraison = this.livraisonDateNgFormat;
+      } else {
+        this.newObject.DateLivraison = defaultFormat;
+      }
+      if (this.newObject.DatePremiereDiff !== undefined && this.newObject.DatePremiereDiff !== null) { // DATE PREMIERE DIFF
+        this.diffDateNgFormat = {
+          year: new Date(this.newObject.DatePremiereDiff).getFullYear(),
+          month: new Date(this.newObject.DatePremiereDiff).getMonth() + 1,
+          day: new Date(this.newObject.DatePremiereDiff).getDate()
+        };
+        this.newObject.DatePremiereDiff = this.diffDateNgFormat;
+      } else {
+        this.newObject.DatePremiereDiff = defaultFormat;
+      }
+      if (this.newObject.DateAcceptation !== undefined && this.newObject.DateAcceptation !== null) { // DATE ACCEPTATION
+        this.acceptationDateNgFormat = {
+          year: new Date(this.newObject.DateAcceptation).getFullYear(),
+          month: new Date(this.newObject.DateAcceptation).getMonth() + 1,
+          day: new Date(this.newObject.DateAcceptation).getDate()
+        };
+        this.newObject.DateAcceptation = this.acceptationDateNgFormat;
+      } else {
+        this.newObject.DateAcceptation = defaultFormat;
+      }
+      if (this.newObject.ReceptionAccesLabo !== undefined && this.newObject.ReceptionAccesLabo !== null) { // DATE RECEPTION ACCES LABO
+        this.accLaboDateNgFormat = {
+          year: new Date(this.newObject.ReceptionAccesLabo).getFullYear(),
+          month: new Date(this.newObject.ReceptionAccesLabo).getMonth() + 1,
+          day: new Date(this.newObject.ReceptionAccesLabo).getDate()
+        };
+        this.newObject.ReceptionAccesLabo = this.accLaboDateNgFormat;
+      } else {
+        this.newObject.ReceptionAccesLabo = defaultFormat;
+      }
+    } else {
+      this.newObject.DateRetourOri = this.valueNotToChangeLibelle;
+      this.newObject.Deadline = this.valueNotToChangeLibelle;
+      this.newObject.DateLivraison = this.valueNotToChangeLibelle;
+      this.newObject.DatePremiereDiff = this.valueNotToChangeLibelle;
+      this.newObject.DateAcceptation = this.valueNotToChangeLibelle;
+      this.newObject.ReceptionAccesLabo = this.valueNotToChangeLibelle;
     }
   }
 
@@ -484,7 +434,8 @@ export class FichesMaterielModificationInterfaceComponent
       this.newObject = ficheMateriel;
       this.getFicheAchat(ficheMateriel.IdFicheAchat);
       this.getFicheAchatDetail(ficheMateriel.IdFicheAchat);
-      this.changeDateFormat();
+      this.changeDateFormat('arg');
+      // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
     } else {
       this.displayLibValueNotToChange();
     }
@@ -578,18 +529,18 @@ export class FichesMaterielModificationInterfaceComponent
                   // [checked]="displayCheckedVersion(item.id_version)"
   displayCheckedVersion(id) {
     let checked = [];
-    console.log(this.versionFicheMateriel);
+    // console.log(this.versionFicheMateriel);
     this.versionFicheMateriel.map(item => {
-      console.log(item);
+      // console.log(item);
       if (item.IdFicheAch_Lib_Versions === id && item.Isvalid) {
-        console.log(item);
+        // console.log(item);
         checked.push(item);
       }
     });
     if (checked.length > 0) {
       return true;
     } else {
-      console.log('non non non version');
+      // console.log('non non non version');
       return false;
     }
   }
@@ -740,14 +691,14 @@ export class FichesMaterielModificationInterfaceComponent
     let checked = [];
     this.annexElementsFicheMateriel.map(item => {
       if (item.IdPackageAttendu === id && item.IsValid) {
-        console.log(item);
+        // console.log(item);
         checked.push(item);
       }
     });
     if (checked.length > 0) {
       return true;
     } else {
-      console.log('non non non non');
+      // console.log('non non non non');
       return false;
     }
   }

@@ -2,26 +2,32 @@
     <div class="drag-sample-wrapper">
         <div class="schedule-container">
             <div class="title-container">
-
             </div>
-            <ejs-schedule #scheduleObj (popupOpen)="onPopupOpen($event)" cssClass='schedule-drag-drop' width='100%'
-                height='650px' [group]="group" [currentView]="currentView" [selectedDate]="selectedDate" [workHours]="workHours"
-                [eventSettings]="eventSettings" (actionBegin)="onActionBegin($event)" (actionComplete)="onActionComplete($event)"
-                (drag)="onItemDrag($event)" (renderCell)="onRenderCell($event)"   >
+            <ejs-schedule #scheduleObj 
+                (popupOpen)="onPopupOpen($event)" 
+                cssClass='schedule-drag-drop' 
+                width='100%'
+                height='650px' 
+                [group]="group" 
+                [currentView]="currentView" 
+                [selectedDate]="selectedDate" 
+                [workHours]="workHours"
+                [eventSettings]="eventSettings" 
+                (actionBegin)="onActionBegin($event)" 
+                (actionComplete)="onActionComplete($event)"
+                (drag)="onItemDrag($event)">
                 <e-resources>
                     <e-resource 
-                    field='DepartmentID' 
-                    title='Department' 
-                    name='Departments'
-                     [dataSource]='departmentDataSource'
-                     textField='Text' 
-                     idField='Id' 
-                     colorField='Color' 
-                     groupIDField="Id" 
-                     [allowMultiple]='allowMultiple'>
+                        field='DepartmentID' 
+                        title='Department' 
+                        name='Departments' 
+                        [dataSource]='departmentDataSource'
+                        textField='Text' 
+                        idField='Id' 
+                        colorField='Color' 
+                        groupIDField="Id" 
+                        [allowMultiple]='allowMultiple'>
                     </e-resource>
-                    
-                   
                 </e-resources>
                 
                 <!-- <ng-template #resourceHeaderTemplate let-data>
@@ -37,26 +43,24 @@
                 <e-views>
                     <e-view option='TimelineDay' >
                         <ng-template #eventTemplate let-data  class="event">
-                            <div class='template-wrap' style="width: 100%">
+                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}">
                                 <div>
-                                    <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere">
-                                        <u>{{data.Name }} </u> 
+                                    <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                        <div class="float-right fixed initiales"><p>AC</p></div>
+                                        <u id="{{data.Id}}">{{data.Name }} </u> 
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                        
-                                        <button *ngIf="data.Operateur" type="reset" class="float-right btn-warning mt-1 ">{{data.Operateur}}</button>
+                                        <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                             class="float-right  fixed mr-1"> -->
                                     </div>
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
                                         <span style="padding-top: 5px; width: 100%">{{data.Name }} </span>
-                                        
                                     </div>
                                 </div>
                             </div>
                         </ng-template>
                     </e-view>
                     <e-view option="TimelineWeek"></e-view>
-
                     <e-view option='TimelineMonth'></e-view>
                     <e-view option="Agenda"></e-view>
                 </e-views>
@@ -68,20 +72,23 @@
                     <ng-template #content>
                         <div class="treeview-container">
                             <div class="title-container">
-
                             </div>
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Filtrer..." #searchWO>
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
-                            <ejs-treeview #treeObj [fields]='field ' cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStop($event)" (nodeDragging)="onItemDrag($event)">
+                            <ejs-treeview 
+                                #treeObj 
+                                [fields]='field' 
+                                cssClass='treeview-external-drag'
+                                [allowDragAndDrop]='allowDragAndDrop' 
+                                (nodeDragStop)="onTreeDragStop($event)" 
+                                (nodeDragging)="onItemDrag($event)">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
                                             <div id="waitlist">{{dataWorkOrder.Name }}</div>
                                             <div id="waitcategory">{{dataWorkOrder.Description}}</div>
-
                                         </div>
                                     </div>
                                 </ng-template>
@@ -91,30 +98,28 @@
                 </e-tabitem>
                 <e-tabitem [header]='headerText[1]'>
                     <ng-template #content>
-                         
                         <div class="treeview-container">
                             <div class="title-container">
-
                             </div>
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Filtrer..."  #search   [(ngModel)]="searchText"  (change)="onFilter(searchText)"     >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
-                            
-                          
-                          <select class="form-control form-control-inverse" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
-                                   <option >Plus de monteurs </option>
-                                     <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
-                                 </select>  
-                                
-                            <div  >
-            
-            <ejs-treeview #treeObjMonteur [fields]="fieldMonteur" cssClass='treeview-external-drag'  id="treeView"
-                                [allowDragAndDrop]='allowDragAndDrop'  (nodeDragStop)="onTreeDragStopMonteur($event)"  (nodeDragging)="onItemDrag($event)"   >
-                                <ng-template #nodeTemplate=""  let-dataMon=""  >
-                                  
-                                         
-                                   <div id="waiting"  [ngStyle]="{'border':getBorder(dataMon.Username)}">
+                            <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
+                                <option >Plus de monteurs </option>
+                                <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
+                            </select>
+                            <div *ngIf="select.value=='Plus de monteurs' ">
+                                <ejs-treeview 
+                                    #treeObjMonteur 
+                                    [fields]='fieldMonteur' 
+                                    cssClass='treeview-external-drag'
+                                    [allowDragAndDrop]='allowDragAndDrop'  
+                                    (nodeDragStop)="onTreeDragStopMonteur($event)"   
+                                    (nodeDragging)="onItemDrag($event)">
+                                    <ng-template #nodeTemplate=""  let-dataMon="" >
+                                        <!-- let-dataMonteur="" -->
+                                   <div id="waiting">
                                         <div id="waitdetails">
                                                 <br>
                                             <div id="monteurslist" class="ml-2">{{dataMon.Username}} </div>
