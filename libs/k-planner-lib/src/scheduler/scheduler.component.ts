@@ -16,8 +16,8 @@ import {
     
 
 } from '@syncfusion/ej2-angular-schedule';
-import { DragAndDropEventArgs } from '@syncfusion/ej2-navigations';
-import { TreeViewComponent } from '@syncfusion/ej2-angular-navigations';
+import { DragAndDropEventArgs, NodeCheckEventArgs } from '@syncfusion/ej2-navigations';
+import { TreeViewComponent, NodeKeyPressEventArgs, NodeClickEventArgs } from '@syncfusion/ej2-angular-navigations';
 import { MatDialog } from '@angular/material';
 
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
@@ -96,6 +96,8 @@ export class SchedulerComponent   {
         // {
         //     TODAY:"aujourd'hui"
         // }
+        
+     
     }
     
   
@@ -637,20 +639,20 @@ export class SchedulerComponent   {
 
 
     onRenderCell(args: RenderCellEventArgs): void {
-
+        
         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
-            target.innerHTML = `<button #toggleBtn ejs-button class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" onclick="${this.displayRegies()}" iconCss="e-btn-sb-icons e-play-icon"> Voir Autres Régies </button>`;
-
+            target.innerHTML = `<button #toggleBtn  id="btn" ejs-button class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" onclick="${this.displayRegies()}" iconCss="e-btn-sb-icons e-play-icon"> Voir Autres Régies </button>`;
         }
+        document.getElementById('btn').onclick = function() {
+            console.log("ajout regie")
+         } 
+        
     }
-
-    displayRegies() {
-        console.log("aaa")
+    displayRegies(){
+     
     }
-
-    
-
+   
     onFilter(  searchText: string) { 
     
 
@@ -687,10 +689,18 @@ export class SchedulerComponent   {
             }
 
         }
-   
+        public editing(args: NodeCheckEventArgs) {
+            //check whether node is root node or not
+            console.log(args.node,"args node")
+            if (args.node.parentNode.parentNode.nodeName !== "LI") {
+                args.cancel = true;
+            }
+    };
 
-        
 
+    nodeSelected (args) {
+        console.log(args.nodeData," Node Selected");
+      }
 }
 
 
