@@ -3,7 +3,8 @@
         <div class="schedule-container">
             <div class="title-container">
             </div>
-            <ejs-schedule #scheduleObj 
+            <ejs-schedule #scheduleObj
+                locale="fr-CH"
                 (popupOpen)="onPopupOpen($event)" 
                 cssClass='schedule-drag-drop' 
                 width='100%'
@@ -56,7 +57,7 @@
                                             class="float-right  fixed mr-1"> -->
                                     </div>
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                        <span style="padding-top: 5px; width: 100%">{{data.Name }} </span>
+                                        <span style="padding-top: 5px; width: 100%;">{{data.Name }} </span>
                                     </div>
                                 </div>
                             </div>
