@@ -113,24 +113,24 @@
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select>
                             <div  >
-                                <ejs-treeview 
+                                <ejs-treeview *ngIf="selectedValue!='Plus de monteurs'"
                                     #treeObjMonteur 
                                     [fields]='fieldMonteur' 
                                     cssClass='treeview-external-drag'
                                     [allowDragAndDrop]='allowDragAndDrop'  
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
                                     (nodeDragging)="onItemDrag($event)"
-                                    (nodeSelected)='nodeSelected($event)'
-                                    (nodeEditing)='editing($event)'
+                                   
+                                   
                                     >
-                                    <ng-template #nodeTemplate=""  let-dataMon="" >
+                                    <ng-template #nodeTemplate="" #selectedNodes=""
+                                    let-dataMon=""   >
                                         <!-- let-dataMonteur="" -->
                                    <div id="waiting" [ngStyle]="{'border':getBorder(dataMon.Username)}">
-                                        <div id="waitdetails">
+                                        <div id="waitdetails" class="monteurs">
                                                 <br>
-                                                <div  class="float-right" *ngIf="dataMon.Username == select.value">{{dataMon.iconCss}}</div>
-
-                                            <div id="monteurslist" class="ml-2" >{{dataMon.Username}}</div>
+                                          
+                                            <div id=a{{dataMon.Code}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}}  </div>
                                         </div>
                                     </div>
                                 </ng-template> 

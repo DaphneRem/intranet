@@ -1,4 +1,4 @@
-import { Component,  ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { extend, closest, remove, createElement, addClass, L10n, loadCldr } from '@syncfusion/ej2-base';
 import { hospitalData, waitingList } from '../datasource';
 import { HospitalData } from '../models/hospital-data';
@@ -13,7 +13,7 @@ import {
     ActionEventArgs,
     CellClickEventArgs,
     RenderCellEventArgs,
-    
+
 
 } from '@syncfusion/ej2-angular-schedule';
 import { DragAndDropEventArgs, NodeCheckEventArgs } from '@syncfusion/ej2-navigations';
@@ -24,6 +24,7 @@ import { WorkorderDetailsModalComponent } from '../workorder-details-modal/worko
 import { MonteursData } from '../models/monteurs-data';
 import { monteurs } from '../data/monteur';
 import { ButtonComponent } from '@syncfusion/ej2-angular-buttons';
+import { element } from 'protractor';
 
 const localeFrenchData = require('./scheduler-fr.json');
 const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
@@ -33,7 +34,7 @@ const timeZoneNames = require('cldr-data/main/fr-CH/timeZoneNames.json');
 
 loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
 
-  L10n.load(localeFrenchData);
+L10n.load(localeFrenchData);
 
 @Component({
     selector: 'scheduler',
@@ -82,7 +83,7 @@ export class SchedulerComponent implements OnInit {
 
     public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
     public allowMultiple: Boolean = false;
-    public filteredData  : Object 
+    public filteredData: Object
 
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
     public fieldMonteur: Object = { dataSource: monteurs, id: 'Code', text: 'Username' };
@@ -106,8 +107,8 @@ export class SchedulerComponent implements OnInit {
         // {
         //     TODAY:'aujourd'hui'
         // }
-        
-     
+
+
     }
     ngOnInit() {
         console.log(this.scheduleObj);
@@ -281,17 +282,17 @@ export class SchedulerComponent implements OnInit {
             if (scheduleElement) {
                 let treeviewData: { [key: string]: Object }[] =
                     this.treeObjMonteur.fields.dataSource as { [key: string]: Object }[];
-                    console.log(treeviewData);
-                    console.log(event);
-                    console.log(event.draggedNodeData.id);
-                    console.log(this.timelineResourceDataOut);
-                    const filteredData: { [key: string]: Object }[] =
-                        treeviewData.filter((item: any) => item.Code === parseInt(event.draggedNodeData.id as string, 10));
+                console.log(treeviewData);
+                console.log(event);
+                console.log(event.draggedNodeData.id);
+                console.log(this.timelineResourceDataOut);
+                const filteredData: { [key: string]: Object }[] =
+                    treeviewData.filter((item: any) => item.Code === parseInt(event.draggedNodeData.id as string, 10));
                 if (event.target.classList.contains('e-work-cells')) {
                     console.log('emplacement libre');
 
-                        console.log('filtered data ___________________');
-                        console.log(filteredData);
+                    console.log('filtered data ___________________');
+                    console.log(filteredData);
                     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
                     let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
                     let containerData = { // DISPLAY DATA FOR CONTAINER
@@ -334,7 +335,7 @@ export class SchedulerComponent implements OnInit {
                     // Operateur: filteredData[0].Username,
                     console.log(indexContainerEvent);
                     console.log(this.timelineResourceDataOut[indexContainerEvent]);
-                    this.scheduleObj.openEditor( this.timelineResourceDataOut[indexContainerEvent], 'Add', true);
+                    this.scheduleObj.openEditor(this.timelineResourceDataOut[indexContainerEvent], 'Add', true);
                     this.isTreeItemDropped = true;
                 }
             }
@@ -416,16 +417,16 @@ export class SchedulerComponent implements OnInit {
         for (let i = 0; i < arrayObject.length; i++) {
             if (object.Id === arrayObject[i]['Id']) {
                 if (object[objectAttribute] === arrayObject[i][arrayItemAttribute]) {
-                  diffExist = false;
+                    diffExist = false;
                 } else {
-                  diffExist = true;
+                    diffExist = true;
                 }
             }
         }
         return diffExist;
     }
 
-/*********************** ACTION COMPLETE FUNCTION *********************/
+    /*********************** ACTION COMPLETE FUNCTION *********************/
 
     onActionComplete(e) {
         console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& On Action Complete Function');
@@ -476,7 +477,7 @@ export class SchedulerComponent implements OnInit {
     calculDateGroup(
         atimelineResourceData: Object[], numGroup: number, needUpdate: boolean,
         itemToUpdate: Object[], startDifferent: boolean, endDifferent: boolean)
-    : Object[] {
+        : Object[] {
         console.log('calcul date groupr function');
         let minDateGroup = this.getMinMaxNumgroupe(
             atimelineResourceData, numGroup, 'StartTime', needUpdate, itemToUpdate
@@ -511,7 +512,7 @@ export class SchedulerComponent implements OnInit {
         return countWorkorderSameGroup;
     }
 
-// GET MINIMUM DATE FROM GROUP
+    // GET MINIMUM DATE FROM GROUP
     getMinMaxNumgroupe(
         atimelineResourceData, numGroup: number, timePosition: string, isUpdate: boolean, Objupdate: Object[]
     ) {
@@ -538,7 +539,7 @@ export class SchedulerComponent implements OnInit {
         let min = Math.min(...arrayDatesGroup);
         let max = Math.max(...arrayDatesGroup);
         console.log(min);
-        console.log(new Date(min));       
+        console.log(new Date(min));
         console.log(arrayDatesGroup);
         mindate = new Date(min);
         maxDate = new Date(max);
@@ -582,7 +583,7 @@ export class SchedulerComponent implements OnInit {
                     entry['EndTime'] = maxDateGroup;
                 } else {
                     entry['StartTime'] = tempmindate;
-                    let tempdate = new Date(tempmindate.getTime() + Seconds_for_a_job * 1000) ;
+                    let tempdate = new Date(tempmindate.getTime() + Seconds_for_a_job * 1000);
                     entry['EndTime'] = tempdate;
                     tempmindate = tempdate;
                 }
@@ -591,7 +592,7 @@ export class SchedulerComponent implements OnInit {
         return atimelineResourceData;
     }
 
-    public monteurListe:MonteursData[] = [
+    public monteurListe: MonteursData[] = [
         { Code: 1, Username: 'Monteur 1', CodeSalle: null, IsRH: 1, NomSalle: '' },
         { Code: 2, Username: 'Monteur 2', CodeSalle: null, IsRH: 1, NomSalle: '' },
         { Code: 3, Username: 'Monteur 3', CodeSalle: null, IsRH: 1, NomSalle: '' },
@@ -603,27 +604,67 @@ export class SchedulerComponent implements OnInit {
     // filterMonteurs(value:string){
     //     this.dataMonteur = this.dataMonteur.filter (monteurs => {
     //       return monteurs.Username === value;
-          
+
     //     });
-     
+
     //     }
-  
 
     onSelect(value) {
+        let code;
+        let username
         for (let i = 0; i < this.monteurListe.length; i++) {
             if (value) {
                 if (value === this.monteurListe[i].Username) {
-                this.fieldMonteur = { dataSource: this.dataMonteur.concat(this.monteurListe[i]), text: 'Username' };
+                    this.fieldMonteur = { dataSource: this.dataMonteur.concat(this.monteurListe[i]), text: 'Username' }
                     this.dataMonteur.push(this.monteurListe[i]);
 
+                    code = this.monteurListe[i].Code
+                    console.log("code", code)
+                    username = this.monteurListe[i].Username
                 }
+            }
+
+
+        }
+        let codeToString = code.toString()
+        const that = this;
+        let target
+        setTimeout(() => {
+       
+
+            if (document.querySelectorAll('.monteurs').length >= this.dataMonteur.length) {
+                target =document.getElementById('a'+codeToString)
+                let targetUsername=document.querySelector(".Monteur")
+                console.log("target", target)
+                console.log("target username", targetUsername)
+                targetUsername.innerHTML = username + `<button  class="float-right" style="border:none; height:20px;" onclick="${this.clickDiv()}" > btn <i class="icofont icofont-close float-right" ></i> </button>`
+                
+                document.getElementById('a'+codeToString).onclick=function(){
+                    console.log("monteur suprimé")
+
+                   }
 
             }
-              console.log(this.dataMonteur)
-        }    
+         ;
+            // target.addEventListener("onclick", that.clickDiv());
+        }, 1000)
+      
+        console.log(this.dataMonteur)
+        console.log("code to string", code.toString())
+
+        // console.log(document.querySelectorAll('.monteurs'));
+
+        //   let target: HTMLElement = document.querySelector(codeToString) as HTMLElement ;
+        // console.log("target",target);
+
+
     }
 
-
+  clickDiv() {
+            console.log("supression")
+        
+        
+    }
     getBorder(value) {
         for (let i = 0; i < this.monteurListe.length; i++) {
 
@@ -639,68 +680,57 @@ export class SchedulerComponent implements OnInit {
 
 
     onRenderCell(args: RenderCellEventArgs): void {
-        
+
         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
-            target.innerHTML = `<button #toggleBtn  id="btn" ejs-button class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" onclick="${this.displayRegies()}" iconCss="e-btn-sb-icons e-play-icon"> Voir Autres Régies </button>`;
+            target.innerHTML = `<button id="btn"  class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" onclick="${this.displayRegies()}" iconCss="e-btn-sb-icons e-play-icon"> Voir Autres Régies </button>`;
         }
-        document.getElementById('btn').onclick = function() {
+        document.getElementById('btn').onclick = function () {
             console.log("ajout regie")
-         } 
-        
-    }
-    displayRegies(){
-     
-    }
-   
-    onFilter(  searchText: string) { 
-    
+        }
 
+    }
+    displayRegies() {
+
+    }
+
+    // onFilter(  searchText: string) { 
+
+
+    //     if (!searchText) {
+    //         // console.log("searchText", typeof searchText,searchText)
+    //         return this.filteredData=this.fieldMonteur;
+
+    //     } 
+    //        this.filteredData= this.fieldMonteur.dataSource.filtre((item: any) => item.Username.toLowerCase().includes(searchText)) ;
+    //         // console.log("filtredData", this.filteredData)
+    //        console.log("aaaaaa",this.filteredData)
+
+
+
+
+
+    // }
+
+
+
+
+
+    getData(searchText: string) {
         if (!searchText) {
-            // console.log("searchText", typeof searchText,searchText)
-            return this.filteredData=this.fieldMonteur;
-         
-        } 
-           this.filteredData= this.fieldMonteur.dataSource.filtre((item: any) => item.Username.toLowerCase().includes(searchText)) ;
-            // console.log("filtredData", this.filteredData)
-           console.log("aaaaaa",this.filteredData)
-
-        
-           
-
-       
-    }
-
-
-
-    
-
-        getData(searchText:string){
-            if(!searchText)
-            {
-                console.log("fieldMonteur", this.fieldMonteur)
-                return this.fieldMonteur
-               
-            }
-            if(searchText){
-                console.log("filteredData" , this.filteredData)
-                return this.filteredData
-                
-            }
+            console.log("fieldMonteur", this.fieldMonteur)
+            return this.fieldMonteur
 
         }
-        public editing(args: NodeCheckEventArgs) {
-            //check whether node is root node or not
-            console.log(args.node,"args node")
-            if (args.node.parentNode.parentNode.nodeName !== "LI") {
-                args.cancel = true;
-            }
-    };
+        if (searchText) {
+            console.log("filteredData", this.filteredData)
+            return this.filteredData
 
+        }
 
-    nodeSelected (args) {
-        console.log(args.nodeData," Node Selected");
-      }
+    }
+      
+
 }
 
 
