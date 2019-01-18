@@ -119,7 +119,7 @@
               *ngFor="let step of steps['id'+newObject.IdLibstatut]; let i= index" 
               [ngValue]="displayStepValue(step)"
               [selected]="initValueSteps === false && i === 0 ? true : false">
-              <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{step.IdLibEtape}} - </span>{{step.Libelle}}
+              <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{i+1}} - </span>{{step.Libelle}}
             </option>
           </select>
       </div>

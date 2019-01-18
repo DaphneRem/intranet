@@ -57,7 +57,7 @@
                                             class="float-right  fixed mr-1"> -->
                                     </div>
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                        <span style="padding-top: 5px; width: 100%;">{{data.Name }} </span>
+                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
                                     </div>
                                 </div>
                             </div>
@@ -69,9 +69,9 @@
                 </e-views>
             </ejs-schedule>
         </div>
-        <ejs-tab id="element">
+        <ejs-tab id="element" #element>
             <e-tabitems>
-                <e-tabitem [header]='headerText[0]'>
+                <e-tabitem [header]='headerText[0]' id="{{headerText[0]}}" (click)="alert('ok')">
                     <ng-template #content>
                         <div class="treeview-container">
                             <div class="title-container">
@@ -86,7 +86,7 @@
                                 cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop' 
                                 (nodeDragStop)="onTreeDragStop($event)" 
-                                (nodeDragging)="onItemDrag($event)">
+                                (nodeDragging)="onItemDrag($event, 0)">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
@@ -119,12 +119,8 @@
                                     cssClass='treeview-external-drag'
                                     [allowDragAndDrop]='allowDragAndDrop'  
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
-                                    (nodeDragging)="onItemDrag($event)"
-                                   
-                                   
-                                    >
-                                    <ng-template #nodeTemplate="" #selectedNodes=""
-                                    let-dataMon=""   >
+                                    (nodeDragging)="onItemDrag($event, 1)">
+                                    <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon="" >
                                         <!-- let-dataMonteur="" -->
                                    <div id="waiting" [ngStyle]="{'border':getBorder(dataMon.Username)}">
                                         <div id="waitdetails" class="monteurs">

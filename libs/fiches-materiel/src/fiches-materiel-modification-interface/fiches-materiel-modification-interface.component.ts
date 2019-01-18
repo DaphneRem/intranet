@@ -564,6 +564,17 @@ export class FichesMaterielModificationInterfaceComponent
         let id = `id${data[data.indexOf(item)].IdLibstatut}`;
         this.steps[id].push(item);
       });
+      console.log(this.steps);
+      console.log(typeof this.steps);
+      Object.keys(this.steps).map((item) => {
+        console.log(this.steps[item]);
+        this.steps[item].sort((a, b) => {
+          console.log(a.ordre);
+          console.log(b.ordre);
+          return a.ordre - b.ordre;
+        });
+        console.log(this.steps[item]);
+      });
       if (this.selectionType === 'multi') {
         let id = `id${this.valueNotToChangeLibelle}`;
         this.steps[id].unshift({
