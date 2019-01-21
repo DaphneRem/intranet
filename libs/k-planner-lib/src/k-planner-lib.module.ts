@@ -24,6 +24,7 @@ import { ListePlanningComponent } from './liste-planning/liste-planning.componen
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { FilterPipe } from './filter.pipe';
+import { HttpModule } from '@angular/http';
 
 
 
@@ -51,7 +52,7 @@ import { FilterPipe } from './filter.pipe';
     MatButtonModule,
     NgbModule,
     FormsModule,
-    
+    HttpModule
   ],
   declarations: [
     SchedulerComponent,

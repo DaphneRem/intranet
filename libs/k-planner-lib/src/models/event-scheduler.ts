@@ -24,5 +24,8 @@ export class EventScheduler {
     UserMaj: string;
     Id_Planning_Container: number;
     libtypeWO: string;
-
+    CodeRessourceOperateur: number;
+    LibelleRessourceOperateur: string;
+    CodeRessourceCoordinateur: number;
+    LibelleRessourceCoordinateur: string;
 }

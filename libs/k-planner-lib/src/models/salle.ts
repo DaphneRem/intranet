@@ -1,10 +1,24 @@
 export class Salle {
 
-    Code: number;
+    idressourcetype: number;
     Username: string;
-    CodeSalle: number;
-    IsRH: number;
     NomSalle: string;
-    Nom?: string;
-    Prenom?: string;
+    Nom: string;
+    Prenom: string;
+    Code: number;
+    CodeSalle: number;
+    CodeRessource:number;
+    codetype:number;
+    codecategorie: number;
+    codegroupe: number;
+    libelletype: string;
+    libellecategorie: string;
+    libellegroupe: string;
+    IsRH: number;
 }
+
+
+
+
+
+

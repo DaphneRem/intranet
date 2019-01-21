@@ -18,6 +18,12 @@ export class Container {
     Commentaire_Planning: string;
     DateMaj: Date | string;
     UserMaj: string;
+    CodeRessourceSalle: 0;
+    LibelleRessourceSalle: string;
+    CodeRessourceOperateur: number;
+    LibelleRessourceOperateur: string;
+    CodeRessourceCoordinateur: number;
+    LibelleRessourceCoordinateur: string;
     PlanningEventsList: EventScheduler[];
 
 }

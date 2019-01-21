@@ -25,6 +25,12 @@ import { MonteursData } from '../models/monteurs-data';
 import { monteurs } from '../data/monteur';
 import { ButtonComponent } from '@syncfusion/ej2-angular-buttons';
 import { element } from 'protractor';
+import { SalleService } from '../services/salle.service';
+import { PlanningContainersService } from '../services/planningContainers.service';
+import { MonteursService } from '../services/monteurs.service';
+import { renderComponentOrTemplate, text } from '@angular/core/src/render3/instructions';
+import { Container } from '@angular/compiler/src/i18n/i18n_ast';
+import { identifierModuleUrl } from '@angular/compiler';
 
 const localeFrenchData = require('./scheduler-fr.json');
 const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
@@ -42,6 +48,11 @@ L10n.load(localeFrenchData);
     styleUrls: [
         './scheduler.component.scss',
         '../../../../assets/icon/icofont/css/icofont.scss'
+    ],
+    providers : [
+        SalleService,
+        PlanningContainersService,
+        MonteursService
     ]
 })
 
@@ -58,21 +69,14 @@ export class SchedulerComponent implements OnInit {
     /******** SCHEDULER INIT *******/
     public selectedDate: Date = new Date();
     //   public selectedDate: Date =new Date(2018, 7, 1);
+    public monteurDataSource
     public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
-    public dataMonteur: MonteursData[] = <MonteursData[]>extend([], monteurs, null, true);
+    public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
     public currentView: View = 'TimelineDay';
     public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
     public cssClass: string = "custom"
     // ROWS INIT
-    public departmentDataSource: Object[] = [
-
-        { Text: 'REGIEA', Id: 1, Color: '#008eaa' },
-        { Text: 'REGIEB', Id: 2, Color: '#008eaa' },
-        { Text: 'REGIEC', Id: 3, Color: '#008eaa' },
-        { Text: 'REGIED', Id: 4, Color: '#008eaa' },
-        { Text: 'REGIEE', Id: 5, Color: '#008eaa' }
-
-    ];
+  
 
     // BACKLOG INIT
     public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
@@ -86,11 +90,14 @@ export class SchedulerComponent implements OnInit {
     public filteredData: Object
 
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
-    public fieldMonteur: Object = { dataSource: monteurs, id: 'Code', text: 'Username' };
+    public fieldMonteur: Object 
 
     public allowDragAndDrop: boolean = true;
     public cancelObjectModal = false;
+ public salleDataSource
+ public containersPlanning
 
+ public departmentDataSource: Object[] = [];
     // EDIT EVENT CONFIG
     public eventSettings: EventSettingsModel = {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false), null, true),
@@ -101,18 +108,74 @@ export class SchedulerComponent implements OnInit {
             description: { title: 'description', name: 'Description' }
         }
     };
+  
 
-    constructor(public dialog: MatDialog) {
-        // ej.Schedule.Locale['fr-FR']=
-        // {
-        //     TODAY:'aujourd'hui'
-        // }
-
-
-    }
+    constructor(public dialog: MatDialog, 
+        private salleService:SalleService,
+        private planningContainersService:PlanningContainersService,
+        private monteursService:MonteursService,
+        ) {}
     ngOnInit() {
         console.log(this.scheduleObj);
+        this.getSalle();
+        this.getMonteur();
+        this.getContainer()
     }
+   
+
+    getSalle(){
+       this.salleService
+       .getSalle()
+       .subscribe(donnees=> {
+            this.salleDataSource = donnees;
+            this.salleDataSource.map(item=>{
+                this.departmentDataSource.push({
+
+                   Text:item.NomSalle,
+                   Id:item.CodeSalle,
+                    
+                })
+            })
+            
+            console.log("regie",this.departmentDataSource)
+            })
+      
+    }
+    fieldMonteurArray: object[]=[]
+    getMonteur(){
+        this.monteursService
+        .getMonteur()
+        .subscribe(donnees=> {
+
+            this.monteurDataSource = donnees
+            this.fieldMonteur={
+                dataSource:this.monteurDataSource,
+                id: 'CodeRessource',
+                text:'Username'
+            }
+       
+            console.log("fieldmonteur:",  this.fieldMonteur)
+
+        })
+
+
+
+
+            console.log("monteur:",  this.monteurDataSource)
+        }
+           
+            
+           
+    
+    getContainer(){
+        this.planningContainersService
+        .getPlanningContainers()
+        .subscribe(donnees=> {
+             this.containersPlanning = donnees;
+             console.log("container",this.containersPlanning)
+             })
+       
+     }
 
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
@@ -287,7 +350,7 @@ export class SchedulerComponent implements OnInit {
                 console.log(event.draggedNodeData.id);
                 console.log(this.timelineResourceDataOut);
                 const filteredData: { [key: string]: Object }[] =
-                    treeviewData.filter((item: any) => item.Code === parseInt(event.draggedNodeData.id as string, 10));
+                    treeviewData.filter((item: any) => item.CodeRessource === parseInt(event.draggedNodeData.id as string, 10));
                 if (event.target.classList.contains('e-work-cells')) {
                     console.log('emplacement libre');
 
@@ -296,7 +359,7 @@ export class SchedulerComponent implements OnInit {
                     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
                     let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
                     let containerData = { // DISPLAY DATA FOR CONTAINER
-                        Id: filteredData[0].Code,
+                        Id: filteredData[0].CodeRessource,
                         Name: 'Title',
                         StartTime: cellData.startTime,
                         EndTime: cellData.endTime,
@@ -304,7 +367,7 @@ export class SchedulerComponent implements OnInit {
                         DepartmentID: resourceDetails.resourceData.Id,
                         ConsultantID: resourceDetails.resourceData.Id,
                         AzaIsPere: true,
-                        AzaNumGroupe: filteredData[0].Code,
+                        AzaNumGroupe: filteredData[0].CodeRessource,
                         Operateur: filteredData[0].Username,
                     };
                     // let eventData = { // DISPLAY DATA FOR EVENT
@@ -639,10 +702,10 @@ export class SchedulerComponent implements OnInit {
                 console.log("target username", targetUsername)
                 targetUsername.innerHTML = username + `<button  class="float-right" style="border:none; height:20px;" onclick="${this.clickDiv()}" > btn <i class="icofont icofont-close float-right" ></i> </button>`
                 
-                document.getElementById('a'+codeToString).onclick=function(){
-                    console.log("monteur suprimé")
+                // document.getElementById('a'+codeToString).onclick=function(){
+                //     console.log("monteur suprimé")
 
-                   }
+                //    }
 
             }
          ;
@@ -685,9 +748,9 @@ export class SchedulerComponent implements OnInit {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
             target.innerHTML = `<button id="btn"  class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" onclick="${this.displayRegies()}" iconCss="e-btn-sb-icons e-play-icon"> Voir Autres Régies </button>`;
         }
-        document.getElementById('btn').onclick = function () {
-            console.log("ajout regie")
-        }
+        // document.getElementById('btn').onclick = function () {
+        //     console.log("ajout regie")
+        // }
 
     }
     displayRegies() {
