@@ -1,11 +1,11 @@
 export class MonteursData{
   
-    Code: number;
+    Code?: number;
     Username: string;
     CodeSalle: number;
     IsRH: number;
     NomSalle?: string;
-    CodeRessource?: number;
+    CodeRessource: number;
     Nom?: string;
     Prenom?: string;
     codetype?: number;
