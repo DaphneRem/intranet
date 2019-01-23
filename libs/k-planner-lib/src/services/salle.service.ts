@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Salle } from "../models/salle";
 import { Observable } from "rxjs/Observable";
-import { urlSalle, urlKPlanner } from ".privates-url";
+import { urlSalle, urlKPlanner, urlGroupSalle } from ".privates-url";
 import { ErrorObservable } from "rxjs/observable/ErrorObservable";
 
 
@@ -11,7 +11,7 @@ import { ErrorObservable } from "rxjs/observable/ErrorObservable";
 export class SalleService {
   constructor(private http: HttpClient) {}
 
-getSalle():  Observable<Salle[]>{
+getSalle():  Observable<Salle[]> {
     return this.http
     .get(urlKPlanner + urlSalle)
     .map((res: any) => {
@@ -23,6 +23,15 @@ getSalle():  Observable<Salle[]>{
       return res as Salle[];
     })
     .catch(this.handleError);
+}
+
+getGroupSalle(id: number): Observable<Salle[]> {
+  return this.http
+    .get(urlKPlanner + urlGroupSalle + id)
+    .map((res: any) => {
+      console.log(res);
+      return res as Salle[];
+    });
 }
 
 private handleError(error: HttpErrorResponse) {

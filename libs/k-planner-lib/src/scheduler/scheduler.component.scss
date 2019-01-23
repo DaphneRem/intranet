@@ -140,7 +140,13 @@ $operatorColor: #BDBDBD;
 .e-schedule.schedule-drag-drop .e-timeline-month-view .e-resource-left-td {
     width: 160px;
 }
+/deep/ .e-schedule .e-timeline-view .e-work-cells, .e-schedule .e-timeline-month-view .e-work-cells{
+    height:100px
+}
+/deep/ .e-schedule .e-timeline-view .e-resource-cells, .e-schedule .e-timeline-month-view .e-resource-cells{
+    height:100px
 
+}
 .e-schedule.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-category {
     padding-left: 30px
 }
@@ -248,3 +254,4 @@ $operatorColor: #BDBDBD;
     overflow-y: auto;
     overflow-x: hidden;
 }
+

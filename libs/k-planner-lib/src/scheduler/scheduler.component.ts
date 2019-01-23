@@ -21,7 +21,7 @@ import { MatDialog } from '@angular/material';
 
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
 import { MonteursData } from '../models/monteurs-data';
-import { monteurs } from '../data/monteur';
+// import { monteurs } from '../data/monteur';
 import { ButtonComponent } from '@syncfusion/ej2-angular-buttons';
 import { element } from 'protractor';
 import { SalleService } from '../services/salle.service';
@@ -76,7 +76,7 @@ export class SchedulerComponent implements OnInit {
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
     public currentView: View = 'TimelineDay';
     public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
-    public cssClass: string = 'custom';
+  
     // ROWS INIT
   
 
@@ -85,6 +85,7 @@ export class SchedulerComponent implements OnInit {
 
     public isTreeItemDropped: boolean = false;
     public draggedItemId: string = '';
+    
     public timelineResourceDataOut;
 
     public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
@@ -93,13 +94,13 @@ export class SchedulerComponent implements OnInit {
 
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
     public fieldMonteur: Object 
-
+    public isClicked:boolean = false;
     public allowDragAndDrop: boolean = true;
     public cancelObjectModal = false;
  public salleDataSource
  public containersPlanning
-
  public departmentDataSource: Object[] = [];
+ public departmentDataSourceAll:Object[] = [];
     // EDIT EVENT CONFIG
     public eventSettings: EventSettingsModel = {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false), null, true),
@@ -111,58 +112,81 @@ export class SchedulerComponent implements OnInit {
         }
     };
   
-
     constructor(public dialog: MatDialog, 
-        private salleService:SalleService,
-        private planningContainersService:PlanningContainersService,
-        private monteursService:MonteursService,
+        private salleService: SalleService,
+        private planningContainersService: PlanningContainersService,
+        private monteursService: MonteursService,
         ) {}
     ngOnInit() {
         console.log(this.scheduleObj);
         this.getSalle();
         this.getMonteur();
-        this.getContainer()
+        this.getContainer();
+
     }
-   
+    getSalle() {
 
-    getSalle(){
-       this.salleService
-       .getSalle()
-       .subscribe(donnees=> {
-            this.salleDataSource = donnees;
-            this.salleDataSource.map(item=>{
-                this.departmentDataSource.push({
+        // if (this.isClicked) {
+            this.salleService
+                .getSalle()
+                .subscribe(donnees => {
+                    this.salleDataSource = donnees;
+                    this.salleDataSource.map(item => {
 
-                   Text:item.NomSalle,
-                   Id:item.CodeSalle,
-                    
+                        this.departmentDataSource.push({
+
+                            Text: item.NomSalle,
+                            Id: item.CodeSalle,
+                            
+                         
+                        })
+                        console.log('regie', this.departmentDataSource)
+
+
+                    })
+                
                 })
-            })
-            
-            console.log("regie",this.departmentDataSource)
-            })
-      
+        //     }
+
+        
+
+        //     this.salleService
+        //         .getGroupSalle(3)
+        //         .subscribe(donnees => {
+        //             this.salleDataSource = donnees;
+        //             console.log('regie', donnees);
+        //             this.salleDataSource.map(item => {
+        //                 this.departmentDataSource.push({
+
+        //                     Text: item.NomSalle,
+        //                     Id: item.CodeSalle,
+
+        //                 })
+        //                 console.log('regie', this.departmentDataSource);
+        //             }) 
+    
+           
+        // }
+        // )
+    
+    
     }
-    fieldMonteurArray: object[]=[]
-    getMonteur(){
+
+    
+    getMonteur() {
         this.monteursService
         .getMonteur()
-        .subscribe(donnees=> {
+        .subscribe(donnees => {
 
             this.monteurDataSource = donnees
-            this.fieldMonteur={
-                dataSource:this.monteurDataSource,
+           
+            this.fieldMonteur = {
+                dataSource: this.monteurDataSource,
                 id: 'CodeRessource',
-                text:'Username'
+                text: 'Username'
             }
-       
             console.log("fieldmonteur:",  this.fieldMonteur)
-
         })
-
-
-
-
             console.log("monteur:",  this.monteurDataSource)
         }
            
@@ -821,6 +845,14 @@ export class SchedulerComponent implements OnInit {
         return atimelineResourceData;
     }
 
+
+
+
+
+
+
+    /**************************************************** Add Monteur  ***************************************************/
+
     public monteurListe:MonteursData[] = [
         { CodeRessource: 1, Username: 'Monteur 1', CodeSalle: null, IsRH: 1, NomSalle: '' },
         { CodeRessource: 2, Username: 'Monteur 2', CodeSalle: null, IsRH: 1, NomSalle: '' },
@@ -848,30 +880,31 @@ export class SchedulerComponent implements OnInit {
 
                 }
             }
-
-
         }
+        let CodeRessource= this.monteurDataSource.CodeRessource
+        let username=this.monteurDataSource.Username
         let codeToString = CodeRessource.toString()
-        const that = this;
         let target
+        // console.log("codeToString", codeToString)
         setTimeout(() => {
        
 
-            if (document.querySelectorAll('.monteurs').length >= this.dataMonteur.length) {
-                target =document.getElementById('a'+codeToString)
-                let targetUsername=document.querySelector(".Monteur")
+            if (document.querySelectorAll('.monteurs').length >= this.monteurDataSource.length) {
+              
+                target =document.getElementById(codeToString)
                 console.log("target", target)
-                console.log("target username", targetUsername)
-                targetUsername.innerHTML = username + `<button  class="float-right" style="border:none; height:20px;"  > btn <i class="icofont icofont-close float-right" ></i> </button>`
+                target.innerHTML = username + `<button  class="float-right" style="border:none; height:20px;"  > btn <i class="icofont icofont-close float-right" ></i> </button>`
                 
                 // document.getElementById('a'+codeToString).onclick=function(){
                 //     console.log("monteur suprimé")
 
                 //    }
+                
+        target.addEventListener('click', (e: Event) => this.displayRegies());
 
             }
               console.log(this.dataMonteur)
-        }    
+        },1000)  
     }
 
 
@@ -887,26 +920,9 @@ export class SchedulerComponent implements OnInit {
     }
 
 
+  
 
 
-    onRenderCell(args: RenderCellEventArgs): void {
-
-        if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
-            let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
-            target.innerHTML = `<button id="btn"  class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" onclick="${this.displayRegies()}" iconCss="e-btn-sb-icons e-play-icon"> Voir Autres Régies </button>`;
-        }
-        // document.getElementById('btn').onclick = function () {
-        //     console.log("ajout regie")
-        // }
-
-        }
-    
-
-    displayRegies() {
-        console.log('aaa')
-    }
-
-    
 
     onFilter(  searchText: string) { 
     
@@ -919,9 +935,6 @@ export class SchedulerComponent implements OnInit {
            this.filteredData = this.fieldMonteur['dataSource'].filtre((item: any) => item.Username.toLowerCase().includes(searchText)) ;
             // console.log('filtredData', this.filteredData)
            console.log('aaaaaa',this.filteredData)
-       
-           
-
        
     }
 
@@ -944,9 +957,24 @@ export class SchedulerComponent implements OnInit {
 
         }
    
-
         
+    onRenderCell(args: RenderCellEventArgs): void {
+        let btn
+        if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
+            let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
+            target.innerHTML =
+                `<input  type="button" id="btn" value='Voir Autres Régies'  class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" iconCss="e-btn-sb-icons e-play-icon">  `;
 
+        }
+        btn = document.getElementById('btn')
+        btn.addEventListener('click', (e: Event) => this.displayRegies());
+        // document.getElementById('btn').onclick = this.displayRegies
+    }
+    displayRegies() {
+        this.isClicked = true;
+        console.log(this.isClicked, 'isclickeddddd');
+        
+    }   
 }
 
 
