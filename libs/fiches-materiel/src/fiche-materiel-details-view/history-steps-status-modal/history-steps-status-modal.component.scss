@@ -12,6 +12,8 @@ $creationBtnHoverColor :  #2eced6;
     }
 }
 /deep/ .acc {
+    max-height: 500px;
+    overflow-y: scroll;
     .card {
         margin-bottom: 5px;
         .card-header {

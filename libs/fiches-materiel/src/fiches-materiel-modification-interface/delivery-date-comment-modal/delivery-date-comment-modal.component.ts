@@ -34,12 +34,18 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-      const changeDeliveryDate: SimpleChange = changes.deliveryDate;
-      console.log(changeDeliveryDate);
-      if (this.init && typeof changeDeliveryDate.currentValue !== 'string') {
+    const changeDeliveryDate: SimpleChange = changes.deliveryDate;
+    console.log(changeDeliveryDate);
+    console.log(changes);
+    console.log(typeof changeDeliveryDate.currentValue);
+    if (changeDeliveryDate) {
+      if ((this.init > 0) && (typeof changeDeliveryDate.currentValue === 'string') && (typeof changeDeliveryDate.previousValue === 'object')) {
+        this.init = -1;
+      } else if (this.init && (typeof changeDeliveryDate.currentValue !== 'string')) {
         this.openSwal();
       }
       this.init++;
+    }
   }
 
   onCommentChange(comment: string) {
@@ -48,7 +54,7 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
 
   openSwal() {
     swal({
-      title: 'Ajouter un commentaire',
+      title: 'Ajouter un commentaire : Date de livraison',
       input: 'textarea',
       showCancelButton: true,
       cancelButtonText: 'Annuler',

@@ -91,13 +91,14 @@
         <span class="warning-no-fa"></span>
       </div>
     </div>
-    <div class="row state-content">
+     {{activeStatusLibelle}}
+    <div class="row state-content" *ngIf="stepsReady && statusReady">
       <div class="col-lg-3"></div>
       <div class="col-lg-3 state form-group">
         <label class="col-form-label">Statut : </label>
           <select name="statut" class="form-control" [(ngModel)]="newObject.IdLibstatut" (click)="clickStatusOptions()">
             <option *ngIf="initValueStatus" [ngValue]="newObject.IdLibstatut">
-              <span *ngIf="newObject.IdLibstatut !== valueNotToChangeLibelle">{{newObject.IdLibstatut}} - {{status[newObject.IdLibstatut-1].Libelle}}</span>
+              <span *ngIf="newObject.IdLibstatut !== valueNotToChangeLibelle">{{newObject.IdLibstatut}} - {{displayInitialStatus(newObject)}}</span>
               <span *ngIf="newObject.IdLibstatut === valueNotToChangeLibelle">{{newObject.IdLibstatut}}</span>
             </option>
             <option *ngFor="let stat of status" [ngValue]="stat.Libelle !== valueNotToChangeLibelle ? stat.IdLibstatut : stat.Libelle">
@@ -108,7 +109,6 @@
         <label class="col-form-label">Etape : </label>
           <select name="myStep" class="form-control" 
                   [(ngModel)]="newObject.IdLibEtape" 
-                  [disabled]="steps['id'+newObject.IdLibstatut]!== [] ? false : true"
                   (click)="clickStepOptions()" 
                   *ngIf="stepsReady">
             <option *ngIf="initValueSteps" [ngValue]="newObject.IdLibEtape" [selected]="true">
@@ -129,8 +129,7 @@
       (lastStatus)="displayPreviousStatus($event)"
       [status]="newObject.IdLibstatut" 
       [newObject]="newObject"
-      [allFichesMateriel]="allFichesMateriel"
-      [step]="newObject.IdLibEtape">
+      [allFichesMateriel]="allFichesMateriel">
     </steps-status-comment-modal>
     <div class="row fm-detail-body">
       <div class="col-lg-4 fm-content">

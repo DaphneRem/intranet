@@ -17,7 +17,6 @@ import swal from 'sweetalert2';
   styleUrls: ['./steps-status-comment-modal.component.scss']
 })
 export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
-  @Input() step;
   @Input() status;
   @Input() newObject;
   @Input() allFichesMateriel;
@@ -36,52 +35,52 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-      const changeStep: SimpleChange = changes.step;
+      // const changeStep: SimpleChange = changes.step;
       const changeStatus: SimpleChange = changes.status;
-      this.previousValueStatus = changeStatus.previousValue;
-      console.log(changeStep);
-      console.log(changeStatus);
-      if (this.init) { // ne se lance pas à l'initialisation du composant
-        if (changeStatus.currentValue === 3) {
-          console.log(this.allFichesMateriel.length);
-          console.log(this.newObject.IdStatutElementsAnnexes);
-          console.log(this.newObject.Renouvellement);
-          console.log(this.newObject.DateAcceptation);
-          if (
-            this.allFichesMateriel.length === 1 &&
-            (this.newObject.IdStatutElementsAnnexes !== 3 ||
-            (this.newObject.Renouvellement === 1 &&
-            this.newObject.DateAcceptation !== null) ||
-            ((this.newObject.Renouvellement === 0 || this.newObject.Renouvellement === null) &&
-            this.newObject.DateAcceptation === null))
-          ) {
-            this.openWarningSwal();
-          } else if (this.allFichesMateriel.length > 1) {
-            const arrayIdStatutElementsAnnexes = [];
-            const arrayRenouvellementDateAcceptation = [];
-            const arrayDateAcceptation = [];
-            this.allFichesMateriel.forEach(item => {
-              if (item.IdStatutElementsAnnexes === 3 ) {
-                arrayIdStatutElementsAnnexes.push(item);
-              } // A CHANGER A PARTIR DE LA :
-              if ((item.Renouvellement && item.DateAcceptation !== null) || (!item.Renouvellement && item.DateAcceptation === null)) {
-                arrayRenouvellementDateAcceptation.push(item);
-              }
-            });
-            if (arrayIdStatutElementsAnnexes.length || arrayRenouvellementDateAcceptation) {
-              this.openWarningSwal();
-            }
-          } else {
-            this.openCommentSwal();
-          }
-        } else {
-          if (this.addCommentStepStatus) {
-            this.openCommentSwal();
-          }
-        }
+      console.log(changes);
+      if (typeof changeStatus.previousValue !== 'undefined') {
+        this.previousValueStatus = changeStatus.previousValue;
       }
-      this.init++;
-      this.addCommentStepStatus = true;
+      // console.log(changeStep);
+      console.log(changeStatus);
+      if (changeStatus) {
+         if (this.init) {
+           // ne se lance pas à l'initialisation du composant
+           if (changeStatus.currentValue === 3) {
+             console.log(this.allFichesMateriel.length);
+             console.log(this.newObject.IdStatutElementsAnnexes);
+             console.log(this.newObject.Renouvellement);
+             console.log(this.newObject.DateAcceptation);
+             if (this.allFichesMateriel.length === 1 && (this.newObject.IdStatutElementsAnnexes !== 3 || (this.newObject.Renouvellement === 1 && this.newObject.DateAcceptation !== null) || ((this.newObject.Renouvellement === 0 || this.newObject.Renouvellement === null) && this.newObject.DateAcceptation === null))) {
+               this.openWarningSwal();
+             } else if (this.allFichesMateriel.length > 1) {
+               const arrayIdStatutElementsAnnexes = [];
+               const arrayRenouvellementDateAcceptation = [];
+               const arrayDateAcceptation = [];
+               this.allFichesMateriel.forEach(item => {
+                 if (item.IdStatutElementsAnnexes === 3) {
+                   arrayIdStatutElementsAnnexes.push(item);
+                 } // A CHANGER A PARTIR DE LA :
+                 if ((item.Renouvellement && item.DateAcceptation !== null) || (!item.Renouvellement && item.DateAcceptation === null)) {
+                   arrayRenouvellementDateAcceptation.push(item);
+                 }
+               });
+               if (arrayIdStatutElementsAnnexes.length || arrayRenouvellementDateAcceptation) {
+                 this.openWarningSwal();
+               }
+             } else {
+               this.openCommentSwal();
+             }
+           } else {
+             if (this.addCommentStepStatus) {
+               this.openCommentSwal();
+             }
+           }
+         }
+         this.init++;
+         this.addCommentStepStatus = true;
+      }
+     
   }
 
   onCommentChange(comment: string) {
@@ -97,7 +96,7 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
       title: 'Ajouter un commentaire',
       input: 'textarea',
       showCancelButton: true,
-      cancelButtonText: 'Annuler',
+      cancelButtonText: 'Aucun Commentaire',
       confirmButtonText: 'Valider',
       confirmButtonColor: 'rgb(23, 170, 178)',
     }).then((result) => {

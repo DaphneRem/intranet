@@ -253,6 +253,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       that.customdatatablesOptions.data.map((item) => {
         console.log(item);
         // console.log(that.selectedRows[0].IdFicheDetail);
+        console.log(item.IdFicheDetail);
+        console.log(that.selectedRows[0].IdFicheDetail);
         if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
           console.log(item.IdFicheDetail);
           that.selectedOeuvre.push(

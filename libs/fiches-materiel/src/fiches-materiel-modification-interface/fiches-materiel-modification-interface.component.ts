@@ -95,6 +95,7 @@ export class FichesMaterielModificationInterfaceComponent
 
   public status: any;
   public statusReady: Boolean = false;
+  public activeStatusLibelle;
   public initValueStatus: Boolean = true;
 
   public annexElementsStatus: any;
@@ -215,14 +216,16 @@ export class FichesMaterielModificationInterfaceComponent
 
     // this.changeDateFormat(event);
     // this.ngOnInit();
-    
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
     console.log(this.newObject);
   }
 
 
   disabledDeadline() { // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
-    if (this.newObject.IdLibEtape === 17 || this.newObject.IdLibstatut === 3 || this.newObject.IdLibstatut === 5) {
+    if (
+      this.newObject.IdLibEtape === 20 ||
+      this.newObject.IdLibEtape === 21 ||
+      this.newObject.IdLibEtape === 24) {
       return true;
     } else {
       return false;
@@ -304,6 +307,7 @@ export class FichesMaterielModificationInterfaceComponent
         allIdFichesMateriel.length
       );
     });
+    this.getStatusLib();
   }
 
   /************************ Datepicker / Date functions ********************/
@@ -467,7 +471,6 @@ export class FichesMaterielModificationInterfaceComponent
   /************************** GET lib select Options ***************************/
 
   getLibs() {
-    this.getStatusLib();
     this.getAnnexStatus();
     this.getRetourOriLib();
     this.getQualiteLib();
@@ -564,17 +567,10 @@ export class FichesMaterielModificationInterfaceComponent
         let id = `id${data[data.indexOf(item)].IdLibstatut}`;
         this.steps[id].push(item);
       });
-      console.log(this.steps);
-      console.log(typeof this.steps);
       Object.keys(this.steps).map((item) => {
-        console.log(this.steps[item]);
-        this.steps[item].sort((a, b) => {
-          console.log(a.ordre);
-          console.log(b.ordre);
-          return a.ordre - b.ordre;
-        });
-        console.log(this.steps[item]);
+        this.steps[item].sort((a, b) => a.ordre - b.ordre);
       });
+      console.log(this.steps);
       if (this.selectionType === 'multi') {
         let id = `id${this.valueNotToChangeLibelle}`;
         this.steps[id].unshift({
@@ -583,8 +579,24 @@ export class FichesMaterielModificationInterfaceComponent
         });
       }
       this.stepsReady = true;
+      console.log('==============================> this.stepsReady :');
+      console.log(this.stepsReady);
       console.log(this.steps);
     });
+  }
+
+  displayInitialStatus(newObject) {
+    let libelle;
+    this.status.map(item => {
+      console.log(item);
+      console.log(newObject.IdLibstatut);
+      if (item.IdLibstatut === this.newObject.IdLibstatut) {
+        console.log(item);
+        console.log(item.Libelle);
+        libelle = item.Libelle;
+      }
+    });
+    return libelle;
   }
 
   getStatusLib() {
@@ -608,11 +620,14 @@ export class FichesMaterielModificationInterfaceComponent
         console.log(this.steps);
         if (i === this.status.length - 1) {
           this.getStepsLib();
+
         }
       }
-
       this.statusReady = true;
+      console.log('==============================> this.statusReady :');
+      console.log(this.statusReady);
       console.log(data);
+      this.clickStepOptions();
     });
   }
 
