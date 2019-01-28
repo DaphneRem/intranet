@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import { MonteursData } from "../models/monteurs-data";
-import { urlKPlanner, urlMonteurs } from ".privates-url";
+import { urlKPlanner, urlMonteurs, urlGroupMonteurs } from ".privates-url";
 import { ErrorObservable } from "rxjs/observable/ErrorObservable";
 
 
@@ -23,6 +23,18 @@ getMonteur():  Observable< MonteursData[]>{
     })
     .catch(this.handleError);
 }
+
+getGroupMonteur(id: number): Observable<MonteursData[]> {
+  return this.http
+  .get(urlKPlanner + urlGroupMonteurs + id)
+  .map((res: any) => {
+    console.log(res);
+    return res as MonteursData[];
+  });
+}
+
+
+
 
 private handleError(error: HttpErrorResponse) {
     console.log(error);

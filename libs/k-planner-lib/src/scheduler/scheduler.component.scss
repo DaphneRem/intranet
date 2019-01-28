@@ -140,13 +140,27 @@ $operatorColor: #BDBDBD;
 .e-schedule.schedule-drag-drop .e-timeline-month-view .e-resource-left-td {
     width: 160px;
 }
-/deep/ .e-schedule .e-timeline-view .e-work-cells, .e-schedule .e-timeline-month-view .e-work-cells{
+/deep/ .e-schedule .e-timeline-view .e-work-cells{
     height:100px
 }
-/deep/ .e-schedule .e-timeline-view .e-resource-cells, .e-schedule .e-timeline-month-view .e-resource-cells{
+/deep/ .e-schedule .e-timeline-view .e-resource-cells{
     height:100px
 
 }
+
+/deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
+    height:100px
+
+}
+/deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
+    height:100px
+
+}
+
+
+
+
+
 .e-schedule.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-category {
     padding-left: 30px
 }
@@ -255,3 +269,48 @@ $operatorColor: #BDBDBD;
     overflow-x: hidden;
 }
 
+/deep/ .e-schedule .e-timeline-month-view .e-appointment .e-appointment-details .template-wrap div .subject {
+    .initiales {
+        height: 30px;
+        width: 30px;
+        border-radius: 100%;
+        background-color: #3d4750;
+        margin: 3px;
+        p {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
+        }
+    }
+    .operateur {
+        background-color: $operatorColor;
+        margin-right: 5px;
+        padding: 3px;
+        border: 1px solid #ffffff;
+    }
+}
+.icofont-search{
+    color:rgb(100, 99, 99);
+    width:50%
+}
+
+.input-group{
+    position:relative;
+}
+.input-group i {
+    position:absolute;
+    left: 90%;
+    top:10px
+}
+
+.e-item {
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/deep/ .e-schedule .e-month-view .e-appointment .e-appointment-details {
+    padding: 1px;
+    padding-left: 3px;
+}

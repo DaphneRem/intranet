@@ -14,5 +14,5 @@ export class MonteursData{
     libellecategorie?: string;
     codegroupe?: number;
     libellegroupe?: string;
-    idressourcetype?: number;
+    idressourcetype: number;
 }

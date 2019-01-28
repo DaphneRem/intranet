@@ -10,7 +10,7 @@ import { CheckBoxAllModule, ButtonComponent } from '@syncfusion/ej2-angular-butt
 import { ToolbarAllModule } from '@syncfusion/ej2-angular-navigations';
 import { MaskedTextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule, MultiSelectAllModule} from '@syncfusion/ej2-angular-dropdowns';
-import { TreeViewModule, TabModule } from '@syncfusion/ej2-angular-navigations';
+import { TreeViewModule, TabModule, BeforeOpenCloseMenuEventArgs, MenuEventArgs, MenuItemModel, ContextMenuComponent} from '@syncfusion/ej2-angular-navigations';
 import { ListViewModule } from '@syncfusion/ej2-angular-lists';
 
 import { MatDialogModule } from '@angular/material/dialog';
@@ -59,7 +59,7 @@ import { HttpModule } from '@angular/http';
     MonPlanningComponent,
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
-  
+    ContextMenuComponent,
     FilterPipe ,
     ButtonComponent
   ],
