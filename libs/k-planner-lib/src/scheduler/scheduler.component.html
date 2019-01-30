@@ -3,7 +3,9 @@
         <div class="schedule-container">
             <div class="title-container">
             </div>
-      
+             <button  #toggleBtn ejs-button id="btn" (click)="displayRegies()"  class=" btn btn-outline-dark regie" style="padding:0" iconCss="e-btn-sb-icons e-play-icon">
+            </button> 
+       
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
                 (popupOpen)="onPopupOpen($event)" 
@@ -18,11 +20,12 @@
                 (actionBegin)="onActionBegin($event)" 
                 (actionComplete)="onActionComplete($event)"
                 (drag)="onItemDrag($event)"
-                (renderCell)="onRenderCell($event)"
+                
                 >
+                <!-- (renderCell)="onRenderCell($event)" -->
                 <e-resources  >
            
-                    <e-resource *ngIf="!isClicked"
+                    <e-resource
                         field='DepartmentID' 
                         title='Department' 
                         name='Departments' 
@@ -33,24 +36,10 @@
                         groupIDField="Id" 
                         [allowMultiple]='allowMultiple'>
                     </e-resource>
-              
-                
-                     
-                </e-resources>
-            <e-resources  >
-                    <e-resource *ngIf="isClicked"
-                    field='DepartmentID' 
-                    title='Department' 
-                    name='Departments' 
-                    [dataSource]='departmentDataSourceAll'
-                    textField='Text' 
-                    idField='Id' 
-                    colorField='Color' 
-                    groupIDField="Id" 
-                    [allowMultiple]='allowMultiple'>
-                </e-resource>
+
+    
         </e-resources>
-                
+     
                 <!-- <ng-template #resourceHeaderTemplate let-data>
                             <div class="template-wrap">
                                 <div class="specialist-category">
@@ -61,6 +50,7 @@
                                 </div>
                             </div>
                         </ng-template > -->
+                        
                 <e-views>
                     <e-view option='TimelineDay' >
                         <ng-template #eventTemplate let-data  class="event">
@@ -82,7 +72,9 @@
                             </div>
                         </ng-template>
                     </e-view>
-                    
+                    <e-view option="TimelineWeek">
+                      
+                    </e-view>
                     <e-view option='TimelineMonth'>
                             <ng-template #eventTemplate let-data  class="event">
                                     <div class='template-wrap' style="width: 100%" id="{{data.Id}}">
@@ -153,7 +145,7 @@
                             <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
                                     {{select.value | json}}
                                 <option >Plus de monteurs </option>
-                                <option *ngFor="let liste of monteurListe"  >{{liste.Username}} </option>
+                                <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select>
                             <div  >
                                 <ejs-treeview *ngIf="selectedValue!='Plus de monteurs'"
@@ -183,24 +175,6 @@
                           (beforeOpen)='beforeopen($event)' 
                           (select)='menuclick($event)'>
                         </ejs-contextmenu>
-                
-
-                         <!-- <div >
-                            <ejs-treeview #treeObjMonteur [fields]="fieldMonteur " cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop' (nodeDragStop)="onTreeDragStopMonteur($event)" (nodeDragging)="onItemDrag($event)"  >
-                                <ng-template #nodeTemplate="" let-dataMonteur="" >
-                                    <div id="waiting"  [ngStyle]="{'border':getBorder(dataMonteur.Username)}">
-                                        <div id="waitdetails">
-                                            <br>
-                                            <div id="monteurslist" class="ml-2" >{{dataMonteur.Username }}
-                                            <button  class="float-right" style="border:none" *ngIf="dataMonteur.Username == select.value"><i class="icofont icofont-close float-right" ></i> </button>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </ng-template>
-                            </ejs-treeview>
-                        
-                        </div>  -->
                         </div>
                       
                     </ng-template>

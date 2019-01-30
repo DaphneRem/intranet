@@ -3,11 +3,11 @@ import { MatDialog } from '@angular/material';
 
 // Syncfusion Imports
 // Synfucion Bases
-import { extend, closest, remove, createElement, addClass, L10n, loadCldr } from '@syncfusion/ej2-base';
-import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs } from '@syncfusion/ej2-navigations';
+import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined } from '@syncfusion/ej2-base';
+import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item } from '@syncfusion/ej2-navigations';
 
 // Syncfusion Angular
-import { ButtonComponent } from '@syncfusion/ej2-angular-buttons';
+import { ButtonComponent, ChangeEventArgs } from '@syncfusion/ej2-angular-buttons';
 import { TabComponent,  SelectEventArgs, TreeViewComponent,  MenuItemModel, ContextMenuComponent } from '@syncfusion/ej2-angular-navigations';
 import {
     EventSettingsModel,
@@ -80,6 +80,10 @@ export class SchedulerComponent implements OnInit {
     @ViewChild ('contentmenutree') 
     public contentmenutree: ContextMenuComponent;
 
+
+
+
+
     /******** SCHEDULER INIT *******/
     public selectedDate: Date = new Date();
     public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
@@ -90,7 +94,8 @@ export class SchedulerComponent implements OnInit {
     // BACKLOGS INIT
     public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
     public menuItems: MenuItemModel[] = [
-        { text: 'Supprimer' }
+        { text: 'Supprimer',
+          iconCss: 'e-icons delete', }
     ];
     
     public monteurDataSource;
@@ -112,6 +117,7 @@ export class SchedulerComponent implements OnInit {
     public containersPlanning;
     public departmentDataSource: Object[] = [];
     public departmentDataSourceAll: Object[] = [];
+    public departmentGroupDataSource: Object[] = [];
     public idExisting = [];
     public lastRandomId;
     public fieldArray= this.field['dataSource']
@@ -137,36 +143,46 @@ export class SchedulerComponent implements OnInit {
 
     ngOnInit() {
         console.log(this.scheduleObj);
-        this.getSalle();
+
+        this.getSalle();  
         this.getMonteur();
-        this.getContainer();
-     
+        this.getContainer();   
     }
 
-/******************************* API REQUEST *****************************/
-
+/******************************* API REQUEST *****************************/ 
     getSalle() {
- 
-        this.salleService
+
+        if(this.isClicked){
+            this.toggleBtn.content="Voir mes Régies  "
+            this.toggleBtn.iconCss="e-play-icon"
+            this.salleService
             .getSalle()
             .subscribe(donnees => {
                 this.salleDataSource = donnees;
                 this.salleDataSource.map(item => {
+              
                     this.departmentDataSourceAll.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
                     });
-                    console.log('regie', this.departmentDataSourceAll)
+                
                 });
+         
             });
-      
+       
+            this.departmentDataSource=this.departmentDataSourceAll
+            console.log('regieAll', this.departmentDataSource)
+          
+        } 
+            if(!this.isClicked){
+                this.toggleBtn.content="Voir autres Régies"
             this.salleService
                 .getGroupSalle(3)
                 .subscribe(donnees => {
                     this.salleDataSource = donnees;
-                    console.log('regie', donnees);
+                    console.log('donee', donnees);
                     this.salleDataSource.map(item => {
-                        this.departmentDataSource.push({
+                        this.departmentGroupDataSource.push({
 
                             Text: item.NomSalle,
                             Id: item.CodeSalle,
@@ -174,11 +190,18 @@ export class SchedulerComponent implements OnInit {
                         })
                        
                     })
-                    console.log('regie', this.departmentDataSource);
-        }
-        )
-    }
+                
+                }
+                )
+                this.departmentDataSource=this.departmentGroupDataSource
+                
+                console.log('regie departmentDataSource', this.departmentGroupDataSource);
+            
+      
+            }
 
+    }
+    codegroupe
     getMonteur() {
         let monteurDataSource
         this.monteursService
@@ -189,12 +212,11 @@ export class SchedulerComponent implements OnInit {
                     if (item.codegroupe !== 3) {
 
                         this.monteurListe.push(item)
+                         this.codegroupe= item.codegroupe
                     }
-                    console.log('item.codegroupe:', this.monteurListe.length);
                 })
 
-                console.log('item.codegroupe:', this.monteurListe);
-                console.log('monteurDataSource', monteurDataSource);
+             
             });
 
         this.monteursService
@@ -212,12 +234,11 @@ export class SchedulerComponent implements OnInit {
 
             
     
-            console.log('fieldmonteur:',  this.fieldMonteur);
-            console.log('monteur:',   this.monteurDataSource);
+         
          
         })
-
-            
+        console.log('fieldmonteur:',  this.fieldMonteur);
+        console.log('monteur:',   this.monteurDataSource);   
         }
 
     getContainer() {
@@ -225,8 +246,9 @@ export class SchedulerComponent implements OnInit {
         .getPlanningContainers()
         .subscribe(donnees => {
             this.containersPlanning = donnees;
-            console.log('container', this.containersPlanning);
+            
         });
+        console.log('container', this.containersPlanning);
     }
 
 /*************************************************************************/
@@ -803,27 +825,16 @@ export class SchedulerComponent implements OnInit {
 
 /********** Add Monteur  *********/
 
-     target;
-     codeToString
-
-
-
-
     onSelect(value) {
-        let array
-
+    
         for (let i = 0; i < this.monteurListe.length; i++) {
          
                 if (value === this.monteurListe[i].Username) {
         
-                 
                    this.fieldMonteur = { dataSource: this.monteurDataSource.concat(this.monteurListe[i]), text: 'Username' };
                    
-                  this.monteurDataSource.push(this.monteurListe[i])
+                this.monteurDataSource.push(this.monteurListe[i])
                    
-                  this.treeObjMonteur.fields['dataSource'] =this.fieldArray
-
-
                 }
               
             }
@@ -839,6 +850,10 @@ export class SchedulerComponent implements OnInit {
             }
         }
     }}
+
+/********** Filter Monteur  *********/
+
+
 
     onFilter(searchText: string, tabIndex) {
 
@@ -885,78 +900,76 @@ export class SchedulerComponent implements OnInit {
     }
 
 
+/**************************************************** Add Regies ************************************************************ *********/
 
 
- onRenderCell(args: RenderCellEventArgs) {
-    let btn;
-        if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
-            let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
-            target.innerHTML =
-                `<input  type="button" id="btn" value='Voir Autres Régies'  class="btn btn-inverse btn-outline-inverse regie" style="padding:0; border:none" iconCss="e-btn-sb-icons e-play-icon">  `;
+//  onRenderCell(args: RenderCellEventArgs) {
+//     let btn;
+//         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
+//             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
+//             target.innerHTML =
+//                 `  `;
         
-        }
-        btn = document.getElementById('btn');
-        btn.addEventListener('click', () => this.displayRegies());
-        // document.getElementById('btn').onclick = this.displayRegies
-    }
+//         }
+//         // btn = document.getElementById('btn');
+//         // btn.addEventListener('click', () => this.displayRegies());
+//         // document.getElementById('btn').onclick = this.displayRegies
+//     }
 
     displayRegies() {
    
-        this.isClicked = true;
+        // this.isClicked = true;
+    
+        this.isClicked = !this.isClicked
         console.log(this.isClicked, 'isclickeddddd');
-  
+        
+            this.getSalle()
+        
+     
     }
 
     /*******************************************************Remove Monteur *********************************************************************/
 
     beforeopen(args: BeforeOpenCloseMenuEventArgs) {
-
-
-        let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
-        let CodeRessource
-        let CodeRessourceToString
-        for (let i = 0; i < this.monteurListe.length; i++) {
-             CodeRessource = this.monteurListe[i].CodeRessource;
-            //  CodeRessourceToString = CodeRessource.toString()
-            
-        if (targetNodeId === CodeRessourceToString ) {
-            args.cancel=true;
-            let targetNode: Element = document.querySelector('[data-uid="' + targetNodeId + '"]');
-
-            if (targetNode.classList.contains('remove')) {
-                this.contentmenutree.enableItems(['Supprimer'], false);
-
-            
-
-
-            }
-           
-        }
-
-
-        // if (targetNodeId === CodeRessourceToString ) {
-           
-        //     // args.cancel=false;
-        //     let targetNode: Element = document.querySelector('[data-uid="' + targetNodeId + '"]');
-
-        //     if (targetNode.classList.contains('remove')) {
-        //         this.contentmenutree.enableItems(['Supprimer'], false);
-
-            
-
-
-        //     }
-        //     console.log('args',args)
-        // }
       
+        let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
+        this.fieldMonteur['dataSource'].map(item => {
+        
+            if ( (item.codegroupe === 3) ) {
+                args.cancel = true;
+                let targetNode: Element = document.querySelector('[data-uid="' + item.CodeRessource + '"]');
+                  console.log("targetNode",targetNode)
+                if (targetNode.classList.contains('remove')) {
+                    this.contentmenutree.enableItems(['Supprimer'], true);
+                }
+            } 
+                this.monteurListe.map(item=>{
+                    if(targetNodeId == item.CodeRessource.toString()){
+                  
+                    args.cancel = false;
+                   }
+                })
+           
+            
+
+                // if (item.codegroupe != 3) {
+                //     console.log('codegroupe!=3', item)
+                //     args.cancel = false;
+        
+                //     let targetNode: Element = document.querySelector('[data-uid="' + targetNodeId + '"]');
+
+                //     if (targetNode.classList.contains('remove')) {
+                //         this.contentmenutree.enableItems(['Supprimer'], false);
+                //     }
+                // }
+        
+           
+        })
+
+        console.log('args', args)
+        console.log('targetNodeId', targetNodeId)
+
     }
-    console.log('args',args)
-    console.log('targetNodeId',targetNodeId)
-    // console.log('CodeRessourceToString',CodeRessourceToString)
-    console.log('CodeRessource',CodeRessource)
-
-
-}
 
     menuclick(args: MenuEventArgs) {
 
@@ -977,13 +990,17 @@ export class SchedulerComponent implements OnInit {
            
         }
        
-        this.fieldArray= this.treeObjMonteur['groupedData']
-        console.log( this.fieldArray)
+        this.fieldArray= this.treeObjMonteur['groupedData'] 
+        
+   
+        this.monteurDataSource=this.fieldArray[0]
 
+    
+        console.log( this.fieldArray[0])
+        console.log( this.monteurDataSource,"fieldMonteur")
     }
 
 
-    
 }
 
 
