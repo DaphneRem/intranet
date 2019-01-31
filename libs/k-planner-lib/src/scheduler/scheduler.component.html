@@ -3,7 +3,7 @@
         <div class="schedule-container">
             <div class="title-container">
             </div>
-             <button  #toggleBtn ejs-button id="btn" (click)="displayRegies()"  class=" btn btn-outline-dark regie" style="padding:0" iconCss="e-btn-sb-icons e-play-icon">
+             <button  #toggleBtn ejs-button id="btn"  (click)="displayRegies()"  class=" btn btn-outline-dark regie" style="padding:0" iconCss="e-btn-sb-icons e-play-icon">
             </button> 
        
             <ejs-schedule #scheduleObj 
@@ -23,7 +23,7 @@
                 
                 >
                 <!-- (renderCell)="onRenderCell($event)" -->
-                <e-resources  >
+                <e-resources >
            
                     <e-resource
                         field='DepartmentID' 
@@ -34,7 +34,8 @@
                         idField='Id' 
                         colorField='Color' 
                         groupIDField="Id" 
-                        [allowMultiple]='allowMultiple'>
+                        [allowMultiple]='allowMultiple'
+                        >
                     </e-resource>
 
     
@@ -83,17 +84,14 @@
                                                 <div class="float-right fixed initiales"><p>AC</p></div>
                                                 <u id="{{data.Id}}">{{data.Name }} </u> 
                                             
-                                                <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                                <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
-                                                <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
-                                                    class="float-right  fixed mr-1"> -->
-                                            </div>
-                                            <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                                <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
-                                            </div>
-                                        </div>
+                                                <!-- <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div> -->
+                                            </div> 
+                                            <!-- <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;"> -->
+                                                <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span> -->
+                                            <!-- </div> -->
+                                      </div> 
                                     </div>
-                                </ng-template>
+                                </ng-template> 
 
                     </e-view>
                     <e-view option="Agenda"></e-view>
@@ -143,7 +141,7 @@
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
                             <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
-                                    {{select.value | json}}
+                            
                                 <option >Plus de monteurs </option>
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select>
@@ -162,7 +160,7 @@
                                         <div id="waitdetails" class="monteurs">
                                                 <br>
                                        
-                                            <div id={{dataMon.CodeRessource}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}} {{dataMon.CodeRessource}} </div>
+                                            <div id={{dataMon.CodeRessource}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}} {{dataMon.codegroupe}} </div>
                                         </div>
                                     </div>
                                 </ng-template> 
@@ -178,12 +176,12 @@
                         </div>
                       
                     </ng-template>
-                   
+   
                 </e-tabitem> 
                
             </e-tabitems>
            
         </ejs-tab>
-      
+    
     </div>
 </div>

@@ -98,7 +98,7 @@ export class SchedulerComponent implements OnInit {
           iconCss: 'e-icons delete', }
     ];
     
-    public monteurDataSource;
+    public monteurDataSource  : MonteursData[];
     public timelineResourceDataOut;
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
@@ -118,6 +118,7 @@ export class SchedulerComponent implements OnInit {
     public departmentDataSource: Object[] = [];
     public departmentDataSourceAll: Object[] = [];
     public departmentGroupDataSource: Object[] = [];
+    allRegies :Object[]=[]
     public idExisting = [];
     public lastRandomId;
     public fieldArray= this.field['dataSource']
@@ -153,26 +154,32 @@ export class SchedulerComponent implements OnInit {
     getSalle() {
 
         if(this.isClicked){
-            this.toggleBtn.content="Voir mes Régies  "
+          
             this.toggleBtn.iconCss="e-play-icon"
             this.salleService
             .getSalle()
             .subscribe(donnees => {
                 this.salleDataSource = donnees;
                 this.salleDataSource.map(item => {
-              
+              if(item.codegroupe != 3){
                     this.departmentDataSourceAll.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
+                        Color:'#f9920b'
                     });
-                
+                }
                 });
-         
+         console.log(" this.departmentDataSourceAll", this.departmentDataSourceAll)
+         this.allRegies=this.departmentGroupDataSource.concat(this.departmentDataSourceAll)
+         console.log(" this.allRegies", this.allRegies)
+         this.departmentDataSource= this.allRegies
+         console.log(" this.departmentDataSource", this.departmentDataSource)
             });
-       
-            this.departmentDataSource=this.departmentDataSourceAll
-            console.log('regieAll', this.departmentDataSource)
-          
+            
+           
+     
+     
+     
         } 
             if(!this.isClicked){
                 this.toggleBtn.content="Voir autres Régies"
@@ -193,12 +200,15 @@ export class SchedulerComponent implements OnInit {
                 
                 }
                 )
+
                 this.departmentDataSource=this.departmentGroupDataSource
                 
                 console.log('regie departmentDataSource', this.departmentGroupDataSource);
-            
+         
       
             }
+         
+
 
     }
     codegroupe
@@ -824,21 +834,24 @@ export class SchedulerComponent implements OnInit {
 /************************* OPERATEUR MANAGEMENT **************************/
 
 /********** Add Monteur  *********/
-
+filtermonteurListeArray
+addMonteur
     onSelect(value) {
-    
+    let monteurListArray 
         for (let i = 0; i < this.monteurListe.length; i++) {
          
-                if (value === this.monteurListe[i].Username) {
-        
-                   this.fieldMonteur = { dataSource: this.monteurDataSource.concat(this.monteurListe[i]), text: 'Username' };
-                   
-                this.monteurDataSource.push(this.monteurListe[i])
-                   
+                if (value === this.monteurListe[i].Username  ) {  
+                  monteurListArray=this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift( this.monteurListe[i]))
+                  monteurListArray.pop()
+                  this.fieldMonteur = { dataSource: monteurListArray , text: 'Username' };
+                  console.log("monteurListArray",monteurListArray)   
+         this.filtermonteurListeArray = monteurListArray
+                console.log(  this.fieldMonteur)
+                this.addMonteur=true
                 }
               
             }
-        console.log('fieldMonteur', this.fieldMonteur);
+  
     }
 
 
@@ -850,7 +863,7 @@ export class SchedulerComponent implements OnInit {
             }
         }
     }}
-
+    
 /********** Filter Monteur  *********/
 
 
@@ -863,10 +876,21 @@ export class SchedulerComponent implements OnInit {
 
                 this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource']
             }
-            this.dataMonteur = this.monteurDataSource.filter(monteurs => {
-                return monteurs.Username.toLowerCase().includes(searchText)
+            if(!this.addMonteur){
+                this.dataMonteur = this.monteurDataSource.filter(monteurs => {
+                    return monteurs.Username.toLowerCase().includes(searchText)
+    
+                })
+    
+            } else {
+                this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
+                    return monteurs.Username.toLowerCase().includes(searchText)
+    
+                })
+    
+            }
 
-            })
+           
 
             this.fieldMonteur['dataSource'] = this.dataMonteur;
             this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource']
@@ -882,7 +906,7 @@ export class SchedulerComponent implements OnInit {
             this.data = this.fieldArray.filter(WorkOrder => {
                 return WorkOrder.Name.toLowerCase().includes(searchText)
                     || WorkOrder.Description.toLowerCase().includes(searchText)
-                    || WorkOrder.DepartmentName.toLowerCase().includes(searchText)
+                
 
 
             })
@@ -915,15 +939,39 @@ export class SchedulerComponent implements OnInit {
 //         // btn.addEventListener('click', () => this.displayRegies());
 //         // document.getElementById('btn').onclick = this.displayRegies
 //     }
+count:number=0
 
     displayRegies() {
    
         // this.isClicked = true;
-    
+
+
+        console.log("AllRegie", this.allRegies)
         this.isClicked = !this.isClicked
         console.log(this.isClicked, 'isclickeddddd');
-        
-            this.getSalle()
+
+
+        if (this.isClicked) {
+            this.toggleBtn.content="Voir mes Régies  "
+            if (this.count == 0 || this.allRegies.length == 0) {
+
+                this.getSalle()
+
+                this.count = this.count + 1
+                console.log(this.count)
+            }
+            else {
+                
+                this.departmentDataSource = this.allRegies
+                console.log("2eme click")
+            }
+        }
+        else {
+
+            this.toggleBtn.content="Voir autres Régies"
+            this.departmentDataSource = this.departmentGroupDataSource
+            console.log("faux")
+        }
         
      
     }
@@ -949,21 +997,7 @@ export class SchedulerComponent implements OnInit {
                     args.cancel = false;
                    }
                 })
-           
-            
-
-                // if (item.codegroupe != 3) {
-                //     console.log('codegroupe!=3', item)
-                //     args.cancel = false;
-        
-                //     let targetNode: Element = document.querySelector('[data-uid="' + targetNodeId + '"]');
-
-                //     if (targetNode.classList.contains('remove')) {
-                //         this.contentmenutree.enableItems(['Supprimer'], false);
-                //     }
-                // }
-        
-           
+                      
         })
 
         console.log('args', args)
@@ -993,7 +1027,7 @@ export class SchedulerComponent implements OnInit {
         this.fieldArray= this.treeObjMonteur['groupedData'] 
         
    
-        this.monteurDataSource=this.fieldArray[0]
+        this.fieldMonteur['dataSource']=this.fieldArray[0]
 
     
         console.log( this.fieldArray[0])
