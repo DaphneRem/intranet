@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Compiler, NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
 
 
 import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
@@ -25,10 +26,13 @@ import { App } from 'apps/fiches-materiel/src/app/+state/app.interfaces';
 export class AppComponent implements OnInit {
 
   constructor(
+    private compiler: Compiler,
     private store: Store<Navbar>,
     private appStore: Store<App>,
     private authAdalService: AuthAdalService,
-    private adal5Service: Adal5Service
+    private adal5Service: Adal5Service,
+    private router: Router,
+    private _zone: NgZone
   ) {
     this.navbarStoreOpen = this.store;
     this.adal5Service.init(config);
@@ -47,17 +51,25 @@ export class AppComponent implements OnInit {
   public userName;
   public name;
   public user;
+  public firstName: string;
+  public lastName: string;
+  public initials: string;
 
   ngOnInit() {
+    console.log(this.adal5Service);
+    console.log(this.authAdalService);
+    console.log(this.adal5Service.userInfo);
+    // Handle callback if this is a redirect from Azure
+    this.adal5Service.handleWindowCallback(); // ajouter condition
     // check navbar.open state from store
     console.log(this.store);
     console.log(this.appStore);
+    this.compiler.clearCache();
     this.store.subscribe(data => (this.globalStore = data));
     this.navbarState = this.globalStore.navbar.open;
     this.checkHeader(this.navbarState);
 
-        // Handle callback if this is a redirect from Azure
-    this.adal5Service.handleWindowCallback();
+
 
     // Check if the user is authenticated. If not, call the login() method
     if (!this.adal5Service.userInfo.authenticated) {
@@ -74,22 +86,27 @@ export class AppComponent implements OnInit {
 
     this.userName = this.adal5Service.userInfo.username;
     this.name = this.adal5Service.userInfo.profile.name;
+    this.firstName = this.adal5Service.userInfo.profile.given_name;
+    this.lastName = this.adal5Service.userInfo.profile.family_name;
+    this.initials = `${this.firstName.slice(0, 1).toUpperCase()}${this.lastName.slice(0, 1).toUpperCase()}`;
 
     this.user = {
       name: this.name,
-      userName: this.userName
+      userName: this.userName,
+      initials: this.initials
     };
 
-    this.store.dispatch({
+    this.appStore.dispatch({
       type: 'ADD_USER',
       payload: {
         user : {
           username: this.userName,
-          name: this.name
+          name: this.name,
+          initials: this.initials
         }
       }
     });
-    console.log(this.globalStore.app);
+    console.log(this.appStore);
   }
 
   public logout(event) {

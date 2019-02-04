@@ -1,11 +1,10 @@
-import { Workorder } from './workorder';
+export class Workorder {
 
-export class ContainerKP {
-
-    Id_Planning_Container: number;
+    Id_Planning_Events: number;
+    Iddetail: number;
+    IdTypeWO: number;
     UserEnvoi: string;
     DateEnvoi: string | Date;
-    Titre: string;
     CodeRessourceOperateur: number;
     LibelleRessourceOperateur: string;
     CodeRessourceCoordinateur: number;
@@ -16,11 +15,18 @@ export class ContainerKP {
     DateDebutTheo: string | Date;
     DateFinTheo: string | Date;
     CodeRessourceSalle: number;
-    LibelleRessourceSalle: string;
     Commentaire: string;
+    Support1Cree: string;
+    Support2Cree: string;
+    MustWaitFor: number;
+    Statut: number;
+    idplanningprec: number;
+    Regroup: number;
     Commentaire_Planning: string;
     DateMaj: string | Date;
     UserMaj: string;
-    PlanningEventsList: Workorder[];
-
+    Id_Planning_Container: number;
+    libtypeWO: string;
+    isbacklog: number;
 }
+

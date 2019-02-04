@@ -102,7 +102,7 @@
               <span *ngIf="newObject.IdLibstatut === valueNotToChangeLibelle">{{newObject.IdLibstatut}}</span>
             </option>
             <option *ngFor="let stat of status" [ngValue]="stat.Libelle !== valueNotToChangeLibelle ? stat.IdLibstatut : stat.Libelle">
-              <span *ngIf="stat.Libelle !== valueNotToChangeLibelle">{{stat.IdLibstatut}} - </span>{{stat.Libelle}}</option>
+              <span *ngIf="stat.Libelle !== valueNotToChangeLibelle">{{status.indexOf(stat) + 1}} - </span>{{stat.Libelle}}</option>
           </select>
         </div>
       <div class="col-lg-3 step form-group" *ngIf="steps['id'+newObject.IdLibstatut] !== [] && newObject.IdLibstatut !== valueNotToChangeLibelle">
@@ -117,18 +117,27 @@
             </option>
             <option 
               *ngFor="let step of steps['id'+newObject.IdLibstatut]; let i= index" 
-              [ngValue]="displayStepValue(step)"
-              [selected]="initValueSteps === false && i === 0 ? true : false">
+              [ngValue]="displayStepValue(step)">
               <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{i+1}} - </span>{{step.Libelle}}
             </option>
           </select>
+          <history-steps-status-modal
+            class="history-steps-status-modal-component"
+            *ngIf="selectionType === 'one'" 
+            [myFicheMateriel]="this.allFichesMateriel[0]" 
+            [statusLib]="status"
+            [stepLib]="allSteps">
+          </history-steps-status-modal>
       </div>
+
     </div>
     <steps-status-comment-modal
       (newComment)="displayStepsStatusModelComment($event)"
       (lastStatus)="displayPreviousStatus($event)"
+      [step]="newObject.IdLibEtape"
       [status]="newObject.IdLibstatut" 
       [newObject]="newObject"
+      [valueNotToChangeLibelle]="valueNotToChangeLibelle"
       [allFichesMateriel]="allFichesMateriel">
     </steps-status-comment-modal>
     <div class="row fm-detail-body">
@@ -436,7 +445,7 @@
             <label class="col-lg-5 col-form-label">
               Date de livraison :
             </label>
-            <div class="input-group col-lg-6" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
+            <div class="input-group col-lg-5" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
               <input class="form-control" 
                 placeholder="{{newObject.DateLivraison}}" 
                 name="livDate" [(ngModel)]="newObject.DateLivraison" 
@@ -446,6 +455,9 @@
                   <i class="icofont icofont-calendar"></i>
                 </button>
               </div>
+            </div>
+            <div class="col-lg-2 history-delivery-date">
+              <history-delivery-date-modal *ngIf="selectionType === 'one'" [myFicheMateriel]="newObject"></history-delivery-date-modal>
             </div>
           </div>
           <delivery-date-comment-modal 

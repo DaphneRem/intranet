@@ -33,14 +33,14 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       // icon: 'icofont icofont-check-alt',
       icon: 'icofont icofont-archive',
       size: 'col-md-12 col-lg-4',
-      link: './all',
+      link: './my-materiel-sheets/archived',
       color: '#17B978'
     },
     {
       title: 'Toutes mes Fiches Matériel',
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
-      link: './all',
+      link: './my-materiel-sheets/all',
       color: '#5ED4FF'
     },
     {

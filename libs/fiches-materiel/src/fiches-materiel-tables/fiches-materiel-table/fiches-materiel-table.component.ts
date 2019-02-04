@@ -399,18 +399,38 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
               currentItemLib = item;
             }
           });
-          if (data.IdLibEtape < 7) {
-            return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
-          } else if (data.IdLibEtape >= 7 && data.IdLibEtape < 14) {
-            return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>';
-          } else if (data.IdLibEtape === 14) {
-            return '<span class="label bg-primary">' + currentItemLib.Libelle + '</span>';
-          } else if (data.IdLibEtape === 15 || data.IdLibEtape === 16) {
-            return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>';
-          } else if (data.IdLibEtape === 17) {
-            return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>';
+          if (currentItemLib.IdLibstatut === 1) { // EN COURS
+            if (currentItemLib.IdLibEtape <= 6) {
+              return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
+            }  else if (currentItemLib.IdLibEtape > 6 && currentItemLib.IdLibEtape <= 10) {
+                return '<span class="label bg-info">' + currentItemLib.Libelle + "</span>"; // color : red;
+            } else if (currentItemLib.IdLibEtape === 25 || currentItemLib.IdLibEtape === 18) {
+                return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>'; // color : red;
+            } else if (currentItemLib.IdLibEtape === 26) {
+              return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
+            }
+          } else if (currentItemLib.IdLibstatut === 3) { // ACCEPTE
+            return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>'; // color : green;
+          } else if (currentItemLib.IdLibstatut === 2) { // ANNULE
+            return '<span class="label label-canceled">' + currentItemLib.Libelle + '</span>';
+          } else if (currentItemLib.IdLibstatut === 5) { // TRAITE PAR AUTRES SERVICES
+            return '<span class="label label-other">' + currentItemLib.Libelle + '</span>'; // color : #774aa4
           } else {
             return '/';
+          //                 return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8
+          //   }  else if (currentItemLib.IdLibEtape > 6 && currentItemLib.IdLibEtape <= 10) {
+          //       return '<span class="label bg-primary">' + currentItemLib.Libelle + '</span>'; // color : red;
+          //   } else if (currentItemLib.IdLibEtape === 25 || currentItemLib.IdLibEtape === 18) {
+          //       return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>'; // color : red;
+          //   } else if (currentItemLib.IdLibEtape === 26) {
+          //     return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8
+          //   }
+          // } else if (currentItemLib.IdLibstatut === 2) { // ACCEPTE
+          //   return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>'; // color : green;
+          // } else if (currentItemLib.IdLibstatut === 3) { // ANNULE
+          //   return '<span class="label bg-primary">' + currentItemLib.Libelle + '</span>';
+          // } else if (currentItemLib.IdLibstatut === 5) { // TRAITE PAR AUTRES SERVICES
+          //   return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>';
           }
         }
       },

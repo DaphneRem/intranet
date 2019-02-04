@@ -11,4 +11,6 @@ export class HospitalData {
     AzaIsPere?: boolean;
     AzaNumGroupe?: number;
     IconUrl?: string;
+    coordinateurCreate?: string;
+    Operateur: string;
 }

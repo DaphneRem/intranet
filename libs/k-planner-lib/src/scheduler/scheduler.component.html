@@ -8,6 +8,7 @@
        
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
+                (eventClick)="onEventClick()"
                 (popupOpen)="onPopupOpen($event)" 
                 cssClass='schedule-drag-drop' 
                 width='100%'
@@ -19,28 +20,23 @@
                 [eventSettings]="eventSettings" 
                 (actionBegin)="onActionBegin($event)" 
                 (actionComplete)="onActionComplete($event)"
-                (drag)="onItemDrag($event)"
-                
-                >
+                (drag)="onItemDrag($event)">
                 <!-- (renderCell)="onRenderCell($event)" -->
-                <e-resources >
-           
-                    <e-resource
+                
+                <e-resources>
+                    <e-resource 
                         field='DepartmentID' 
-                        title='Department' 
+                        title='Regie'
                         name='Departments' 
                         [dataSource]='departmentDataSource'
                         textField='Text' 
                         idField='Id' 
                         colorField='Color' 
                         groupIDField="Id" 
-                        [allowMultiple]='allowMultiple'
-                        >
+                        [allowMultiple]='allowMultiple'>
                     </e-resource>
-
-    
-        </e-resources>
-     
+                </e-resources>
+                
                 <!-- <ng-template #resourceHeaderTemplate let-data>
                             <div class="template-wrap">
                                 <div class="specialist-category">
@@ -55,12 +51,11 @@
                 <e-views>
                     <e-view option='TimelineDay' >
                         <ng-template #eventTemplate let-data  class="event">
-                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}">
+                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                 <div>
                                     <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                        <div class="float-right fixed initiales"><p>AC</p></div>
+                                        <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
                                         <u id="{{data.Id}}">{{data.Name }} </u> 
-                                    
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                         <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
@@ -114,7 +109,7 @@
                                 #treeObj 
                                 [fields]='field' 
                                 cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop' 
+                                [allowDragAndDrop]='allowDragAndDrop'
                                 (nodeDragStop)="onTreeDragStop($event)" 
                                 (nodeDragging)="onItemDrag($event, 0)">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder="">

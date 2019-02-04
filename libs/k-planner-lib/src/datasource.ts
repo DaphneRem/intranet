@@ -4444,7 +4444,9 @@ export let hospitalData: HospitalData[] = [
         AzaIsPere: true,
         className: 'event1',
         AzaNumGroupe:100,
-        IconUrl: 'https://www.diabetesatschool.ca/uploads/img/icon-awareness.png'
+        coordinateurCreate: 'AZ',
+        IconUrl: 'https://www.diabetesatschool.ca/uploads/img/icon-awareness.png',
+        Operateur: ''
 
     }, {
         Id: 11,
@@ -4456,7 +4458,9 @@ export let hospitalData: HospitalData[] = [
         ConsultantID: 2,
         DepartmentName: 'CAUCHEMAR EN CUISINE SAISON 5',
         AzaIsPere: false,
-        AzaNumGroupe:100
+        AzaNumGroupe:100,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
     }, {
         Id: 12,
@@ -4468,7 +4472,9 @@ export let hospitalData: HospitalData[] = [
         ConsultantID: 2,
         DepartmentName: 'UFC UNLEASHED Saison 8 - Eps 2',
         AzaIsPere: false,
-        AzaNumGroupe:100
+        AzaNumGroupe:100,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
     }, {
         Id: 13,
@@ -4480,7 +4486,9 @@ export let hospitalData: HospitalData[] = [
         ConsultantID: 2,
         DepartmentName: 'Masterisation - Action',
         AzaIsPere: false,
-        AzaNumGroupe:100
+        AzaNumGroupe:100,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
     }, {
         Id: 14,
@@ -4492,7 +4500,9 @@ export let hospitalData: HospitalData[] = [
         ConsultantID: 2,
         DepartmentName: 'masterisation VF/VI ',
         AzaIsPere: false,
-        AzaNumGroupe:100
+        AzaNumGroupe:100,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
 
     }, {
@@ -4505,56 +4515,66 @@ export let hospitalData: HospitalData[] = [
         ConsultantID: 2,
         DepartmentName: 'Demande de vision',
         AzaIsPere: false,
-        AzaNumGroupe:100
+        AzaNumGroupe:100,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
     }, {
         Id: 16,
         Name: 'PADI / VISION (MULTIPLE)',
-        StartTime: new Date(2019, 0, 16, 9, 30),
-        EndTime: new Date(2019, 0, 16, 14, 15),
+        StartTime: new Date(2019, 0, 29, 9, 30),
+        EndTime: new Date(2019, 0, 29, 14, 15),
         Description: 'RTL9 ACTION  Fab HD VF/VO à partir d\'un fichier pivot déjà présent en stock (mais qui n\'avait jamais été vérifié)',
-        DepartmentID: 1,
+        DepartmentID: 17,
         ConsultantID: 3,
         DepartmentName: 'Fichier HD à masteriser (RTL9 + Action)',
         AzaIsPere: true,
-        AzaNumGroupe:101
+        AzaNumGroupe:101,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
     }, {
         Id: 17,
         Name: 'Fabrication d\'habillage',
-        StartTime: new Date(2019, 0, 16, 9, 30),
-        EndTime: new Date(2019, 0, 16, 14, 15),
+        StartTime: new Date(2019, 0, 29, 9, 30),
+        EndTime: new Date(2019, 0, 29, 14, 15),
         Description: 'Demande générée automatiquement Commentaire Demande :   Informations spécifiques : Fabrication PADI pour  AB DROITS AUDIOVISUELS  Titre :  PAD HD VF/VI à faire pour Animaux  Durée du prog : 00:52:00  Date de diffusion :   Distributeur :   Langue :   Fiche technique : ',
-        DepartmentID: 1,
+        DepartmentID: 17,
         ConsultantID: 3,
         DepartmentName: 'Demande générée pour  PAD HD VF/VI à faire pour Animaux',
         AzaIsPere: false,
-        AzaNumGroupe:101
+        AzaNumGroupe:101,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
     }, {
         Id: 18,
         Name: 'Trucage',
-        StartTime: new Date(2019, 0, 16, 9, 30),
-        EndTime: new Date(2019, 0, 16, 14, 15),
+        StartTime: new Date(2019, 0, 29, 9, 30),
+        EndTime: new Date(2019, 0, 29, 14, 15),
         Description: 'Mixage des bandes-démo AB3  5 éléments à mixer :   -une version 2’  -trois versions 10’’  -une version 40’’    Normalement le support sera sur HDCAM.',
-        DepartmentID: 1,
+        DepartmentID: 17,
         ConsultantID: 1,
         DepartmentName: 'Demande de masterisation',
         AzaIsPere: false,
-        AzaNumGroupe:101
+        AzaNumGroupe:101,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
 
     },
     {
         Id: 19,
         Name: 'Graphisme',
-        StartTime: new Date(2019, 0, 16, 9, 30),
-        EndTime: new Date(2019, 0, 16, 14, 15),
+        StartTime: new Date(2019, 0, 29, 9, 30),
+        EndTime: new Date(2019, 0, 29, 14, 15),
         Description: 'diff hd native animaux pad hd vf/vi',
-        DepartmentID: 1,
+        DepartmentID: 17,
         ConsultantID: 1,
         DepartmentName: '20 chefs d\'oeuvres de la nature pad hd vf/vi',
         AzaIsPere: false,
-        AzaNumGroupe:101
+        AzaNumGroupe:101,
+        coordinateurCreate: 'AZ',
+        Operateur: ''
     }, 
     // {
     //     Id: 20,

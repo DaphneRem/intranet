@@ -5,6 +5,10 @@ import { NxModule } from '@nrwl/nx';
 import { Adal5Service, Adal5HTTPService } from 'adal-angular5';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { appReducer } from './+state/app.reducer';
+import { appInitialState } from './+state/app.init';
+
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -39,7 +43,9 @@ registerLocaleData(localeFr, 'fr');
   EffectsModule.forRoot([]),
   HttpClientModule,
   CustomDatatablesModule,
-  NxModule.forRoot()
+  NxModule.forRoot(),
+  StoreRouterConnectingModule,
+  StoreModule.forRoot({app: appReducer}, {initialState: {app: appInitialState}}),
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },

@@ -92,6 +92,7 @@ export class FichesMaterielModificationInterfaceComponent
   public allSteps: Step[];
   public stepsReady: Boolean = false;
   public initValueSteps: Boolean = true;
+  public firstClick = false;
 
   public status: any;
   public statusReady: Boolean = false;
@@ -212,8 +213,8 @@ export class FichesMaterielModificationInterfaceComponent
 
   displayModificationMessage(event) {
     this.modificationMessage = event;
-        this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
-
+    this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
+    this.initValueSteps = true;
     // this.changeDateFormat(event);
     // this.ngOnInit();
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
@@ -588,11 +589,7 @@ export class FichesMaterielModificationInterfaceComponent
   displayInitialStatus(newObject) {
     let libelle;
     this.status.map(item => {
-      console.log(item);
-      console.log(newObject.IdLibstatut);
       if (item.IdLibstatut === this.newObject.IdLibstatut) {
-        console.log(item);
-        console.log(item.Libelle);
         libelle = item.Libelle;
       }
     });
@@ -602,6 +599,7 @@ export class FichesMaterielModificationInterfaceComponent
   getStatusLib() {
     this.statusLibService.getStatusLib().subscribe(data => {
       this.status = data;
+      this.status.sort((a, b) => a.ordre - b.ordre);
       console.log(this.status);
       this.steps = {};
       if (this.selectionType === 'multi') {
@@ -741,14 +739,29 @@ export class FichesMaterielModificationInterfaceComponent
 
   clickStatusOptions() {
     this.initValueStatus = false;
-    if (this.steps['id' + this.newObject.IdLibstatut].length > 0) {
-      console.log(this.steps['id' + this.newObject.IdLibstatut]);
-      this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][0].IdLibEtape;
+    if (this.firstClick) {
+      if (this.steps['id' + this.newObject.IdLibstatut].length > 0) {
+        console.log(this.steps['id' + this.newObject.IdLibstatut]);
+        if (this.newObject.IdLibstatut === 2) { // STATUT ACCEPTE
+          if (this.newObject.RetourOri === 1) { // retour ori à faire (1)
+            this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][1].IdLibEtape; // IdLibEtape: 15, Libelle: "Retour Ori"
+              console.log('accepté et retour ori a faire ===> ');
+          } else { // retour ori !== "à faire"
+            this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][3].IdLibEtape; // IdLibEtape: 20, Libelle: "Terminé"
+          }
+        } else if (this.newObject.IdLibstatut === 3) { // STATUT ANNULE
+          this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][1].IdLibEtape; // IdLibEtape: 21, Libelle: "Terminé"
+        } else if (this.newObject.IdLibstatut === 5) { // STATUT Traité par un autre service
+          this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][2].IdLibEtape;
+          // IdLibEtape: 24, Libelle: "Traité par un autre service"
+        } else {
+          this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][0].IdLibEtape;
+        }
+      }
+      this.firstClick = false;
+    } else {
+      this.firstClick = true;
     }
-      console.log(this.newObject.IdLibEtape);
-      console.log(this.steps);
-      console.log(this.newObject.IdLibstatut);
-      // this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][0].IdLibEtape;
   }
 
   displayStepValue(step) {
@@ -784,14 +797,18 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   checkRenouvellementSelectionRadio() {
-    if (this.newObject.Renouvellement) {
+    if (this.newObject.Renouvellement === 1) {
+      this.disabledDateAcceptation = true;
       return 'checked';
+    } else if (this.newObject.Renouvellement === this.valueNotToChangeLibelle) {
+      this.disabledDateAcceptation = true;
     }
   }
 
   displayRenouvellementSelectionRadio() {
     this.newObject.Renouvellement = 1;
     this.disabledDateAcceptation = true;
+    this.newObject.DateAcceptation = null;
     console.log(this.newObject.Renouvellement);
   }
 

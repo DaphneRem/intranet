@@ -4,12 +4,14 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { Page404Component } from '@ab/error-pages';
 import {
+  FichesMaterielArchivedComponent,
   FichesMaterielCreationComponent,
   FicheMaterielDetailsComponent,
   FichesMaterielModificationComponent,
   FichesMaterielWidgetViewComponent,
   DisplayFichesAchatsComponent,
-  MyFichesMaterielComponent
+  MyFichesMaterielComponent,
+  MyFichesMaterielAllComponent
 } from '@ab/fiches-materiel';
 
 const routes: Routes = [
@@ -36,6 +38,16 @@ const routes: Routes = [
         path: 'my-material-sheets/:columnIndex/:order',
         component : MyFichesMaterielComponent,
         data : { title : 'Mes Fiches Matériel'}
+      },
+      {
+        path: 'my-materiel-sheets/archived',
+        component: FichesMaterielArchivedComponent,
+        data: { title: 'Mes Fiches Matériel Archivées' }
+      },
+      {
+        path: 'my-materiel-sheets/all',
+        component: MyFichesMaterielAllComponent,
+        data: { title: 'Toutes Mes Fiches Matériel' }
       }
     ]
   },

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -17,8 +18,11 @@ import { WidgetsModule } from '@ab/widgets';
 import { DisplayFichesAchatsComponent } from './fiches-materiel-pages/display-fiches-achats/display-fiches-achats.component';
 import { FichesMaterielCreationComponent } from './fiches-materiel-pages/fiches-materiel-creation/fiches-materiel-creation.component';
 import {
-  FichesMaterielWidgetViewComponent } from './fiches-materiel-pages/fiches-materiel-widget-view/fiches-materiel-widget-view.component';
+  FichesMaterielWidgetViewComponent
+} from './fiches-materiel-pages/fiches-materiel-widget-view/fiches-materiel-widget-view.component';
 import { MyFichesMaterielComponent } from './fiches-materiel-pages/my-fiches-materiel/my-fiches-materiel.component';
+import { MyFichesMaterielAllComponent } from './fiches-materiel-pages/my-fiches-materiel-all/my-fiches-materiel-all.component';
+import { FichesMaterielArchivedComponent } from './fiches-materiel-pages/fiches-materiel-archived/fiches-materiel-archived.component';
 
 // components tables imports
 import { FichesAchatTableComponent } from './fiches-achat-table/fiches-achat-table.component';
@@ -88,6 +92,7 @@ import {
     NgbModule,
     SubHeaderModule,
     WidgetsModule,
+    RouterModule,
     StoreModule.forFeature(
       'ficheMaterielModification',
       ficheMaterielModificationReducer,
@@ -104,6 +109,7 @@ import {
     ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
+    FichesMaterielArchivedComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
     FicheMaterielDetailsViewComponent,
@@ -117,6 +123,7 @@ import {
     ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
+    MyFichesMaterielAllComponent,
     SearchFormComponent,
     StepsStatusCommentModalComponent,
     WarningAcceptedStatusComponent,
@@ -132,6 +139,7 @@ import {
     ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
+    FichesMaterielArchivedComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
     FicheMaterielDetailsViewComponent,
@@ -145,6 +153,7 @@ import {
     ModalFicheAchatDetailComponent,
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
+    MyFichesMaterielAllComponent,
     SearchFormComponent,
     StepsStatusCommentModalComponent,
     WarningAcceptedStatusComponent,

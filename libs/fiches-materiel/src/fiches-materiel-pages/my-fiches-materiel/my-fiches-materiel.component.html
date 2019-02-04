@@ -1,8 +1,25 @@
 <sub-header [tableView]="true" [changeView]="true" [link]="widgetLink"></sub-header>
 
-<div class="row card">
+<!-- <div class="row card">
   <div class="col-lg-11 search-form">
     <search-form></search-form>
+  </div>
+  <div class="table-top col-lg-1">
+    <custom-icon-badge *ngFor="let icon of icons" 
+      [littleIcon]="icon.littleIcon"  
+      [bigIcon]="icon.bigIcon" 
+      [link]="icon.link"
+      [tooltip]="icon.tooltip"
+      [tooltipMessage]="icon.tooltipMessage">
+    </custom-icon-badge>
+  </div>
+</div> -->
+<div class="row card">
+  <div class="col-lg-11 buttons">
+    <button class="btn btn-info btn-outline-info">Mes deals en Cours</button>
+    <button class="btn btn-success btn-outline-success" [routerLink]="['/material-sheets/my-materiel-sheets/archived']">Mes Fiches Matériel Archivées</button>
+    <button class="btn btn-primary btn-outline-primary" [routerLink]="['/material-sheets/my-materiel-sheets/all']">Toutes mes fiches Matériel</button>
+    <button class="btn btn-inverse btn-outline-inverse">Toutes les fiches Matériel</button>
   </div>
   <div class="table-top col-lg-1">
     <custom-icon-badge *ngFor="let icon of icons" 
