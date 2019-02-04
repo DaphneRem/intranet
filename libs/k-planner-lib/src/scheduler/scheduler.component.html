@@ -5,7 +5,6 @@
             </div>
              <button  #toggleBtn ejs-button id="btn"  (click)="displayRegies()"  class=" btn btn-outline-dark regie" style="padding:0" iconCss="e-btn-sb-icons e-play-icon">
             </button> 
-       
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
                 (eventClick)="onEventClick()"
@@ -22,7 +21,6 @@
                 (actionComplete)="onActionComplete($event)"
                 (drag)="onItemDrag($event)">
                 <!-- (renderCell)="onRenderCell($event)" -->
-                
                 <e-resources>
                     <e-resource 
                         field='DepartmentID' 
@@ -35,8 +33,7 @@
                         groupIDField="Id" 
                         [allowMultiple]='allowMultiple'>
                     </e-resource>
-                </e-resources>
-                
+                </e-resources>                
                 <!-- <ng-template #resourceHeaderTemplate let-data>
                             <div class="template-wrap">
                                 <div class="specialist-category">
@@ -47,7 +44,6 @@
                                 </div>
                             </div>
                         </ng-template > -->
-                        
                 <e-views>
                     <e-view option='TimelineDay' >
                         <ng-template #eventTemplate let-data  class="event">
@@ -69,30 +65,26 @@
                         </ng-template>
                     </e-view>
                     <e-view option="TimelineWeek">
-                      
                     </e-view>
                     <e-view option='TimelineMonth'>
-                            <ng-template #eventTemplate let-data  class="event">
-                                    <div class='template-wrap' style="width: 100%" id="{{data.Id}}">
-                                        <div>
-                                            <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                                <div class="float-right fixed initiales"><p>AC</p></div>
-                                                <u id="{{data.Id}}">{{data.Name }} </u> 
-                                            
-                                                <!-- <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div> -->
-                                            </div> 
-                                            <!-- <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;"> -->
-                                                <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span> -->
-                                            <!-- </div> -->
-                                      </div> 
-                                    </div>
-                                </ng-template> 
-
+                        <ng-template #eventTemplate let-data  class="event">
+                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}">
+                                <div>
+                                    <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                        <div class="float-right fixed initiales"><p>AC</p></div>
+                                        <u id="{{data.Id}}">{{data.Name }} </u> 
+                                        <!-- <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div> -->
+                                    </div> 
+                                    <!-- <div *ngIf="!data.AzaIsPere" class="show-user" style="background-color: #282a2c;height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;"> -->
+                                        <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span> -->
+                                    <!-- </div> -->
+                                </div> 
+                            </div>
+                        </ng-template> 
                     </e-view>
                     <e-view option="Agenda"></e-view>
                 </e-views>
             </ejs-schedule>
-     
         </div>
         <ejs-tab id="element" #element>
             <e-tabitems>
@@ -130,17 +122,14 @@
                             <div class="title-container">
                             </div>
                             <div class="input-group">
-
                                 <input type="text" class="form-control" placeholder="Filtrer..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1)"  >
-
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
-                            <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)"   >
-                            
+                            <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
                                 <option >Plus de monteurs </option>
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select>
-                            <div  >
+                            <div>
                                 <ejs-treeview *ngIf="selectedValue!='Plus de monteurs'"
                                     id="treeMonteur"
                                     #treeObjMonteur 
@@ -153,8 +142,7 @@
                                         <!-- let-dataMonteur="" -->
                                    <div id="waiting" [ngStyle]="{'border':getBorder(dataMon.Username)}">
                                         <div id="waitdetails" class="monteurs">
-                                                <br>
-                                       
+                                            <br>
                                             <div id={{dataMon.CodeRessource}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}} {{dataMon.codegroupe}} </div>
                                         </div>
                                     </div>
@@ -169,14 +157,9 @@
                           (select)='menuclick($event)'>
                         </ejs-contextmenu>
                         </div>
-                      
                     </ng-template>
-   
                 </e-tabitem> 
-               
             </e-tabitems>
-           
         </ejs-tab>
-    
     </div>
 </div>

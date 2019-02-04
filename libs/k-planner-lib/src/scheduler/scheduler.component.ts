@@ -87,10 +87,6 @@ export class SchedulerComponent implements OnInit {
     @ViewChild ('contentmenutree') 
     public contentmenutree: ContextMenuComponent;
 
-
-
-
-
     /******** STORE *******/
     public user: User;
 
@@ -107,8 +103,8 @@ export class SchedulerComponent implements OnInit {
         { text: 'Supprimer',
           iconCss: 'e-icons delete', }
     ];
-    
-    public monteurDataSource  : MonteursData[];
+
+    public monteurDataSource: MonteursData[];
     public timelineResourceDataOut;
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
@@ -128,10 +124,10 @@ export class SchedulerComponent implements OnInit {
     public departmentDataSource: Object[] = [];
     public departmentDataSourceAll: Object[] = [];
     public departmentGroupDataSource: Object[] = [];
-    allRegies :Object[]=[]
+    public allRegies: Object[] = [];
     public idExisting = [];
     public lastRandomId;
-    public fieldArray= this.field['dataSource']
+    public fieldArray = this.field['dataSource'];
 
     // Editor
     public drowDownMonteurs;
@@ -191,46 +187,37 @@ export class SchedulerComponent implements OnInit {
         });
     }
 
-
-
-    onEventClick(ActionEventArgs) {
+    onEventClick(e: ActionEventArgs) {
         console.log('event clicked !!!!!!!!!!!');
     }
 
 /******************************* API REQUEST *****************************/ 
     getSalle() {
-
-        if(this.isClicked){
-          
-            this.toggleBtn.iconCss='e-play-icon'
+        if (this.isClicked) {
+            this.toggleBtn.iconCss = 'e-play-icon';
             this.salleService
             .getSalle()
             .subscribe(donnees => {
                 this.salleDataSource = donnees;
                 this.salleDataSource.map(item => {
-              if(item.codegroupe != 3){
+              if (item.codegroupe != 3) {
                     this.departmentDataSourceAll.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
-                        Color:'#f9920b'
+                        Color: '#f9920b'
                     });
                 }
                     // console.log('regie', this.departmentDataSource)
                 });
-         console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll)
-         this.allRegies=this.departmentGroupDataSource.concat(this.departmentDataSourceAll)
-         console.log(' this.allRegies', this.allRegies)
-         this.departmentDataSource= this.allRegies
-         console.log(' this.departmentDataSource', this.departmentDataSource)
+         console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
+         this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
+         console.log(' this.allRegies', this.allRegies);
+         this.departmentDataSource = this.allRegies;
+         console.log(' this.departmentDataSource', this.departmentDataSource);
             });
-            
-           
-     
-     
-     
-        } 
-            if(!this.isClicked){
-                this.toggleBtn.content='Voir autres Régies'
+        }
+        if (!this.isClicked) {
+                this.toggleBtn.content = 'Voir autres Régies';
             this.salleService
                 .getGroupSalle(3)
                 .subscribe(donnees => {
@@ -238,30 +225,18 @@ export class SchedulerComponent implements OnInit {
                     console.log('donee', donnees);
                     this.salleDataSource.map(item => {
                         this.departmentGroupDataSource.push({
-
                             Text: item.NomSalle,
                             Id: item.CodeSalle,
-
-                        })
-                       
-                    })
-                
-                }
-                )
-
-                this.departmentDataSource=this.departmentGroupDataSource
-                
+                        });
+                    });
+                });
+                this.departmentDataSource = this.departmentGroupDataSource;
                 console.log('regie departmentDataSource', this.departmentGroupDataSource);
-         
-      
             }
-         
-
-
     }
     codegroupe
     getMonteur() {
-        let monteurDataSource
+        let monteurDataSource;
         this.monteursService
             .getMonteur()
             .subscribe(donnees => {
@@ -270,34 +245,25 @@ export class SchedulerComponent implements OnInit {
                     if (item.codegroupe !== 3) {
 
                         this.monteurListe.push(item)
-                         this.codegroupe= item.codegroupe
+                         this.codegroupe = item.codegroupe;
                     }
-                })
-
-             
+                });
             });
 
         this.monteursService
             .getGroupMonteur(3)
             .subscribe(donnees => {
-                console.log('donnees', donnees)
+                console.log('donnees', donnees);
                 this.monteurDataSource = donnees;
-                
-                   
                 this.fieldMonteur = {
                     dataSource: this.monteurDataSource,
                     id: 'CodeRessource',
                     text: 'Username'
-                }
-
-            
-    
-         
-         
-        })
+                };
+        });
         console.log('fieldmonteur:',  this.fieldMonteur);
-        console.log('monteur:',   this.monteurDataSource);   
-        }
+        console.log('monteur:',   this.monteurDataSource);
+    }
 
     getAllContainer() {
         this.containersService
@@ -985,20 +951,18 @@ export class SchedulerComponent implements OnInit {
 filtermonteurListeArray
 addMonteur
     onSelect(value) {
-    let monteurListArray 
+    let monteurListArray;
         for (let i = 0; i < this.monteurListe.length; i++) {
-         
-                if (value === this.monteurListe[i].Username  ) {  
-                  monteurListArray=this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift( this.monteurListe[i]))
-                  monteurListArray.pop()
-                  this.fieldMonteur = { dataSource: monteurListArray , text: 'Username' };
-                  console.log('monteurListArray',monteurListArray)   
-         this.filtermonteurListeArray = monteurListArray
-                console.log(  this.fieldMonteur)
-                this.addMonteur=true
-                }
-              
+            if (value === this.monteurListe[i].Username  ) {
+                monteurListArray = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift( this.monteurListe[i]))
+                monteurListArray.pop();
+                this.fieldMonteur = { dataSource: monteurListArray , text: 'Username' };
+                console.log('monteurListArray', monteurListArray);
+                this.filtermonteurListeArray = monteurListArray;
+                console.log(  this.fieldMonteur);
+                this.addMonteur = true;
             }
+        }
           // }
         // let CodeRessource= this.monteurDataSource.CodeRessource;
         // let username= this.monteurDataSource.Username;
@@ -1021,71 +985,49 @@ addMonteur
 
 
     getBorder(value) {
-        if(value){
+        if (value) {
         for (let i = 0; i < this.monteurListe.length; i++) {
             if (value === this.monteurListe[i].Username) {
                 return 'red 2px solid';
             }
         }
     }}
-    
+
 /********** Filter Monteur  *********/
 
-
-
     onFilter(searchText: string, tabIndex) {
-
         if (tabIndex == 1) {
             if (!searchText) {
-                console.log('searchText', typeof searchText, searchText)
-
-                this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource']
+                console.log('searchText', typeof searchText, searchText);
+                this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
             }
-            if(!this.addMonteur){
+            if (!this.addMonteur) {
                 this.dataMonteur = this.monteurDataSource.filter(monteurs => {
-                    return monteurs.Username.toLowerCase().includes(searchText)
-    
-                })
-    
+                    return monteurs.Username.toLowerCase().includes(searchText);
+                });
             } else {
                 this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
-                    return monteurs.Username.toLowerCase().includes(searchText)
-    
-                })
-    
+                    return monteurs.Username.toLowerCase().includes(searchText);
+                });
             }
-
-           
-
             this.fieldMonteur['dataSource'] = this.dataMonteur;
             this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource']
-
             console.log('monteur datasource', this.monteurDataSource)
             console.log('filteredData', this.fieldMonteur);
             console.log('filteredData', this.dataMonteur);
-
             console.log(tabIndex);
         }
         if (tabIndex == 0) {
-
             this.data = this.fieldArray.filter(WorkOrder => {
                 return WorkOrder.Name.toLowerCase().includes(searchText)
-                    || WorkOrder.Description.toLowerCase().includes(searchText)
-                
-
-
-            })
-
+                    || WorkOrder.Description.toLowerCase().includes(searchText);
+            });
             this.field['dataSource'] = this.data;
-            this.treeObj.fields['dataSource'] = this.field['dataSource']
-
+            this.treeObj.fields['dataSource'] = this.field['dataSource'];
             console.log('fieldArray', this.fieldArray);
             console.log('field', this.field);
             console.log('Data', this.data);
         }
-
-
-
     }
 
 
@@ -1098,7 +1040,7 @@ addMonteur
 //             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
 //             target.innerHTML =
 //                 `  `;
-        
+
 //         }
 //         // btn = document.getElementById('btn');
 //         // btn.addEventListener('click', () => this.displayRegies());
@@ -1107,96 +1049,68 @@ addMonteur
 count:number=0
 
     displayRegies() {
-   
         // this.isClicked = true;
-
-
         console.log('AllRegie', this.allRegies)
         this.isClicked = !this.isClicked
         console.log(this.isClicked, 'isclickeddddd');
-
-
         if (this.isClicked) {
-            this.toggleBtn.content='Voir mes Régies  '
+            this.toggleBtn.content = 'Voir mes Régies  ';
             if (this.count == 0 || this.allRegies.length == 0) {
-
-                this.getSalle()
-
-                this.count = this.count + 1
-                console.log(this.count)
+                this.getSalle();
+                this.count = this.count + 1;
+                console.log(this.count);
+            } else {
+                this.departmentDataSource = this.allRegies;
+                console.log('2eme click');
             }
-            else {
-                
-                this.departmentDataSource = this.allRegies
-                console.log('2eme click')
-            }
+        } else {
+            this.toggleBtn.content = 'Voir autres Régies';
+            this.departmentDataSource = this.departmentGroupDataSource;
+            console.log('faux');
         }
-        else {
-
-            this.toggleBtn.content='Voir autres Régies'
-            this.departmentDataSource = this.departmentGroupDataSource
-            console.log('faux')
-        }
-        
-     
     }
 
-    /*******************************************************Remove Monteur *********************************************************************/
+    /********************************** Remove Monteur *************************************/
 
     beforeopen(args: BeforeOpenCloseMenuEventArgs) {
-      
         let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
         this.fieldMonteur['dataSource'].map(item => {
-        
             if ( (item.codegroupe === 3) ) {
                 args.cancel = true;
-                let targetNode: Element = document.querySelector('[data-uid='' + item.CodeRessource + '']');
-                  console.log('targetNode',targetNode)
+                let targetNode: Element = document.querySelector(`[data-uid='${targetNodeId}']`);
+                  console.log('targetNode', targetNode);
                 if (targetNode.classList.contains('remove')) {
                     this.contentmenutree.enableItems(['Supprimer'], true);
                 }
-            } 
-                this.monteurListe.map(item=>{
-                    if(targetNodeId == item.CodeRessource.toString()){
-                  
-                    args.cancel = false;
-                   }
-                })
-                      
-        })
-
-        console.log('args', args)
-        console.log('targetNodeId', targetNodeId)
-
+            }
+            this.monteurListe.map(item => {
+                if (targetNodeId == item.CodeRessource.toString()) {
+                args.cancel = false;
+                }
+            });
+        });
+        console.log('args', args);
+        console.log('targetNodeId', targetNodeId);
     }
 
     menuclick(args: MenuEventArgs) {
-
-
         let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
         for (let i = 0; i < this.monteurListe.length; i++) {
             let CodeRessource = this.monteurListe[i].CodeRessource;
-            let CodeRessourceToString = CodeRessource.toString()
+            let CodeRessourceToString = CodeRessource.toString();
 
             if (CodeRessourceToString === targetNodeId) {
                 if (args.item.text == 'Supprimer') {
                     this.treeObjMonteur.removeNodes([CodeRessourceToString]);
                     //  this.monteurDataSource= this.treeObjMonteur['groupedData']
-               
                 }
-                console.log( this.treeObjMonteur)
-            }  
-           
+                console.log( this.treeObjMonteur);
+            }
         }
-       
-        this.fieldArray= this.treeObjMonteur['groupedData'] 
-        
-   
-        this.fieldMonteur['dataSource']=this.fieldArray[0]
-
-    
-        console.log( this.fieldArray[0])
-        console.log( this.monteurDataSource,'fieldMonteur')
+        this.fieldArray = this.treeObjMonteur['groupedData'];
+        this.fieldMonteur['dataSource'] = this.fieldArray[0];
+        console.log( this.fieldArray[0]);
+        console.log( this.monteurDataSource, 'fieldMonteur');
     }
     // onRenderCell(args: RenderCellEventArgs): void {
     //     let btn;
