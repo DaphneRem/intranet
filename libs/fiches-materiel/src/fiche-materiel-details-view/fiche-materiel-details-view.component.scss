@@ -20,7 +20,7 @@ $iconColor : #7f7f7f;
                     font-size: 1.1em;
                     margin-left: 20px;
                     &.user {
-                        padding-left: 50px;
+                        padding-left: 60px;
                         &.user-last-modif {
                             margin-bottom: 0;
                         }
@@ -32,6 +32,8 @@ $iconColor : #7f7f7f;
                         }
                     }
                     &.deadline {
+                        font-size: 18px;
+                        font-weight: bold;
                         i {
                             font-size: 2.2em;
                             color: $importantColor;

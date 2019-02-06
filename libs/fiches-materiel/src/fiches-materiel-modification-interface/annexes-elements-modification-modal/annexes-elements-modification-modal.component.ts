@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AnnexElementsService } from '../../services/annex-elements.service';
@@ -16,14 +16,14 @@ import {
   providers: [AnnexElementsService]
 })
 export class AnnexesElementsModificationModalComponent implements OnInit {
-  // @Input() annexElementsCategories;
-  // @Input() annexElementsAllSubCategories;
   @Input() allIdSelectedFichesMateriel;
   @Input() annexElementsFicheMateriel;
   @Input() selectionType;
+  @Input() annexElementsNgModel;
 
-  public annexElementModel;
+  @Output() newStateElementsAnnexNgModel = new EventEmitter();
 
+  // LIB variables
   public annexElementsCategories;
   public annexElementsAllSubCategories;
 
@@ -35,18 +35,18 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
   ngOnInit() {
     this.getAnnexElementsCategories();
     this.getAnnexElementsAllSubCategories();
-    console.log(this.annexElementsFicheMateriel);
-    if (this.selectionType === 'multi') {
-      this.getAnnexElementsFicheMateriel(this.allIdSelectedFichesMateriel[0].IdFicheMateriel);
-    }
+    console.log('onInit modification interface this.annexElementsNgModel : ', this.annexElementsNgModel);
+    console.log('this.annexElementsFicheMateriel --------------------', this.annexElementsFicheMateriel);
+    console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
   }
 
   openLg(annexesElementsToModif) {
     this.modalService.open(annexesElementsToModif, { size: 'lg' });
   }
 
-/*************************** selection Type === 'only' *****************************/
-
+/*****************************************************************************************/
+/********************************** SELECTTION TYPE : ONLY *******************************/
+/*****************************************************************************************/
   displayCheckedElements(id) {
     let checked = [];
     console.log(this.annexElementsFicheMateriel);
@@ -74,26 +74,53 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
     });
   }
 
-/***************************** selection Type === 'multi' ****************************/
-  displayCheckedOption() {
+/*****************************************************************************************/
+/***************************** SELECTTION TYPE : MULTI MODIF *****************************/
+/*****************************************************************************************/
 
+/******** checkbox management ********/
+
+// first displaying checkbox
+  displayCheckedOption(id) {
+    let checked = [];
+    this.annexElementsNgModel.map(item => {
+      if (item.IdPackageAttendu === id && item.IsValid !== 'same') {
+        console.log(item);
+        checked.push(item);
+      }
+    });
+    console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
+    if (checked.length > 0) {
+      return true;
+    } else {
+      console.log('non non non non');
+      return false;
+    }
   }
-/******************************** GET ANNEXES ELEMENTS *******************************/
 
-  getAnnexElementsFicheMateriel(IdFicheMateriel) {
-    this.annexElementsService
-      .getAnnexElementsFicheMateriel(IdFicheMateriel)
-      .subscribe(data => {
-        this.annexElementModel = data;
-        console.log(data);
-        // this.annexElementModel.map(item => {
-        //   item.IsValid = 'same';
-        // });
-        // console.log(this.annexElementModel);
-      });
+// click checkbox
+  changeResetModel(IdLibElementAnnexes) {
+    this.annexElementsNgModel.map(item => {
+      if (item.IdPackageAttendu === IdLibElementAnnexes) {
+        if (item.IsValid === 'same') {
+          item.IsValid = true;
+        } else {
+          item.IsValid = !item.IsValid;
+        }
+      }
+    });
+    this.newStateElementsAnnexNgModel.emit(this.annexElementsNgModel);
+    console.log('this.annexElementsNgModel', this.annexElementsNgModel);
+    console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
   }
 
-    getAnnexElementsCategories() {
+/*************************************/
+
+/*****************************************************************************************/
+/******************************** GET LIB ANNEXES ELEMENTS *******************************/
+/*****************************************************************************************/
+
+  getAnnexElementsCategories() {
     this.annexElementsService
       .getAnnexElementsCategories()
       .subscribe(data => {
@@ -119,33 +146,30 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
       });
   }
 
-  /************************** Buttons 'Elements annexes' *****************************/
+/*****************************************************************************************/
 
-  checkModifiedElementAnnex(annexElementArray, value, state) {
-    let modifiedElement = [];
-    annexElementArray.map(item => {
-      if (state === 'same') {
-        if (item.IsValid === value) {
-          modifiedElement.push(item);
-        }
-      } else if (state === 'different') {
-        if (item.IsValid !== value) {
-          modifiedElement.push(item);
-        }
-      }
-    });
-    if (modifiedElement.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+/************************** Buttons 'Elements annexes' *****************************/
 
-  resetElementAnnex(annexElementArray, value) {
-    return annexElementArray.map(item => {
-      item.IsValid = value;
-    });
-  }
+  // checkModifiedElementAnnex(annexElementArray, value, state) {
+  //   let modifiedElement = [];
+  //   annexElementArray.map(item => {
+  //     if (state === 'same') {
+  //       if (item.IsValid === value) {
+  //         modifiedElement.push(item);
+  //       }
+  //     } else if (state === 'different') {
+  //       if (item.IsValid !== value) {
+  //         modifiedElement.push(item);
+  //       }
+  //     }
+  //   });
+  //   if (modifiedElement.length > 0) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
   /********************************************************************************/
 
 }

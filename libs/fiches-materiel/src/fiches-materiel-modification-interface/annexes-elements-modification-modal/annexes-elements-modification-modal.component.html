@@ -54,7 +54,9 @@
                     <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
                         <input 
                             id="{{item.IdLibElementAnnexes}}" 
-                            name="{{item.Libelle}}" 
+                            name="{{item.Libelle}}"
+                            (click)="changeResetModel(item.IdLibElementAnnexes)"
+                            [checked]="displayCheckedOption(item.IdLibElementAnnexes)"
                             type="checkbox">
                         <label for="{{item.IdLibElementAnnexes}}">
                         {{item.Libelle}}

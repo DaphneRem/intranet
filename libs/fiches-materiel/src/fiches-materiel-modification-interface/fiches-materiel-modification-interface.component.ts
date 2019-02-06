@@ -133,6 +133,9 @@ export class FichesMaterielModificationInterfaceComponent
     'DateAcceptation',
     'ReceptionAccesLabo'
   ];
+  public annexElementsNgModel: Object;
+  public allAnnexElementsFicheMateriel = [];
+
   public allFichesMateriel = [];
   public allIdSelectedFichesMateriel = [];
   public dataIdFicheMaterielReady = false;
@@ -171,7 +174,7 @@ export class FichesMaterielModificationInterfaceComponent
     DateCreation: this.valueNotToChangeLibelle,
     DateModification: this.valueNotToChangeLibelle,
     CommentairesDateLivraison: this.valueNotToChangeLibelle,
-    CommentairesStatutEtape: this.valueNotToChangeLibelle,
+    CommentairesStatutEtape: this.valueNotToChangeLibelle
     // Fiche_Mat_ElementsAnnexes: [],
     // Fiche_Mat_LibRetourOri: this.valueNotToChangeLibelle,
     // Fiche_Mat_LibStatutElementsAnnexes: this.valueNotToChangeLibelle,
@@ -211,8 +214,15 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
+  displayStateElementsAnnexNgModel(event) {
+    this.annexElementsNgModel = event;
+    console.log('event from modal elements annexes : ', event);
+    console.log('this.annexElementsNgModel from modal elements annexes : ', this.annexElementsNgModel);
+  }
+
   displayModificationMessage(event) {
     this.modificationMessage = event;
+    this.allAnnexElementsFicheMateriel = [];
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
     this.initValueSteps = true;
     // this.changeDateFormat(event);
@@ -221,12 +231,13 @@ export class FichesMaterielModificationInterfaceComponent
     console.log(this.newObject);
   }
 
-
-  disabledDeadline() { // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
+  disabledDeadline() {
+    // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
     if (
       this.newObject.IdLibEtape === 20 ||
       this.newObject.IdLibEtape === 21 ||
-      this.newObject.IdLibEtape === 24) {
+      this.newObject.IdLibEtape === 24
+    ) {
       return true;
     } else {
       return false;
@@ -337,7 +348,11 @@ export class FichesMaterielModificationInterfaceComponent
 
     let defaultFormat = 'dd-mm-yyyy';
     if (this.selectionType === 'one') {
-      if (this.newObject.DateRetourOri !== undefined && this.newObject.DateRetourOri !== null) { // DATE RETOUR ORI
+      if (
+        this.newObject.DateRetourOri !== undefined &&
+        this.newObject.DateRetourOri !== null
+      ) {
+        // DATE RETOUR ORI
         this.retourDateOriNgFormat = {
           year: new Date(this.newObject.DateRetourOri).getFullYear(),
           month: new Date(this.newObject.DateRetourOri).getMonth() + 1,
@@ -347,18 +362,30 @@ export class FichesMaterielModificationInterfaceComponent
       } else {
         this.newObject.DateRetourOri = defaultFormat;
       }
-      if (this.newObject.Deadline !== undefined && this.newObject.Deadline !== null) {// DATE DEADLINE
+      if (
+        this.newObject.Deadline !== undefined &&
+        this.newObject.Deadline !== null
+      ) {
+        // DATE DEADLINE
         this.deadLineNgFormat = {
           year: new Date(this.newObject.Deadline).getFullYear(),
           month: new Date(this.newObject.Deadline).getMonth() + 1,
           day: new Date(this.newObject.Deadline).getDate()
         };
         this.newObject.Deadline = this.deadLineNgFormat;
-        console.log(`${this.newObject.Deadline.year}-${this.newObject.Deadline.month}-${this.newObject.Deadline.day}T00:00:00`);
+        console.log(
+          `${this.newObject.Deadline.year}-${this.newObject.Deadline.month}-${
+            this.newObject.Deadline.day
+          }T00:00:00`
+        );
       } else {
         this.newObject.Deadline = defaultFormat;
       }
-      if (this.newObject.DateLivraison !== undefined && this.newObject.DateLivraison !== null) {// DATE LIVRAISON
+      if (
+        this.newObject.DateLivraison !== undefined &&
+        this.newObject.DateLivraison !== null
+      ) {
+        // DATE LIVRAISON
         this.livraisonDateNgFormat = {
           year: new Date(this.newObject.DateLivraison).getFullYear(),
           month: new Date(this.newObject.DateLivraison).getMonth() + 1,
@@ -368,7 +395,11 @@ export class FichesMaterielModificationInterfaceComponent
       } else {
         this.newObject.DateLivraison = defaultFormat;
       }
-      if (this.newObject.DatePremiereDiff !== undefined && this.newObject.DatePremiereDiff !== null) { // DATE PREMIERE DIFF
+      if (
+        this.newObject.DatePremiereDiff !== undefined &&
+        this.newObject.DatePremiereDiff !== null
+      ) {
+        // DATE PREMIERE DIFF
         this.diffDateNgFormat = {
           year: new Date(this.newObject.DatePremiereDiff).getFullYear(),
           month: new Date(this.newObject.DatePremiereDiff).getMonth() + 1,
@@ -378,7 +409,11 @@ export class FichesMaterielModificationInterfaceComponent
       } else {
         this.newObject.DatePremiereDiff = defaultFormat;
       }
-      if (this.newObject.DateAcceptation !== undefined && this.newObject.DateAcceptation !== null) { // DATE ACCEPTATION
+      if (
+        this.newObject.DateAcceptation !== undefined &&
+        this.newObject.DateAcceptation !== null
+      ) {
+        // DATE ACCEPTATION
         this.acceptationDateNgFormat = {
           year: new Date(this.newObject.DateAcceptation).getFullYear(),
           month: new Date(this.newObject.DateAcceptation).getMonth() + 1,
@@ -388,7 +423,11 @@ export class FichesMaterielModificationInterfaceComponent
       } else {
         this.newObject.DateAcceptation = defaultFormat;
       }
-      if (this.newObject.ReceptionAccesLabo !== undefined && this.newObject.ReceptionAccesLabo !== null) { // DATE RECEPTION ACCES LABO
+      if (
+        this.newObject.ReceptionAccesLabo !== undefined &&
+        this.newObject.ReceptionAccesLabo !== null
+      ) {
+        // DATE RECEPTION ACCES LABO
         this.accLaboDateNgFormat = {
           year: new Date(this.newObject.ReceptionAccesLabo).getFullYear(),
           month: new Date(this.newObject.ReceptionAccesLabo).getMonth() + 1,
@@ -419,9 +458,12 @@ export class FichesMaterielModificationInterfaceComponent
         this.allFichesMateriel.push(data[0]);
         this.initialFichesMateriel.push(data[0]);
         if (length === 1) {
+          // selectionType === 'one
           this.getQualiteFicheMateriel(id);
           this.getVersionFicheMateriel(id);
-          this.getAnnexElementsFicheMateriel(id);
+          this.getAnnexElementsFicheMateriel(id, index, length);
+        } else {
+          this.getAnnexElementsFicheMateriel(id, index, length);
         }
         if (index === length - 1) {
           this.displayNewObject(length, data[0]);
@@ -447,25 +489,21 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   getQualiteFicheMateriel(id) {
-    this.qualiteService
-      .getQualiteFicheMateriel(id)
-      .subscribe(data => {
-        this.qualiteFM = data;
-        this.qualiteFmReady = true;
-        console.log('qualité from FM :');
-        console.log(data);
-      });
+    this.qualiteService.getQualiteFicheMateriel(id).subscribe(data => {
+      this.qualiteFM = data;
+      this.qualiteFmReady = true;
+      console.log('qualité from FM :');
+      console.log(data);
+    });
   }
 
   // versionArrayIdExist
   getVersionFicheMateriel(id) {
     // Get Version from Fiche Materiel
-    this.versionService
-      .getVersionFicheMateriel(id)
-      .subscribe(data => {
-        this.versionFicheMateriel = data;
-        this.versionFmReady = true;
-        console.log(data);
+    this.versionService.getVersionFicheMateriel(id).subscribe(data => {
+      this.versionFicheMateriel = data;
+      this.versionFmReady = true;
+      console.log(data);
     });
   }
 
@@ -501,7 +539,6 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
-
   displayCheckedQualite(id) {
     let checked = [];
     // console.log(this.qualiteFM);
@@ -529,8 +566,8 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
 
-                  //   (click)="changeModelVersion(item.id_version)"
-                  // [checked]="displayCheckedVersion(item.id_version)"
+  //   (click)='changeModelVersion(item.id_version)'
+  // [checked]='displayCheckedVersion(item.id_version)'
   displayCheckedVersion(id) {
     let checked = [];
     // console.log(this.versionFicheMateriel);
@@ -568,7 +605,7 @@ export class FichesMaterielModificationInterfaceComponent
         let id = `id${data[data.indexOf(item)].IdLibstatut}`;
         this.steps[id].push(item);
       });
-      Object.keys(this.steps).map((item) => {
+      Object.keys(this.steps).map(item => {
         this.steps[item].sort((a, b) => a.ordre - b.ordre);
       });
       console.log(this.steps);
@@ -618,7 +655,6 @@ export class FichesMaterielModificationInterfaceComponent
         console.log(this.steps);
         if (i === this.status.length - 1) {
           this.getStepsLib();
-
         }
       }
       this.statusReady = true;
@@ -638,55 +674,60 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   getRetourOriLib() {
-    this.retourOriLibService
-      .getRetourOri()
-      .subscribe(data => {
-        this.retourOri = data;
-        console.log(data);
-        this.retourOriReady = true;
-      });
+    this.retourOriLibService.getRetourOri().subscribe(data => {
+      this.retourOri = data;
+      console.log(data);
+      this.retourOriReady = true;
+    });
   }
 
   getQualiteLib() {
-    this.qualiteService
-      .getQualiteLib()
-      .subscribe(data => {
-        this.qualiteLib = data;
-        console.log('get qualité lib :');
-        console.log(data);
-        this.qualiteReady = true;
-      });
+    this.qualiteService.getQualiteLib().subscribe(data => {
+      this.qualiteLib = data;
+      console.log('get qualité lib :');
+      console.log(data);
+      this.qualiteReady = true;
+    });
   }
 
   getVersionLib() {
-    this.versionService
-      .getVersionLib()
-      .subscribe(data => {
-        this.versionLib = data;
-        console.log(data);
-      });
+    this.versionService.getVersionLib().subscribe(data => {
+      this.versionLib = data;
+      console.log(data);
+    });
   }
 
   /***********************************************************************************/
   /***************************** ANNEXES ELEMENTS ************************************/
 
-
-  getAnnexElementsFicheMateriel(IdFicheMateriel) { // lancée en même temps que le get FM
+  getAnnexElementsFicheMateriel(IdFicheMateriel, index, length) {
+    // lancée en même temps que le get FM
+    console.log(IdFicheMateriel);
+    console.log('CALL GET ELEMENTS ANNEXES FICHES MATERIEL ------------------- !!!');
     this.annexElementsService
       .getAnnexElementsFicheMateriel(IdFicheMateriel)
       .subscribe(data => {
         this.annexElementsFicheMateriel = data;
-        console.log(data);
+          this.allAnnexElementsFicheMateriel.push(data);
+          if (index === (length - 1)) {
+            this.displayAnnexElementNgModel();
+          }
       });
   }
 
+  displayAnnexElementNgModel() {
+    this.annexElementsNgModel = this.annexElementsFicheMateriel.map(item => ({
+      IdPackageAttendu: item.IdPackageAttendu,
+      IsValid: 'same'
+    }));
+    console.log('annexElementsNgModel : ', this.annexElementsNgModel);
+  }
+
   getAnnexElementsCategories() {
-    this.annexElementsService
-      .getAnnexElementsCategories()
-      .subscribe(data => {
-        this.annexElementsCategories = data;
-        console.log(data);
-      });
+    this.annexElementsService.getAnnexElementsCategories().subscribe(data => {
+      this.annexElementsCategories = data;
+      console.log(data);
+    });
   }
 
   getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes) {
@@ -742,20 +783,35 @@ export class FichesMaterielModificationInterfaceComponent
     if (this.firstClick) {
       if (this.steps['id' + this.newObject.IdLibstatut].length > 0) {
         console.log(this.steps['id' + this.newObject.IdLibstatut]);
-        if (this.newObject.IdLibstatut === 2) { // STATUT ACCEPTE
-          if (this.newObject.RetourOri === 1) { // retour ori à faire (1)
-            this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][1].IdLibEtape; // IdLibEtape: 15, Libelle: "Retour Ori"
-              console.log('accepté et retour ori a faire ===> ');
-          } else { // retour ori !== "à faire"
-            this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][3].IdLibEtape; // IdLibEtape: 20, Libelle: "Terminé"
+        if (this.newObject.IdLibstatut === 2) {
+          // STATUT ACCEPTE
+          if (this.newObject.RetourOri === 1) {
+            // retour ori à faire (1)
+            this.newObject.IdLibEtape = this.steps[
+              'id' + this.newObject.IdLibstatut
+            ][1].IdLibEtape; // IdLibEtape: 15, Libelle: 'Retour Ori'
+            console.log('accepté et retour ori a faire ===> ');
+          } else {
+            // retour ori !== 'à faire'
+            this.newObject.IdLibEtape = this.steps[
+              'id' + this.newObject.IdLibstatut
+            ][3].IdLibEtape; // IdLibEtape: 20, Libelle: 'Terminé'
           }
-        } else if (this.newObject.IdLibstatut === 3) { // STATUT ANNULE
-          this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][1].IdLibEtape; // IdLibEtape: 21, Libelle: "Terminé"
-        } else if (this.newObject.IdLibstatut === 5) { // STATUT Traité par un autre service
-          this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][2].IdLibEtape;
-          // IdLibEtape: 24, Libelle: "Traité par un autre service"
+        } else if (this.newObject.IdLibstatut === 3) {
+          // STATUT ANNULE
+          this.newObject.IdLibEtape = this.steps[
+            'id' + this.newObject.IdLibstatut
+          ][1].IdLibEtape; // IdLibEtape: 21, Libelle: 'Terminé'
+        } else if (this.newObject.IdLibstatut === 5) {
+          // STATUT Traité par un autre service
+          this.newObject.IdLibEtape = this.steps[
+            'id' + this.newObject.IdLibstatut
+          ][2].IdLibEtape;
+          // IdLibEtape: 24, Libelle: 'Traité par un autre service'
         } else {
-          this.newObject.IdLibEtape = this.steps['id' + this.newObject.IdLibstatut][0].IdLibEtape;
+          this.newObject.IdLibEtape = this.steps[
+            'id' + this.newObject.IdLibstatut
+          ][0].IdLibEtape;
         }
       }
       this.firstClick = false;

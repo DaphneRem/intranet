@@ -22,6 +22,7 @@ import { AnnexElementFicheMAteriel } from '../../models/annex-element';
 export class FichesMaterielModificationActionComponent implements OnInit {
 
   @Input() showAffectedEps;
+  @Input() annexElementsNgModel;
   @Input() newObject;
   @Input() allFichesMateriel;
   @Input() selectionType;
@@ -33,6 +34,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() qualiteFM;
   @Input() annexElementsFicheMateriel;
   @Input() versionFicheMateriel;
+  @Input() allAnnexElementsFicheMateriel;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
 
@@ -42,7 +44,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   public qualiteToUpdate = [];
   public qualiteToPost = [];
   public closeInterface: boolean;
-
+  public newElementSAnnex;
   public versionToUpdate: any = [];
   public versionToPost: any = [];
 
@@ -56,9 +58,6 @@ export class FichesMaterielModificationActionComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.newObject);
-    console.log(this.allFichesMateriel);
-    console.log(this.annexElementsFicheMateriel);
-    console.log(this.qualiteFM);
   }
 
   modifFichesMateriel(closeAction) {
@@ -223,7 +222,9 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     this.fichesMaterielService.updateFicheMateriel([e]).subscribe(data => {
       if (data) {
         console.log('succes PUT fiche materiel');
+        console.log('data to PUT : ', this.annexElementsFicheMateriel);
         console.log(data);
+        console.log(this.annexElementsFicheMateriel);
         this.annexElementsService
           .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
           .subscribe(annexesElements => {
@@ -247,6 +248,25 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     });
 
     // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
+  }
+
+  putAnnexElementReset() {
+    console.log(this.annexElementsNgModel);
+    console.log(this.allIdSelectedFichesMateriel);
+    console.log(this.allFichesMateriel);
+    // this.annexElementsService
+    //   .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+    //   .subscribe(annexesElements => {
+    //     console.log(annexesElements);
+    //     if (annexesElements) {
+    //       console.log('succes PUT annexesElements');
+    //       console.log(annexesElements);
+    //       this.actionAfterSave();
+    //     } else {
+    //       console.log('error PUT annexesElements');
+    //       console.log(annexesElements);
+    //     }
+    //   });
   }
 
   checkNewObjectModif() {
@@ -303,21 +323,93 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       item = Object.assign({}, item, this.changedValues);
       return item;
     });
-    console.log(this.multiDataToUpdate);
+    console.log('this.multiDataToUpdate : ', this.multiDataToUpdate);
     // this.multiDataToUpdate.map(item => { // patch sur chaque fiche Matériel
     //   this.patchFichesMateriel([item]);
     // });
+    console.log(this.allAnnexElementsFicheMateriel);
     this.patchFichesMateriel(this.multiDataToUpdate); // patch sur tableau de fiches Matériel (partielles)
   }
 
+
+
   patchFichesMateriel(fichesMateriel) {
+    console.log('patch FM function => fichesMateriel (args) : ', fichesMateriel);
+    console.log('patch FM function => this.annexElementsNgModel : ', this.annexElementsNgModel);
     this.fichesMaterielService
       .patchFicheMateriel(fichesMateriel)
       .subscribe(data => {
         if (data) {
-          this.actionAfterSave();
+          this.changeValueToAnnexElementsInFM();
+          // fichesMateriel.map(item => {
+          //   console.log(item);
+          //   this.addIdFicheMaterielToElementAnnexReset(item);
+          // });
+            console.log('patch FM with success', data);
+          } else {
+            console.log('error patch FM');
+          }
+      });
+  }
+
+  changeValueToAnnexElementsInFM() {
+    let that = this;
+    console.log('PATCH FUNCTION : this.annexElementsNgModel => ', this.annexElementsNgModel);
+    console.log('PATCH FUNCTION : this.allAnnexElementsFicheMateriel => ', this.allAnnexElementsFicheMateriel);
+    this.newElementSAnnex = this.allAnnexElementsFicheMateriel.map( array => {
+      console.log('array item from this.allAnnexElementsFicheMateriel : ', array);
+      let arr = array.map(object => {
+        console.log('object item from array : ', object);
+        let isValid;
+        console.log('this.annexElementsNgModel.length :', that.annexElementsNgModel.length);
+        let currentNgModel = that.annexElementsNgModel.filter(item => item.IdPackageAttendu === object.IdPackageAttendu);
+        console.log(currentNgModel);
+        console.log(currentNgModel[0].IdPackageAttendu);
+        console.log(object.IdPackageAttendu);
+        if (currentNgModel[0].IsValid === 'same') {
+          isValid = object.IsValid;
+        } else {
+          isValid = currentNgModel[0].IsValid;
         }
+        let newItemElementAnnex = {
+          IdElementsAnnexes: object.IdElementsAnnexes,
+          IdFicheMateriel: object.IdFicheMateriel,
+          IdPackageAttendu: object.IdPackageAttendu,
+          IsValid: isValid,
+          FicheAch_Lib_PackageAttendu: null,
+          Fiche_Mat_Fichemateriel: null,
+          Fiche_Mat_LibElementAnnexes: null
+        };
+        console.log(newItemElementAnnex);
+        return object = newItemElementAnnex;
+      });
+      return arr;
+    });
+    console.log(this.newElementSAnnex);
+    this.newElementSAnnex.map(item => {
+      console.log(item);
+        let index = this.newElementSAnnex.indexOf(item);
+        this.putAnnexElementForFM(item, index, this.newElementSAnnex);
+    });
+  }
+
+  putAnnexElementForFM(elementAnnexOfFM, index, newElementSAnnex) {
+    console.log(elementAnnexOfFM);
+    this.annexElementsService
+      .putAnnexElementsFicheMateriel(elementAnnexOfFM)
+      .subscribe(data => {
         console.log(data);
+        if (data) {
+          console.log('succes PUT annexesElements => MULTI');
+          console.log(data);
+          if (index === newElementSAnnex.length - 1) {
+            console.log('Action after save');
+            this.actionAfterSave();
+          }
+        } else {
+          console.log('error PUT annexesElements => MULTI');
+          console.log(data);
+        }
       });
   }
 }

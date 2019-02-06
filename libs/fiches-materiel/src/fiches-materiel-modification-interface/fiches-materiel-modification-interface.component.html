@@ -11,6 +11,7 @@
       (modificationMessage)="displayModificationMessage($event)"
       class="creation-top"
       [showAffectedEps]="false"
+      [annexElementsNgModel]="annexElementsNgModel"
       [allFichesMateriel]="allFichesMateriel"
       [selectionType]="selectionType"
       [multiOeuvre]="multiOeuvre"
@@ -21,6 +22,7 @@
       [qualiteFM]="qualiteFM"
       [versionFicheMateriel]="versionFicheMateriel"
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
+      [allAnnexElementsFicheMateriel]="allAnnexElementsFicheMateriel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
     <!-- {{annexElementsFicheMateriel | json}} -->
@@ -560,7 +562,9 @@
           <div class="row form-group annexes-elements">
             <annexes-elements-modification-modal 
               [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
+              (newStateElementsAnnexNgModel)="displayStateElementsAnnexNgModel($event)"
               [selectionType]="selectionType"
+              [annexElementsNgModel]="annexElementsNgModel"
               [annexElementsFicheMateriel]="annexElementsFicheMateriel">
             </annexes-elements-modification-modal>
           </div>
@@ -769,6 +773,7 @@
     <fiches-materiel-modification-action
       (modificationMessage)="displayModificationMessage($event)"
       [showAffectedEps]="true"
+      [annexElementsNgModel]="annexElementsNgModel"
       [allFichesMateriel]="allFichesMateriel"
       [selectionType]="selectionType"
       [multiOeuvre]="multiOeuvre"
@@ -776,6 +781,7 @@
       [initialFichesMateriel]="initialFichesMateriel"
       [valueNotToChangeLibelle]="valueNotToChangeLibelle"
       [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
+      [allAnnexElementsFicheMateriel]="allAnnexElementsFicheMateriel"
       [qualiteFM]="qualiteFM"
       [versionFicheMateriel]="versionFicheMateriel"
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
