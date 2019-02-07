@@ -1,20 +1,23 @@
 
 // TODO : ajouter url définitive de prod (importer à partir du fichier privates-url.ts)
 
-import { rootUrlDiffDates, rootUrl, rootUrlMateriel} from '../../../../../.privates-url';
+import { rootUrlDiffDates, rootUrl, rootUrlMateriel, rootUrlKPlanner} from '../../../../../.privates-url';
 
 let distUrl: String = '';
 let distUrl_DiffDates: String = '';
 let distUrl_Materiel: String = '';
+let distUrl_KPlanner: String = '';
 
 if (document.location.host.indexOf('localhost') !== -1) {
   distUrl =  '';
   distUrl_DiffDates = '#';
   distUrl_Materiel = '';
+  distUrl_KPlanner = '';
 } else {
   distUrl =  rootUrl + '/#';
   distUrl_DiffDates = rootUrlDiffDates + '/#';
   distUrl_Materiel = rootUrlMateriel + '/#';
+  distUrl_KPlanner = rootUrlKPlanner + '/#';
 }
 
 export const MENUITEMS = [
@@ -94,7 +97,7 @@ export const MENUITEMS = [
                     {
                         state: 'Voir mon planning',
                         name: 'Voir mon planning',
-                        route: `${distUrl_Materiel}/k-planner`
+                        route: `${distUrl_KPlanner}/k-planner`
                     }
                 ]
             }
