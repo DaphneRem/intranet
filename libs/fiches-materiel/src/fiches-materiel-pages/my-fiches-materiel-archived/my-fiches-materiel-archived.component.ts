@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CustomIconBadge } from '@ab/custom-icons';
 
 @Component({
-  selector: 'fiches-materiel-archived',
-  templateUrl: './fiches-materiel-archived.component.html',
-  styleUrls: ['./fiches-materiel-archived.component.scss']
+  selector: 'my-fiches-materiel-archived',
+  templateUrl: './my-fiches-materiel-archived.component.html',
+  styleUrls: ['./my-fiches-materiel-archived.component.scss']
 })
-export class FichesMaterielArchivedComponent implements OnInit {
+export class MyFichesMaterielArchivedComponent implements OnInit {
 
   public headerTableLinkExist = false;
 

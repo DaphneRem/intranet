@@ -22,7 +22,7 @@ import {
 } from './fiches-materiel-pages/fiches-materiel-widget-view/fiches-materiel-widget-view.component';
 import { MyFichesMaterielComponent } from './fiches-materiel-pages/my-fiches-materiel/my-fiches-materiel.component';
 import { MyFichesMaterielAllComponent } from './fiches-materiel-pages/my-fiches-materiel-all/my-fiches-materiel-all.component';
-import { FichesMaterielArchivedComponent } from './fiches-materiel-pages/fiches-materiel-archived/fiches-materiel-archived.component';
+import { MyFichesMaterielArchivedComponent } from './fiches-materiel-pages/my-fiches-materiel-archived/my-fiches-materiel-archived.component';
 
 // components tables imports
 import { FichesAchatTableComponent } from './fiches-achat-table/fiches-achat-table.component';
@@ -78,6 +78,7 @@ import {
 import {
   AnnexesElementsDetailsModalComponent
 } from './fiche-materiel-details-view/annexes-elements-details-modal/annexes-elements-details-modal.component';
+import { FichesMaterielAllComponent } from './fiches-materiel-pages/fiches-materiel-all/fiches-materiel-all.component';
 
 
 @NgModule({
@@ -109,7 +110,7 @@ import {
     ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
-    FichesMaterielArchivedComponent,
+    FichesMaterielAllComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
     FicheMaterielDetailsViewComponent,
@@ -124,10 +125,11 @@ import {
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     MyFichesMaterielAllComponent,
+    MyFichesMaterielArchivedComponent,
     SearchFormComponent,
     StepsStatusCommentModalComponent,
     WarningAcceptedStatusComponent,
-    AnnexesElementsDetailsModalComponent
+    AnnexesElementsDetailsModalComponent,
   ],
   exports: [
     AffectedEpisodesModalComponent,
@@ -139,7 +141,7 @@ import {
     ExpectedPackageModalComponent,
     FichesAchatDetailsComponent,
     FichesAchatTableComponent,
-    FichesMaterielArchivedComponent,
+    FichesMaterielAllComponent,
     FichesMaterielCreationComponent,
     FicheMaterielDetailsComponent,
     FicheMaterielDetailsViewComponent,
@@ -154,6 +156,7 @@ import {
     ModalRecapFicheAchatComponent,
     MyFichesMaterielComponent,
     MyFichesMaterielAllComponent,
+    MyFichesMaterielArchivedComponent,
     SearchFormComponent,
     StepsStatusCommentModalComponent,
     WarningAcceptedStatusComponent,

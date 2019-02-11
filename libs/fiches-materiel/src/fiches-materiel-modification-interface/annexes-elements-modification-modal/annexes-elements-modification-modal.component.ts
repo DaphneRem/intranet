@@ -12,7 +12,10 @@ import {
 @Component({
   selector: 'annexes-elements-modification-modal',
   templateUrl: './annexes-elements-modification-modal.component.html',
-  styleUrls: ['./annexes-elements-modification-modal.component.scss'],
+  styleUrls: [
+    './annexes-elements-modification-modal.component.scss',
+    '../../../../../assets/icon/icofont/css/icofont.scss'
+  ],
   providers: [AnnexElementsService]
 })
 export class AnnexesElementsModificationModalComponent implements OnInit {
@@ -84,16 +87,14 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
   displayCheckedOption(id) {
     let checked = [];
     this.annexElementsNgModel.map(item => {
-      if (item.IdPackageAttendu === id && item.IsValid !== 'same') {
+      if ((item.IdPackageAttendu === id) && (item.IsValid !== 'same') && (item.IsValid !== false)) {
         console.log(item);
         checked.push(item);
       }
     });
-    console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
     if (checked.length > 0) {
       return true;
     } else {
-      console.log('non non non non');
       return false;
     }
   }
@@ -110,8 +111,26 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
       }
     });
     this.newStateElementsAnnexNgModel.emit(this.annexElementsNgModel);
-    console.log('this.annexElementsNgModel', this.annexElementsNgModel);
-    console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
+    // console.log('this.annexElementsNgModel', this.annexElementsNgModel);
+    // console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
+  }
+
+// clear all data (all values = false)
+  clearAllAnnexElementsValue() {
+    console.log('ACTION : clearAllAnnexElementsValue()');
+    this.annexElementsNgModel.map(item => {
+      item.IsValid = false;
+    });
+    console.log('this.annexElementsNgModel Afeter clear action : ', this.annexElementsNgModel);
+  }
+
+// reset all data (all values = 'same')
+  resetAllAnnexElementsValue() {
+    console.log('ACTION : resetAllAnnexElementsValue()');
+    this.annexElementsNgModel.map(item => {
+      item.IsValid = 'same';
+    });
+    console.log('this.annexElementsNgModel Afeter reset action : ', this.annexElementsNgModel);
   }
 
 /*************************************/

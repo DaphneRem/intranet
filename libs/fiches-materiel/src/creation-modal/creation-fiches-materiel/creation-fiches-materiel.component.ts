@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Store } from '@ngrx/store';
+// import { App } from '../../../../../apps/fiches-materiel/src/app/+state/app.interfaces';
 
 // service import
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
@@ -13,7 +15,11 @@ import { FicheAchat } from '@ab/fiches-achat/src/models/fiche-achat';
   selector: 'creation-fiches-materiel',
   templateUrl: './creation-fiches-materiel.component.html',
   styleUrls: ['./creation-fiches-materiel.component.scss'],
-  providers: [FichesMaterielService, FichesAchatService]
+  providers: [
+    FichesMaterielService,
+    FichesAchatService,
+    Store
+]
 })
 export class CreationFichesMaterielComponent implements OnInit {
   @Input() detailsFicheAchat;
@@ -27,20 +33,31 @@ export class CreationFichesMaterielComponent implements OnInit {
   public fichesMateriel: any;
   public creationState: Boolean = false;
 
+  public user;
+
   // dealine calcul
   public today;
   public disabled: boolean;
 
   constructor(
     private fichesMaterielService: FichesMaterielService,
-    private fichesAchatService: FichesAchatService
+    private fichesAchatService: FichesAchatService,
+    private store: Store<Object>
   ) {}
 
   ngOnInit() {
+    this.storeAppSubscription();
     console.log(this.oeuvreWithGaps);
     console.log('detail FA : ');
     console.log(this.detailsFicheAchat);
     console.log(this.myFicheAchat);
+  }
+
+  storeAppSubscription() {
+    this.store.subscribe(data => {
+        this.user = data['app'].user.shortUserName;
+        console.log(this.user);
+    });
   }
 
   /** POST FICHES MATERIEL **/
@@ -62,11 +79,18 @@ export class CreationFichesMaterielComponent implements OnInit {
 
   /** DELETE FICHES MATERIEL **/
   deleteOldFichesMateriel(newFicheMateriel, idFicheAchatDetail, index, lastIndex) {
-    console.log(newFicheMateriel[0]);
+    console.log(newFicheMateriel);
     console.log(this.detailsFicheAchat);
+    let ficheMateriel;
+    if (newFicheMateriel.length > 0) {
+        ficheMateriel = newFicheMateriel[0];
+    } else {
+      ficheMateriel = newFicheMateriel;
+    }
+    console.log(ficheMateriel);
     let ficheAchatDetail;
     this.detailsFicheAchat.map(item => {
-      if (item.id_fiche_det === newFicheMateriel[0].IdFicheDetail) {
+      if (item.id_fiche_det === ficheMateriel.IdFicheDetail) {
         ficheAchatDetail = item;
       }
     });
@@ -78,7 +102,7 @@ export class CreationFichesMaterielComponent implements OnInit {
                   console.log(this.myFicheAchat);
 
           this.updateFicheAchatDetailImport(
-            newFicheMateriel[0].IdFicheDetail,
+            ficheMateriel.IdFicheDetail,
             ficheAchatDetail
           );
           if (index === lastIndex) {
@@ -154,7 +178,9 @@ export class CreationFichesMaterielComponent implements OnInit {
     this.oeuvreWithGaps.forEach(oeuvre => {
       this.fichesMateriel = [];
       this.checkAllNumbers(oeuvre, oeuvre.gaps);
+      console.log(oeuvre.numFichesMateriel);
       for (let i = 0; i < oeuvre.numFichesMateriel.length; i++) {
+        console.log(this.user);
         this.fichesMateriel.push(
           new NewFicheMateriel({
             IdFicheAchat: oeuvre.id_fiche,
@@ -167,7 +193,9 @@ export class CreationFichesMaterielComponent implements OnInit {
             IdSupport: '',
             NumProgram: '',
             NumEpisode: oeuvre.numFichesMateriel[i], // calcul automatique : erreur
-            DateCreation: new Date().toJSON().slice(0, 19)
+            DateCreation: new Date().toJSON().slice(0, 19),
+            UserCreation: this.user,
+            SuiviPar: this.user
           })
         );
       }

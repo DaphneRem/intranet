@@ -3,7 +3,8 @@ export interface AddConnectedUser {
   payload: {
     user: {
       username: string,
-      name: string
+      name: string,
+      shortUserName: string
     }
   };
 }
@@ -13,7 +14,8 @@ export interface DeleteConnectedUser {
   payload: {
     user: {
       username: string,
-      name: string
+      name: string,
+      shortUserName: string
     }
   };
 }

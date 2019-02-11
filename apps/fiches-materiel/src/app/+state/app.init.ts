@@ -4,6 +4,7 @@ export const appInitialState: App = {
   // fill it initial state here
   user : {
     username: '',
-    name: ''
+    name: '',
+    shortUserName: ''
   }
 };

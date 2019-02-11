@@ -18,7 +18,8 @@ export function appReducer(state: App, action: UserAction): App {
       return {
         user : {
           name: '',
-          username: ''
+          username: '',
+          shortUserName: ''
         }
       };
     }

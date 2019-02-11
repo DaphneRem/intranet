@@ -43,6 +43,10 @@ import { Status } from '../../models/status';
 export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
+  @Input() tableTitle?: string;
+  @Input() daysNumber?: number;
+  @Input() isArchived?: number;
+  @Input() data?;
 
   public globalStore;
   public storeFichesToModif;
@@ -59,8 +63,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   // activatedRoute parameters
   private sub: any;
-  public columnParams;
-  public orderParams;
+  public columnParams = 0;
+  public orderParams = 'asc';
 
   public today;
   public todayDate: Date;
@@ -125,9 +129,14 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.customdatatablesOptions.tableTitle = this.tableTitle;
+    console.log(this.route);
     this.sub = this.route.params.subscribe(params => {
-      this.columnParams = +params['columnIndex'];
-      this.orderParams = params['order'];
+      console.log(params);
+      if (params.hasOwnProperty('columnIndex') && params.hasOwnProperty('order')) {
+        this.columnParams = +params['columnIndex'];
+        this.orderParams = params['order'];
+      }
     });
     this.today = new Date().toJSON().slice(0, 19);
     this.todayDate = new Date(this.today);
@@ -307,47 +316,49 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   displayAction() {
     this.customdatatablesOptions.dbClickAction = (dataRow) => {
-      this.router.navigate([`/material-sheets/my-material-sheets/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}`]);
+      console.log(this.route);
+      let paths = this.route.snapshot.routeConfig.path;
+      let path = paths.split('/');
+      path.splice(-2, 2);
+      console.log(path);
+      let value;
+      if (path.length > 1) {
+        value = path.join('/');
+      } else {
+        value = path[0];
+      }
+      console.log(path);
+      this.router.navigate([`/material-sheets/${value}/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}`]);
     };
     this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour avoir une vue détaillée';
     console.log('display action ok');
   }
 
   getFichesMateriel() {
-    this.fichesMaterielService
-      .getFichesMateriel()
-      .subscribe(data => {
-        if (!data) {
-          this.customdatatablesOptions.data = [];
-          this.displayColumns();
-          this.dataReady = true;
-        } else {
-          // data.map(e => {
-          //   this.checkDeadline(data, e);
-          // });
-          console.log(data);
-          this.customdatatablesOptions.data = data;
-          this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
-          this.displayColumns();
-        }
-    });
+    this.customdatatablesOptions.data = this.data;
+    this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
+    this.displayColumns();
+    // this.fichesMaterielService
+    //   .getFichesMateriel()
+    //   .subscribe(data => {
+    //     if (!data) {
+    //       this.customdatatablesOptions.data = [];
+    //       this.displayColumns();
+    //       this.dataReady = true;
+    //     } else {
+    //       // data.map(e => {
+    //       //   this.checkDeadline(data, e);
+    //       // });
+    //       console.log(data);
+    //       this.customdatatablesOptions.data = data;
+    //       this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
+    //       this.displayColumns();
+    //     }
+    // });
   }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
-  }
-
-  getFichesAchat(number) {
-    this.fichesAchatService
-      .getFichesAchat(number)
-      .subscribe(data => {
-        if (!data) {
-          this.customdatatablesOptions.data = [];
-        } else {
-          this.customdatatablesOptions.data = data;
-        }
-        this.dataReady = true;
-    });
   }
 
   displayColumns() {

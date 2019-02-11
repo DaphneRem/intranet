@@ -4,14 +4,15 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { Page404Component } from '@ab/error-pages';
 import {
-  FichesMaterielArchivedComponent,
+  MyFichesMaterielArchivedComponent,
   FichesMaterielCreationComponent,
   FicheMaterielDetailsComponent,
   FichesMaterielModificationComponent,
   FichesMaterielWidgetViewComponent,
   DisplayFichesAchatsComponent,
   MyFichesMaterielComponent,
-  MyFichesMaterielAllComponent
+  MyFichesMaterielAllComponent,
+  FichesMaterielAllComponent
 } from '@ab/fiches-materiel';
 
 const routes: Routes = [
@@ -37,18 +38,38 @@ const routes: Routes = [
       {
         path: 'my-material-sheets/:columnIndex/:order',
         component : MyFichesMaterielComponent,
-        data : { title : 'Mes Fiches Matériel'}
+        data : { title : 'Mes Fiches Matériel En Cours'}
       },
       {
-        path: 'my-materiel-sheets/archived',
-        component: FichesMaterielArchivedComponent,
+        path: 'my-material-sheets/archived/:columnIndex/:order',
+        component: MyFichesMaterielArchivedComponent,
         data: { title: 'Mes Fiches Matériel Archivées' }
       },
       {
-        path: 'my-materiel-sheets/all',
+        path: 'my-material-sheets/archived/details/:idFicheMateriel/:idFicheAchatDetails',
+        component : FicheMaterielDetailsComponent,
+        data : { title : 'Détails Fiche Matériel'}
+      },
+      {
+        path: 'my-material-sheets/all/:columnIndex/:order',
         component: MyFichesMaterielAllComponent,
         data: { title: 'Toutes Mes Fiches Matériel' }
-      }
+      },
+      {
+        path: 'my-material-sheets/all/details/:idFicheMateriel/:idFicheAchatDetails',
+        component : FicheMaterielDetailsComponent,
+        data : { title : 'Détails Fiche Matériel'}
+      },
+      {
+        path: 'all/:columnIndex/:order',
+        component: FichesMaterielAllComponent,
+        data: { title: 'Toutes les Fiches Matériel' }
+      },
+      {
+        path: 'all/details/:idFicheMateriel/:idFicheAchatDetails',
+        component : FicheMaterielDetailsComponent,
+        data : { title : 'Détails Fiche Matériel'}
+      },
     ]
   },
   {

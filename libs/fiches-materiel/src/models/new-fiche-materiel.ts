@@ -28,6 +28,7 @@ export class NewFicheMateriel {
     UserModification: string;
     DateCreation: Date;
     DateModification: Date;
+    isarchived: number;
 
         constructor(
             {
@@ -42,6 +43,8 @@ export class NewFicheMateriel {
                 NumProgram: NumProgram,
                 NumEpisode: NumEpisode,
                 DateCreation: DateCreation,
+                UserCreation: UserCreation,
+                SuiviPar: SuiviPar
             }
         ) {
             this.IdFicheAchat = IdFicheAchat,
@@ -55,8 +58,10 @@ export class NewFicheMateriel {
             this.NumProgram = NumProgram,
             this.NumEpisode = NumEpisode,
             this.DateCreation = DateCreation,
+            this.UserCreation = UserCreation,
+            this.SuiviPar = SuiviPar,
 
-            this.SuiviPar = 'User1', // par défaut : moi
+            // this.SuiviPar = 'User1', // par défaut : moi
             this.IdLibstatut = 1, // par défaut : 'en cours' (1)
             this.IdLibEtape = 1, // par défaut : '0-non commandé' (1)
             this.ReceptionAccesLabo = '', // par défaut : ''
@@ -70,8 +75,9 @@ export class NewFicheMateriel {
             this.RetourOri =  1, // par défaut : à faire (1)
             this.RetourOriDernierDelai = '', // par défaut : ''
             this.IdStatutElementsAnnexes = 1, // par défaut : à faire (1)
-            this.UserCreation = 'User1', // récupéré (par la suite) /!\
+            // this.UserCreation = 'User1', // récupéré (par la suite) /!\
             this.UserModification = '', // par défaut : ''
             this.DateModification = null;
+            this.isarchived = 0;
         }
 }

@@ -47,6 +47,10 @@
 
         <!-- SELECTION TYPE MULTI -->
         <div class="details row form-group" *ngIf="selectionType === 'multi'">
+            <div class="col-lg-12 btn-options-modification">
+                <button class="btn btn-info clear" (click)="clearAllAnnexElementsValue()"><i class="icofont icofont-close-line-circled"></i>Vider les champs</button>
+                <button class="btn btn-info reset" (click)="resetAllAnnexElementsValue()"><i class="icofont icofont-ui-reply"></i>Revenir aux valeurs d'origines</button>
+            </div>
             <div class="col-lg-12" class="categories row">
                 <div *ngFor="let category of annexElementsCategories; let i = index" class="category col-lg-6">
                 <label class="badge badge-lg bg-info">{{category.Libelle}} :</label>

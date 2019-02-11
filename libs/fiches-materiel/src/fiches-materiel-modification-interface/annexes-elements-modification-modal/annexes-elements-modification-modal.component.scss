@@ -27,6 +27,23 @@ button {
     overflow-x: hidden;
     max-height: 500px;
     // border: 1px solid #cbcbcb;
+    .btn-options-modification{
+        padding-left: 0;
+        margin-bottom: 15px;
+        .clear {
+                margin-right: 10px;
+            i {
+                font-size: 15px;
+                margin-right: 10px;
+            }
+        }
+        .reset {
+            i {
+                margin-right: 10px;
+                font-size: 13px;
+            }
+        }
+    }
     .categories {
         width: 100%;
         .badge {

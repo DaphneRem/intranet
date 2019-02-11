@@ -1,7 +1,7 @@
 export { FichesMaterielLibModule } from './src/fiches-materiel-lib.module';
 
 // export pages
-export { FichesMaterielArchivedComponent } from './src/fiches-materiel-pages/fiches-materiel-archived/fiches-materiel-archived.component';
+export { MyFichesMaterielArchivedComponent } from './src/fiches-materiel-pages/my-fiches-materiel-archived/my-fiches-materiel-archived.component';
 export { FichesMaterielCreationComponent } from './src/fiches-materiel-pages/fiches-materiel-creation/fiches-materiel-creation.component';
 export { FicheMaterielDetailsComponent } from './src/fiches-materiel-pages/fiche-materiel-details/fiche-materiel-details.component';
 export {
@@ -13,3 +13,4 @@ export { MyFichesMaterielAllComponent } from './src/fiches-materiel-pages/my-fic
 export {
     FichesMaterielModificationComponent
 } from './src/fiches-materiel-pages/fiches-materiel-modification/fiches-materiel-modification.component';
+export { FichesMaterielAllComponent } from './src/fiches-materiel-pages/fiches-materiel-all/fiches-materiel-all.component';

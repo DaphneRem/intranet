@@ -380,61 +380,52 @@ export class SchedulerComponent implements OnInit {
         if (args.data.name === 'cellClick') {
             console.log('cell click');
         }
-        if ((args.type === 'Editor') && (args.data.hasOwnProperty('AzaIsPere')) ) {
-            console.log('Editor');
-            console.log(args.data.Operateur);
-            // if (!args.data.hasOwnProperty('Operateur')) {
-            //     console.log('args.data.Operateur not wet Exist');
-            //     args.data['Operateur'] = '';
-            // }
-           if (!args.element.querySelector('.custom-field-row')) { // dblclick container
-            console.log('FIRST CALL TO EDITOR : DROWDOWNLIST CREATION');
-                let row: HTMLElement = createElement('div', { className: 'custom-field-row' });
-                let formElement: HTMLElement = <HTMLElement>args.element.querySelector('.e-schedule-form');
-                formElement.firstChild.insertBefore(row, args.element.querySelector('.e-resources-row'));
-                let container: HTMLElement = createElement('div', { className: 'custom-field-container' });
-                let inputEle: HTMLInputElement = createElement('input', {
-                    className: 'e-field', attrs: { name: 'Operateur' }
-                }) as HTMLInputElement;
-                container.appendChild(inputEle);
-                row.appendChild(container);
-
-                this.drowDownMonteurs = this.monteurDataSource.map(item => {
-                    return { text: item.Username, value: item.CodeRessource };
-                });
-                console.log(this.drowDownMonteurs);
-                this.drowDownMonteurs.unshift({ text: 'Aucun Opérateur', value: 0});
-                this.drowDownOperateurList = new DropDownList({
-                    dataSource: this.drowDownMonteurs,
-                    fields: { text: 'text', value: 'text' },
-                    value: args.data.Operateur,
-                    floatLabelType: 'Always', placeholder: 'Opérateur'
-                });
-                console.log(this.drowDownOperateurList);
-                console.log(this.drowDownOperateurList.value);
-                console.log(args);
-                console.log(args);
-                this.drowDownOperateurList.appendTo(inputEle);
-                inputEle.setAttribute('name', 'Operateur');
-                console.log(inputEle);
-                console.log(args.data.Operateur);
-                args.data.Operateur = this.drowDownOperateurList.value;
+        if (args.type === 'Editor') {
+            console.log('Open Editor');
+            let inputEle: HTMLInputElement;
+            let container: HTMLElement;
+            let containerOperateur = document.getElementsByClassName('custom-field-container');
+            if (args.data.hasOwnProperty('AzaIsPere')) {
+                if (args.data.AzaIsPere) { // dblclick container
+                    if (containerOperateur.length === 0) {
+                        this.createDrowDownOperteurInput(args, container, inputEle);
+                        this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
+                        console.log(args.data.Operateur);
+                    }
+                } else { // dblclick workorder
+                    containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
+                }
             } else {
-                this.drowDownOperateurList.value = args.data.Operateur;
-                console.log('-------------------------> else : ', this.drowDownOperateurList.value);
+                if (containerOperateur.length === 0) {
+                    this.createDrowDownOperteurInput(args, container, inputEle);
+                }
             }
-            // console.log(this.drowDownOperateurList);
-            // console.log(this.drowDownOperateurList.value);
-            // console.log(args);
-            // if ('Operateur' in args.data) {
-            //     console.log('If : args.data.Operateur');
-            //     args.data.Operateur = this.drowDownOperateurList['typedString'];
-            // } else {
-            //     console.log('ELSE : args.data.Operateur');
-            //     args.data['Operateur'] = this.drowDownOperateurList['typedString'];
-            // }
-            // console.log(args);
         }
+    }
+
+    createDrowDownOperteurInput(args, container, inputEle) {
+        let row: HTMLElement = createElement('div', { className: 'custom-field-row' });
+        let formElement: HTMLElement = <HTMLElement>args.element.querySelector('.e-schedule-form');
+        formElement.firstChild.insertBefore(row, args.element.querySelector('.e-resources-row'));
+        container = createElement('div', { className: 'custom-field-container' });
+        inputEle = createElement('input', {
+            className: 'e-field', attrs: { name: 'Operateur' }
+        }) as HTMLInputElement;
+        container.appendChild(inputEle);
+        row.appendChild(container);
+        this.drowDownMonteurs = this.monteurDataSource.map(item => {
+            return { text: item.Username, value: item.CodeRessource };
+        });
+        this.drowDownMonteurs.unshift({ text: 'Aucun Opérateur', value: 0});
+        this.drowDownOperateurList = new DropDownList({
+            dataSource: this.drowDownMonteurs,
+            fields: { text: 'text', value: 'text' },
+            value: args.data.Operateur,
+            floatLabelType: 'Always', placeholder: 'Opérateur'
+        });
+        this.drowDownOperateurList.appendTo(inputEle);
+        inputEle.setAttribute('name', 'Operateur');
+        args.data.Operateur = this.drowDownOperateurList.value;
     }
 
     openDialog(args, object, subObject, categories): void { // open workorder modal from container list
@@ -473,6 +464,10 @@ export class SchedulerComponent implements OnInit {
                 dragElementIcon[i].style.display = 'none';
             }
         }
+
+    }
+
+    createContainerWorkorder() {
 
     }
 
@@ -1178,8 +1173,9 @@ export class SchedulerComponent implements OnInit {
 
     onEventRendered(args: EventRenderedArgs): void {
         // let categoryColor: string = args.data.CategoryColor as string;
-        console.log('color', this.workOrderColor)
-        console.log('args', args)
+        // console.log('color', this.workOrderColor);
+        // console.log('args', args);
+        console.log(args);
         if (args.data.AzaIsPere ) {
             return;
         }else{

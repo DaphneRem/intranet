@@ -5,6 +5,7 @@ export interface App {
 export interface User {
   username: string;
   name: string;
+  shortUserName: string;
 }
 
 export interface AppState {

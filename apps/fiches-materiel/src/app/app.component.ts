@@ -46,6 +46,8 @@ export class AppComponent implements OnInit {
   public userName;
   public name;
   public user;
+  public userNameSplit;
+  public shortUserName;
 
   ngOnInit() {
     // check navbar.open state from store
@@ -69,14 +71,17 @@ export class AppComponent implements OnInit {
     console.log('authenticated: ' + this.adal5Service.userInfo.authenticated);
     console.log('name: ' + this.adal5Service.userInfo.profile.name);
     console.log('token: ' + this.adal5Service.userInfo.token);
-    console.log(this.adal5Service.userInfo.profile);
+    console.log(this.adal5Service.userInfo);
 
     this.userName = this.adal5Service.userInfo.username;
     this.name = this.adal5Service.userInfo.profile.name;
-
+    this.userNameSplit = this.userName.split('@');
+    this.shortUserName = this.userNameSplit[0];
+    console.log(this.shortUserName);
     this.user = {
       name: this.name,
-      userName: this.userName
+      userName: this.userName,
+      shortUserName: this.shortUserName
     };
 
     this.store.dispatch({
@@ -84,7 +89,8 @@ export class AppComponent implements OnInit {
       payload: {
         user : {
           username: this.userName,
-          name: this.name
+          name: this.name,
+          shortUserName: this.shortUserName
         }
       }
     });

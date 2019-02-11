@@ -12,7 +12,33 @@ import { FicheMateriel } from '../models/fiche-materiel';
 import { FicheMaterielCreation } from '../models/fiche-materiel-creation';
 
 // temporary imports :
-import { urlFicheMateriel, urlAllFichesMateriel, urlOneFicheMateriel, urlFicheMaterielByFicheAchatDetail } from '../../../../.privates-url';
+import {
+  urlFicheMateriel,
+  urlAllFichesMateriel,
+  urlOneFicheMateriel,
+  urlFicheMaterielByFicheAchatDetail,
+  urlFicheMaterielIntervalModification,
+  urlFicheMaterielIntervalCreation,
+  urlFicheMaterielIsArchived,
+  urlFicheMaterielSuiviPar,
+  urlFicheMaterielTitreVo,
+  urlFicheMaterielTitreVf
+} from '../../../../.privates-url';
+
+// /ficheMateriels/IdFicheMateriel/{IdFicheMateriel}
+
+
+// fiches materiel
+// export const urlAllFichesMateriel = '/fichemateriels';
+// export const urlOneFicheMateriel = '/ficheMateriels/IdFicheMateriel/'; // +IdFicheMateriel (get and delete)
+// export const urlFicheMaterielByFicheAchatDetail = '/ficheMateriels/idFicheAchatDetail/'; // +idFicheAchatDetail (delete)
+
+// export const urlFicheMaterielIntervalModification = '/intervalmodification/'; // +{interval}
+// export const urlFicheMaterielIntervalCreation = '/intervalcreation/'; // +{interval}
+// export const urlFicheMaterielIsArchived = '/isarchived/'; // +{isarchived}
+// export const urlFicheMaterielSuiviPar = '/suivipar/'; // +{suivipar}
+// export const urlFicheMaterielTitreVo = '/titrevo/'; // +{titrevo}
+// export const urlFicheMaterielTitreVf = '/titrevf/'; // +{titrevf}
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -48,6 +74,114 @@ export class FichesMaterielService {
       })
       .catch(this.handleError);
   }
+
+  // GET /ficheMateriels/intervalmodification/{interval}/isarchived/{isarchived}
+  getFichesMaterielByIntervalModifIsArchived(intervalModif: number, isArchived: number): Observable<FicheMateriel[]> {
+    // intervalModif : nombre de jours
+    // isArchived : (0 = false; 1 = true; else = all)
+    return this.http
+      .get(urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalModification + intervalModif + urlFicheMaterielIsArchived + isArchived)
+      .map((res: any) => {
+        if (!res) {
+          res = 0;
+          return res;
+        }
+        // console.log(res);
+        return res as FicheMateriel[];
+      })
+      .catch(this.handleError);
+  }
+
+  // GET /ficheMateriels/intervalcreation/{interval}/suivipar/{suivipar}/isarchived/{isarchived}
+  getFichesMaterielByIntervalCreationSuiviParIsArchived(
+    intervalCreation: number,
+    suiviPar: string,
+    isArchived: number
+  ): Observable<FicheMateriel[]> {
+    // intervalCreation : nombre de jours
+    // isArchived : (0 = false; 1 = true; else = all)
+    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalCreation + intervalCreation + urlFicheMaterielSuiviPar + suiviPar + urlFicheMaterielIsArchived + isArchived;
+    return this.http
+      .get(url)
+      .map((res: any) => {
+        if (!res) {
+          res = 0;
+          return res;
+        }
+        // console.log(res);
+        return res as FicheMateriel[];
+      })
+      .catch(this.handleError);
+  }
+
+  // GET /ficheMateriels/intervalcreation/{interval}/isarchived/{isarchived}
+  getFichesMaterielByIntervalCreationIsArchived(intervalCreation: number, isArchived: number): Observable<FicheMateriel[]> {
+    // intervalCreation : nombre de jours
+    // isArchived : (0 = false; 1 = true; else = all)
+    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalCreation
+              + intervalCreation + urlFicheMaterielIsArchived + isArchived;
+    console.log(url);
+    return this.http
+      .get(url)
+      .map((res: any) => {
+        if (!res) {
+          res = 0;
+          return res;
+        }
+        // console.log(res);
+        return res as FicheMateriel[];
+      })
+      .catch(this.handleError);
+  }
+
+// export const urlFicheMaterielTitreVf
+
+  // GET /ficheMateriels/suivipar/{suivipar}/titrevo/{titrevo}/titrevf/{titrevf}/isarchived/{isarchived}
+  getFichesMaterielBySuiviParTitreVoTitraVfIsArchived(
+    suiviPar: string,
+    titreVo: string,
+    titreVf: string,
+    isArchived: number
+  ): Observable<FicheMateriel[]> {
+    // isArchived : (0 = false; 1 = true; else = all)
+    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielSuiviPar + suiviPar + urlFicheMaterielTitreVo 
+              + titreVo + urlFicheMaterielTitreVf + titreVf + urlFicheMaterielIsArchived + isArchived;
+    return this.http
+      .get(url)
+      .map((res: any) => {
+        if (!res) {
+          res = 0;
+          return res;
+        }
+        // console.log(res);
+        return res as FicheMateriel[];
+      })
+      .catch(this.handleError);
+  }
+
+  // GET /ficheMateriels/intervalmodification/{interval}/suivipar/{suivipar}/isarchived/{isarchived}
+  getFichesMAterielByIntervalModifSuiviParIsArchived(
+    intervalModif: number,
+    suiviPar: string,
+    isArchived: number
+  ): Observable<FicheMateriel[]> {
+    // intervalModif : nombre de jours
+    // isArchived : (0 = false; 1 = true; else = all)
+    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalModification + intervalModif 
+              + urlFicheMaterielSuiviPar + suiviPar + urlFicheMaterielIsArchived + isArchived;
+    return this.http
+      .get(url)
+      .map((res: any) => {
+        if (!res) {
+          res = 0;
+          return res;
+        }
+        // console.log(res);
+        return res as FicheMateriel[];
+      })
+      .catch(this.handleError);
+  }
+
 
   /* POST FICHES MATERIEL */
   postFicheMateriel(ficheMateriel: FicheMaterielCreation): Observable<FicheMaterielCreation> {

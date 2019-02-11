@@ -5,19 +5,18 @@ import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 
 @Component({
-  selector: 'my-fiches-materiel-all',
-  templateUrl: './my-fiches-materiel-all.component.html',
-  styleUrls: ['./my-fiches-materiel-all.component.scss'],
-    providers: [
+  selector: 'fiches-materiel-all',
+  templateUrl: './fiches-materiel-all.component.html',
+  styleUrls: ['./fiches-materiel-all.component.scss'],
+  providers: [
     FichesMaterielService
   ]
 })
-export class MyFichesMaterielAllComponent implements OnInit {
-
- public headerTableLinkExist: boolean = false;
-  public tableTitle: string = 'Toutes les fiches Matériel';
-  public daysNumber: number = 100;
-  public isArchived: number = 2;
+export class FichesMaterielAllComponent implements OnInit {
+  public headerTableLinkExist = false;
+  public tableTitle = 'Toutes les fiches Matériel';
+  public daysNumber = 100;
+  public isArchived = 2;
 
   public data: FicheMateriel[];
   public dataReady: boolean;
@@ -80,4 +79,3 @@ export class MyFichesMaterielAllComponent implements OnInit {
       });
   }
 }
-
