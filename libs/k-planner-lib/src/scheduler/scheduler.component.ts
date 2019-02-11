@@ -23,6 +23,9 @@ import {
     CellClickEventArgs,
     RenderCellEventArgs,
     EventRenderedArgs,
+    TimeScaleModel,
+    dataBinding,
+  
 } from '@syncfusion/ej2-angular-schedule';
 
 // Locale Data Imports
@@ -46,6 +49,9 @@ import { renderComponentOrTemplate, text } from '@angular/core/src/render3/instr
 import { Container } from '@angular/compiler/src/i18n/i18n_ast';
 import { identifierModuleUrl } from '@angular/compiler';
 import { dropDownBaseClasses } from '@syncfusion/ej2-angular-dropdowns';
+import { WorkOrderService } from '../services/workOrder.service';
+import { group } from '@angular/animations';
+import { EventModel } from '../models/Events';
 
 const localeFrenchData = require('./scheduler-fr.json');
 const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
@@ -68,7 +74,9 @@ loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
         SalleService,
         ContainersService,
         MonteursService,
-        Store
+        Store,
+        WorkOrderService
+    
     ]
 })
 
@@ -91,56 +99,12 @@ export class SchedulerComponent implements OnInit {
     public user: User;
 
     /******** SCHEDULER INIT *******/
+    public dataContainersByRessourceStartDateEndDate 
+    public containerData : EventModel[]= [];
+   
     public selectedDate: Date = new Date();
-    public data: HospitalData[] = <HospitalData[]>extend([], hospitalData, null, true);
-    public currentView: View = 'TimelineDay';
-    public workHours: WorkHoursModel = { start: '08:00', end: '18:00' };
-    public cssClass: string = 'custom';
-
-    // BACKLOGS INIT
-    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
-    public menuItems: MenuItemModel[] = [
-        { text: 'Supprimer',
-          iconCss: 'e-icons delete', }
-    ];
-
-    public monteurDataSource: MonteursData[];
-    public timelineResourceDataOut;
-    public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
-    public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description', color:'CategoryColor' };
-    public fieldMonteur: Object;
-    public isClicked: boolean = false;
-    public allowDragAndDrop: boolean = true;
-    public isTreeItemDropped: boolean = false;
-    public draggedItemId: string = '';
-
-    public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
-    public allowMultiple: Boolean = false;
-    public filteredData: Object;
-
-    public cancelObjectModal = false;
-    public salleDataSource;
-    public containersPlanning;
-    public departmentDataSource: Object[] = [];
-    public departmentDataSourceAll: Object[] = [];
-    public departmentGroupDataSource: Object[] = [];
-    public allRegies :Object[]=[];
-    public idExisting = [];
-    public lastRandomId;
-    
-    public filtermonteurListeArray;
-    public addMonteur: boolean;
-    public fieldArray =this.field['dataSource'] ;
-    public isDragged : boolean;
-    public newField 
-    public wOrderBackToBacklog
-    public  isAddedToBacklog : boolean;
-    public count : number = 0;
-    // Editor
-    public drowDownMonteurs;
-
-    // EDIT EVENT CONFIG
-    public eventSettings: EventSettingsModel = {
+    public data: EventModel[] =  <EventModel[]>extend([], this.containerData, null, true);
+    public eventSettings: EventSettingsModel  =  {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false), null, true),
         // fields: {
         //     subject: { title: 'Patient Name', name: 'Name' },
@@ -160,7 +124,67 @@ export class SchedulerComponent implements OnInit {
             startTime: { name: 'StartTime', validation: { required: true } },
             endTime: { name: 'EndTime', validation: { required: true } },
         }
-    };
+    }
+   
+    public currentView: View = 'TimelineDay';
+    public workHours: WorkHoursModel = { start: '08:00', end: '20:00' };
+    public cssClass: string = 'custom';
+    public readonly: boolean = true;
+    public startHour: string = '08:00';
+    public endHour: string = '20:00';
+  
+
+    // BACKLOGS INIT
+    public waitingList
+    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
+    public menuItems: MenuItemModel[] = [
+        { text: 'Supprimer',
+          iconCss: 'e-icons delete', }
+    ];
+
+    public monteurDataSource: MonteursData[];
+    public timelineResourceDataOut;
+    public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
+    public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
+    public fieldMonteur: Object;
+    public isClicked: boolean = false;
+    public allowDragAndDrop: boolean = true;
+    public isTreeItemDropped: boolean = false;
+    public draggedItemId: string = '';
+
+    public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
+    public allowMultiple: Boolean = false;
+    public filteredData: Object;
+
+    public cancelObjectModal = false;
+    public salleDataSource;
+    public containersPlanning;
+    public departmentDataSource: Object[] = [];
+    public departmentDataSourceAll: Object[] = [];
+    public departmentGroupDataSource: Object[] = [];
+    public allRegies :Object[]=[];
+    public idExisting = [];
+    public lastRandomId;
+
+    public WorkorderByContainerId
+
+    public  codegroupe
+    public filtermonteurListeArray;
+    public addMonteur: boolean;
+    public fieldArray =this.field['dataSource'] ;
+    public isDragged : boolean;
+    public newField 
+    public wOrderBackToBacklog
+    public  isAddedToBacklog : boolean;
+    public count : number = 0;
+  
+       public SelectDateDebut: Date= new Date(2019,0,4) ;
+       public SelectDateFin: Date= new Date(2019,1,5) ;
+    // Editor
+    public drowDownMonteurs;
+
+    // EDIT EVENT CONFIG
+   
     public drowDownOperateurList;
 
     public monteurListe: MonteursData[] = [];
@@ -170,6 +194,7 @@ export class SchedulerComponent implements OnInit {
         private salleService: SalleService,
         private containersService: ContainersService,
         private monteursService: MonteursService,
+        private workorderService: WorkOrderService,
         private store: Store<App>
         ) {}
 
@@ -178,12 +203,14 @@ export class SchedulerComponent implements OnInit {
         this.storeAppSubscription();
         console.log(this.store);
         console.log(this.scheduleObj);
-        this.getSalle();
-        this.getMonteur();
+        this.getSalle(3);
+        this.getMonteur(3);
         this.getAllContainer();
         this.getContainersByRessource(118);
         console.log(this.selectedDate);
-        this.getContainersByRessourceStartDateEndDate(118, this.selectedDate, this.selectedDate);
+        this.getContainersByRessourceStartDateEndDate(116, this.SelectDateDebut, this.SelectDateFin);
+        this.getWorkorderByContainerId(1)
+        
     }
 
     storeAppSubscription() {
@@ -191,6 +218,7 @@ export class SchedulerComponent implements OnInit {
             console.log(data);
             this.user = data['app'].user;
             console.log(this.user);
+       
         });
     }
 
@@ -199,7 +227,7 @@ export class SchedulerComponent implements OnInit {
     }
 
 /******************************* API REQUEST *****************************/ 
-    getSalle() {
+    getSalle(group) {
         if (this.isClicked) {
             this.toggleBtn.iconCss = 'e-play-icon';
             this.salleService
@@ -226,7 +254,7 @@ export class SchedulerComponent implements OnInit {
         if (!this.isClicked) {
                 this.toggleBtn.content = 'Voir autres Régies';
             this.salleService
-                .getGroupSalle(3)
+                .getGroupSalle(group)
                 .subscribe(donnees => {
                     this.salleDataSource = donnees;
                     console.log('donee', donnees);
@@ -241,8 +269,8 @@ export class SchedulerComponent implements OnInit {
                 console.log('regie departmentDataSource', this.departmentGroupDataSource);
             }
     }
-    codegroupe
-    getMonteur() {
+   
+    getMonteur(group) {
         let monteurDataSource;
         this.monteursService
             .getMonteur()
@@ -261,7 +289,7 @@ export class SchedulerComponent implements OnInit {
             });
 
         this.monteursService
-            .getGroupMonteur(3)
+            .getGroupMonteur(group)
             .subscribe(donnees => {
                 console.log('donnees', donnees);
                 this.monteurDataSource = donnees;
@@ -293,14 +321,138 @@ export class SchedulerComponent implements OnInit {
     }
 
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin) {
-        let debut = datedebut.toISOString()
-        let fin = datefin.toISOString()
+        let debut = datedebut.getFullYear()  + '-' +  (datedebut.getMonth() + 1) + '-' + datedebut.getDate()
+        let fin = datefin.getFullYear()  + '-' +  (datefin.getMonth() + 1) + '-' + datefin.getDate()
+        console.log(debut,fin, "debut fin")
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
             .subscribe( data => {
-                console.log('container by ressource, startDate and endDate');
+                this.dataContainersByRessourceStartDateEndDate = data
+                console.log('container by ressource, startDate and endDate',  this.dataContainersByRessourceStartDateEndDate);
+                this.dataContainersByRessourceStartDateEndDate.map(data=>{
+                  
+
+                    let StartTime =   new Date (data.DateDebut) ,
+                    EndTime = new Date (data.DateFin)
+
+                let anneeDebut = StartTime.getFullYear(),
+                moisDebut =(StartTime.getMonth() + 1),
+                jourDebut = StartTime.getDate(),
+                heurDebut = StartTime.getHours(),
+                minuteDebut = StartTime.getMinutes()
+               
+                let anneefin = EndTime.getFullYear(),
+                moisfin =(EndTime.getMonth() + 1),
+                jourfin = EndTime.getDate(),
+                heurfin = EndTime.getHours(),
+                minutefin = EndTime.getMinutes()  
+                   
+                
+                    console.log(EndTime.getTime(),'day')
+                    console.log(datefin,"datefin")
+                    console.log(new Date(data.DateDebut),'data')
+
+
+                    this.containerData.push({
+                    Id: data.Id_Planning_Container,
+                    Name: data.Titre,
+                    StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut),
+                    EndTime:   new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
+                    CodeRessourceSalle: data.CodeRessourceSalle,
+                    Container: true,
+                    numGroup:data.Id_Planning_Container,
+                    Description:data.Commentaire,
+                    Operateur:data.LibelleRessourceOperateur,
+                    coordinateurCreate:data.LibelleRessourceCoordinateur,
+                    AzaIsPere: true,
+                    AzaNumGroupe:  data.Id_Planning_Container,
+                    DepartmentID:data.CodeRessourceSalle
+                })
+                })
+
+                 this.eventSettings=
+           {
+               dataSource : <Object[]> extend([], this.calculDateAll(this.containerData, false, null, false, false), null, true),
+               fields: {
+                subject: { name: 'Name', validation: { required: [true, 'Ce champ est requis'] } },
+                description: {
+                    name: 'Description',
+                    // {
+                    // name: 'Description', validation: {
+                    //     required: true, minLength: 5, maxLength: 500
+                    // }
+                },
+                startTime: { name: 'StartTime', validation: { required: true } },
+                endTime: { name: 'EndTime', validation: { required: true } },
+            }
+            }
+                console.log('containerData', this.containerData)
+               this.scheduleObj.eventSettings.dataSource = this.containerData
+               console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource)
             });
+            }
+    getWorkorderByContainerId(id){
+        this.workorderService
+        .getWorkOrderByContainerId(id)
+        .subscribe(event =>{
+            this.WorkorderByContainerId = event
+            
+            this.WorkorderByContainerId.map(data =>{
+                let StartTime =   new Date (data.DateDebut) ,
+                EndTime = new Date (data.DateFin)
+                let anneeDebut = StartTime.getFullYear(),
+                moisDebut =(StartTime.getMonth() + 1),
+                jourDebut = StartTime.getDate(),
+                heurDebut = StartTime.getHours(),
+                minuteDebut = StartTime.getMinutes()
+               
+                let anneefin = EndTime.getFullYear(),
+                moisfin =(EndTime.getMonth() + 1),
+                jourfin = EndTime.getDate(),
+                heurfin = EndTime.getHours(),
+                minutefin = EndTime.getMinutes()  
+
+                this.containerData.push({
+                    Id: data.Id_Planning_Container,
+                    Name: data.libtypeWO,
+                    StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
+                    EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
+                    CodeRessourceSalle: data.CodeRessourceSalle,
+                    Container: false,
+                    numGroup:data.Id_Planning_Container,
+                    Description:data.Commentaire,
+                    Operateur:data.LibelleRessourceOperateur,
+                    coordinateurCreate:data.LibelleRessourceCoordinateur,
+                    Statut:data.Statut,
+                    AzaIsPere: true,
+                    AzaNumGroupe:  data.Id_Planning_Container,
+                    DepartmentID:data.CodeRessourceSalle
+                })
+
+            })
+            console.log("eventSettings", this.eventSettings)
+           this.eventSettings=
+           {
+               dataSource : <Object[]> extend([], this.calculDateAll(this.containerData, false, null, false, false), null, true),
+               fields: {
+                subject: { name: 'Name', validation: { required: [true, 'Ce champ est requis'] } },
+                description: {
+                    name: 'Description',
+                    // {
+                    // name: 'Description', validation: {
+                    //     required: true, minLength: 5, maxLength: 500
+                    // }
+                },
+                startTime: { name: 'StartTime', validation: { required: true } },
+                endTime: { name: 'EndTime', validation: { required: true } },
+            }
+            }
+            console.log("Planning Events", this.scheduleObj.eventSettings.dataSource)
+            console.log("eventSettings 111", this.eventSettings)
+        })
+
     }
+   
 
 
 /*************************************************************************/
@@ -331,9 +483,36 @@ export class SchedulerComponent implements OnInit {
 /*************************************************************************/
 /*************************** MODALS M1ANAGEMENT **************************/
 
+onNavigating(args){
+    console.log('Schedule <b>Navigating</b> event called<hr>',args);
+}
+
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         console.log(args);
+        if (args.type === 'EventContainer') {
+            args.data.element.innerText=`Plus`
+            // args.data.event = args.data.event[0]
+           
+ 
+     
+            for (let i = 0; i < args.data.event.length; i++) {
+                console.log("AzaIsPere", args.data.event[i].AzaIsPere)
+ 
+                if (args.data.event[i].AzaIsPere == false) {
+                    let elem = args.element.getElementsByClassName('e-appointment')
+
+                        elem[i].hidden = true
+                             
+            console.log("elem", elem)
+                        this.scheduleObj.resizing
+                }
+                console.log(this.scheduleObj)
+            }
+           
+            
+        }
+    
         args.element.hidden = false;
         if ((args.type === 'QuickInfo') &&  (args.data.name === 'cellClick')) {
             args.cancel = true;
@@ -690,6 +869,7 @@ export class SchedulerComponent implements OnInit {
         }
         // console.log('customActionBegin()');
         // this.customActionBegin(event);
+       
     }
 
     customActionBegin(args: any) { // CUSTOM ACTION BEGIN
@@ -757,6 +937,18 @@ export class SchedulerComponent implements OnInit {
         console.log('onActionComplete()');
         console.log('event onActionComplete : ', e);
             this.isTreeItemDropped = false;
+         
+           
+                // if(this.scheduleObj.currentView === 'TimelineWeek'){
+                //     this.timeScale  = { enable: false };
+               
+                  
+                // }else{
+                //     console.log("viewNavigate TimelineWeek ")
+                //     this.timeScale  = { enable: true };
+                // }
+            
+        
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                 dataSource: <Object[]>extend(
                     [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
@@ -852,6 +1044,8 @@ export class SchedulerComponent implements OnInit {
         // CALL ONINT => this.calculDateAll(this.data, false, null, false, false )
         // CALL ONRESIZE => this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true;
         let groupe = [], i;
+       
+        console.log(atimelineResourceData)
         for (i = 0; i < atimelineResourceData.length; i++) {
             if (!groupe.includes(atimelineResourceData[i]['AzaNumGroupe'])) {
                 groupe.push(atimelineResourceData[i]['AzaNumGroupe']);
@@ -860,7 +1054,7 @@ export class SchedulerComponent implements OnInit {
         groupe.forEach(item => {
             this.timelineResourceDataOut = this.calculDateGroup(atimelineResourceData, +item, needUpdate, itemToUpdate, startDifferent, endDifferent);
         });
-        console.log('all AzaNumGroup present on planning :', groupe);
+        console.log('all AzaNumGroup present on planning :', groupe,);
         return this.timelineResourceDataOut;
     }
 
@@ -935,7 +1129,7 @@ export class SchedulerComponent implements OnInit {
                 }
             } else {
             }
-            console.log('min date for groupe', mindate.toISOString());
+            console.log('min date for groupe', mindate);
             return mindate;
         } else if (timePosition === 'EndTime') {
             if (isUpdate) {
@@ -946,7 +1140,7 @@ export class SchedulerComponent implements OnInit {
                 }
             } else {
             }
-            console.log('ma date for groupe', maxDate.toISOString());
+            console.log('ma date for groupe', maxDate);
             return maxDate;
         }
     }
@@ -1027,25 +1221,38 @@ export class SchedulerComponent implements OnInit {
 
     onFilter(searchText: string, tabIndex) {
         if (tabIndex == 1) {
+
             if (!searchText) {
                 console.log('searchText', typeof searchText, searchText);
                 this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
             }
+     if(!this.isDelete){
             if (!this.addMonteur) {
                 this.dataMonteur = this.monteurDataSource.filter(monteurs => {
-                    return monteurs.Username.toLowerCase().includes(searchText);
+                    return monteurs.Username.toLowerCase().includes(searchText.toLowerCase());
                 });
             } else {
                 this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
-                    return monteurs.Username.toLowerCase().includes(searchText);
+                    return monteurs.Username.toLowerCase().includes(searchText.toLowerCase());
                 });
             }
+        }
+       else{
+
+            this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
+                return monteurs.Username.toLowerCase().includes(searchText.toLowerCase());
+               
+            });
+            console.log('dataMonteur', this.fieldArrayMonteur[0]);
+            console.log('dataMonteur', this.dataMonteur);
+        }
             this.fieldMonteur['dataSource'] = this.dataMonteur;
             this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource']
             console.log('monteur datasource', this.monteurDataSource)
             console.log('filteredData', this.fieldMonteur);
             console.log('filteredData', this.dataMonteur);
             console.log(tabIndex);
+
         }
      
         if (tabIndex == 0) {
@@ -1075,19 +1282,19 @@ export class SchedulerComponent implements OnInit {
                 if (!this.isDragged) {
 
                     this.data = this.field['dataSource'].filter(WorkOrder => {
-                        return WorkOrder.Name.toLowerCase().includes(searchText)
-                            || WorkOrder.Description.toLowerCase().includes(searchText);
+                        return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
+                            || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
                     });
                 } else {
                     this.data = this.newField.filter(WorkOrder => {
-                        return WorkOrder.Name.toLowerCase().includes(searchText)
-                            || WorkOrder.Description.toLowerCase().includes(searchText);
+                        return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
+                            || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
                     });
                 }
             } else {
                 this.data = this.wOrderBackToBacklog.filter(WorkOrder => {
-                    return WorkOrder.Name.toLowerCase().includes(searchText)
-                        || WorkOrder.Description.toLowerCase().includes(searchText);
+                    return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
+                        || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
                 });
             }
 
@@ -1110,7 +1317,7 @@ export class SchedulerComponent implements OnInit {
         if (this.isClicked) {
             this.toggleBtn.content = 'Voir mes Régies  ';
             if (this.count == 0 || this.allRegies.length == 0) {
-                this.getSalle();
+                this.getSalle(3);
                 this.count = this.count + 1;
                 console.log(this.count);
             } else {
@@ -1146,25 +1353,39 @@ export class SchedulerComponent implements OnInit {
         console.log('args', args);
         console.log('targetNodeId', targetNodeId);
     }
+    isDelete:boolean
+    fieldArrayMonteur 
+    fieldMonteurDSource
+
 
     menuclick(args: MenuEventArgs) {
         let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
         for (let i = 0; i < this.monteurListe.length; i++) {
             let CodeRessource = this.monteurListe[i].CodeRessource;
             let CodeRessourceToString = CodeRessource.toString();
-
+         
             if (CodeRessourceToString === targetNodeId) {
                 if (args.item.text == 'Supprimer') {
                     this.treeObjMonteur.removeNodes([CodeRessourceToString]);
+                   console.log('element supprimer')
+                   this.isDelete=true
+               
                     //  this.monteurDataSource= this.treeObjMonteur['groupedData']
                 }
                 console.log( this.treeObjMonteur);
             }
         }
-        this.fieldArray = this.treeObjMonteur['groupedData'];
-        this.fieldMonteur['dataSource'] = this.fieldArray[0];
-        console.log( this.fieldArray[0]);
-        console.log( this.monteurDataSource, 'fieldMonteur');
+      
+        this.fieldArrayMonteur  = this.treeObjMonteur['groupedData'];
+        this.fieldMonteur['dataSource'] = this.fieldArrayMonteur[0];
+        this.fieldMonteurDSource = this.fieldMonteur['dataSource']
+
+        if(this.isDelete){
+            this.filtermonteurListeArray = this.fieldArrayMonteur[0];
+        }
+        console.log("field Array Monteur", this.fieldArrayMonteur);
+        console.log("field Array Monteur DS", this.filtermonteurListeArray);
+    
     }
 
     /************************************************************************ ADD Color **********************************************************************************/
@@ -1176,6 +1397,7 @@ export class SchedulerComponent implements OnInit {
         // console.log('color', this.workOrderColor);
         // console.log('args', args);
         console.log(args);
+    
         if (args.data.AzaIsPere ) {
             return;
         }else{
@@ -1191,16 +1413,18 @@ export class SchedulerComponent implements OnInit {
             if (this.scheduleObj.currentView === 'Agenda') {
                 (args.element.firstChild as HTMLElement).style.borderLeftColor =  this.workOrderColor;
                 (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
-                args.element.style.borderLeftColor =  this.workOrderColor;
+                // args.element.style.borderLeftColor =  this.workOrderColor;
               
                 console.log('args oneventrendred'+ args.element )
             }
             else{
-          
-            (args.element.firstChild as HTMLElement).style.backgroundColor =  this.workOrderColor
-            args.element.style.backgroundColor =  this.workOrderColor
+           
+            (args.element.firstChild as HTMLElement).style.backgroundColor =  this.workOrderColor;
+            args.element.style.backgroundColor =  this.workOrderColor;
+    
         }
     }
+ 
 }
      
  

@@ -21,7 +21,9 @@
                 (actionComplete)="onActionComplete($event)"
                 (drag)="onItemDrag($event)"
                 (eventRendered)="onEventRendered($event)"
-                
+                [startHour]="startHour" 
+                [endHour]="endHour"
+                (navigating)="onNavigating($event)"
                 >
                 <!-- (renderCell)="onRenderCell($event)" -->
                 <e-resources>
@@ -48,7 +50,8 @@
                             </div>
                         </ng-template > -->
                 <e-views>
-                    <e-view option='TimelineDay' >
+                        
+                    <e-view option='TimelineDay' [timeScale]="{ enable: true }" >
                         <ng-template #eventTemplate let-data  class="event">
                             <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                 <div>
@@ -67,17 +70,35 @@
                             </div>
                         </ng-template>
                     </e-view>
-                    <e-view option="TimelineWeek">
+                    <e-view option="TimelineWeek" [timeScale]="{enable: true, interval: 60, slotCount: 1}" >
+                            <ng-template #eventTemplate let-data  class="event">
+                                    <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
+                                        <div>
+                                            <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                                <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
+                                                <u id="{{data.Id}}">{{data.Name }} </u> 
+                                                <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
+                                                <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
+                                                <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
+                                                    class="float-right  fixed mr-1"> -->
+                                            </div>
+                                            <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                                <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
                     </e-view>
-                    <e-view option='TimelineMonth'>
+                    <e-view option='TimelineMonth'  [readonly]="readonly">
                             <ng-template #eventTemplate let-data  class="event">
                                     <div class='template-wrap' style="width: 100%" id="{{data.Id}}">
                                         <div>
                                             <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                                <div class="float-right fixed initiales"><p>AC</p></div>
+                                                <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
                                                 <u id="{{data.Id}}">{{data.Name }} </u> 
+                                                <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
                                             
-                                                <!-- <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div> -->
+                                              
                                             </div> 
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
                                                 <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
@@ -87,8 +108,8 @@
                                 </ng-template> 
 
                     </e-view>
-                    <e-view option="Agenda"   ></e-view>
-                    <e-view option="MonthAgenda">
+                    <e-view option="Agenda"  [readonly]="readonly"  ></e-view>
+                    <e-view option="MonthAgenda" >
                     </e-view>
                 </e-views>
                 <!-- Editor Template-->
@@ -132,7 +153,7 @@
             </ejs-schedule>
         </div>
    
-        <ejs-tab id="element" #element *ngIf="scheduleObj.currentView != 'MonthAgenda'">
+        <ejs-tab id="element" #element *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek'" >
             <e-tabitems>
                 <e-tabitem [header]='headerText[0]' id="{{headerText[0]}}" (click)="alert('ok')">
                     <ng-template #content>
@@ -189,7 +210,7 @@
                                    <div id="waiting" [ngStyle]="{'border':getBorder(dataMon.Username)}">
                                         <div id="waitdetails" class="monteurs">
                                             <br>
-                                            <div id={{dataMon.CodeRessource}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}} {{dataMon.codegroupe}} </div>
+                                            <div id={{dataMon.CodeRessource}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}}  </div>
                                         </div>
                                     </div>
                                 </ng-template> 

@@ -149,15 +149,18 @@ $operatorColor: #BDBDBD;
 }
 
 /deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
-    height:100px
+    height:115px
 
 }
 /deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
-    height:100px
-
+    height:115px;
+ 
 }
 
-
+/deep/ .e-schedule .e-schedule-table > tbody > tr > td{
+    overflow: visible;
+   
+}
 
 
 
