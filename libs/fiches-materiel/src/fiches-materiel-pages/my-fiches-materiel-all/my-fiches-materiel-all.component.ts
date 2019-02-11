@@ -4,23 +4,28 @@ import { CustomIconBadge } from '@ab/custom-icons';
 import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 
+import { App } from '../../../../../apps/fiches-materiel/src/app/+state/app.interfaces';
+import { Store } from '@ngrx/store';
+
 @Component({
   selector: 'my-fiches-materiel-all',
   templateUrl: './my-fiches-materiel-all.component.html',
   styleUrls: ['./my-fiches-materiel-all.component.scss'],
     providers: [
-    FichesMaterielService
+    FichesMaterielService,
+    Store
   ]
 })
 export class MyFichesMaterielAllComponent implements OnInit {
 
  public headerTableLinkExist: boolean = false;
-  public tableTitle: string = 'Toutes les fiches Matériel';
+  public tableTitle: string = 'Toutes mes fiches Matériel';
   public daysNumber: number = 100;
   public isArchived: number = 2;
 
   public data: FicheMateriel[];
   public dataReady: boolean;
+  public user: string;
 
   public widgetLink = '/';
   public icons = [];
@@ -57,16 +62,27 @@ export class MyFichesMaterielAllComponent implements OnInit {
     tooltipMessage: 'Voir les fiches Achat'
   };
 
-  constructor( private fichesMaterielService: FichesMaterielService ) {}
+  constructor(
+    private fichesMaterielService: FichesMaterielService,
+    private store: Store<App>
+  ) {}
 
   ngOnInit() {
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
-    this.getFichesMaterielByIntervalCreationIsArchived(this.daysNumber, this.isArchived);
+    this.storeAppSubscription();
+    this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
   }
 
-  getFichesMaterielByIntervalCreationIsArchived(intervalModif: number, isArchived: number) {
+  storeAppSubscription() {
+    this.store.subscribe(data => {
+        this.user = data['app'].user.shortUserName;
+        console.log(this.user);
+    });
+  }
+
+  getFichesMaterielByIntervalCreationSuiviParIsArchived(intervalModif: number, suiviPar: string, isArchived: number) {
     this.fichesMaterielService
-      .getFichesMaterielByIntervalCreationIsArchived(intervalModif, isArchived)
+      .getFichesMaterielByIntervalCreationSuiviParIsArchived(intervalModif, suiviPar, isArchived)
       .subscribe(data => {
         if (!data) {
           this.data = [];

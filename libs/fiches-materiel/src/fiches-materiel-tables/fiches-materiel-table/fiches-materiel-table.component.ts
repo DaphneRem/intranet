@@ -44,9 +44,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
   @Input() tableTitle?: string;
-  @Input() daysNumber?: number;
-  @Input() isArchived?: number;
-  @Input() data?;
+  @Input() data;
 
   public globalStore;
   public storeFichesToModif;

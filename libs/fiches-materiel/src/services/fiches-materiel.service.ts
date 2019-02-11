@@ -79,8 +79,10 @@ export class FichesMaterielService {
   getFichesMaterielByIntervalModifIsArchived(intervalModif: number, isArchived: number): Observable<FicheMateriel[]> {
     // intervalModif : nombre de jours
     // isArchived : (0 = false; 1 = true; else = all)
+    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalModification 
+              + intervalModif + urlFicheMaterielIsArchived + isArchived;
     return this.http
-      .get(urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalModification + intervalModif + urlFicheMaterielIsArchived + isArchived)
+      .get(url)
       .map((res: any) => {
         if (!res) {
           res = 0;
@@ -100,11 +102,15 @@ export class FichesMaterielService {
   ): Observable<FicheMateriel[]> {
     // intervalCreation : nombre de jours
     // isArchived : (0 = false; 1 = true; else = all)
-    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalCreation + intervalCreation + urlFicheMaterielSuiviPar + suiviPar + urlFicheMaterielIsArchived + isArchived;
+    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMaterielIntervalCreation + intervalCreation 
+              + urlFicheMaterielSuiviPar + suiviPar + urlFicheMaterielIsArchived + isArchived;
+    console.log(url);
     return this.http
       .get(url)
       .map((res: any) => {
+        console.log(res);
         if (!res) {
+          console.log(res);
           res = 0;
           return res;
         }

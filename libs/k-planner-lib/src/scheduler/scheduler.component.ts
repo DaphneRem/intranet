@@ -11,7 +11,13 @@ import { DropDownList } from '@syncfusion/ej2-dropdowns';
 
 // Syncfusion Angular
 import { ButtonComponent, ChangeEventArgs } from '@syncfusion/ej2-angular-buttons';
-import { TabComponent,  SelectEventArgs, TreeViewComponent,  MenuItemModel, ContextMenuComponent } from '@syncfusion/ej2-angular-navigations';
+import {
+    TabComponent,
+    SelectEventArgs,
+    TreeViewComponent,
+    MenuItemModel,
+    ContextMenuComponent
+} from '@syncfusion/ej2-angular-navigations';
 import {
     EventSettingsModel,
     View,
@@ -25,7 +31,6 @@ import {
     EventRenderedArgs,
     TimeScaleModel,
     dataBinding,
-  
 } from '@syncfusion/ej2-angular-schedule';
 
 // Locale Data Imports
@@ -76,7 +81,6 @@ loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
         MonteursService,
         Store,
         WorkOrderService
-    
     ]
 })
 
@@ -99,10 +103,11 @@ export class SchedulerComponent implements OnInit {
     public user: User;
 
     /******** SCHEDULER INIT *******/
-    public dataContainersByRessourceStartDateEndDate 
-    public containerData : EventModel[]= [];
-   
-    public selectedDate: Date = new Date();
+    public dataContainersByRessourceStartDateEndDate;
+    public containerData: EventModel[] = [];
+
+    // public selectedDate: Date = new Date();
+    public selectedDate: Date = new Date(2019, 1, 4);
     public data: EventModel[] =  <EventModel[]>extend([], this.containerData, null, true);
     public eventSettings: EventSettingsModel  =  {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false), null, true),
@@ -124,18 +129,18 @@ export class SchedulerComponent implements OnInit {
             startTime: { name: 'StartTime', validation: { required: true } },
             endTime: { name: 'EndTime', validation: { required: true } },
         }
-    }
-   
+    };
+
     public currentView: View = 'TimelineDay';
     public workHours: WorkHoursModel = { start: '08:00', end: '20:00' };
     public cssClass: string = 'custom';
     public readonly: boolean = true;
     public startHour: string = '08:00';
     public endHour: string = '20:00';
-  
+
 
     // BACKLOGS INIT
-    public waitingList
+    public waitingList;
     public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
     public menuItems: MenuItemModel[] = [
         { text: 'Supprimer',
@@ -143,7 +148,7 @@ export class SchedulerComponent implements OnInit {
     ];
 
     public monteurDataSource: MonteursData[];
-    public timelineResourceDataOut;
+    public timelineResourceDataOut = [];
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
     public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
     public fieldMonteur: Object;
@@ -166,25 +171,24 @@ export class SchedulerComponent implements OnInit {
     public idExisting = [];
     public lastRandomId;
 
-    public WorkorderByContainerId
-
-    public  codegroupe
+    public WorkorderByContainerId;
+    public  codegroupe;
     public filtermonteurListeArray;
     public addMonteur: boolean;
-    public fieldArray =this.field['dataSource'] ;
-    public isDragged : boolean;
-    public newField 
-    public wOrderBackToBacklog
-    public  isAddedToBacklog : boolean;
-    public count : number = 0;
-  
-       public SelectDateDebut: Date= new Date(2019,0,4) ;
-       public SelectDateFin: Date= new Date(2019,1,5) ;
+    public fieldArray = this.field['dataSource'] ;
+    public isDragged: boolean;
+    public newField;
+    public wOrderBackToBacklog;
+    public  isAddedToBacklog: boolean;
+    public count: number = 0;
+
+    public SelectDateDebut: Date = new Date(2019,0,4);
+    public SelectDateFin: Date = new Date(2019,1,5);
+
     // Editor
     public drowDownMonteurs;
 
     // EDIT EVENT CONFIG
-   
     public drowDownOperateurList;
 
     public monteurListe: MonteursData[] = [];
@@ -199,18 +203,18 @@ export class SchedulerComponent implements OnInit {
         ) {}
 
     ngOnInit() {
+        console.log(hospitalData);
         console.log(this.eventSettings);
+        console.log(this.data);
         this.storeAppSubscription();
         console.log(this.store);
         console.log(this.scheduleObj);
-        this.getSalle(3);
+        this.getSalle(10);
         this.getMonteur(3);
-        this.getAllContainer();
-        this.getContainersByRessource(118);
+        // this.getAllContainer();
+        // this.getContainersByRessource(118);
         console.log(this.selectedDate);
-        this.getContainersByRessourceStartDateEndDate(116, this.SelectDateDebut, this.SelectDateFin);
-        this.getWorkorderByContainerId(1)
-        
+        // this.getWorkorderByContainerId(1);
     }
 
     storeAppSubscription() {
@@ -218,7 +222,6 @@ export class SchedulerComponent implements OnInit {
             console.log(data);
             this.user = data['app'].user;
             console.log(this.user);
-       
         });
     }
 
@@ -244,11 +247,11 @@ export class SchedulerComponent implements OnInit {
                 }
                     // console.log('regie', this.departmentDataSource)
                 });
-         console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
-         this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
-         console.log(' this.allRegies', this.allRegies);
-         this.departmentDataSource = this.allRegies;
-         console.log(' this.departmentDataSource', this.departmentDataSource);
+             console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
+             this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
+             console.log(' this.allRegies', this.allRegies);
+             this.departmentDataSource = this.allRegies;
+             console.log(' this.departmentDataSource', this.departmentDataSource);
             });
         }
         if (!this.isClicked) {
@@ -257,19 +260,23 @@ export class SchedulerComponent implements OnInit {
                 .getGroupSalle(group)
                 .subscribe(donnees => {
                     this.salleDataSource = donnees;
-                    console.log('donee', donnees);
+                    console.log('salles group result : ', donnees);
                     this.salleDataSource.map(item => {
+                        console.log(item);
                         this.departmentGroupDataSource.push({
                             Text: item.NomSalle,
                             Id: item.CodeSalle,
                         });
+                        console.log('item code salle fot container request : ', item.CodeSalle);
+                        this.getContainersByRessourceStartDateEndDate(item.CodeRessource, this.SelectDateDebut, this.SelectDateFin, item.CodeSalle);
+                        // this.getContainersByRessource(item.CodeRessource);
                     });
+                    this.departmentDataSource = this.departmentGroupDataSource;
+                    console.log('regie departmentDataSource', this.departmentGroupDataSource);
                 });
-                this.departmentDataSource = this.departmentGroupDataSource;
-                console.log('regie departmentDataSource', this.departmentGroupDataSource);
-            }
+        }
     }
-   
+
     getMonteur(group) {
         let monteurDataSource;
         this.monteursService
@@ -278,20 +285,15 @@ export class SchedulerComponent implements OnInit {
                 monteurDataSource = donnees;
                 monteurDataSource.map(item => {
                     if (item.codegroupe !== 3) {
-
-                        this.monteurListe.push(item)
+                        this.monteurListe.push(item);
                          this.codegroupe = item.codegroupe;
                     }
-                    
-                })
-
-             
+                });
             });
-
         this.monteursService
             .getGroupMonteur(group)
             .subscribe(donnees => {
-                console.log('donnees', donnees);
+                console.log('monteurs : ', donnees);
                 this.monteurDataSource = donnees;
                 this.fieldMonteur = {
                     dataSource: this.monteurDataSource,
@@ -320,139 +322,147 @@ export class SchedulerComponent implements OnInit {
             });
     }
 
-    getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin) {
-        let debut = datedebut.getFullYear()  + '-' +  (datedebut.getMonth() + 1) + '-' + datedebut.getDate()
-        let fin = datefin.getFullYear()  + '-' +  (datefin.getMonth() + 1) + '-' + datefin.getDate()
-        console.log(debut,fin, "debut fin")
+    getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle) {
+        let debut = datedebut.getFullYear()  + '-' +  (datedebut.getMonth() + 1) + '-' + datedebut.getDate();
+        let fin = datefin.getFullYear()  + '-' +  (datefin.getMonth() + 1) + '-' + datefin.getDate();
+        console.log(debut,fin, 'debut fin');
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
-            .subscribe( data => {
-                this.dataContainersByRessourceStartDateEndDate = data
+            .subscribe(res => {
+                this.dataContainersByRessourceStartDateEndDate = res;
                 console.log('container by ressource, startDate and endDate',  this.dataContainersByRessourceStartDateEndDate);
-                this.dataContainersByRessourceStartDateEndDate.map(data=>{
-                  
+                console.log(res.length);
+                if (res.length > 0) {
+                    console.log('conainer present : ', res);
+                    console.log(this.dataContainersByRessourceStartDateEndDate);
+                    this.dataContainersByRessourceStartDateEndDate.map(data => {
+                        console.log('data brut for conainer : ', data);
+                        let StartTime =   new Date (data.DateDebut) ,
+                        EndTime = new Date (data.DateFin);
 
-                    let StartTime =   new Date (data.DateDebut) ,
-                    EndTime = new Date (data.DateFin)
+                        let anneeDebut = StartTime.getFullYear(),
+                        moisDebut =(StartTime.getMonth() + 1),
+                        jourDebut = StartTime.getDate(),
+                        heurDebut = StartTime.getHours(),
+                        minuteDebut = StartTime.getMinutes();
 
-                let anneeDebut = StartTime.getFullYear(),
-                moisDebut =(StartTime.getMonth() + 1),
-                jourDebut = StartTime.getDate(),
-                heurDebut = StartTime.getHours(),
-                minuteDebut = StartTime.getMinutes()
-               
-                let anneefin = EndTime.getFullYear(),
-                moisfin =(EndTime.getMonth() + 1),
-                jourfin = EndTime.getDate(),
-                heurfin = EndTime.getHours(),
-                minutefin = EndTime.getMinutes()  
-                   
-                
-                    console.log(EndTime.getTime(),'day')
-                    console.log(datefin,"datefin")
-                    console.log(new Date(data.DateDebut),'data')
+                        let anneefin = EndTime.getFullYear(),
+                        moisfin = EndTime.getMonth(),
+                        jourfin = EndTime.getDate(),
+                        heurfin = EndTime.getHours(),
+                        minutefin = EndTime.getMinutes();
 
+                        console.log(EndTime.getTime(),'day');
+                        console.log(datefin,'datefin');
+                        console.log(new Date(data.DateDebut),'data');
 
-                    this.containerData.push({
-                    Id: data.Id_Planning_Container,
-                    Name: data.Titre,
-                    StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut),
-                    EndTime:   new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
-                    CodeRessourceSalle: data.CodeRessourceSalle,
-                    Container: true,
-                    numGroup:data.Id_Planning_Container,
-                    Description:data.Commentaire,
-                    Operateur:data.LibelleRessourceOperateur,
-                    coordinateurCreate:data.LibelleRessourceCoordinateur,
-                    AzaIsPere: true,
-                    AzaNumGroupe:  data.Id_Planning_Container,
-                    DepartmentID:data.CodeRessourceSalle
-                })
-                })
-
-                 this.eventSettings=
-           {
-               dataSource : <Object[]> extend([], this.calculDateAll(this.containerData, false, null, false, false), null, true),
-               fields: {
-                subject: { name: 'Name', validation: { required: [true, 'Ce champ est requis'] } },
-                description: {
-                    name: 'Description',
-                    // {
-                    // name: 'Description', validation: {
-                    //     required: true, minLength: 5, maxLength: 500
-                    // }
-                },
-                startTime: { name: 'StartTime', validation: { required: true } },
-                endTime: { name: 'EndTime', validation: { required: true } },
-            }
-            }
-                console.log('containerData', this.containerData)
-               this.scheduleObj.eventSettings.dataSource = this.containerData
-               console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource)
-            });
-            }
-    getWorkorderByContainerId(id){
-        this.workorderService
-        .getWorkOrderByContainerId(id)
-        .subscribe(event =>{
-            this.WorkorderByContainerId = event
-            
-            this.WorkorderByContainerId.map(data =>{
-                let StartTime =   new Date (data.DateDebut) ,
-                EndTime = new Date (data.DateFin)
-                let anneeDebut = StartTime.getFullYear(),
-                moisDebut =(StartTime.getMonth() + 1),
-                jourDebut = StartTime.getDate(),
-                heurDebut = StartTime.getHours(),
-                minuteDebut = StartTime.getMinutes()
-               
-                let anneefin = EndTime.getFullYear(),
-                moisfin =(EndTime.getMonth() + 1),
-                jourfin = EndTime.getDate(),
-                heurfin = EndTime.getHours(),
-                minutefin = EndTime.getMinutes()  
-
-                this.containerData.push({
-                    Id: data.Id_Planning_Container,
-                    Name: data.libtypeWO,
-                    StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
-                    EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
-                    CodeRessourceSalle: data.CodeRessourceSalle,
-                    Container: false,
-                    numGroup:data.Id_Planning_Container,
-                    Description:data.Commentaire,
-                    Operateur:data.LibelleRessourceOperateur,
-                    coordinateurCreate:data.LibelleRessourceCoordinateur,
-                    Statut:data.Statut,
-                    AzaIsPere: true,
-                    AzaNumGroupe:  data.Id_Planning_Container,
-                    DepartmentID:data.CodeRessourceSalle
-                })
-
-            })
-            console.log("eventSettings", this.eventSettings)
-           this.eventSettings=
-           {
-               dataSource : <Object[]> extend([], this.calculDateAll(this.containerData, false, null, false, false), null, true),
-               fields: {
-                subject: { name: 'Name', validation: { required: [true, 'Ce champ est requis'] } },
-                description: {
-                    name: 'Description',
-                    // {
-                    // name: 'Description', validation: {
-                    //     required: true, minLength: 5, maxLength: 500
-                    // }
-                },
-                startTime: { name: 'StartTime', validation: { required: true } },
-                endTime: { name: 'EndTime', validation: { required: true } },
-            }
-            }
-            console.log("Planning Events", this.scheduleObj.eventSettings.dataSource)
-            console.log("eventSettings 111", this.eventSettings)
-        })
-
+                        this.timelineResourceDataOut.push({
+                            Id: data.Id_Planning_Container,
+                            Name: (data.Titre === null || typeof(data.Titre) === 'undefined') ? 'Titre null' : data.Titre,
+                            StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut),
+                            EndTime:   new Date(anneeDebut,moisDebut,jourDebut, (heurDebut + 1),minuteDebut), // date provisoire
+                            CodeRessourceSalle: codeSalle,
+                            Container: true,
+                            numGroup:data.Id_Planning_Container,
+                            Description:data.Commentaire,
+                            Operateur:data.LibelleRessourceOperateur === null ? '' : data.LibelleRessourceOperateur,
+                            coordinateurCreate:data.LibelleRessourceCoordinateur,
+                            AzaIsPere: true,
+                            AzaNumGroupe:  data.Id_Planning_Container,
+                            DepartmentID: codeSalle,
+                            ConsultantID: 2,
+                            DepartmentName: '',
+                            IsAllDay: false
+                        });
+                        this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle);
+                    });
+                    // timelineResourceDataOut
+                    this.updateEventSetting(this.timelineResourceDataOut);
+                    console.log('containerData', this.timelineResourceDataOut);
+                    this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
+                    console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
+                } else {
+                    console.log('conainer not present for regie : ', coderessource, res);
+                }
+        });
     }
-   
+
+    getWorkorderByContainerId(id, codeSalle) {
+        this.workorderService
+            .getWorkOrderByContainerId(id)
+            .subscribe(res => {
+                console.log('response workorder for container : ', res);
+                this.WorkorderByContainerId = res;
+                if (this.WorkorderByContainerId != []) {
+                    this.WorkorderByContainerId.map(data => {
+                        let StartTime =   new Date (data.DateDebut) ,
+                        EndTime = new Date (data.DateFin);
+                        let anneeDebut = StartTime.getFullYear(),
+                        moisDebut =(StartTime.getMonth() + 1),
+                        jourDebut = StartTime.getDate(),
+                        heurDebut = StartTime.getHours(),
+                        minuteDebut = StartTime.getMinutes();
+
+                        let anneefin = EndTime.getFullYear(),
+                        moisfin = EndTime.getMonth(),
+                        jourfin = EndTime.getDate(),
+                        heurfin = EndTime.getHours(),
+                        minutefin = EndTime.getMinutes();
+
+                        this.timelineResourceDataOut.push({
+                            Id: data.Id_Planning_Container,
+                            Name: data.libtypeWO,
+                            StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
+                            EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
+                            CodeRessourceSalle: codeSalle,
+                            Container: false,
+                            numGroup:data.Id_Planning_Container,
+                            Description:data.Commentaire,
+                            Operateur:data.LibelleRessourceOperateur,
+                            coordinateurCreate:data.LibelleRessourceCoordinateur,
+                            Statut:data.Statut,
+                            AzaIsPere: false,
+                            AzaNumGroupe:  data.Id_Planning_Container,
+                            DepartmentID: codeSalle,
+                            ConsultantID: 2,
+                            DepartmentName: '',
+                            IsAllDay: false,
+
+                    });
+                },
+                console.log('eventSettings', this.eventSettings);
+                this.updateEventSetting(this.timelineResourceDataOut);
+                // this.onActionComplete('');
+                console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
+                console.log('eventSettings 111', this.eventSettings);
+            });
+    }
+
+
+    updateEventSetting(data) {
+            this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                dataSource: <Object[]>extend(
+                    [], data, null, true
+                )
+            };
+        // this.eventSettings =
+            // {
+            //     dataSource : <Object[]> extend([], this.calculDateAll(data, false, null, false, false), null, true),
+            //     fields: {
+            //         subject: { name: 'Name', validation: { required: [true, 'Ce champ est requis'] } },
+            //         description: {
+            //             name: 'Description',
+            //             // {
+            //             // name: 'Description', validation: {
+            //             //     required: true, minLength: 5, maxLength: 500
+            //             // }
+            //         },
+            //         startTime: { name: 'StartTime', validation: { required: true } },
+            //         endTime: { name: 'EndTime', validation: { required: true } },
+            //     }
+            // };
+    }
+
 
 
 /*************************************************************************/

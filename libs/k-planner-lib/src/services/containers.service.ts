@@ -50,7 +50,11 @@ export class ContainersService {
         });
     }
 
-  getContainersByRessourceStartDateEndDate(coderessource: number, datedebut: Date, datefin: Date): Observable<ContainerKP[]> {
+  getContainersByRessourceStartDateEndDate(
+    coderessource: number,
+    datedebut: Date | string,
+    datefin: Date | string
+  ): Observable<ContainerKP[]> {
       return this.http
         .get(
           urlKPlanner +

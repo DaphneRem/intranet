@@ -1,6 +1,6 @@
 export class EventModel{
 
-    Id: number; //Id_Planning_Container
+    Id: number; // Id_Planning_Container
     Name: string; // Titre
     StartTime: Date | string;
     EndTime: Date | string;
@@ -10,8 +10,27 @@ export class EventModel{
     CodeRessourceSalle: number;
     Description?: string;
     Container:Boolean;
-    numGroup:number; //Id_Planning_Container
+    numGroup:number; // Id_Planning_Container
     AzaIsPere?: boolean;
     AzaNumGroupe?: number;
     DepartmentID?: number;
+
+    DepartmentName?: string;
+        ConsultantID: number;
+IsAllDay: boolean;
 }
+
+    // Id: number;
+    // Name: string;
+    // StartTime: Date | string;
+    // EndTime: Date | string;
+    // Description?: string;
+    // DepartmentID: number;
+    // ConsultantID: number;
+    // DepartmentName?: string;
+    // className?: string;
+    // AzaIsPere?: boolean;
+    // AzaNumGroupe?: number;
+    // IconUrl?: string;
+    // coordinateurCreate?: string;
+    // Operateur: string;
