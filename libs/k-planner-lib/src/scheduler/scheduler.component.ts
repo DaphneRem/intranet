@@ -106,8 +106,8 @@ export class SchedulerComponent implements OnInit {
     public dataContainersByRessourceStartDateEndDate;
     public containerData: EventModel[] = [];
 
-    // public selectedDate: Date = new Date();
-    public selectedDate: Date = new Date(2019, 1, 4);
+    public selectedDate: Date = new Date();
+    // public selectedDate: Date = new Date(2019, 1, 4);
     public data: EventModel[] =  <EventModel[]>extend([], this.containerData, null, true);
     public eventSettings: EventSettingsModel  =  {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false), null, true),
@@ -138,7 +138,8 @@ export class SchedulerComponent implements OnInit {
     public startHour: string = '08:00';
     public endHour: string = '20:00';
 
-
+    public creationArray = [];
+    public newData = [];
     // BACKLOGS INIT
     public waitingList;
     public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
@@ -192,6 +193,10 @@ export class SchedulerComponent implements OnInit {
     public drowDownOperateurList;
 
     public monteurListe: MonteursData[] = [];
+
+    public isDelete: boolean;
+    public fieldArrayMonteur;
+    public fieldMonteurDSource;
 
     constructor(
         public dialog: MatDialog,
@@ -429,13 +434,14 @@ export class SchedulerComponent implements OnInit {
                             IsAllDay: false,
 
                     });
-                },
+                }),
                 console.log('eventSettings', this.eventSettings);
                 this.updateEventSetting(this.timelineResourceDataOut);
                 // this.onActionComplete('');
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 console.log('eventSettings 111', this.eventSettings);
-            });
+            }
+        });
     }
 
 
@@ -445,22 +451,6 @@ export class SchedulerComponent implements OnInit {
                     [], data, null, true
                 )
             };
-        // this.eventSettings =
-            // {
-            //     dataSource : <Object[]> extend([], this.calculDateAll(data, false, null, false, false), null, true),
-            //     fields: {
-            //         subject: { name: 'Name', validation: { required: [true, 'Ce champ est requis'] } },
-            //         description: {
-            //             name: 'Description',
-            //             // {
-            //             // name: 'Description', validation: {
-            //             //     required: true, minLength: 5, maxLength: 500
-            //             // }
-            //         },
-            //         startTime: { name: 'StartTime', validation: { required: true } },
-            //         endTime: { name: 'EndTime', validation: { required: true } },
-            //     }
-            // };
     }
 
 
@@ -501,36 +491,23 @@ onNavigating(args){
         let workOrders = [];
         console.log(args);
         if (args.type === 'EventContainer') {
-            args.data.element.innerText=`Plus`
+            args.data.element.innerText = `Plus`;
             // args.data.event = args.data.event[0]
-           
- 
-     
             for (let i = 0; i < args.data.event.length; i++) {
-                console.log("AzaIsPere", args.data.event[i].AzaIsPere)
- 
+                console.log('AzaIsPere', args.data.event[i].AzaIsPere);
                 if (args.data.event[i].AzaIsPere == false) {
-                    let elem = args.element.getElementsByClassName('e-appointment')
-
-                        elem[i].hidden = true
-                             
-            console.log("elem", elem)
-                        this.scheduleObj.resizing
+                    let elem = args.element.getElementsByClassName('e-appointment');
+                    elem[i].hidden = true;
+                    console.log('elem', elem);
+                    this.scheduleObj.resizing;
                 }
-                console.log(this.scheduleObj)
+                console.log(this.scheduleObj);
             }
-           
-            
         }
-    
         args.element.hidden = false;
         if ((args.type === 'QuickInfo') &&  (args.data.name === 'cellClick')) {
             args.cancel = true;
         }
-   
-        
-        
-       
         if (this.cancelObjectModal) {
             args.cancel = true;
         }
@@ -575,8 +552,11 @@ onNavigating(args){
             let container: HTMLElement;
             let containerOperateur = document.getElementsByClassName('custom-field-container');
             if (args.data.hasOwnProperty('AzaIsPere')) {
+                console.log('open Editor', args);
+                console.log(this.drowDownOperateurList);
                 if (args.data.AzaIsPere) { // dblclick container
                     if (containerOperateur.length === 0) {
+                        console.log('containerOperateur.length = 0', containerOperateur);
                         this.createDrowDownOperteurInput(args, container, inputEle);
                         this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
                         console.log(args.data.Operateur);
@@ -663,6 +643,8 @@ onNavigating(args){
 /******* DRAG AND DROP WORKORDERS *******/
 
     onTreeDragStop(event: DragAndDropEventArgs): void {
+        this.creationArray = [];
+        this.newData = [];
         let treeElement = closest(event.target, '.e-treeview');
         if (!treeElement) {
             event.cancel = true;
@@ -704,24 +686,18 @@ onNavigating(args){
                         AzaNumGroupe: this.lastRandomId,
                         coordinateurCreate: this.user.initials,
                     };
-                    this.timelineResourceDataOut.push(containerData);
-                    this.timelineResourceDataOut.push(eventData);
+                    this.creationArray.push(containerData);
+                    this.creationArray.push(eventData);
+                    console.log(containerData);
                     this.scheduleObj.openEditor(containerData, 'Add', true);
                     this.isTreeItemDropped = true;
                     this.draggedItemId = event.draggedNodeData.id as string;
-                    let newData = this.field['dataSource'].filter(item => {
+                    this.newData = this.field['dataSource'].filter(item => {
                             if (+item.Id !== +this.draggedItemId) {
                                 return item;
                             }
                         }
                     );
-                    console.log('newData',newData)
-                  
-                    this.field['dataSource'] = newData;
-                    this.newField = this.field['dataSource']
-                    this.treeObj.fields.dataSource = this.field['dataSource'];
-                    this.isDragged=true
-                    
                 } else {  // IF EMPLACEMENT EST DEJA PRIS PAR UN CONTENEUR
                     if (event.target.id) {
                         let indexContainerEvent = this.findIndexEventById(event.target.id);
@@ -751,7 +727,6 @@ onNavigating(args){
                                 }
                             }
                         );
-                        
                         this.field['dataSource'] = nData;
                         this.treeObj.fields.dataSource = this.field['dataSource'];
                         this.onActionComplete('e');
@@ -835,7 +810,9 @@ onNavigating(args){
     }
 
 /*************************************************************************/
+createEventsFromDragAndDrop() {
 
+}
 /*********************** ACTION BEGIN FUNCTION *********************/
 
     onActionBegin(event: ActionEventArgs): void {
@@ -855,6 +832,7 @@ onNavigating(args){
         if (((event.requestType === 'eventCreate') || (event.requestType === 'eventCreated')) && !this.isTreeItemDropped) { 
             // CREATE CONTAINER ON CELL WITHOUT EVENT CLICK
             event.data[0]['AzaIsPere'] = true;
+            console.log('action create and !== isTreeItemDropped');
         }
         if (event.requestType === 'eventRemove') {
             if (!event.data[0].AzaIsPere) {
@@ -873,25 +851,61 @@ onNavigating(args){
                 remove(elements[i]);
             }
             console.log(this.eventSettings.dataSource);
+            this.createEventsFromDragAndDrop();
+            console.log('newData', this.newData);
+            this.creationArray.map(item => {
+                console.log(item);
+                if (item.AzaIsPere) {
+                    let newItemContainerAfterEditorUpdate = {
+                        Id: item.Id,
+                        Name: event.data[0].Name,
+                        StartTime: event.data[0].StartTime,
+                        EndTime: event.data[0].EndTime,
+                        IsAllDay: event.data[0].IsAllDay,
+                        DepartmentID: event.data[0].DepartmentID,
+                        ConsultantID: item.ConsultantID,
+                        AzaIsPere: true,
+                        AzaNumGroupe: item.AzaNumGroupe,
+                        coordinateurCreate: item.coordinateurCreate,
+                        Operateur: event.data[0].Operateur
+                    };
+                    this.timelineResourceDataOut.push(newItemContainerAfterEditorUpdate);
+                } else {
+                    let newItemWorkorderAfterEditorUpdate = {
+                        Id: item.Id,
+                        Name: item.Name,
+                        StartTime: event.data[0].StartTime,
+                        EndTime: event.data[0].EndTime,
+                        IsAllDay: event.data[0].IsAllDay,
+                        DepartmentID: event.data[0].DepartmentID,
+                        ConsultantID: item.ConsultantID,
+                        AzaIsPere: false,
+                        AzaNumGroupe: item.AzaNumGroupe,
+                        coordinateurCreate: item.coordinateurCreate,
+                        Operateur: event.data[0].Operateur
+                    };
+                    this.timelineResourceDataOut.push(newItemWorkorderAfterEditorUpdate);
+                }
+
+            });
+            this.field['dataSource'] = this.newData;
+            this.newField = this.field['dataSource'];
+            this.treeObj.fields.dataSource = this.field['dataSource'];
+            this.isDragged = true;
         } else { // CUSTOM FUNCTION
             console.log('customActionBegin()');
             this.customActionBegin(event);
         }
         // console.log('customActionBegin()');
         // this.customActionBegin(event);
-       
     }
 
     customActionBegin(args: any) { // CUSTOM ACTION BEGIN
-     
-        console.log("args customActionBegin ",args)
-        if (args.requestType === 'eventRemove') { // CUSTOM ACTION REMOVE 
+        console.log('args customActionBegin ', args);
+        if (args.requestType === 'eventRemove') { // CUSTOM ACTION REMOVE
             this.deleteEvent(args);
-        } else if(args.requestType === 'viewNavigate') {
-             
-        }
-        
-        else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) {
+        } else if (args.requestType === 'viewNavigate') {
+        } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) {
             let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
             let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
             this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
@@ -910,13 +924,13 @@ onNavigating(args){
                 Name: data.Name,
                 StartTime: data.StartTime,
                 EndTime: data.EndTime,
-                IsAllDay: false,
+                IsAllDay: data.IsAllDay,
                 DepartmentID: data.DepartmentID,
                 ConsultantID: data.DepartmentID,
                 AzaIsPere: true,
                 AzaNumGroupe: this.lastRandomId,
                 coordinateurCreate: this.user.initials,
-                Operateur: ''
+                Operateur: data.Operateur
             };
             this.timelineResourceDataOut.push(containerData);
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -947,18 +961,13 @@ onNavigating(args){
         console.log('onActionComplete()');
         console.log('event onActionComplete : ', e);
             this.isTreeItemDropped = false;
-         
-           
+            this.drowDownOperateurList.value = null;
                 // if(this.scheduleObj.currentView === 'TimelineWeek'){
                 //     this.timeScale  = { enable: false };
-               
-                  
                 // }else{
                 //     console.log("viewNavigate TimelineWeek ")
                 //     this.timeScale  = { enable: true };
                 // }
-            
-        
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                 dataSource: <Object[]>extend(
                     [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
@@ -971,7 +980,6 @@ onNavigating(args){
 
     deleteEvent(args: any) {
         let data = args.data[0];
-      
         if (data['AzaIsPere']) { // REMOVE CONTAINER
             this.timelineResourceDataOut.forEach(item => { // GARDER CETTE FONCTION POUR LA SUITE
                 if ((+data.AzaNumGroupe === +item.AzaNumGroupe) && !item.AzaIsPere) {
@@ -1024,7 +1032,6 @@ onNavigating(args){
         }
     }
 
-   
     backToBacklog(selectedItem) {
         let newWorkorderForList = {
             Id: selectedItem.Id,
@@ -1037,12 +1044,11 @@ onNavigating(args){
         };
         this.field['dataSource'].push(newWorkorderForList);
         this.wOrderBackToBacklog = this.field['dataSource'];
-        this.isAddedToBacklog= true;
+        this.isAddedToBacklog = true;
         let targetNodeId: string = this.treeObj.selectedNodes[0];
         let nodeId: string = 'tree_' + newWorkorderForList.Id;
         this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
-        console.log("aaeezetert",this.wOrderBackToBacklog)
-       
+        console.log('aaeezetert', this.wOrderBackToBacklog);
     }
 
 
@@ -1054,15 +1060,21 @@ onNavigating(args){
         // CALL ONINT => this.calculDateAll(this.data, false, null, false, false )
         // CALL ONRESIZE => this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true;
         let groupe = [], i;
-       
-        console.log(atimelineResourceData)
+        console.log(atimelineResourceData);
         for (i = 0; i < atimelineResourceData.length; i++) {
             if (!groupe.includes(atimelineResourceData[i]['AzaNumGroupe'])) {
                 groupe.push(atimelineResourceData[i]['AzaNumGroupe']);
             }
         }
         groupe.forEach(item => {
-            this.timelineResourceDataOut = this.calculDateGroup(atimelineResourceData, +item, needUpdate, itemToUpdate, startDifferent, endDifferent);
+            this.timelineResourceDataOut = this.calculDateGroup(
+                atimelineResourceData,
+                +item,
+                needUpdate,
+                itemToUpdate,
+                startDifferent,
+                endDifferent
+            );
         });
         console.log('all AzaNumGroup present on planning :', groupe,);
         return this.timelineResourceDataOut;
@@ -1223,7 +1235,7 @@ onNavigating(args){
             }
         }
     }}
-    
+
 /**************************************************************** Filter Monteur  ******************************************************************/
 
 
@@ -1236,7 +1248,7 @@ onNavigating(args){
                 console.log('searchText', typeof searchText, searchText);
                 this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
             }
-     if(!this.isDelete){
+     if (!this.isDelete) {
             if (!this.addMonteur) {
                 this.dataMonteur = this.monteurDataSource.filter(monteurs => {
                     return monteurs.Username.toLowerCase().includes(searchText.toLowerCase());
@@ -1246,12 +1258,9 @@ onNavigating(args){
                     return monteurs.Username.toLowerCase().includes(searchText.toLowerCase());
                 });
             }
-        }
-       else{
-
+        } else {
             this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
                 return monteurs.Username.toLowerCase().includes(searchText.toLowerCase());
-               
             });
             console.log('dataMonteur', this.fieldArrayMonteur[0]);
             console.log('dataMonteur', this.dataMonteur);
@@ -1264,30 +1273,21 @@ onNavigating(args){
             console.log(tabIndex);
 
         }
-     
         if (tabIndex == 0) {
-
             if (!searchText) {
-
                 console.log('searchText', typeof searchText, searchText)
-                if(!this.isAddedToBacklog){
-                if(!this.isDragged){
-                 this.field['dataSource'] = this.fieldArray
-                }else{
-                    this.field['dataSource'] = this.newField
+                if (!this.isAddedToBacklog){
+                if (!this.isDragged){
+                 this.field['dataSource'] = this.fieldArray;
+                } else {
+                    this.field['dataSource'] = this.newField;
                 }
 
-            } else
-            {
-                this.field['dataSource'] = this.wOrderBackToBacklog
+            } else {
+                this.field['dataSource'] = this.wOrderBackToBacklog;
             }
             console.log('   this.field[dataSource]  quand le champs est vide',this.field['dataSource'])
             }
-
-
-
-
-
             if (!this.isAddedToBacklog) {
                 if (!this.isDragged) {
 
@@ -1307,7 +1307,6 @@ onNavigating(args){
                         || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
                 });
             }
-
             this.field['dataSource'] = this.data;
             this.treeObj.fields['dataSource'] = this.field['dataSource'];
             console.log('fieldArray', this.fieldArray);
@@ -1363,9 +1362,6 @@ onNavigating(args){
         console.log('args', args);
         console.log('targetNodeId', targetNodeId);
     }
-    isDelete:boolean
-    fieldArrayMonteur 
-    fieldMonteurDSource
 
 
     menuclick(args: MenuEventArgs) {
@@ -1373,73 +1369,57 @@ onNavigating(args){
         for (let i = 0; i < this.monteurListe.length; i++) {
             let CodeRessource = this.monteurListe[i].CodeRessource;
             let CodeRessourceToString = CodeRessource.toString();
-         
             if (CodeRessourceToString === targetNodeId) {
                 if (args.item.text == 'Supprimer') {
                     this.treeObjMonteur.removeNodes([CodeRessourceToString]);
-                   console.log('element supprimer')
-                   this.isDelete=true
-               
+                   console.log('element supprimer');
+                   this.isDelete = true;
                     //  this.monteurDataSource= this.treeObjMonteur['groupedData']
                 }
                 console.log( this.treeObjMonteur);
             }
         }
-      
         this.fieldArrayMonteur  = this.treeObjMonteur['groupedData'];
         this.fieldMonteur['dataSource'] = this.fieldArrayMonteur[0];
         this.fieldMonteurDSource = this.fieldMonteur['dataSource']
-
-        if(this.isDelete){
+        if (this.isDelete) {
             this.filtermonteurListeArray = this.fieldArrayMonteur[0];
         }
-        console.log("field Array Monteur", this.fieldArrayMonteur);
-        console.log("field Array Monteur DS", this.filtermonteurListeArray);
-    
+        console.log('field Array Monteur', this.fieldArrayMonteur);
+        console.log('field Array Monteur DS', this.filtermonteurListeArray);
     }
 
     /************************************************************************ ADD Color **********************************************************************************/
-    public workOrderColor: string =  '#4295E8'
 
+    public workOrderColor: string =  '#4295E8';
 
     onEventRendered(args: EventRenderedArgs): void {
         // let categoryColor: string = args.data.CategoryColor as string;
         // console.log('color', this.workOrderColor);
         // console.log('args', args);
         console.log(args);
-    
         if (args.data.AzaIsPere ) {
-            return;
-        }else{
-        
-        if (this.scheduleObj.currentView === 'MonthAgenda') {
-            (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
-            (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
-            args.element.style.borderLeftColor = this.workOrderColor;
-          
-            console.log('args oneventrendred'+ args.element )
+                return;
         } else {
-
-            if (this.scheduleObj.currentView === 'Agenda') {
-                (args.element.firstChild as HTMLElement).style.borderLeftColor =  this.workOrderColor;
+            if (this.scheduleObj.currentView === 'MonthAgenda') {
+                (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
                 (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
-                // args.element.style.borderLeftColor =  this.workOrderColor;
-              
+                args.element.style.borderLeftColor = this.workOrderColor;
                 console.log('args oneventrendred'+ args.element )
+            } else {
+                if (this.scheduleObj.currentView === 'Agenda') {
+                    (args.element.firstChild as HTMLElement).style.borderLeftColor =  this.workOrderColor;
+                    (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
+                    // args.element.style.borderLeftColor =  this.workOrderColor;
+                    console.log('args oneventrendred'+ args.element )
+                } else {
+                    (args.element.firstChild as HTMLElement).style.backgroundColor =  this.workOrderColor;
+                    args.element.style.backgroundColor =  this.workOrderColor;
+                }
             }
-            else{
-           
-            (args.element.firstChild as HTMLElement).style.backgroundColor =  this.workOrderColor;
-            args.element.style.backgroundColor =  this.workOrderColor;
-    
         }
     }
- 
-}
-     
- 
 
-     }
 }
 
 
