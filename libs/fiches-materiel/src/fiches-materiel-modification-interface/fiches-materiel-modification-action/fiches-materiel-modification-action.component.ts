@@ -119,6 +119,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       newObject.IdLibstatut === 5
     ) {
       newObject.Deadline = null;
+      newObject.isarchived = 1;
     } else {
       newObject.Deadline = `${newObject.Deadline.year}-${
         newObject.Deadline.month

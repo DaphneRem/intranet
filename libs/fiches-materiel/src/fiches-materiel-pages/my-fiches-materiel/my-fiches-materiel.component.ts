@@ -19,7 +19,7 @@ import { Store } from '@ngrx/store';
 export class MyFichesMaterielComponent implements OnInit {
 
   public headerTableLinkExist: boolean = false;
-  public tableTitle: string = 'Toutes mes fiches Matériel';
+  public tableTitle: string = 'Mes fiches Matériel en cours';
   public daysNumber: number = 100;
   public isArchived: number = 0;
 
