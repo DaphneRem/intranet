@@ -140,6 +140,15 @@ $operatorColor: #BDBDBD;
 .e-schedule.schedule-drag-drop .e-timeline-month-view .e-resource-left-td {
     width: 160px;
 }
+
+
+/deep/ .e-schedule .e-vertical-view .e-work-cells table td{
+    width: 25%;
+}
+
+/deep/  .e-schedule .e-vertical-view .e-date-header-wrap table tbody td{
+    width: 25%;
+}
 /deep/ .e-schedule .e-timeline-view .e-work-cells{
     height:100px
 }
@@ -162,7 +171,17 @@ $operatorColor: #BDBDBD;
    
 }
 
+/deep/  .e-sidebar.e-right{
+    top: 90px;
+    height:665px;
+    right:12px;
+    position: absolute;
+   overflow: hidden;
 
+}
+.btn-backlog{
+    margin-left: -140px;
+}
 
 .e-schedule.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-category {
     padding-left: 30px
@@ -307,7 +326,7 @@ $operatorColor: #BDBDBD;
 }
 
 .e-item {
-    max-height: 70vh;
+    max-height: 65vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -317,3 +336,5 @@ $operatorColor: #BDBDBD;
     padding: 1px;
     padding-left: 3px;
 }
+
+

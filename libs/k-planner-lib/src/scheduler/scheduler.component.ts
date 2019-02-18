@@ -8,7 +8,7 @@ import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfa
 import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined } from '@syncfusion/ej2-base';
 import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item } from '@syncfusion/ej2-navigations';
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
-
+import { ChangeEventArgs as DropDownChangeArgs } from '@syncfusion/ej2-angular-dropdowns';
 // Syncfusion Angular
 import { ButtonComponent, ChangeEventArgs } from '@syncfusion/ej2-angular-buttons';
 import {
@@ -16,7 +16,8 @@ import {
     SelectEventArgs,
     TreeViewComponent,
     MenuItemModel,
-    ContextMenuComponent
+    ContextMenuComponent,
+    SidebarComponent
 } from '@syncfusion/ej2-angular-navigations';
 import {
     EventSettingsModel,
@@ -57,6 +58,7 @@ import { dropDownBaseClasses } from '@syncfusion/ej2-angular-dropdowns';
 import { WorkOrderService } from '../services/workOrder.service';
 import { group } from '@angular/animations';
 import { EventModel } from '../models/Events';
+import { interval } from 'rxjs/observable/interval';
 
 const localeFrenchData = require('./scheduler-fr.json');
 const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
@@ -94,10 +96,17 @@ export class SchedulerComponent implements OnInit {
     public treeObjMonteur: TreeViewComponent;
     @ViewChild('toggleBtn')
     public toggleBtn: ButtonComponent;
+    @ViewChild('togglebtnslide')
+    public togglebtnslide: ButtonComponent;
     @ViewChild('element')
     public tabInstance: TabComponent;
     @ViewChild ('contentmenutree') 
     public contentmenutree: ContextMenuComponent;
+    @ViewChild('sidebar')
+    public sidebar: SidebarComponent;
+    public type: string = 'Push';
+    public target: string = '.content';
+  
 
     /******** STORE *******/
     public user: User;
@@ -105,9 +114,9 @@ export class SchedulerComponent implements OnInit {
     /******** SCHEDULER INIT *******/
     public dataContainersByRessourceStartDateEndDate;
     public containerData: EventModel[] = [];
-
+    public workOrderData:EventModel[] = []; 
+    // public selectedDate: Date = new Date();
     public selectedDate: Date = new Date();
-    // public selectedDate: Date = new Date(2019, 1, 4);
     public data: EventModel[] =  <EventModel[]>extend([], this.containerData, null, true);
     public eventSettings: EventSettingsModel  =  {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false), null, true),
@@ -135,23 +144,32 @@ export class SchedulerComponent implements OnInit {
     public workHours: WorkHoursModel = { start: '08:00', end: '20:00' };
     public cssClass: string = 'custom';
     public readonly: boolean = true;
-    public startHour: string = '08:00';
-    public endHour: string = '20:00';
+ 
 
     public creationArray = [];
     public newData = [];
+    public startHour: string = '06:00';
+    public endHour: string = '23:00';
+    public timeScaleDay : TimeScaleModel = { enable: true, interval: 60, slotCount: 2 };
+    public timeScaleWeek : TimeScaleModel = { enable: true, interval: 60, slotCount: 1 };
+    public timeScaleWorkWeek :  TimeScaleModel = { enable: true, interval: 60, slotCount: 2 };
     // BACKLOGS INIT
     public waitingList;
-    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
+    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }, { 'text': 'gérer affichage' }];
     public menuItems: MenuItemModel[] = [
         { text: 'Supprimer',
           iconCss: 'e-icons delete', }
     ];
-
+  
     public monteurDataSource: MonteursData[];
     public timelineResourceDataOut = [];
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
-    public field: Object = { dataSource: waitingList, id: 'Id', text: 'Name', description: 'Description' };
+    public field: Object  = {
+        dataSource:  this.workOrderData,
+        id: 'Id', 
+        text: 'Name', 
+        description: 'Description'
+    }
     public fieldMonteur: Object;
     public isClicked: boolean = false;
     public allowDragAndDrop: boolean = true;
@@ -161,7 +179,7 @@ export class SchedulerComponent implements OnInit {
     public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
     public allowMultiple: Boolean = false;
     public filteredData: Object;
-
+   public color : string = '#ea7a57'
     public cancelObjectModal = false;
     public salleDataSource;
     public containersPlanning;
@@ -176,15 +194,20 @@ export class SchedulerComponent implements OnInit {
     public  codegroupe;
     public filtermonteurListeArray;
     public addMonteur: boolean;
-    public fieldArray = this.field['dataSource'] ;
+    public fieldArray  =  this.field['dataSource']  ;
     public isDragged: boolean;
     public newField;
     public wOrderBackToBacklog;
     public  isAddedToBacklog: boolean;
     public count: number = 0;
-
+    public groupeCharger:number = 10;
+    public workOrderColor: string =  '#4295E8';
     public SelectDateDebut: Date = new Date(2019,0,4);
     public SelectDateFin: Date = new Date(2019,1,5);
+    public weekInterval: number = 1;
+    public intervalValue: string = '60';
+    public intervalData: string[] = ['15', '30', '60', '90', '120', '150', '180', '240', '300', '720'];
+
 
     // Editor
     public drowDownMonteurs;
@@ -214,12 +237,15 @@ export class SchedulerComponent implements OnInit {
         this.storeAppSubscription();
         console.log(this.store);
         console.log(this.scheduleObj);
-        this.getSalle(10);
-        this.getMonteur(3);
+        this.getSalle(this.groupeCharger);
+        this.getMonteur(this.groupeCharger);
         // this.getAllContainer();
         // this.getContainersByRessource(118);
         console.log(this.selectedDate);
         // this.getWorkorderByContainerId(1);
+        //  this.getWorkOrderByidGroup(1)
+        this.getWorkOrderByidGroup(3)
+      
     }
 
     storeAppSubscription() {
@@ -243,14 +269,14 @@ export class SchedulerComponent implements OnInit {
             .subscribe(donnees => {
                 this.salleDataSource = donnees;
                 this.salleDataSource.map(item => {
-              if (item.codegroupe != 3) {
+              if (item.codegroupe != group) {
                     this.departmentDataSourceAll.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
                         Color: '#f9920b'
                     });
                 }
-                    // console.log('regie', this.departmentDataSource)
+                    
                 });
              console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
              this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
@@ -275,6 +301,7 @@ export class SchedulerComponent implements OnInit {
                         console.log('item code salle fot container request : ', item.CodeSalle);
                         this.getContainersByRessourceStartDateEndDate(item.CodeRessource, this.SelectDateDebut, this.SelectDateFin, item.CodeSalle);
                         // this.getContainersByRessource(item.CodeRessource);
+                       
                     });
                     this.departmentDataSource = this.departmentGroupDataSource;
                     console.log('regie departmentDataSource', this.departmentGroupDataSource);
@@ -289,7 +316,7 @@ export class SchedulerComponent implements OnInit {
             .subscribe(donnees => {
                 monteurDataSource = donnees;
                 monteurDataSource.map(item => {
-                    if (item.codegroupe !== 3) {
+                    if (item.codegroupe !== group) {
                         this.monteurListe.push(item);
                          this.codegroupe = item.codegroupe;
                     }
@@ -380,6 +407,7 @@ export class SchedulerComponent implements OnInit {
                             IsAllDay: false
                         });
                         this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle);
+
                     });
                     // timelineResourceDataOut
                     this.updateEventSetting(this.timelineResourceDataOut);
@@ -434,16 +462,75 @@ export class SchedulerComponent implements OnInit {
                             IsAllDay: false,
 
                     });
-                }),
+                });
                 console.log('eventSettings', this.eventSettings);
-                this.updateEventSetting(this.timelineResourceDataOut);
+                this.updateEventSetting(this.timelineResourceDataOut); 
                 // this.onActionComplete('');
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 console.log('eventSettings 111', this.eventSettings);
-            }
-        });
+             }
+             });
+        
     }
+   public  WorkOrderByidgroup
+    getWorkOrderByidGroup(idGroup){
+        this.workorderService
+        .getWorkOrderByidGroup(idGroup).
+        subscribe(donnees => {
+            this.WorkOrderByidgroup = donnees;
+            console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
+    
+        if (this.WorkOrderByidgroup != []){
+        this.WorkOrderByidgroup.map(workOrder =>{
 
+            
+        let StartTime =   new Date (workOrder.DateDebut) ,
+        EndTime = new Date (workOrder.DateFin);
+        let anneeDebut = StartTime.getFullYear(),
+        moisDebut =(StartTime.getMonth() + 1),
+        jourDebut = StartTime.getDate(),
+        heurDebut = StartTime.getHours(),
+        minuteDebut = StartTime.getMinutes();
+
+        let anneefin = EndTime.getFullYear(),
+        moisfin = EndTime.getMonth(),
+        jourfin = EndTime.getDate(),
+        heurfin = EndTime.getHours(),
+        minutefin = EndTime.getMinutes();
+
+    
+        this.workOrderData.push({
+            Id: workOrder.Id_Planning_Events,
+            Name: workOrder.libtypeWO,
+            StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
+            EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
+            CodeRessourceSalle: workOrder.CodeRessourceSalle,
+            Container: false,
+            numGroup:workOrder.Id_Planning_Events,
+            Description:workOrder.Commentaire,
+            Operateur:workOrder.LibelleRessourceOperateur,
+            coordinateurCreate:workOrder.LibelleRessourceCoordinateur,
+            Statut:workOrder.Statut,
+            AzaIsPere: false,
+            AzaNumGroupe:  workOrder.Id_Planning_Events,
+            DepartmentID: workOrder.CodeRessourceSalle,
+            ConsultantID: 2,
+            DepartmentName: '',
+            IsAllDay: false,
+
+    });
+
+}) 
+
+
+}   
+console.log('WorkOrderByidgroup', this.workOrderData);
+    console.log('this.fieldArray', this.field);
+
+ });
+
+    
+    }
 
     updateEventSetting(data) {
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -451,6 +538,7 @@ export class SchedulerComponent implements OnInit {
                     [], data, null, true
                 )
             };
+      
     }
 
 
@@ -485,25 +573,28 @@ export class SchedulerComponent implements OnInit {
 
 onNavigating(args){
     console.log('Schedule <b>Navigating</b> event called<hr>',args);
+  
 }
 
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         console.log(args);
-        if (args.type === 'EventContainer') {
-            args.data.element.innerText = `Plus`;
-            // args.data.event = args.data.event[0]
-            for (let i = 0; i < args.data.event.length; i++) {
-                console.log('AzaIsPere', args.data.event[i].AzaIsPere);
-                if (args.data.event[i].AzaIsPere == false) {
-                    let elem = args.element.getElementsByClassName('e-appointment');
-                    elem[i].hidden = true;
-                    console.log('elem', elem);
-                    this.scheduleObj.resizing;
-                }
-                console.log(this.scheduleObj);
-            }
-        }
+        // if (args.type === 'EventContainer') {
+        //     args.data.element.innerText = `Plus`;
+        //     // args.data.event = args.data.event[0]
+        //     for (let i = 0; i < args.data.event.length; i++) {
+        //         console.log('AzaIsPere', args.data.event[i].AzaIsPere);
+        //         if (args.data.event[i].AzaIsPere == false) {
+        //             let elem = args.element.getElementsByClassName('e-appointment');
+        //             elem[i].hidden = true;
+        //             console.log('elem', elem);
+        //             this.scheduleObj.resizing;
+        //         }
+        //         console.log(this.scheduleObj);
+        //     }
+        // }
+   
+    
         args.element.hidden = false;
         if ((args.type === 'QuickInfo') &&  (args.data.name === 'cellClick')) {
             args.cancel = true;
@@ -531,7 +622,7 @@ onNavigating(args){
                             colorRegie = item['Color'];
                         }
                     });
-                    row.innerHTML += `<div id='id${i}' style='background-color: #000000;'>${workOrders[i].Name}</div>`;
+                    row.innerHTML += `<div id='id${i}' style='background-color: #4295E8;'>${workOrders[i].Name}</div>`;
                 }
                 for (let e = 0; e < workOrders.length; e++) {
                     let child = document.getElementById(`id${e}`);
@@ -544,7 +635,7 @@ onNavigating(args){
             }
         }
         if (args.data.name === 'cellClick') {
-            console.log('cell click');
+            console.log('cell click',args);
         }
         if (args.type === 'Editor') {
             console.log('Open Editor');
@@ -658,6 +749,7 @@ onNavigating(args){
                     this.randomId();
                     console.log('last Random id : ', this.lastRandomId);
                     console.log('event target : ', event.target);
+                    console.log('treeviewData  : ',treeviewData);
                     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
                     let resourceDetails: ResourceDetails = this.scheduleObj.getResourcesByIndex(cellData.groupIndex);
                     let containerData = { // DISPLAY DATA FOR CONTAINER
@@ -673,6 +765,7 @@ onNavigating(args){
                         coordinateurCreate: this.user.initials,
                         Operateur: ''
                     };
+                    console.log(filteredData[0], "filteredData[0]")
                     let eventData: { [key: string]: Object } = { // DISPLAY DATA FOR EVENT
                         Id: filteredData[0].Id,
                         Name: filteredData[0].Name,
@@ -960,6 +1053,22 @@ createEventsFromDragAndDrop() {
     onActionComplete(e) {
         console.log('onActionComplete()');
         console.log('event onActionComplete : ', e);
+        if(e.requestType === 'eventChanged')
+        {
+            if(this.open == true)
+        {
+            this.open = true
+            this.sidebar.show();
+            this.sidebar.position ='Right'
+            this.sidebar.animate =false
+            
+        }else{
+            this.open = false
+            this.sidebar.hide();
+            this.sidebar.position ='Right'
+            this.sidebar.animate =false
+        }
+    }
             this.isTreeItemDropped = false;
             this.drowDownOperateurList.value = null;
                 // if(this.scheduleObj.currentView === 'TimelineWeek'){
@@ -1048,7 +1157,7 @@ createEventsFromDragAndDrop() {
         let targetNodeId: string = this.treeObj.selectedNodes[0];
         let nodeId: string = 'tree_' + newWorkorderForList.Id;
         this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
-        console.log('aaeezetert', this.wOrderBackToBacklog);
+        console.log('wOrderBackToBacklog', this.wOrderBackToBacklog);
     }
 
 
@@ -1227,8 +1336,8 @@ createEventsFromDragAndDrop() {
     }
 
 
-    getBorder(value) {
-        if (value) {
+    getBorder(value, codeGroup) {
+        if (value && codeGroup!=this.groupeCharger ) {
         for (let i = 0; i < this.monteurListe.length; i++) {
             if (value === this.monteurListe[i].Username) {
                 return 'red 2px solid';
@@ -1242,13 +1351,15 @@ createEventsFromDragAndDrop() {
 /********** Filter Monteur  *********/
 
     onFilter(searchText: string, tabIndex) {
+
+       
         if (tabIndex == 1) {
 
             if (!searchText) {
                 console.log('searchText', typeof searchText, searchText);
                 this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
             }
-     if (!this.isDelete) {
+       if(!this.isDelete){
             if (!this.addMonteur) {
                 this.dataMonteur = this.monteurDataSource.filter(monteurs => {
                     return monteurs.Username.toLowerCase().includes(searchText.toLowerCase());
@@ -1273,7 +1384,11 @@ createEventsFromDragAndDrop() {
             console.log(tabIndex);
 
         }
+     
+     console.log(    this.fieldArray , "fieldArray aaa  ")
         if (tabIndex == 0) {
+
+           
             if (!searchText) {
                 console.log('searchText', typeof searchText, searchText)
                 if (!this.isAddedToBacklog){
@@ -1293,18 +1408,18 @@ createEventsFromDragAndDrop() {
 
                     this.data = this.field['dataSource'].filter(WorkOrder => {
                         return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
+                            // || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
                     });
                 } else {
                     this.data = this.newField.filter(WorkOrder => {
                         return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
+                            // || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
                     });
                 }
             } else {
                 this.data = this.wOrderBackToBacklog.filter(WorkOrder => {
                     return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
+                        // || WorkOrder.Description.toLowerCase().includes(searchText.toLowerCase());
                 });
             }
             this.field['dataSource'] = this.data;
@@ -1326,7 +1441,7 @@ createEventsFromDragAndDrop() {
         if (this.isClicked) {
             this.toggleBtn.content = 'Voir mes Régies  ';
             if (this.count == 0 || this.allRegies.length == 0) {
-                this.getSalle(3);
+                this.getSalle(10);
                 this.count = this.count + 1;
                 console.log(this.count);
             } else {
@@ -1339,13 +1454,43 @@ createEventsFromDragAndDrop() {
             console.log('faux');
         }
     }
+    public open
+    
+    btnClickSlide(){
+
+        if(this.togglebtnslide.element.classList.contains('e-active')){
+            // this.togglebtnslide.content = 'BackLog'
+            this.open = false
+            this.sidebar.hide();
+            this.sidebar.position ='Right'
+            this.sidebar.animate =false
+            this.sidebar.locale = "fr-CH"
+    
+     
+        
+        }
+        else{
+            // this.togglebtnslide.content = '';
+            this.open = true
+            this.sidebar.show();
+            this.sidebar.position ='Right'
+            this.sidebar.animate =false
+            this.sidebar.locale = "fr-CH"
+
+         
+           
+        }
+        console.log("slidebar",this.sidebar)
+        console.log("button", this.togglebtnslide)
+        console.log("scheduler element", this.scheduleObj)
+    }
 
     /********************************** Remove Monteur *************************************/
 
     beforeopen(args: BeforeOpenCloseMenuEventArgs) {
         let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
         this.fieldMonteur['dataSource'].map(item => {
-            if ( (item.codegroupe === 3) ) {
+            if ( (item.codegroupe === 10) ) {
                 args.cancel = true;
                 let targetNode: Element = document.querySelector(`[data-uid='${targetNodeId}']`);
                   console.log('targetNode', targetNode);
@@ -1390,14 +1535,16 @@ createEventsFromDragAndDrop() {
     }
 
     /************************************************************************ ADD Color **********************************************************************************/
+  
 
-    public workOrderColor: string =  '#4295E8';
+
 
     onEventRendered(args: EventRenderedArgs): void {
         // let categoryColor: string = args.data.CategoryColor as string;
         // console.log('color', this.workOrderColor);
         // console.log('args', args);
-        console.log(args);
+     
+    
         if (args.data.AzaIsPere ) {
                 return;
         } else {
@@ -1418,7 +1565,26 @@ createEventsFromDragAndDrop() {
                 }
             }
         }
+  
+    
     }
+
+
+   
+
+
+
+     /******************************************* Zoom *******************/
+   
+     changeInterval(e: DropDownChangeArgs): void {
+   
+        this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
+        this.scheduleObj.activeViewOptions.timeScale.interval =   this.scheduleObj.timeScale.interval
+        this.scheduleObj.dataBind();
+  
+    console.log(this.scheduleObj)
+}
+  
 
 }
 

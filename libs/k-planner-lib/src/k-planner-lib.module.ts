@@ -7,7 +7,7 @@ import { ScheduleAllModule, RecurrenceEditorAllModule } from '@syncfusion/ej2-an
 import { DatePickerAllModule, TimePickerAllModule, DateTimePickerAllModule } from '@syncfusion/ej2-angular-calendars';
 import { NumericTextBoxAllModule } from '@syncfusion/ej2-angular-inputs';
 import { CheckBoxAllModule, ButtonComponent } from '@syncfusion/ej2-angular-buttons';
-import { ToolbarAllModule } from '@syncfusion/ej2-angular-navigations';
+import { ToolbarAllModule, SidebarModule } from '@syncfusion/ej2-angular-navigations';
 import { MaskedTextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule, MultiSelectAllModule} from '@syncfusion/ej2-angular-dropdowns';
 import { TreeViewModule, TabModule, BeforeOpenCloseMenuEventArgs, MenuEventArgs, MenuItemModel, ContextMenuComponent} from '@syncfusion/ej2-angular-navigations';
@@ -24,7 +24,7 @@ import { ListePlanningComponent } from './liste-planning/liste-planning.componen
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { FilterPipe } from './filter.pipe';
-import { HttpModule } from '@angular/http';
+import { HttpModule, JsonpModule } from '@angular/http';
 
 
 
@@ -52,7 +52,10 @@ import { HttpModule } from '@angular/http';
     MatButtonModule,
     NgbModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    SidebarModule,
+    
+
   ],
   declarations: [
     SchedulerComponent,
@@ -61,7 +64,8 @@ import { HttpModule } from '@angular/http';
     ListePlanningComponent,
     ContextMenuComponent,
     FilterPipe ,
-    ButtonComponent
+    ButtonComponent,
+   
   ],
   entryComponents: [
     MonPlanningComponent,
