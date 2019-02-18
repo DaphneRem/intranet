@@ -126,6 +126,7 @@
           <history-steps-status-modal
             class="history-steps-status-modal-component"
             *ngIf="selectionType === 'one'" 
+            [reload]="reloadHistoryStepStatus"
             [myFicheMateriel]="this.allFichesMateriel[0]" 
             [statusLib]="status"
             [stepLib]="allSteps">

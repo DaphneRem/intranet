@@ -141,8 +141,6 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.todayTime = this.todayDate.getTime();
     console.log(this.columnParams);
     console.log(this.orderParams);
-    this.getFichesMateriel();
-    this.getStepsLib();
     this.getStatusLib();
     this.checkLinks();
     this.displayAction();
@@ -180,6 +178,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         this.stepLib = data;
         console.log(data);
         this.stepLibReady = true;
+        this.getFichesMateriel();
       });
   }
 
@@ -190,6 +189,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         this.statusLib = data;
         console.log(data);
         this.statusLibReady = true;
+        this.getStepsLib();
       });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewEncapsulation } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { HistoryStepsStatusService } from '../../services/history-steps-status.service';
@@ -15,12 +15,14 @@ import { HistoryStepsStatus } from '../../models/history-steps-status';
     HistoryStepsStatusService
   ]
 })
-export class HistoryStepsStatusModalComponent implements OnInit {
+export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
   @Input() myFicheMateriel;
   @Input() statusLib;
   @Input() stepLib;
+  @Input() reload?;
 
   closeResult: string;
+  count = 0;
 
   public historyStepsStatus;
   public historyStepsStatusReady: Boolean = false;
@@ -32,6 +34,14 @@ export class HistoryStepsStatusModalComponent implements OnInit {
 
   ngOnInit() {
     this.getHistoryStepsStatus(this.myFicheMateriel.IdFicheMateriel);
+  }
+
+  ngOnChanges(reload) {
+    if (this.count === 0) {
+      this.count++;
+    } else {
+      console.log(reload);
+    }
   }
 
   openLg(content) {

@@ -65,6 +65,8 @@ export class FichesMaterielModificationInterfaceComponent
   implements OnInit, OnDestroy {
   public initialFichesMateriel = [];
 
+  public reloadHistoryStepStatus = false;
+
   public modificationMessage: string = 'Modifications';
   public disabledDateAcceptation = false;
   public deadLineNgFormat: NgbDateStruct;
@@ -224,12 +226,15 @@ export class FichesMaterielModificationInterfaceComponent
     this.modificationMessage = event;
     this.allAnnexElementsFicheMateriel = [];
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
+    this.reloadHistoryStepStatus = true;
     this.initValueSteps = true;
     // this.changeDateFormat(event);
     // this.ngOnInit();
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
     console.log(this.newObject);
   }
+
+  
 
   disabledDeadline() {
     // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT

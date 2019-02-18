@@ -144,8 +144,8 @@ export class SchedulerComponent implements OnInit {
     public workHours: WorkHoursModel = { start: '08:00', end: '20:00' };
     public cssClass: string = 'custom';
     public readonly: boolean = true;
- 
 
+    public openEditorCount = 0;
     public creationArray = [];
     public newData = [];
     public startHour: string = '06:00';
@@ -160,7 +160,7 @@ export class SchedulerComponent implements OnInit {
         { text: 'Supprimer',
           iconCss: 'e-icons delete', }
     ];
-  
+
     public monteurDataSource: MonteursData[];
     public timelineResourceDataOut = [];
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
@@ -174,12 +174,13 @@ export class SchedulerComponent implements OnInit {
     public isClicked: boolean = false;
     public allowDragAndDrop: boolean = true;
     public isTreeItemDropped: boolean = false;
+    public isTreeItemDroppedMonteur: boolean = false;
     public draggedItemId: string = '';
 
     public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
     public allowMultiple: Boolean = false;
     public filteredData: Object;
-   public color : string = '#ea7a57'
+    public color : string = '#ea7a57'
     public cancelObjectModal = false;
     public salleDataSource;
     public containersPlanning;
@@ -220,6 +221,7 @@ export class SchedulerComponent implements OnInit {
     public isDelete: boolean;
     public fieldArrayMonteur;
     public fieldMonteurDSource;
+    public drowDownExist = false;
 
     constructor(
         public dialog: MatDialog,
@@ -244,8 +246,7 @@ export class SchedulerComponent implements OnInit {
         console.log(this.selectedDate);
         // this.getWorkorderByContainerId(1);
         //  this.getWorkOrderByidGroup(1)
-        this.getWorkOrderByidGroup(3)
-      
+        this.getWorkOrderByidGroup(3);
     }
 
     storeAppSubscription() {
@@ -276,7 +277,6 @@ export class SchedulerComponent implements OnInit {
                         Color: '#f9920b'
                     });
                 }
-                    
                 });
              console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
              this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
@@ -301,7 +301,6 @@ export class SchedulerComponent implements OnInit {
                         console.log('item code salle fot container request : ', item.CodeSalle);
                         this.getContainersByRessourceStartDateEndDate(item.CodeRessource, this.SelectDateDebut, this.SelectDateFin, item.CodeSalle);
                         // this.getContainersByRessource(item.CodeRessource);
-                       
                     });
                     this.departmentDataSource = this.departmentGroupDataSource;
                     console.log('regie departmentDataSource', this.departmentGroupDataSource);
@@ -406,8 +405,9 @@ export class SchedulerComponent implements OnInit {
                             DepartmentName: '',
                             IsAllDay: false
                         });
-                        this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle);
-
+                        let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
+                        let length = this.dataContainersByRessourceStartDateEndDate.length;
+                        this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length);
                     });
                     // timelineResourceDataOut
                     this.updateEventSetting(this.timelineResourceDataOut);
@@ -420,7 +420,7 @@ export class SchedulerComponent implements OnInit {
         });
     }
 
-    getWorkorderByContainerId(id, codeSalle) {
+    getWorkorderByContainerId(id, codeSalle, index, containerArrayLength) {
         this.workorderService
             .getWorkOrderByContainerId(id)
             .subscribe(res => {
@@ -468,10 +468,13 @@ export class SchedulerComponent implements OnInit {
                 // this.onActionComplete('');
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 console.log('eventSettings 111', this.eventSettings);
-             }
-             });
-        
+            }
+            if (index === (containerArrayLength - 1)) {
+                console.log('ready');
+            }
+        });
     }
+
    public  WorkOrderByidgroup
     getWorkOrderByidGroup(idGroup){
         this.workorderService
@@ -638,6 +641,15 @@ onNavigating(args){
             console.log('cell click',args);
         }
         if (args.type === 'Editor') {
+            console.log(this.openEditorCount);
+            if (this.openEditorCount === 0) { // diplay none for IsAllDay and Repeat field in editor
+                let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                console.log('isAllDay :', isAllDay[0]);
+                isAllDay[0]['style'].display = 'none';
+                let repeat = document.getElementsByClassName('e-editor');
+                console.log('repeat', repeat[0]);
+                repeat[0]['style'].display = 'none';
+            }
             console.log('Open Editor');
             let inputEle: HTMLInputElement;
             let container: HTMLElement;
@@ -660,6 +672,7 @@ onNavigating(args){
                     this.createDrowDownOperteurInput(args, container, inputEle);
                 }
             }
+            this.openEditorCount = 1;
         }
     }
 
@@ -686,6 +699,7 @@ onNavigating(args){
         this.drowDownOperateurList.appendTo(inputEle);
         inputEle.setAttribute('name', 'Operateur');
         args.data.Operateur = this.drowDownOperateurList.value;
+        this.drowDownExist = true;
     }
 
     openDialog(args, object, subObject, categories): void { // open workorder modal from container list
@@ -724,10 +738,6 @@ onNavigating(args){
                 dragElementIcon[i].style.display = 'none';
             }
         }
-
-    }
-
-    createContainerWorkorder() {
 
     }
 
@@ -833,6 +843,7 @@ onNavigating(args){
 /******* DRAG AND DROP OPERATEURS *******/
 
     onTreeDragStopMonteur(event: DragAndDropEventArgs): void {
+        this.creationArray = [];
         let treeElement = closest(event.target, '.e-treeview');
         let classElement = this.scheduleObj.element.querySelector('.e-device-hover');
         if (classElement) {
@@ -863,10 +874,19 @@ onNavigating(args){
                         Operateur: filteredData[0].Username,
                         coordinateurCreate: this.user.initials
                     };
-                    this.timelineResourceDataOut.push(containerData); // filteredData[0]
+                    console.log('création array ==============', this.creationArray);
+                    // this.timelineResourceDataOut.push(containerData); // filteredData[0]
+                    this.creationArray.push(containerData);
                     this.scheduleObj.openEditor(containerData, 'Add', true);
                     this.isTreeItemDropped = true;
+                    this.isTreeItemDroppedMonteur = true;
                     this.draggedItemId = event.draggedNodeData.id as string;
+                    this.newData = this.field['dataSource'].filter(item => {
+                            if (+item.Id !== +this.draggedItemId) {
+                                return item;
+                            }
+                        }
+                    );
                 } else { // Emplacement déjà pris par un event (container)
                     const filteredData: { [key: string]: Object }[] =
                         treeviewData.filter((item: any) => item.CodeRessource === parseInt(event.draggedNodeData.id as string, 10));
@@ -889,12 +909,14 @@ onNavigating(args){
                         this.timelineResourceDataOut.push(containerData); // filteredData[0]
                         this.scheduleObj.openEditor(containerData, 'Add', true);
                         this.isTreeItemDropped = true;
+                        this.isTreeItemDroppedMonteur = true;
                         this.draggedItemId = event.draggedNodeData.id as string;
                     } else { // Emplacement déjà pris par un event (container)
                         console.log(event);
                         let indexContainerEvent = this.findIndexEventById(event.target.id);
                         this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = filteredData[0].Username;
                         this.isTreeItemDropped = true;
+                        this.isTreeItemDroppedMonteur = true;
                         this.onActionComplete('e');
                     }
                 }
@@ -902,10 +924,6 @@ onNavigating(args){
         }
     }
 
-/*************************************************************************/
-createEventsFromDragAndDrop() {
-
-}
 /*********************** ACTION BEGIN FUNCTION *********************/
 
     onActionBegin(event: ActionEventArgs): void {
@@ -944,12 +962,48 @@ createEventsFromDragAndDrop() {
                 remove(elements[i]);
             }
             console.log(this.eventSettings.dataSource);
-            this.createEventsFromDragAndDrop();
             console.log('newData', this.newData);
-            this.creationArray.map(item => {
-                console.log(item);
-                if (item.AzaIsPere) {
-                    let newItemContainerAfterEditorUpdate = {
+            console.log(this.isTreeItemDroppedMonteur);
+            if (!this.isTreeItemDroppedMonteur) {
+                this.creationArray.map(item => {
+                    console.log(item);
+                    if (item.AzaIsPere) {
+                        let newItemContainerAfterEditorUpdate = {
+                            Id: item.Id,
+                            Name: event.data[0].Name,
+                            StartTime: event.data[0].StartTime,
+                            EndTime: event.data[0].EndTime,
+                            IsAllDay: event.data[0].IsAllDay,
+                            DepartmentID: event.data[0].DepartmentID,
+                            ConsultantID: item.ConsultantID,
+                            AzaIsPere: true,
+                            AzaNumGroupe: item.AzaNumGroupe,
+                            coordinateurCreate: item.coordinateurCreate,
+                            Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur
+                        };
+                        console.log('newItemContainerAfterEditorUpdate', newItemContainerAfterEditorUpdate);
+                        this.timelineResourceDataOut.push(newItemContainerAfterEditorUpdate);
+                    } else {
+                        let newItemWorkorderAfterEditorUpdate = {
+                            Id: item.Id,
+                            Name: item.Name,
+                            StartTime: event.data[0].StartTime,
+                            EndTime: event.data[0].EndTime,
+                            IsAllDay: event.data[0].IsAllDay,
+                            DepartmentID: event.data[0].DepartmentID,
+                            ConsultantID: item.ConsultantID,
+                            AzaIsPere: false,
+                            AzaNumGroupe: item.AzaNumGroupe,
+                            coordinateurCreate: item.coordinateurCreate,
+                            Operateur:  event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur
+                        };
+                        console.log('newItemWorkorderAfterEditorUpdate : ', newItemWorkorderAfterEditorUpdate);
+                        this.timelineResourceDataOut.push(newItemWorkorderAfterEditorUpdate);
+                    }
+                });
+            } else if (this.isTreeItemDroppedMonteur) {
+                this.creationArray.map(item => {
+                    let newItemContainerFromMonteurAfterEditorUpdate = {
                         Id: item.Id,
                         Name: event.data[0].Name,
                         StartTime: event.data[0].StartTime,
@@ -960,27 +1014,14 @@ createEventsFromDragAndDrop() {
                         AzaIsPere: true,
                         AzaNumGroupe: item.AzaNumGroupe,
                         coordinateurCreate: item.coordinateurCreate,
-                        Operateur: event.data[0].Operateur
+                        Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur
                     };
-                    this.timelineResourceDataOut.push(newItemContainerAfterEditorUpdate);
-                } else {
-                    let newItemWorkorderAfterEditorUpdate = {
-                        Id: item.Id,
-                        Name: item.Name,
-                        StartTime: event.data[0].StartTime,
-                        EndTime: event.data[0].EndTime,
-                        IsAllDay: event.data[0].IsAllDay,
-                        DepartmentID: event.data[0].DepartmentID,
-                        ConsultantID: item.ConsultantID,
-                        AzaIsPere: false,
-                        AzaNumGroupe: item.AzaNumGroupe,
-                        coordinateurCreate: item.coordinateurCreate,
-                        Operateur: event.data[0].Operateur
-                    };
-                    this.timelineResourceDataOut.push(newItemWorkorderAfterEditorUpdate);
-                }
+                    console.log('newItemContainerFromMonteurAfterEditorUpdate ==== ', newItemContainerFromMonteurAfterEditorUpdate);
+                    this.timelineResourceDataOut.push(newItemContainerFromMonteurAfterEditorUpdate);
+                    console.log('this.timelineResourceDataOut ', this.timelineResourceDataOut)
+                });
+            }
 
-            });
             this.field['dataSource'] = this.newData;
             this.newField = this.field['dataSource'];
             this.treeObj.fields.dataSource = this.field['dataSource'];
@@ -999,6 +1040,7 @@ createEventsFromDragAndDrop() {
             this.deleteEvent(args);
         } else if (args.requestType === 'viewNavigate') {
         } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) {
+            args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
             let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
             let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
             this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
@@ -1023,7 +1065,7 @@ createEventsFromDragAndDrop() {
                 AzaIsPere: true,
                 AzaNumGroupe: this.lastRandomId,
                 coordinateurCreate: this.user.initials,
-                Operateur: data.Operateur
+                Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur
             };
             this.timelineResourceDataOut.push(containerData);
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -1070,7 +1112,10 @@ createEventsFromDragAndDrop() {
         }
     }
             this.isTreeItemDropped = false;
-            this.drowDownOperateurList.value = null;
+            this.isTreeItemDroppedMonteur = false;
+            if (this.drowDownExist) {
+                this.drowDownOperateurList.value = null;
+            }
                 // if(this.scheduleObj.currentView === 'TimelineWeek'){
                 //     this.timeScale  = { enable: false };
                 // }else{
