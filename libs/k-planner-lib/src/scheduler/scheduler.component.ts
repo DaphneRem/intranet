@@ -5,10 +5,11 @@ import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfa
 
 // Syncfusion Imports
 // Synfucion Bases
-import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined } from '@syncfusion/ej2-base';
+import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined, Internationalization } from '@syncfusion/ej2-base';
 import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item } from '@syncfusion/ej2-navigations';
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
 import { ChangeEventArgs as DropDownChangeArgs } from '@syncfusion/ej2-angular-dropdowns';
+import { TimePickerComponent } from '@syncfusion/ej2-angular-calendars';
 // Syncfusion Angular
 import { ButtonComponent, ChangeEventArgs } from '@syncfusion/ej2-angular-buttons';
 import {
@@ -51,14 +52,12 @@ import { element } from 'protractor';
 import { SalleService } from '../services/salle.service';
 import { ContainersService } from '../services/containers.service';
 import { MonteursService } from '../services/monteurs.service';
-import { renderComponentOrTemplate, text } from '@angular/core/src/render3/instructions';
-import { Container } from '@angular/compiler/src/i18n/i18n_ast';
-import { identifierModuleUrl } from '@angular/compiler';
-import { dropDownBaseClasses } from '@syncfusion/ej2-angular-dropdowns';
+
+
 import { WorkOrderService } from '../services/workOrder.service';
 import { group } from '@angular/animations';
 import { EventModel } from '../models/Events';
-import { interval } from 'rxjs/observable/interval';
+
 
 const localeFrenchData = require('./scheduler-fr.json');
 const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
@@ -90,6 +89,9 @@ export class SchedulerComponent implements OnInit {
 
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
+
+    @ViewChild('scheduleObjDay')
+    public scheduleObjDay:  ScheduleComponent;
     @ViewChild('treeObj')
     public treeObj: TreeViewComponent;
     @ViewChild('treeObjMonteur')
@@ -106,7 +108,10 @@ export class SchedulerComponent implements OnInit {
     public sidebar: SidebarComponent;
     public type: string = 'Push';
     public target: string = '.content';
-  
+    @ViewChild('ejStartTimePicker')
+    public ejStartTimePicker: TimePickerComponent;
+    @ViewChild('ejEndTimePicker')
+    public ejEndTimePicker: TimePickerComponent;
 
     /******** STORE *******/
     public user: User;
@@ -137,9 +142,10 @@ export class SchedulerComponent implements OnInit {
             },
             startTime: { name: 'StartTime', validation: { required: true } },
             endTime: { name: 'EndTime', validation: { required: true } },
+
         }
     };
-
+    public colorReadOnly
     public currentView: View = 'TimelineDay';
     public workHours: WorkHoursModel = { start: '08:00', end: '20:00' };
     public cssClass: string = 'custom';
@@ -150,9 +156,14 @@ export class SchedulerComponent implements OnInit {
     public newData = [];
     public startHour: string = '06:00';
     public endHour: string = '23:00';
-    public timeScaleDay : TimeScaleModel = { enable: true, interval: 60, slotCount: 2 };
-    public timeScaleWeek : TimeScaleModel = { enable: true, interval: 60, slotCount: 1 };
-    public timeScaleWorkWeek :  TimeScaleModel = { enable: true, interval: 60, slotCount: 2 };
+    public timeScale: TimeScaleModel = { enable: true, interval: 60, slotCount:2 };
+
+    public colorStatut : Object []= [  
+    { Id: 0, Color: '#B01106' },
+    { Id: 1, Color: '#F96C63' },
+    { Id: 2, Color: '#F0AC2C' },
+    { Id: 3, Color: '#06710E' }
+   ]
     // BACKLOGS INIT
     public waitingList;
     public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }, { 'text': 'gérer affichage' }];
@@ -202,13 +213,13 @@ export class SchedulerComponent implements OnInit {
     public  isAddedToBacklog: boolean;
     public count: number = 0;
     public groupeCharger:number = 10;
-    public workOrderColor: string =  '#4295E8';
+    public workOrderColor: string ;
     public SelectDateDebut: Date = new Date(2019,0,4);
     public SelectDateFin: Date = new Date(2019,1,5);
     public weekInterval: number = 1;
     public intervalValue: string = '60';
-    public intervalData: string[] = ['15', '30', '60', '90', '120', '150', '180', '240', '300', '720'];
-
+    public intervalData: string[] = ['15', '30', '60', '120'];
+    public instance: Internationalization = new Internationalization();
 
     // Editor
     public drowDownMonteurs;
@@ -233,12 +244,15 @@ export class SchedulerComponent implements OnInit {
         ) {}
 
     ngOnInit() {
-        console.log(hospitalData);
-        console.log(this.eventSettings);
-        console.log(this.data);
-        this.storeAppSubscription();
-        console.log(this.store);
+
         console.log(this.scheduleObj);
+        console.log(this.scheduleObjDay, "scheduleObjDay")
+        // console.log(hospitalData);
+        // console.log(this.eventSettings);
+        // console.log(this.data);
+        this.storeAppSubscription();
+        // console.log(this.store);
+      
         this.getSalle(this.groupeCharger);
         this.getMonteur(this.groupeCharger);
         // this.getAllContainer();
@@ -247,6 +261,8 @@ export class SchedulerComponent implements OnInit {
         // this.getWorkorderByContainerId(1);
         //  this.getWorkOrderByidGroup(1)
         this.getWorkOrderByidGroup(3);
+
+       
     }
 
     storeAppSubscription() {
@@ -262,6 +278,7 @@ export class SchedulerComponent implements OnInit {
     }
 
 /******************************* API REQUEST *****************************/ 
+
     getSalle(group) {
         if (this.isClicked) {
             this.toggleBtn.iconCss = 'e-play-icon';
@@ -274,7 +291,7 @@ export class SchedulerComponent implements OnInit {
                     this.departmentDataSourceAll.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
-                        Color: '#f9920b'
+                        Color: '#19716B'
                     });
                 }
                 });
@@ -297,6 +314,7 @@ export class SchedulerComponent implements OnInit {
                         this.departmentGroupDataSource.push({
                             Text: item.NomSalle,
                             Id: item.CodeSalle,
+                            Color:this.colorReadOnly
                         });
                         console.log('item code salle fot container request : ', item.CodeSalle);
                         this.getContainersByRessourceStartDateEndDate(item.CodeRessource, this.SelectDateDebut, this.SelectDateFin, item.CodeSalle);
@@ -419,7 +437,7 @@ export class SchedulerComponent implements OnInit {
                 }
         });
     }
-
+public statut
     getWorkorderByContainerId(id, codeSalle, index, containerArrayLength) {
         this.workorderService
             .getWorkOrderByContainerId(id)
@@ -441,8 +459,11 @@ export class SchedulerComponent implements OnInit {
                         jourfin = EndTime.getDate(),
                         heurfin = EndTime.getHours(),
                         minutefin = EndTime.getMinutes();
+                        console.log(data.Statut, "statut")
+                        //  this.statut = data.Statut 
 
                         this.timelineResourceDataOut.push({
+
                             Id: data.Id_Planning_Container,
                             Name: data.libtypeWO,
                             StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
@@ -462,8 +483,16 @@ export class SchedulerComponent implements OnInit {
                             IsAllDay: false,
 
                     });
+              
                 });
-                console.log('eventSettings', this.eventSettings);
+                    //   for(let i=0 ; i< this.colorStatut.length; i++) {
+                    //     if(!this.timelineResourceDataOut['AzaIsPere']){
+                    //         if (  this.statut == i){
+                    //             this.workOrderColor = this.colorStatut[i]['Color']
+                    //         }
+                    //     }
+                    // }
+                console.log('this.colorStatut[i][Id]', this.colorStatut['Color']);
                 this.updateEventSetting(this.timelineResourceDataOut); 
                 // this.onActionComplete('');
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
@@ -501,7 +530,7 @@ export class SchedulerComponent implements OnInit {
         heurfin = EndTime.getHours(),
         minutefin = EndTime.getMinutes();
 
-    
+     this.statut = workOrder.Statut
         this.workOrderData.push({
             Id: workOrder.Id_Planning_Events,
             Name: workOrder.libtypeWO,
@@ -522,6 +551,8 @@ export class SchedulerComponent implements OnInit {
             IsAllDay: false,
 
     });
+  
+    console.log('this.colorStatut[i][Id]', this.workOrderColor);
 
 }) 
 
@@ -576,7 +607,35 @@ console.log('WorkOrderByidgroup', this.workOrderData);
 
 onNavigating(args){
     console.log('Schedule <b>Navigating</b> event called<hr>',args);
-  
+  if(args.currentView ==="TimelineDay")
+  {
+      console.log("TimelineDay")
+      this.scheduleObj.timeScale.interval = 60
+      this.scheduleObj.startHour ='06:00'
+      this.scheduleObj.endHour ='23:00'
+      this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
+      this.scheduleObj.dataBind()
+
+  } else{ 
+      if(args.currentView ==="TimelineWeek"){
+          
+        this.scheduleObj.startHour ='08:00'
+        this.scheduleObj.endHour ='20:00'
+        this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:1 }
+           if(this.open || !this.open){
+             this.scheduleObj.refresh();
+        
+    
+      }}
+  }
+  if(args.currentView ==="TimelineMonth" ||  args.currentView ==="Agenda" ){
+    this.scheduleObj.readonly = true
+    this.colorReadOnly = '#93B3F0'
+  } else
+  {
+    this.scheduleObj.readonly = false
+  }
+
 }
 
     onPopupOpen(args) { // open container modal and display workorder list
@@ -625,7 +684,7 @@ onNavigating(args){
                             colorRegie = item['Color'];
                         }
                     });
-                    row.innerHTML += `<div id='id${i}' style='background-color: #4295E8;'>${workOrders[i].Name}</div>`;
+                    row.innerHTML += `<div id='id${i}' style='background-color: ${this.workOrderColor};'>${workOrders[i].Name}</div>`;
                 }
                 for (let e = 0; e < workOrders.length; e++) {
                     let child = document.getElementById(`id${e}`);
@@ -788,6 +847,7 @@ onNavigating(args){
                         AzaIsPere: false,
                         AzaNumGroupe: this.lastRandomId,
                         coordinateurCreate: this.user.initials,
+                        Statut:filteredData[0].Statut,
                     };
                     this.creationArray.push(containerData);
                     this.creationArray.push(eventData);
@@ -819,7 +879,8 @@ onNavigating(args){
                             AzaIsPere: false,
                             AzaNumGroupe: containerSelected.AzaNumGroupe,
                             coordinateurCreate: this.user.initials,
-                            Operateur: ''
+                            Operateur: '',
+                            Statut:filteredDataW[0].Statut,
                         };
                         this.timelineResourceDataOut.push(newEventData);
                         this.isTreeItemDropped = true;
@@ -930,9 +991,7 @@ onNavigating(args){
         console.log('onActionBegin()');
         console.log(event);
         console.log(this.isTreeItemDropped);
-        // if (event.requestType === 'eventChange' && event.data.AzaIsPere) {
-        //     console.log('event change action');
-        // }
+      
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
@@ -979,7 +1038,8 @@ onNavigating(args){
                             AzaIsPere: true,
                             AzaNumGroupe: item.AzaNumGroupe,
                             coordinateurCreate: item.coordinateurCreate,
-                            Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur
+                            Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
+                            
                         };
                         console.log('newItemContainerAfterEditorUpdate', newItemContainerAfterEditorUpdate);
                         this.timelineResourceDataOut.push(newItemContainerAfterEditorUpdate);
@@ -995,7 +1055,8 @@ onNavigating(args){
                             AzaIsPere: false,
                             AzaNumGroupe: item.AzaNumGroupe,
                             coordinateurCreate: item.coordinateurCreate,
-                            Operateur:  event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur
+                            Operateur:  event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
+                            Statut:item.Statut
                         };
                         console.log('newItemWorkorderAfterEditorUpdate : ', newItemWorkorderAfterEditorUpdate);
                         this.timelineResourceDataOut.push(newItemWorkorderAfterEditorUpdate);
@@ -1014,7 +1075,8 @@ onNavigating(args){
                         AzaIsPere: true,
                         AzaNumGroupe: item.AzaNumGroupe,
                         coordinateurCreate: item.coordinateurCreate,
-                        Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur
+                        Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
+                       
                     };
                     console.log('newItemContainerFromMonteurAfterEditorUpdate ==== ', newItemContainerFromMonteurAfterEditorUpdate);
                     this.timelineResourceDataOut.push(newItemContainerFromMonteurAfterEditorUpdate);
@@ -1065,7 +1127,8 @@ onNavigating(args){
                 AzaIsPere: true,
                 AzaNumGroupe: this.lastRandomId,
                 coordinateurCreate: this.user.initials,
-                Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur
+                Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur,
+                
             };
             this.timelineResourceDataOut.push(containerData);
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -1127,7 +1190,9 @@ onNavigating(args){
                     [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
                 )
             };
+        
             this.treeObj.fields = this.field;
+     
     }
 
     /************************ DELETE ********************/
@@ -1195,7 +1260,9 @@ onNavigating(args){
             Description: selectedItem.Description,
             DepartmentName: selectedItem.Name,
             AzaIsPere: selectedItem.AzaIsPere,
+            Statut:selectedItem.Statut
         };
+
         this.field['dataSource'].push(newWorkorderForList);
         this.wOrderBackToBacklog = this.field['dataSource'];
         this.isAddedToBacklog = true;
@@ -1381,15 +1448,6 @@ onNavigating(args){
     }
 
 
-    getBorder(value, codeGroup) {
-        if (value && codeGroup!=this.groupeCharger ) {
-        for (let i = 0; i < this.monteurListe.length; i++) {
-            if (value === this.monteurListe[i].Username) {
-                return 'red 2px solid';
-            }
-        }
-    }}
-
 /**************************************************************** Filter Monteur  ******************************************************************/
 
 
@@ -1510,7 +1568,7 @@ onNavigating(args){
             this.sidebar.position ='Right'
             this.sidebar.animate =false
             this.sidebar.locale = "fr-CH"
-    
+            
      
         
         }
@@ -1521,13 +1579,14 @@ onNavigating(args){
             this.sidebar.position ='Right'
             this.sidebar.animate =false
             this.sidebar.locale = "fr-CH"
-
+         
          
            
         }
         console.log("slidebar",this.sidebar)
         console.log("button", this.togglebtnslide)
         console.log("scheduler element", this.scheduleObj)
+        
     }
 
     /********************************** Remove Monteur *************************************/
@@ -1543,13 +1602,16 @@ onNavigating(args){
                     this.contentmenutree.enableItems(['Supprimer'], true);
                 }
             }
-            this.monteurListe.map(item => {
-                if (targetNodeId == item.CodeRessource.toString()) {
+            this.monteurListe.map(itemliste => {
+                if (targetNodeId == itemliste.CodeRessource.toString()) {
+                    if(itemliste.codegroupe != 10){
                 args.cancel = false;
-                }
+                } }
+                console.log('args', item.codegroupe );
             });
+            
         });
-        console.log('args', args);
+       
         console.log('targetNodeId', targetNodeId);
     }
 
@@ -1580,38 +1642,52 @@ onNavigating(args){
     }
 
     /************************************************************************ ADD Color **********************************************************************************/
-  
 
-
+getBorder(value, codeGroup) {
+    if (value && codeGroup!=this.groupeCharger ) {
+    for (let i = 0; i < this.monteurListe.length; i++) {
+        if (value === this.monteurListe[i].Username) {
+            return 'red 2px solid';
+        }
+    }
+}}
 
     onEventRendered(args: EventRenderedArgs): void {
-        // let categoryColor: string = args.data.CategoryColor as string;
-        // console.log('color', this.workOrderColor);
-        // console.log('args', args);
-     
     
+        let couleur
         if (args.data.AzaIsPere ) {
                 return;
+             
         } else {
+  
+             this.colorStatut.map(statut =>{
+                 if(args.data.Statut == statut['Id'])
+                 {
+                    couleur  = statut["Color"]
+                 }
+             })
+             this.workOrderColor = couleur
+               console.log("statut", args.data.Statut)
+
+
             if (this.scheduleObj.currentView === 'MonthAgenda') {
                 (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
                 (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
                 args.element.style.borderLeftColor = this.workOrderColor;
-                console.log('args oneventrendred'+ args.element )
+         
             } else {
                 if (this.scheduleObj.currentView === 'Agenda') {
                     (args.element.firstChild as HTMLElement).style.borderLeftColor =  this.workOrderColor;
                     (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
                     // args.element.style.borderLeftColor =  this.workOrderColor;
-                    console.log('args oneventrendred'+ args.element )
+                    
                 } else {
                     (args.element.firstChild as HTMLElement).style.backgroundColor =  this.workOrderColor;
                     args.element.style.backgroundColor =  this.workOrderColor;
                 }
             }
         }
-  
-    
+   
     }
 
 
@@ -1621,15 +1697,40 @@ onNavigating(args){
 
      /******************************************* Zoom *******************/
    
-     changeInterval(e: DropDownChangeArgs): void {
-   
+    changeInterval(e: DropDownChangeArgs): void {
+
         this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
-        this.scheduleObj.activeViewOptions.timeScale.interval =   this.scheduleObj.timeScale.interval
+        // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
         this.scheduleObj.dataBind();
-  
-    console.log(this.scheduleObj)
-}
-  
+
+        console.log(e)
+    }
+    public isStrictMode: boolean = true;
+
+    onSubmit() {
+        let temps = (this.ejEndTimePicker.value.getHours()) - (this.ejStartTimePicker.value.getHours())
+        console.log('date picker ', temps);
+        if (temps >= 12) {
+            this.scheduleObj.startHour = this.instance.formatDate(this.ejStartTimePicker.value, { skeleton: 'Hm' });
+            this.scheduleObj.endHour = this.instance.formatDate(this.ejEndTimePicker.value, { skeleton: 'Hm' });
+        }
+
+    }
+
+    onRenderCell(args: RenderCellEventArgs): void {
+        if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
+            let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
+            if(this.scheduleObj.readonly == false){
+            target.innerHTML = '<div class="e-icons e-edit-icon1 icon-vue" ></div>';
+        }else 
+        {
+            target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>'; 
+        }
+        }
+    }
+
+
+
 
 }
 
