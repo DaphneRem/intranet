@@ -177,8 +177,45 @@
                                 </ng-template> 
 
                     </e-view>
-                    <e-view option="Agenda"   ></e-view>
+                    <e-view option="Agenda"   >
+                        <ng-template #eventTemplate let-data class="event">
+                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}">
+                                <div>
+                                    <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                        <div class="float-right fixed initiales">
+                                            <p>{{data.coordinateurCreate}}</p>
+                                        </div>
+                                        <u id="{{data.Id}}">{{data.Name }} </u>
+                                        <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
+                                        <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
+                                        <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
+                                                                            class="float-right  fixed mr-1"> -->
+                                    </div>
+                                    <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </e-view>
                     <e-view option="MonthAgenda" >
+                        <ng-template #eventTemplate let-data  class="event">
+                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
+                                <div>
+                                    <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                        <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
+                                        <u id="{{data.Id}}">{{data.Name }} </u> 
+                                        <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
+                                        <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
+                                        <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
+                                            class="float-right  fixed mr-1"> -->
+                                    </div>
+                                    <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
                     </e-view>
                 </e-views>
                 

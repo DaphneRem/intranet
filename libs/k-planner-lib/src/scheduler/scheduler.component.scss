@@ -353,11 +353,13 @@ overflow: scroll
 /deep/ .e-edit-icon1:before{
     content:'\e891';
     color: blue;
+    font-size: 20px;
 }
 
 /deep/ .e-MT_Preview:before{
     content:'\e345';
     color: orange;
+    font-size: 20px;
 }
 
 /deep/  .e-schedule .e-timeline-month-view .e-appointment{

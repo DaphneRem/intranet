@@ -295,9 +295,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                   if (item.Username === this.user.shortUserName) {
                         console.log('COORDINATEUR => ', item);
                         this.getSalleByGroup(item.Groupe);
+                        this.getWorkOrderByidGroup(11); // ID PROVISOIRE !!!
                         this.getMonteursByGroup(item.Groupe);
                         // this.getWorkOrderByidGroup(item.Groupe);
-                        this.getWorkOrderByidGroup(11); // ID PROVISOIRE !!!
                         this.getAllMonteurs(item.Groupe);
                         this.currentCoordinateur = item;
                    }
@@ -453,6 +453,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     console.log('conainer present : ', res);
                     console.log(this.dataContainersByRessourceStartDateEndDate);
                     this.dataContainersByRessourceStartDateEndDate.map(data => {
+                        this.idExisting.push(data.Id_Planning_Container);
                         console.log('data brut for conainer : ', data);
                         let StartTime =   new Date (data.DateDebutTheo) ,
                         EndTime = new Date (data.DateFinTheo);
@@ -632,13 +633,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     DepartmentName: '',
                     IsAllDay: false,
                 });
-                console.log('this.colorStatut[i][Id]', this.workOrderColor);
                 this.field = {
                     dataSource:  this.workOrderData,
                     id: 'Id',
                     text: 'Name',
                     description: 'Description'
                 };
+                console.log('this.colorStatut[i][Id]', this.workOrderColor);
             });
         }
         console.log('WorkOrderByidgroup', this.workOrderData);
