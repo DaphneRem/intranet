@@ -4,7 +4,9 @@ export interface AddConnectedUser {
     user: {
       username: string,
       name: string,
-      initials: string
+      initials: string,
+      shortUserName: string,
+      numGroup: number;
     }
   };
 }
@@ -15,7 +17,9 @@ export interface DeleteConnectedUser {
     user: {
       username: string,
       name: string,
-      initials: string
+      initials: string,
+      shortUserName: string,
+      numGroup: number;
     }
   };
 }

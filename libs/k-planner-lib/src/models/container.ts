@@ -22,5 +22,5 @@ export class ContainerKP {
          UserMaj: string;
          PlanningEventsList: Workorder[];
 
-         ConsultantID: number;
+        //  ConsultantID: number;
        }

@@ -12,12 +12,15 @@ import { config } from './../../../../.privates-url';
 import { AuthAdalService } from 'apps/fiches-materiel/src/app/auth-adal.service';
 import { App } from 'apps/fiches-materiel/src/app/+state/app.interfaces';
 
+import { Coordinateur } from '@ab/k-planner-lib/src/models/coordinateur';
+import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   providers : [
+    CoordinateurService,
     Store,
     AuthAdalService
   ]
@@ -27,6 +30,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private compiler: Compiler,
+    private coordinateurService: CoordinateurService,
     private store: Store<Navbar>,
     private appStore: Store<App>,
     private authAdalService: AuthAdalService,
@@ -48,12 +52,17 @@ export class AppComponent implements OnInit {
   public title = 'suivi-ingests';
   public logo = 'logoABintranet';
   public headerNav = false;
-  public userName;
-  public name;
+  public userName: string;
+  public name: string;
   public user;
   public firstName: string;
   public lastName: string;
   public initials: string;
+  public userNameSplit: string[];
+  public shortUserName: string;
+  public numGroup: number;
+
+  public currentCoordinateur: Coordinateur;
 
   ngOnInit() {
     console.log(this.adal5Service);
@@ -90,26 +99,43 @@ export class AppComponent implements OnInit {
     this.lastName = this.adal5Service.userInfo.profile.family_name;
     this.initials = `${this.firstName.slice(0, 1).toUpperCase()}${this.lastName.slice(0, 1).toUpperCase()}`;
 
+    this.userNameSplit = this.userName.split('@');
+    this.shortUserName = this.userNameSplit[0];
+    console.log(this.shortUserName);
     this.user = {
       name: this.name,
       userName: this.userName,
-      initials: this.initials
+      initials: this.initials,
+      shortUserName: this.shortUserName
     };
-
-    this.appStore.dispatch({
-      type: 'ADD_USER',
-      payload: {
-        user : {
-          username: this.userName,
-          name: this.name,
-          initials: this.initials
-        }
-      }
-    });
     console.log(this.appStore);
+    this.getAllCoordinateurs();
   }
 
-  public logout(event) {
+  getAllCoordinateurs() {
+    this.coordinateurService.getAllCoordinateurs()
+      .subscribe(data => {
+          data.map(item => {
+              if (item.Username === this.user.shortUserName) {
+                  this.currentCoordinateur = item;
+                  this.appStore.dispatch({
+                    type: 'ADD_USER',
+                    payload: {
+                      user : {
+                        username: this.userName,
+                        name: this.name,
+                        initials: this.initials,
+                        shortUserName: this.shortUserName,
+                        numGroup: this.currentCoordinateur.Groupe
+                      }
+                    }
+                  });
+               }
+          });
+    });
+  }
+
+  logout(event) {
     if (event) {
       this.store.dispatch({
         type: 'DELETE_USER'

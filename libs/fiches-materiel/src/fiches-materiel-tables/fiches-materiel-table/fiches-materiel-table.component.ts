@@ -90,8 +90,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     columns: [],
     paging: true,
     search: true,
-    rowsMax: 50,
-    lenghtMenu: [10, 50, 100],
+    rowsMax: 500,
+    lenghtMenu: [10, 50, 100, 500],
     theme: 'blue theme',
     responsive : true,
     defaultOrder: [],
@@ -467,16 +467,16 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         title : 'N° eps AB',
         data : 'NumEpisode',
       },
-      {
-        title : 'Date Livraison',
-        data : function ( data, type, row, meta ) {
-          if  (data.DateLivraison !== null && data.DateLivraison !== undefined) {
-            return data.DateLivraison.slice(0, 10);
-          } else {
-            return data.DateLivraison;
-          }
-        }
-      },
+      // {
+      //   title : 'Date Livraison',
+      //   data : function ( data, type, row, meta ) {
+      //     if  (data.DateLivraison !== null && data.DateLivraison !== undefined) {
+      //       return data.DateLivraison.slice(0, 10);
+      //     } else {
+      //       return data.DateLivraison;
+      //     }
+      //   }
+      // },
       {
         title : 'n°fiche achat',
         data : 'NumEpisodeProd' // data manquante

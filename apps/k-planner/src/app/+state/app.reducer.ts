@@ -19,7 +19,9 @@ export function appReducer(state: App, action: UserAction): App {
         user : {
           name: '',
           username: '',
-          initials: ''
+          initials: '',
+          shortUserName: '',
+          numGroup: null
         }
       };
     }

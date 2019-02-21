@@ -41,7 +41,7 @@ export class HistoryDeliveryDateModalComponent implements OnInit {
       .getHistoryDeliveryDate(idFicheMateriel)
       .subscribe((data: HistoryDeliveryDate[]) => {
         console.log(data);
-        this.historyDeliveryDate = data;
+        this.historyDeliveryDate = data.reverse();
       });
   }
 

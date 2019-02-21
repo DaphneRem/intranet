@@ -45,10 +45,8 @@
     <div class="drag-sample-wrapper">
         <div class="schedule-container">
             <div class="title-container">
-                   
-                            <!-- <i class="icofont icofont-ui-zoom-in" (click)="ZoomPlus()"></i>
-                            <i class="icofont icofont-ui-zoom-out"  (click)="ZoomMoins()"></i> -->
-                     
+                <!-- <i class="icofont icofont-ui-zoom-in" (click)="ZoomPlus()"></i>
+                <i class="icofont icofont-ui-zoom-out"  (click)="ZoomMoins()"></i> -->
             </div>
           
           
@@ -245,7 +243,7 @@
                                     (nodeDragging)="onItemDrag($event, 1)">
                                     <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon="" >
                                       
-                                   <div id="waiting" [ngStyle]="{'border':getBorder(dataMon.Username,dataMon.codegroupe)}">
+                                   <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe)}">
                                         <div id="waitdetails" class="monteurs">
                                             <br>
                                             <div id={{dataMon.CodeRessource}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}}  </div>

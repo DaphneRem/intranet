@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     private store: Store<Navbar>,
     private appStore: Store<App>,
     private authAdalService: AuthAdalService,
-    private adal5Service: Adal5Service
+    private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
     this.adal5Service.init(config);

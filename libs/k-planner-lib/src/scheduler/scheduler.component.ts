@@ -1,4 +1,4 @@
-import { Component,  ViewChild, OnInit } from '@angular/core';
+import { Component,  ViewChild, OnInit, OnChanges, SimpleChanges, Input, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfaces';
@@ -42,6 +42,7 @@ import { hospitalData, waitingList } from '../datasource';
 import { HospitalData } from '../models/hospital-data';
 import { ContainerKP } from '../models/container';
 import { Workorder } from '../models/workorder';
+import { Coordinateur } from '../models/coordinateur';
 
 // Components Imports
 import { WorkorderDetailsModalComponent } from '../workorder-details-modal/workorder-details-modal.component';
@@ -50,6 +51,7 @@ import { MonteursData } from '../models/monteurs-data';
 // import { monteurs } from '../data/monteur';
 import { element } from 'protractor';
 import { SalleService } from '../services/salle.service';
+import { CoordinateurService } from '../services/coordinateur.service';
 import { ContainersService } from '../services/containers.service';
 import { MonteursService } from '../services/monteurs.service';
 
@@ -78,6 +80,7 @@ loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
     ],
     providers : [
         SalleService,
+        CoordinateurService,
         ContainersService,
         MonteursService,
         Store,
@@ -85,7 +88,7 @@ loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
     ]
 })
 
-export class SchedulerComponent implements OnInit {
+export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
@@ -102,7 +105,7 @@ export class SchedulerComponent implements OnInit {
     public togglebtnslide: ButtonComponent;
     @ViewChild('element')
     public tabInstance: TabComponent;
-    @ViewChild ('contentmenutree') 
+    @ViewChild ('contentmenutree')
     public contentmenutree: ContextMenuComponent;
     @ViewChild('sidebar')
     public sidebar: SidebarComponent;
@@ -115,6 +118,8 @@ export class SchedulerComponent implements OnInit {
 
     /******** STORE *******/
     public user: User;
+    public currentCoordinateur: Coordinateur;
+    public allCoordinateurs: Coordinateur[];
 
     /******** SCHEDULER INIT *******/
     public dataContainersByRessourceStartDateEndDate;
@@ -177,10 +182,10 @@ export class SchedulerComponent implements OnInit {
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
     public field: Object  = {
         dataSource:  this.workOrderData,
-        id: 'Id', 
-        text: 'Name', 
+        id: 'Id',
+        text: 'Name',
         description: 'Description'
-    }
+    };
     public fieldMonteur: Object;
     public isClicked: boolean = false;
     public allowDragAndDrop: boolean = true;
@@ -198,7 +203,7 @@ export class SchedulerComponent implements OnInit {
     public departmentDataSource: Object[] = [];
     public departmentDataSourceAll: Object[] = [];
     public departmentGroupDataSource: Object[] = [];
-    public allRegies :Object[]=[];
+    public allRegies: Object[] = [];
     public idExisting = [];
     public lastRandomId;
 
@@ -212,10 +217,13 @@ export class SchedulerComponent implements OnInit {
     public wOrderBackToBacklog;
     public  isAddedToBacklog: boolean;
     public count: number = 0;
-    public groupeCharger:number = 10;
+    public groupeCharger: number = 10;
     public workOrderColor: string ;
     public SelectDateDebut: Date = new Date(2019,0,4);
     public SelectDateFin: Date = new Date(2019,1,5);
+    // public SelectDateDebut: Date = new Date(2019,0,1);
+    // public SelectDateFin: Date = new Date(2019,2,1);
+    // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
     public weekInterval: number = 1;
     public intervalValue: string = '60';
     public intervalData: string[] = ['15', '30', '60', '120'];
@@ -236,33 +244,65 @@ export class SchedulerComponent implements OnInit {
 
     constructor(
         public dialog: MatDialog,
+        private coordinateurService: CoordinateurService,
         private salleService: SalleService,
         private containersService: ContainersService,
         private monteursService: MonteursService,
         private workorderService: WorkOrderService,
         private store: Store<App>
-        ) {}
+        ) {
+            console.log('*******constructor*******');
+            this.storeAppSubscription();
+            this.getAllCoordinateurs();
+            console.log('*******constructor*******');
+                // public departmentDataSource: Object[] = [];
+
+        }
 
     ngOnInit() {
-
         console.log(this.scheduleObj);
-        console.log(this.scheduleObjDay, "scheduleObjDay")
+        console.log(this.scheduleObjDay, 'scheduleObjDay')
+        this.toggleBtn.content = 'Voir autres Régies';
         // console.log(hospitalData);
         // console.log(this.eventSettings);
         // console.log(this.data);
-        this.storeAppSubscription();
-        // console.log(this.store);
-      
-        this.getSalle(this.groupeCharger);
-        this.getMonteur(this.groupeCharger);
+        // this.storeAppSubscription();
+        console.log(this.store);
+        console.log(this.scheduleObj);
+        // this.getMonteur(10);
         // this.getAllContainer();
         // this.getContainersByRessource(118);
         console.log(this.selectedDate);
         // this.getWorkorderByContainerId(1);
         //  this.getWorkOrderByidGroup(1)
-        this.getWorkOrderByidGroup(3);
+        // this.getWorkOrderByidGroup(3);
+        //  this.getSalleByGroup(10);
+    }
 
-       
+    ngAfterViewInit() {
+        this.departmentDataSource = this.departmentGroupDataSource;
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        console.log('==============================================================================on change');
+    }
+      getAllCoordinateurs() {
+          console.log('get ALL');
+        this.coordinateurService.getAllCoordinateurs()
+          .subscribe(data => {
+              console.log('all coordinateurs : ', data);
+              data.forEach(item => {
+                  if (item.Username === this.user.shortUserName) {
+                        console.log('COORDINATEUR => ', item);
+                        this.getSalleByGroup(item.Groupe);
+                        this.getMonteursByGroup(item.Groupe);
+                        // this.getWorkOrderByidGroup(item.Groupe);
+                        this.getWorkOrderByidGroup(11); // ID PROVISOIRE !!!
+                        this.getAllMonteurs(item.Groupe);
+                        this.currentCoordinateur = item;
+                   }
+              });
+        });
     }
 
     storeAppSubscription() {
@@ -271,62 +311,87 @@ export class SchedulerComponent implements OnInit {
             this.user = data['app'].user;
             console.log(this.user);
         });
+
+
+        // this.getWorkOrderByidGroup(3);
+        // this.getAllMonteurs();
     }
 
     onEventClick(e: ActionEventArgs) {
         console.log('event clicked !!!!!!!!!!!');
     }
 
-/******************************* API REQUEST *****************************/ 
 
-    getSalle(group) {
-        if (this.isClicked) {
-            this.toggleBtn.iconCss = 'e-play-icon';
-            this.salleService
-            .getSalle()
+/*************************************************************************/
+/******************************* API REQUEST *****************************/
+/*************************************************************************/
+
+/**************************** GET ***************************/
+
+
+    getSalleByGroup(idGroup) {
+        // this.toggleBtn.content = 'Voir autres Régies';
+        console.log(this.departmentDataSource);
+        this.salleService
+            .getGroupSalle(idGroup)
             .subscribe(donnees => {
                 this.salleDataSource = donnees;
+                console.log('salles group result : ', donnees);
                 this.salleDataSource.map(item => {
-              if (item.codegroupe != group) {
-                    this.departmentDataSourceAll.push({
+                    // console.log(item);
+                    this.departmentGroupDataSource.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
                         Color: '#19716B'
+                        codeSalle: item.CodeSalle,
+                        codeRessource: item.CodeRessource
                     });
-                }
+                    let newItem = [{ Text: item.NomSalle, Id: item.CodeSalle }];
+                    this.departmentDataSource = this.departmentDataSource.concat(newItem);
+                    // this.departmentDataSource = myGroupRegies;
+                    console.log('regie departmentGroupDataSource', this.departmentDataSource);
+                    console.log('item code salle fot container request : ', item.CodeSalle);
+                    // this.getContainersByRessource(item.CodeRessource);
                 });
-             console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
-             this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
-             console.log(' this.allRegies', this.allRegies);
-             this.departmentDataSource = this.allRegies;
-             console.log(' this.departmentDataSource', this.departmentDataSource);
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.SelectDateDebut,
+                        this.SelectDateFin,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
             });
-        }
-        if (!this.isClicked) {
-                this.toggleBtn.content = 'Voir autres Régies';
-            this.salleService
-                .getGroupSalle(group)
-                .subscribe(donnees => {
-                    this.salleDataSource = donnees;
-                    console.log('salles group result : ', donnees);
-                    this.salleDataSource.map(item => {
-                        console.log(item);
-                        this.departmentGroupDataSource.push({
-                            Text: item.NomSalle,
-                            Id: item.CodeSalle,
-                            Color:this.colorReadOnly
-                        });
-                        console.log('item code salle fot container request : ', item.CodeSalle);
-                        this.getContainersByRessourceStartDateEndDate(item.CodeRessource, this.SelectDateDebut, this.SelectDateFin, item.CodeSalle);
-                        // this.getContainersByRessource(item.CodeRessource);
-                    });
-                    this.departmentDataSource = this.departmentGroupDataSource;
-                    console.log('regie departmentDataSource', this.departmentGroupDataSource);
-                });
-        }
     }
 
-    getMonteur(group) {
+    getSalleAll(currentGroup) {
+        this.toggleBtn.iconCss = 'e-play-icon';
+        this.salleService
+        .getSalle()
+        .subscribe(donnees => {
+            this.salleDataSource = donnees;
+            this.salleDataSource.map(item => {
+            if (item.codegroupe != currentGroup) {
+                this.departmentDataSourceAll.push({
+                    Text: item.NomSalle,
+                    Id: item.CodeSalle,
+                    Color: '#f9920b'
+                });
+            }
+            });
+            console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
+            this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
+            console.log(' this.allRegies', this.allRegies);
+            this.departmentDataSource = this.allRegies;
+            console.log(' this.departmentDataSource', this.departmentDataSource);
+        });
+    }
+
+
+
+    getAllMonteurs(group) {
         let monteurDataSource;
         this.monteursService
             .getMonteur()
@@ -339,8 +404,11 @@ export class SchedulerComponent implements OnInit {
                     }
                 });
             });
+    }
+
+    getMonteursByGroup(idGroup) {
         this.monteursService
-            .getGroupMonteur(group)
+            .getGroupMonteur(idGroup)
             .subscribe(donnees => {
                 console.log('monteurs : ', donnees);
                 this.monteurDataSource = donnees;
@@ -371,7 +439,7 @@ export class SchedulerComponent implements OnInit {
             });
     }
 
-    getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle) {
+    getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
         let debut = datedebut.getFullYear()  + '-' +  (datedebut.getMonth() + 1) + '-' + datedebut.getDate();
         let fin = datefin.getFullYear()  + '-' +  (datefin.getMonth() + 1) + '-' + datefin.getDate();
         console.log(debut,fin, 'debut fin');
@@ -386,36 +454,38 @@ export class SchedulerComponent implements OnInit {
                     console.log(this.dataContainersByRessourceStartDateEndDate);
                     this.dataContainersByRessourceStartDateEndDate.map(data => {
                         console.log('data brut for conainer : ', data);
-                        let StartTime =   new Date (data.DateDebut) ,
-                        EndTime = new Date (data.DateFin);
+                        let StartTime =   new Date (data.DateDebutTheo) ,
+                        EndTime = new Date (data.DateFinTheo);
 
                         let anneeDebut = StartTime.getFullYear(),
-                        moisDebut =(StartTime.getMonth() + 1),
+                        moisDebut =(StartTime.getMonth()+1), // +1
                         jourDebut = StartTime.getDate(),
                         heurDebut = StartTime.getHours(),
                         minuteDebut = StartTime.getMinutes();
 
                         let anneefin = EndTime.getFullYear(),
-                        moisfin = EndTime.getMonth(),
+                        moisfin = (EndTime.getMonth()+1),
                         jourfin = EndTime.getDate(),
                         heurfin = EndTime.getHours(),
                         minutefin = EndTime.getMinutes();
 
                         console.log(EndTime.getTime(),'day');
                         console.log(datefin,'datefin');
-                        console.log(new Date(data.DateDebut),'data');
+
+                        let initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0,1);
+                        console.log('initiales =====> ', initiales);
 
                         this.timelineResourceDataOut.push({
                             Id: data.Id_Planning_Container,
                             Name: (data.Titre === null || typeof(data.Titre) === 'undefined') ? 'Titre null' : data.Titre,
                             StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut),
-                            EndTime:   new Date(anneeDebut,moisDebut,jourDebut, (heurDebut + 1),minuteDebut), // date provisoire
-                            CodeRessourceSalle: codeSalle,
+                            EndTime:   new Date(anneefin,moisfin,jourfin,heurfin,minutefin), // date provisoire
+                            CodeRessourceSalle: coderessource,
                             Container: true,
                             numGroup:data.Id_Planning_Container,
                             Description:data.Commentaire,
                             Operateur:data.LibelleRessourceOperateur === null ? '' : data.LibelleRessourceOperateur,
-                            coordinateurCreate:data.LibelleRessourceCoordinateur,
+                            coordinateurCreate: initiales,
                             AzaIsPere: true,
                             AzaNumGroupe:  data.Id_Planning_Container,
                             DepartmentID: codeSalle,
@@ -425,10 +495,12 @@ export class SchedulerComponent implements OnInit {
                         });
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
-                        this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length);
+                        this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length, indexSalle);
                     });
                     // timelineResourceDataOut
                     this.updateEventSetting(this.timelineResourceDataOut);
+                                                        this.departmentDataSource = this.departmentGroupDataSource;
+
                     console.log('containerData', this.timelineResourceDataOut);
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
                     console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
@@ -437,8 +509,8 @@ export class SchedulerComponent implements OnInit {
                 }
         });
     }
-public statut
-    getWorkorderByContainerId(id, codeSalle, index, containerArrayLength) {
+
+    getWorkorderByContainerId(id, codeSalle, index, containerArrayLength, indexSalle) {
         this.workorderService
             .getWorkOrderByContainerId(id)
             .subscribe(res => {
@@ -446,16 +518,16 @@ public statut
                 this.WorkorderByContainerId = res;
                 if (this.WorkorderByContainerId != []) {
                     this.WorkorderByContainerId.map(data => {
-                        let StartTime =   new Date (data.DateDebut) ,
-                        EndTime = new Date (data.DateFin);
+                        let StartTime =   new Date (data.DateDebutTheo) ,
+                        EndTime = new Date (data.DateFinTheo);
                         let anneeDebut = StartTime.getFullYear(),
-                        moisDebut =(StartTime.getMonth() + 1),
+                        moisDebut =(StartTime.getMonth()+1), // +1
                         jourDebut = StartTime.getDate(),
                         heurDebut = StartTime.getHours(),
                         minuteDebut = StartTime.getMinutes();
 
                         let anneefin = EndTime.getFullYear(),
-                        moisfin = EndTime.getMonth(),
+                        moisfin = (EndTime.getMonth()+1),
                         jourfin = EndTime.getDate(),
                         heurfin = EndTime.getHours(),
                         minutefin = EndTime.getMinutes();
@@ -467,7 +539,7 @@ public statut
                             Id: data.Id_Planning_Container,
                             Name: data.libtypeWO,
                             StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
-                            EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
+                            EndTime:   new Date(anneefin,moisfin,jourfin,heurfin,minutefin), // date provisoire
                             CodeRessourceSalle: codeSalle,
                             Container: false,
                             numGroup:data.Id_Planning_Container,
@@ -497,74 +569,187 @@ public statut
                 // this.onActionComplete('');
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 console.log('eventSettings 111', this.eventSettings);
+                if (indexSalle === this.salleDataSource.length - 1) {
+                    console.log('*********** end to initial request for all regies container and workorders ***********');
+                    this.updateEventSetting(this.timelineResourceDataOut); 
+                }
+            } else {
+                console.log(indexSalle);
+                if (indexSalle === this.salleDataSource.length - 1) {
+                    this.updateEventSetting(this.timelineResourceDataOut);
+                    console.log('*********** end to initial request for all regies container and workorders ***********');
+                }
             }
             if (index === (containerArrayLength - 1)) {
+
                 console.log('ready');
             }
         });
     }
 
-   public  WorkOrderByidgroup
-    getWorkOrderByidGroup(idGroup){
+   public  WorkOrderByidgroup;
+   public statut;
+    getWorkOrderByidGroup(idGroup) {
         this.workorderService
-        .getWorkOrderByidGroup(idGroup).
-        subscribe(donnees => {
+        .getWorkOrderByidGroup(idGroup)
+        .subscribe(donnees => {
             this.WorkOrderByidgroup = donnees;
             console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
-    
-        if (this.WorkOrderByidgroup != []){
-        this.WorkOrderByidgroup.map(workOrder =>{
+            if (this.WorkOrderByidgroup != []) {
+                this.WorkOrderByidgroup.map(workOrder => {
 
-            
-        let StartTime =   new Date (workOrder.DateDebut) ,
-        EndTime = new Date (workOrder.DateFin);
-        let anneeDebut = StartTime.getFullYear(),
-        moisDebut =(StartTime.getMonth() + 1),
-        jourDebut = StartTime.getDate(),
-        heurDebut = StartTime.getHours(),
-        minuteDebut = StartTime.getMinutes();
+                let StartTime =   new Date (workOrder.DateDebut) ,
+                EndTime = new Date (workOrder.DateFin);
+                let anneeDebut = StartTime.getFullYear(),
+                moisDebut =(StartTime.getMonth() + 1),
+                jourDebut = StartTime.getDate(),
+                heurDebut = StartTime.getHours(),
+                minuteDebut = StartTime.getMinutes();
 
-        let anneefin = EndTime.getFullYear(),
-        moisfin = EndTime.getMonth(),
-        jourfin = EndTime.getDate(),
-        heurfin = EndTime.getHours(),
-        minutefin = EndTime.getMinutes();
+                let anneefin = EndTime.getFullYear(),
+                moisfin = EndTime.getMonth(),
+                jourfin = EndTime.getDate(),
+                heurfin = EndTime.getHours(),
+                minutefin = EndTime.getMinutes();
 
-     this.statut = workOrder.Statut
-        this.workOrderData.push({
-            Id: workOrder.Id_Planning_Events,
-            Name: workOrder.libtypeWO,
-            StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
-            EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
-            CodeRessourceSalle: workOrder.CodeRessourceSalle,
-            Container: false,
-            numGroup:workOrder.Id_Planning_Events,
-            Description:workOrder.Commentaire,
-            Operateur:workOrder.LibelleRessourceOperateur,
-            coordinateurCreate:workOrder.LibelleRessourceCoordinateur,
-            Statut:workOrder.Statut,
-            AzaIsPere: false,
-            AzaNumGroupe:  workOrder.Id_Planning_Events,
-            DepartmentID: workOrder.CodeRessourceSalle,
-            ConsultantID: 2,
-            DepartmentName: '',
-            IsAllDay: false,
+                this.statut = workOrder.Statut;
+                this.workOrderData.push({
+                    Id: workOrder.Id_Planning_Events,
+                    Name: workOrder.libtypeWO,
+                    StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
+                    EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
+                    CodeRessourceSalle: workOrder.CodeRessourceSalle,
+                    Container: false,
+                    numGroup:workOrder.Id_Planning_Events,
+                    Description:workOrder.Commentaire,
+                    Operateur:workOrder.LibelleRessourceOperateur,
+                    coordinateurCreate:workOrder.LibelleRessourceCoordinateur,
+                    Statut:workOrder.Statut,
+                    AzaIsPere: false,
+                    AzaNumGroupe:  workOrder.Id_Planning_Events,
+                    DepartmentID: workOrder.CodeRessourceSalle,
+                    ConsultantID: 2,
+                    DepartmentName: '',
+                    IsAllDay: false,
+                });
+                console.log('this.colorStatut[i][Id]', this.workOrderColor);
+                this.field = {
+                    dataSource:  this.workOrderData,
+                    id: 'Id',
+                    text: 'Name',
+                    description: 'Description'
+                };
+            });
+        }
+        console.log('WorkOrderByidgroup', this.workOrderData);
+        console.log('this.fieldArray', this.field);
+        });
 
-    });
-  
-    console.log('this.colorStatut[i][Id]', this.workOrderColor);
-
-}) 
-
-
-}   
-console.log('WorkOrderByidgroup', this.workOrderData);
-    console.log('this.fieldArray', this.field);
-
- });
-
-    
     }
+
+
+/**************************** POST ***************************/
+
+    postContainer(containerToCreate, event) {
+        this.containersService.postContainer(containerToCreate)
+            .subscribe(res => {
+                console.log('succes post new container. RES : ', res);
+                if (res) {
+                    event.StartTime.setMonth(event.StartTime.getMonth() + 1);
+                    event.EndTime.setMonth(event.EndTime.getMonth() + 1);
+                    this.timelineResourceDataOut.push(event);
+                    this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                        dataSource: <Object[]>extend(
+                            [], this.timelineResourceDataOut, null, true
+                        )
+                    };
+                }
+            });
+    }
+
+    createContainer(event) {
+                //     let containerData = { // DISPLAY DATA FOR CONTAINER
+                // Id: this.lastRandomId,
+                // Name: data.Name,
+                // StartTime: data.StartTime,
+                // EndTime: data.EndTime,
+                // IsAllDay: data.IsAllDay,
+                // DepartmentID: data.DepartmentID,
+                // ConsultantID: data.DepartmentID,
+                // AzaIsPere: true,
+                // AzaNumGroupe: this.lastRandomId,
+                // coordinateurCreate: this.user.initials,
+                // Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur
+                console.log(event);
+        let now = new Date();
+        now.setMonth(now.getUTCMonth() - 1);
+        let startTime =  event.StartTime;
+        startTime.setMonth(now.getUTCMonth());
+        let endTime = event.EndTime;
+        endTime.setMonth(now.getUTCMonth());
+        console.log(startTime);
+        console.log(endTime);
+        console.log('now', now);
+        let codeRessourceOperateur;
+        let libelleRessourceSalle;
+        let codeRessourceSalle;
+        let codeRessourceCoordinateur = this.currentCoordinateur.CodeRessource;
+        let libelleRessourceCoordinateur = this.user.shortUserName;
+        this.monteurDataSource.map(item => {
+            if (item.Username === event.Operateur) {
+                codeRessourceOperateur = item.CodeRessource;
+            }
+        });
+        this.departmentGroupDataSource.map(item => {
+            if (item['Id'] === event.DepartmentID) {
+                libelleRessourceSalle = item['Text'];
+                codeRessourceSalle = item['codeRessource'];
+            }
+        });
+        let newContainer = {
+            Id_Planning_Container: 0,
+            UserEnvoi: this.user.shortUserName,
+            DateEnvoi: now,
+            Titre: event.Name,
+            CodeRessourceOperateur: codeRessourceOperateur,
+            LibelleRessourceOperateur: event.Operateur,
+            CodeRessourceCoordinateur: codeRessourceCoordinateur,
+            LibelleRessourceCoordinateur: libelleRessourceCoordinateur,
+            DateSoumission: null,
+            DateDebut: startTime,
+            DateFin: endTime,
+            DateDebutTheo: startTime,
+            DateFinTheo: endTime,
+            CodeRessourceSalle: codeRessourceSalle,
+            LibelleRessourceSalle: libelleRessourceSalle,
+            Commentaire: '',
+            Commentaire_Planning: '',
+            DateMaj: now,
+            UserMaj: libelleRessourceCoordinateur,
+            PlanningEventsList: null
+        };
+        console.log('nouveau container fot api request : ', newContainer);
+        console.log(event);
+        this.postContainer(newContainer, event);
+        // this.timelineResourceDataOut.push(containerData);
+        //     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+        //         dataSource: <Object[]>extend(
+        //             [], this.timelineResourceDataOut, null, true
+        //         )
+        //     };
+    }
+
+/**************************** PUT ***************************/
+
+    updateContainer(id, container) {
+        this.containersService.updateContainer(id, container)
+            .subscribe(res => {
+                console.log('succes post new container. RES : ', res);
+            });
+    }
+
+/*************************************************************************/
+/*************************** UTILITY FUNCTIONS ***************************/
 
     updateEventSetting(data) {
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -572,13 +757,8 @@ console.log('WorkOrderByidgroup', this.workOrderData);
                     [], data, null, true
                 )
             };
-      
     }
 
-
-
-/*************************************************************************/
-/*************************** UTILITY FUNCTIONS ***************************/
     randomId() {
         let randomId = Math.floor(Math.random() * 100 + 1);
         if (this.idExisting.indexOf(randomId) >= 0) {
@@ -834,7 +1014,7 @@ onNavigating(args){
                         coordinateurCreate: this.user.initials,
                         Operateur: ''
                     };
-                    console.log(filteredData[0], "filteredData[0]")
+                    console.log(filteredData[0], 'filteredData[0]');
                     let eventData: { [key: string]: Object } = { // DISPLAY DATA FOR EVENT
                         Id: filteredData[0].Id,
                         Name: filteredData[0].Name,
@@ -1116,6 +1296,7 @@ onNavigating(args){
             let data = args.data[0];
             this.randomId();
             console.log('last Random id : ', this.lastRandomId);
+            console.log('container create only one ==> %%%%%% ', data);
             let containerData = { // DISPLAY DATA FOR CONTAINER
                 Id: this.lastRandomId,
                 Name: data.Name,
@@ -1130,12 +1311,13 @@ onNavigating(args){
                 Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur,
                 
             };
-            this.timelineResourceDataOut.push(containerData);
-            this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                dataSource: <Object[]>extend(
-                    [], this.timelineResourceDataOut, null, true
-                )
-            };
+            this.createContainer(containerData);
+            // this.timelineResourceDataOut.push(containerData);
+            // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+            //     dataSource: <Object[]>extend(
+            //         [], this.timelineResourceDataOut, null, true
+            //     )
+            // };
         }
     }
 
@@ -1158,41 +1340,36 @@ onNavigating(args){
     onActionComplete(e) {
         console.log('onActionComplete()');
         console.log('event onActionComplete : ', e);
-        if(e.requestType === 'eventChanged')
-        {
-            if(this.open == true)
-        {
-            this.open = true
-            this.sidebar.show();
-            this.sidebar.position ='Right'
-            this.sidebar.animate =false
-            
-        }else{
-            this.open = false
-            this.sidebar.hide();
-            this.sidebar.position ='Right'
-            this.sidebar.animate =false
-        }
-    }
-            this.isTreeItemDropped = false;
-            this.isTreeItemDroppedMonteur = false;
-            if (this.drowDownExist) {
-                this.drowDownOperateurList.value = null;
+        if(e.requestType === 'eventChanged') {
+            if(this.open == true) {
+                this.open = true;
+                this.sidebar.show();
+                this.sidebar.position ='Right';
+                this.sidebar.animate =  false;
+            } else {
+                this.open = false;
+                this.sidebar.hide();
+                this.sidebar.position ='Right';
+                this.sidebar.animate =false;
             }
-                // if(this.scheduleObj.currentView === 'TimelineWeek'){
-                //     this.timeScale  = { enable: false };
-                // }else{
-                //     console.log("viewNavigate TimelineWeek ")
-                //     this.timeScale  = { enable: true };
-                // }
-            this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                dataSource: <Object[]>extend(
-                    [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
-                )
-            };
-        
-            this.treeObj.fields = this.field;
-     
+        }
+        this.isTreeItemDropped = false;
+        this.isTreeItemDroppedMonteur = false;
+        if (this.drowDownExist) {
+            this.drowDownOperateurList.value = null;
+        }
+            // if(this.scheduleObj.currentView === 'TimelineWeek'){
+            //     this.timeScale  = { enable: false };
+            // }else{
+            //     console.log("viewNavigate TimelineWeek ")
+            //     this.timeScale  = { enable: true };
+            // }
+        this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+            dataSource: <Object[]>extend(
+                [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+            )
+        };
+        this.treeObj.fields = this.field;
     }
 
     /************************ DELETE ********************/
@@ -1448,6 +1625,15 @@ onNavigating(args){
     }
 
 
+    getColor (value, codeGroup) {
+        if (value && codeGroup != this.groupeCharger ) {
+        for (let i = 0; i < this.monteurListe.length; i++) {
+            if (value === this.monteurListe[i].Username) {
+                return 'red';
+            }
+        }
+    }}
+
 /**************************************************************** Filter Monteur  ******************************************************************/
 
 
@@ -1544,7 +1730,7 @@ onNavigating(args){
         if (this.isClicked) {
             this.toggleBtn.content = 'Voir mes Régies  ';
             if (this.count == 0 || this.allRegies.length == 0) {
-                this.getSalle(10);
+                this.getSalleAll(this.currentCoordinateur.Groupe);
                 this.count = this.count + 1;
                 console.log(this.count);
             } else {
@@ -1594,7 +1780,7 @@ onNavigating(args){
     beforeopen(args: BeforeOpenCloseMenuEventArgs) {
         let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
         this.fieldMonteur['dataSource'].map(item => {
-            if ( (item.codegroupe === 10) ) {
+            if ( (item.codegroupe === this.currentCoordinateur.Groupe) ) {
                 args.cancel = true;
                 let targetNode: Element = document.querySelector(`[data-uid='${targetNodeId}']`);
                   console.log('targetNode', targetNode);
@@ -1643,14 +1829,6 @@ onNavigating(args){
 
     /************************************************************************ ADD Color **********************************************************************************/
 
-getBorder(value, codeGroup) {
-    if (value && codeGroup!=this.groupeCharger ) {
-    for (let i = 0; i < this.monteurListe.length; i++) {
-        if (value === this.monteurListe[i].Username) {
-            return 'red 2px solid';
-        }
-    }
-}}
 
     onEventRendered(args: EventRenderedArgs): void {
     

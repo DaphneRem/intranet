@@ -5,6 +5,8 @@ export const appInitialState: App = {
   user : {
     username: '',
     name: '',
-    initials: ''
+    initials: '',
+    shortUserName: '',
+    numGroup: null
   }
 };
