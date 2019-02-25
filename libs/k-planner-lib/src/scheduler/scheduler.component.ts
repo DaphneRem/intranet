@@ -300,7 +300,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     ngOnChanges(changes: SimpleChanges) {
         console.log('==============================================================================on change');
     }
-      getAllCoordinateurs() {
+
+    getAllCoordinateurs() {
           console.log('get ALL');
         this.coordinateurService.getAllCoordinateurs()
           .subscribe(data => {
@@ -456,7 +457,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
         let debut =moment(datedebut).format("YYYY-MM-DD").toString();
         let fin = moment(datefin).format("YYYY-MM-DD").toString();
-        
+
         console.log(debut,fin, 'debut fin !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
@@ -690,8 +691,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             .subscribe(res => {
                 console.log('succes post new container. RES : ', res);
                 if (res) {
-                    event.StartTime.setMonth(event.StartTime.getMonth() + 1);
-                    event.EndTime.setMonth(event.EndTime.getMonth() + 1);
+                    // todo :
+                    // update de l'id avec la réponse
+                    console.log('res from post => ', res);
+                    // event.StartTime.setMonth(event.StartTime.getMonth());
+                    // event.EndTime.setMonth(event.EndTime.getMonth());
+                    event.Id = res.Id_Planning_Container;
                     this.timelineResourceDataOut.push(event);
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                         dataSource: <Object[]>extend(
@@ -699,36 +704,26 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         )
                     };
                 }
-            });
+            },
+            error => {
+                console.log('ERROR POST CONTAINER !!');
+            }
+        );
     }
 
     createContainer(event) {
-                //     let containerData = { // DISPLAY DATA FOR CONTAINER
-                // Id: this.lastRandomId,
-                // Name: data.Name,
-                // StartTime: data.StartTime,
-                // EndTime: data.EndTime,
-                // IsAllDay: data.IsAllDay,
-                // DepartmentID: data.DepartmentID,
-                // ConsultantID: data.DepartmentID,
-                // AzaIsPere: true,
-                // AzaNumGroupe: this.lastRandomId,
-                // coordinateurCreate: this.user.initials,
-                // Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur
-                console.log(event);
-        let now = new Date();
-        now.setMonth(now.getUTCMonth() - 1);
-        let startTime =  event.StartTime;
-        startTime.setMonth(now.getUTCMonth());
-        let endTime = event.EndTime;
-        endTime.setMonth(now.getUTCMonth());
-        console.log(startTime);
-        console.log(endTime);
-        console.log('now', now);
+        console.log(event);
+        let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+        let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
+        let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+        console.log('startTime : ', startTime);
+        console.log('endTime : ', endTime);
+        console.log('now : ', now);
         let codeRessourceOperateur;
         let libelleRessourceSalle;
         let codeRessourceSalle;
-        let codeRessourceCoordinateur = this.currentCoordinateur.CodeRessource;
+        // let codeRessourceCoordinateur = this.currentCoordinateur.CodeRessource;
+        let codeRessourceCoordinateur = this.currentCoordinateur.IdCoord;
         let libelleRessourceCoordinateur = this.user.shortUserName;
         this.monteurDataSource.map(item => {
             if (item.Username === event.Operateur) {
@@ -772,6 +767,21 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         //             [], this.timelineResourceDataOut, null, true
         //         )
         //     };
+    }
+
+    updateWorkorderToBacklog(event) {
+        this.WorkOrderByidgroup.map(item => {
+            if (item) {
+            }
+        });
+    }
+
+    updateWorkorder(id, workorder) {
+        this.workorderService
+            .updateWorkOrder(id, workorder)
+            .subscribe(res => {
+                 console.log(res);
+            });
     }
 
 /**************************** PUT ***************************/
@@ -1005,7 +1015,10 @@ public  couleur
         }) as HTMLInputElement;
         container.appendChild(inputEle);
         row.appendChild(container);
-        this.drowDownMonteurs = this.monteurDataSource.map(item => {
+        // this.drowDownMonteurs = this.monteurDataSource.map(item => {
+        //     return { text: item.Username, value: item.CodeRessource };
+        // });
+        this.drowDownMonteurs = this.fieldMonteur['dataSource'].map(item => {
             return { text: item.Username, value: item.CodeRessource };
         });
         this.drowDownMonteurs.unshift({ text: 'Aucun Opérateur', value: 0});
@@ -1313,10 +1326,10 @@ public  couleur
                             AzaNumGroupe: item.AzaNumGroupe,
                             coordinateurCreate: item.coordinateurCreate,
                             Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
-                            
                         };
                         console.log('newItemContainerAfterEditorUpdate', newItemContainerAfterEditorUpdate);
-                        this.timelineResourceDataOut.push(newItemContainerAfterEditorUpdate);
+                        // this.timelineResourceDataOut.push(newItemContainerAfterEditorUpdate);
+                         this.createContainer(newItemContainerAfterEditorUpdate);
                     } else {
                         let newItemWorkorderAfterEditorUpdate = {
                             Id: item.Id,
@@ -1350,10 +1363,10 @@ public  couleur
                         AzaNumGroupe: item.AzaNumGroupe,
                         coordinateurCreate: item.coordinateurCreate,
                         Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
-                       
                     };
                     console.log('newItemContainerFromMonteurAfterEditorUpdate ==== ', newItemContainerFromMonteurAfterEditorUpdate);
-                    this.timelineResourceDataOut.push(newItemContainerFromMonteurAfterEditorUpdate);
+                    // this.timelineResourceDataOut.push(newItemContainerFromMonteurAfterEditorUpdate);
+                    this.createContainer(newItemContainerFromMonteurAfterEditorUpdate);
                     console.log('this.timelineResourceDataOut ', this.timelineResourceDataOut)
                 });
             }

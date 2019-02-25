@@ -23,6 +23,7 @@
       [versionFicheMateriel]="versionFicheMateriel"
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
       [allAnnexElementsFicheMateriel]="allAnnexElementsFicheMateriel"
+      [user]="user"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
     <!-- {{annexElementsFicheMateriel | json}} -->
@@ -95,8 +96,8 @@
     </div>
      {{activeStatusLibelle}}
     <div class="row state-content" *ngIf="stepsReady && statusReady">
-      <div class="col-lg-3"></div>
-      <div class="col-lg-3 state form-group">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-2 state form-group">
         <label class="col-form-label">Statut : </label>
           <select name="statut" class="form-control" [(ngModel)]="newObject.IdLibstatut" (click)="clickStatusOptions()">
             <option *ngIf="initValueStatus" [ngValue]="newObject.IdLibstatut">
@@ -107,7 +108,7 @@
               <span *ngIf="stat.Libelle !== valueNotToChangeLibelle">{{status.indexOf(stat) + 1}} - </span>{{stat.Libelle}}</option>
           </select>
         </div>
-      <div class="col-lg-3 step form-group" *ngIf="steps['id'+newObject.IdLibstatut] !== [] && newObject.IdLibstatut !== valueNotToChangeLibelle">
+      <div class="col-lg-4 step form-group" *ngIf="steps['id'+newObject.IdLibstatut] !== [] && newObject.IdLibstatut !== valueNotToChangeLibelle">
         <label class="col-form-label">Etape : </label>
           <select name="myStep" class="form-control" 
                   [(ngModel)]="newObject.IdLibEtape" 
@@ -123,6 +124,7 @@
               <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{i+1}} - </span>{{step.Libelle}}
             </option>
           </select>
+          <div class="add-just-comment" (click)="addJustCommentSwal()"><i class="icofont icofont-comment"></i></div>
           <history-steps-status-modal
             class="history-steps-status-modal-component"
             *ngIf="selectionType === 'one'" 
@@ -786,6 +788,7 @@
       [qualiteFM]="qualiteFM"
       [versionFicheMateriel]="versionFicheMateriel"
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
+      [user]="user"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
   </form>

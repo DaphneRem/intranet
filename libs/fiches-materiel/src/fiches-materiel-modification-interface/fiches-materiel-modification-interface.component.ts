@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
+import swal from 'sweetalert2';
 
 import { FichesAchatService } from '@ab/fiches-achat';
 import { FicheAchat, FicheAchatDetails } from '@ab/fiches-achat';
@@ -63,6 +64,8 @@ import { identifierModuleUrl } from '@angular/compiler';
 })
 export class FichesMaterielModificationInterfaceComponent
   implements OnInit, OnDestroy {
+  
+  public user;
   public initialFichesMateriel = [];
 
   public reloadHistoryStepStatus = false;
@@ -202,6 +205,9 @@ export class FichesMaterielModificationInterfaceComponent
   ngOnInit() {
     this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
+    this.user = this.globalStore.app.user.shortUserName;
+    console.log(this.globalStore);
+    console.log(this.user);
     // this.allIdSelectedFichesMateriel = this.storeFichesToModif.selectedFichesMateriel;
     this.checkAllIdSelected();
     this.getLibs();
@@ -901,6 +907,32 @@ export class FichesMaterielModificationInterfaceComponent
     });
   }
   /********************************************************************************/
+
+  addJustCommentSwal() {
+    console.log(this.newObject.CommentairesStatutEtape);
+    let title;
+    let cancelMessage;
+    if (this.newObject.CommentairesStatutEtape === '' || this.newObject.CommentairesStatutEtape === null) {
+      title = 'Ajouter un commentaire pour Statuts/Etapes';
+      cancelMessage = 'Aucun Commentaire';
+    } else {
+      title = 'Changer le commentaire pour Statuts/Etapes';
+      cancelMessage = 'Annuler';
+    }
+    swal({
+      title: title,
+      input: 'textarea',
+      showCancelButton: true,
+      cancelButtonText: cancelMessage,
+      confirmButtonText: 'Valider',
+      confirmButtonColor: 'rgb(23, 170, 178)',
+    }).then((result) => {
+      if (result.value) {
+        this.newObject.CommentairesStatutEtape = result.value;
+        console.log('this.newObject.CommentairesStatutEtape', this.newObject.CommentairesStatutEtape);
+      }
+    });
+  }
 
   displayDeliveryDateModelComment(comment) {
     this.newObject.CommentairesDateLivraison = comment;

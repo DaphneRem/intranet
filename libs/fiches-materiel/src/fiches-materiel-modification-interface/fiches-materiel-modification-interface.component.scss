@@ -96,6 +96,7 @@ $modificationColor: #FFB64D;
             font-size: 1.2em;
             .state {
                 // text-align: right;
+                padding-left: 0;
                 display: flex;
                 justify-content: flex-end;
                 label {
@@ -107,6 +108,7 @@ $modificationColor: #FFB64D;
             }
             .step {
                 display: flex;
+                padding-left: 0;
                 label {
                     margin-right: 10px;
                 }
@@ -114,8 +116,24 @@ $modificationColor: #FFB64D;
                     width: min-content;
                     max-width: 240px;
                 }
+                .add-just-comment {
+                    height: 40px;
+                    min-width: 40px;
+                    background-color: $creationBtnColor;
+                    border-radius: 100%;
+                    color: #ffffff;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-left: 15px;
+                    &:hover {
+                        background-color: $creationBtnHoverColor;
+                        cursor: pointer;
+                    }
+                }
                 .history-steps-status-modal-component {
-                    margin-top: 5px;
+                    margin-top: 10px;
+                    margin-left: -10px;
                 }
             }
         }

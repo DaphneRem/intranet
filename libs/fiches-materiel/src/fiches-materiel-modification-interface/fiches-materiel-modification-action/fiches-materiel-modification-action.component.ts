@@ -35,6 +35,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() annexElementsFicheMateriel;
   @Input() versionFicheMateriel;
   @Input() allAnnexElementsFicheMateriel;
+  @Input() user;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
 
@@ -219,6 +220,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     delete e.Fiche_Mat_LibEtape;
     delete e.Fiche_Mat_Qualite;
     delete e.Fiche_Mat_Version;
+    e.UserModification = this.user;
     // delete e.Fiche_Mat_ElementsAnnexes;
     this.fichesMaterielService.updateFicheMateriel([e]).subscribe(data => {
       if (data) {
@@ -316,6 +318,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
         }
       }
     }
+    this.changedValues['UserModification'] = this.user;
     this.displaymultiDataToUpdate(allId);
   }
 

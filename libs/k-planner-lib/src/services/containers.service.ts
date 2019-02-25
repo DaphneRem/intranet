@@ -97,7 +97,7 @@ export class ContainersService {
 
   /*********************** DELETE ************************/
 
-  deleteServiceWithId(id, container: ContainerKP[]): Observable<ContainerKP> {
+  deleteContainer(id, container: ContainerKP[]): Observable<ContainerKP> {
     return this.http
       .delete<ContainerKP>(urlKPlanner + urlPlanningContainers + id)
       .pipe(catchError(this.handleError));
