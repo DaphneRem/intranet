@@ -45,8 +45,8 @@
     <div class="drag-sample-wrapper">
         <div class="schedule-container">
             <div class="title-container">
-                <!-- <i class="icofont icofont-ui-zoom-in" (click)="ZoomPlus()"></i>
-                <i class="icofont icofont-ui-zoom-out"  (click)="ZoomMoins()"></i> -->
+                   
+                     
             </div>
           
           
@@ -71,7 +71,7 @@
                 (eventRendered)="onEventRendered($event)"
                 (renderCell)="onRenderCell($event)"
                 (navigating)="onNavigating($event)"
-                
+                [firstDayOfWeek]="1"
 
                 >
             
@@ -160,23 +160,25 @@
                 </e-view> -->
                     <e-view option='TimelineMonth' >
                             <ng-template #eventTemplate let-data  class="event">
-                                    <div class='template-wrap' style="width: 100%" id="{{data.Id}}">
-                                        <div>
-                                            <div class="subject" style="margin-top: 0px;  " *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                                <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
-                                                <u id="{{data.Id}}">{{data.Name }} </u> 
-                                                <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
-                                            
-                                              
-                                            </div> 
-                                            <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                                <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
-                                            </div>
-                                      </div> 
+                                <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
+                                    <div>
+                                        <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                            <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
+                                            <u id="{{data.Id}}">{{data.Name }} </u> 
+                                            <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
+                                            <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
+                                            <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
+                                                class="float-right  fixed mr-1"> -->
+                                        </div>
+                                        <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                            <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
+                                        </div>
                                     </div>
+                                </div>
                                 </ng-template> 
 
                     </e-view>
+                 
                     <e-view option="Agenda"   >
                         <ng-template #eventTemplate let-data class="event">
                             <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}">
@@ -199,23 +201,7 @@
                         </ng-template>
                     </e-view>
                     <e-view option="MonthAgenda" >
-                        <ng-template #eventTemplate let-data  class="event">
-                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
-                                <div>
-                                    <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                        <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
-                                        <u id="{{data.Id}}">{{data.Name }} </u> 
-                                        <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                        <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
-                                        <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
-                                            class="float-right  fixed mr-1"> -->
-                                    </div>
-                                    <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
+                   
                     </e-view>
                 </e-views>
                 
@@ -247,7 +233,7 @@
                                 <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
-                                            <div id="waitlist">{{dataWorkOrder.Name }}</div>
+                                            <div id="waitlist">{{dataWorkOrder.Name }} </div>
                                             <div id="waitcategory">{{dataWorkOrder.Description}}</div>
                                         </div>
                                     </div>

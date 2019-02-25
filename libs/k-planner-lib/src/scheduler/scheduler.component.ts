@@ -2,6 +2,7 @@ import { Component,  ViewChild, OnInit, OnChanges, SimpleChanges, Input, AfterVi
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfaces';
+import * as moment from 'moment';
 
 // Syncfusion Imports
 // Synfucion Bases
@@ -33,6 +34,7 @@ import {
     EventRenderedArgs,
     TimeScaleModel,
     dataBinding,
+    MonthAgendaService,
 } from '@syncfusion/ej2-angular-schedule';
 
 // Locale Data Imports
@@ -84,7 +86,8 @@ loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
         ContainersService,
         MonteursService,
         Store,
-        WorkOrderService
+        WorkOrderService,
+        MonthAgendaService
     ]
 })
 
@@ -167,7 +170,17 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     { Id: 0, Color: '#B01106' },
     { Id: 1, Color: '#F96C63' },
     { Id: 2, Color: '#F0AC2C' },
-    { Id: 3, Color: '#06710E' }
+    { Id: 3, Color: '#3ba506' },
+    { Id: 4, Color: '#B01106' },
+    { Id: 5, Color: '#F96C63' },
+    { Id: 6, Color: '#F0AC2C' },
+    { Id: 7, Color: '#3ba506' },
+    { Id: 8, Color: '#B01106' },
+    { Id: 9, Color: '#3ba506' },
+    { Id: 10, Color: '#3ba506' },
+    { Id: 11, Color: '#3ba506' },
+    { Id: 12, Color: '#3ba506' },
+    { Id: 13, Color: '#3ba506' }
    ]
     // BACKLOGS INIT
     public waitingList;
@@ -281,6 +294,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     ngAfterViewInit() {
         this.departmentDataSource = this.departmentGroupDataSource;
+        this.getWorkOrderByidGroup(11);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -295,7 +309,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                   if (item.Username === this.user.shortUserName) {
                         console.log('COORDINATEUR => ', item);
                         this.getSalleByGroup(item.Groupe);
-                        this.getWorkOrderByidGroup(11); // ID PROVISOIRE !!!
+                        // ID PROVISOIRE !!!
                         this.getMonteursByGroup(item.Groupe);
                         // this.getWorkOrderByidGroup(item.Groupe);
                         this.getAllMonteurs(item.Groupe);
@@ -342,7 +356,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     this.departmentGroupDataSource.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
-                        Color: '#19716B'
+                        Color: '#19716B',
                         codeSalle: item.CodeSalle,
                         codeRessource: item.CodeRessource
                     });
@@ -440,9 +454,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
-        let debut = datedebut.getFullYear()  + '-' +  (datedebut.getMonth() + 1) + '-' + datedebut.getDate();
-        let fin = datefin.getFullYear()  + '-' +  (datefin.getMonth() + 1) + '-' + datefin.getDate();
-        console.log(debut,fin, 'debut fin');
+        let debut =moment(datedebut).format("YYYY-MM-DD").toString();
+        let fin = moment(datefin).format("YYYY-MM-DD").toString();
+        
+        console.log(debut,fin, 'debut fin !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
             .subscribe(res => {
@@ -455,23 +470,33 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     this.dataContainersByRessourceStartDateEndDate.map(data => {
                         this.idExisting.push(data.Id_Planning_Container);
                         console.log('data brut for conainer : ', data);
-                        let StartTime =   new Date (data.DateDebutTheo) ,
-                        EndTime = new Date (data.DateFinTheo);
+                        let StartTime =   moment(data.DateDebutTheo) ,
+                        EndTime = moment(data.DateFinTheo);
 
-                        let anneeDebut = StartTime.getFullYear(),
-                        moisDebut =(StartTime.getMonth()+1), // +1
-                        jourDebut = StartTime.getDate(),
-                        heurDebut = StartTime.getHours(),
-                        minuteDebut = StartTime.getMinutes();
+                        let dateDebut =  StartTime._d,
+                            dateFin= EndTime._d
+                        // console.log(debut, "*******************************debut")
+                        //    console.log(data, "*******************************data")
+                        //    console.log(data.DateDebutTheo, "*******************************data.DateDebutTheo")
+                        //    console.log(StartTime, "*******************************StartTime")
+                           
+                        // let mois = moment(data.DateDebutTheo)
+                        // console.log(  mois, " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! moisDebut !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                      
+                        // let anneeDebut = StartTime.getFullYear(),
+                        // moisDebut =(StartTime.getMonth()+1), // +1
+                        // jourDebut = StartTime.getDate(),
+                        // heurDebut = StartTime.getHours(),
+                        // minuteDebut = StartTime.getMinutes();
 
-                        let anneefin = EndTime.getFullYear(),
-                        moisfin = (EndTime.getMonth()+1),
-                        jourfin = EndTime.getDate(),
-                        heurfin = EndTime.getHours(),
-                        minutefin = EndTime.getMinutes();
-
-                        console.log(EndTime.getTime(),'day');
-                        console.log(datefin,'datefin');
+                        // let anneefin = EndTime.getFullYear(),
+                        // moisfin = (EndTime.getMonth()+1),
+                        // jourfin = EndTime.getDate(),
+                        // heurfin = EndTime.getHours(),
+                        // minutefin = EndTime.getMinutes();
+                        // console.log(  new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut), " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEW DATE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                        // console.log(EndTime.getTime(),'day');
+                        // console.log(datefin,'datefin');
 
                         let initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0,1);
                         console.log('initiales =====> ', initiales);
@@ -479,8 +504,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         this.timelineResourceDataOut.push({
                             Id: data.Id_Planning_Container,
                             Name: (data.Titre === null || typeof(data.Titre) === 'undefined') ? 'Titre null' : data.Titre,
-                            StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut),
-                            EndTime:   new Date(anneefin,moisfin,jourfin,heurfin,minutefin), // date provisoire
+                            StartTime:dateDebut,
+                            EndTime:  dateFin  , // date provisoire
                             CodeRessourceSalle: coderessource,
                             Container: true,
                             numGroup:data.Id_Planning_Container,
@@ -497,12 +522,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
                         this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length, indexSalle);
+                        
+                    console.log('containerData starttime +++++++++++++++++++++++++++++++++++++++++++++++++++++',this.timelineResourceDataOut);
                     });
                     // timelineResourceDataOut
                     this.updateEventSetting(this.timelineResourceDataOut);
                                                         this.departmentDataSource = this.departmentGroupDataSource;
 
-                    console.log('containerData', this.timelineResourceDataOut);
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
                     console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
                 } else {
@@ -519,19 +545,22 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.WorkorderByContainerId = res;
                 if (this.WorkorderByContainerId != []) {
                     this.WorkorderByContainerId.map(data => {
-                        let StartTime =   new Date (data.DateDebutTheo) ,
-                        EndTime = new Date (data.DateFinTheo);
-                        let anneeDebut = StartTime.getFullYear(),
-                        moisDebut =(StartTime.getMonth()+1), // +1
-                        jourDebut = StartTime.getDate(),
-                        heurDebut = StartTime.getHours(),
-                        minuteDebut = StartTime.getMinutes();
+                        let StartTime =   moment(data.DateDebutTheo) ,
+                        EndTime = moment(data.DateFinTheo);
 
-                        let anneefin = EndTime.getFullYear(),
-                        moisfin = (EndTime.getMonth()+1),
-                        jourfin = EndTime.getDate(),
-                        heurfin = EndTime.getHours(),
-                        minutefin = EndTime.getMinutes();
+                        let dateDebut =  StartTime._d,
+                            dateFin= EndTime._d
+                        // let anneeDebut = StartTime.getFullYear(),
+                        // moisDebut =(StartTime.getMonth()+1), // +1
+                        // jourDebut = StartTime.getDate(),
+                        // heurDebut = StartTime.getHours(),
+                        // minuteDebut = StartTime.getMinutes();
+
+                        // let anneefin = EndTime.getFullYear(),
+                        // moisfin = (EndTime.getMonth()+1),
+                        // jourfin = EndTime.getDate(),
+                        // heurfin = EndTime.getHours(),
+                        // minutefin = EndTime.getMinutes();
                         console.log(data.Statut, "statut")
                         //  this.statut = data.Statut 
 
@@ -539,8 +568,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
                             Id: data.Id_Planning_Container,
                             Name: data.libtypeWO,
-                            StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
-                            EndTime:   new Date(anneefin,moisfin,jourfin,heurfin,minutefin), // date provisoire
+                            StartTime: dateDebut ,
+                            EndTime:  dateFin, // date provisoire
                             CodeRessourceSalle: codeSalle,
                             Container: false,
                             numGroup:data.Id_Planning_Container,
@@ -558,14 +587,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     });
               
                 });
-                    //   for(let i=0 ; i< this.colorStatut.length; i++) {
-                    //     if(!this.timelineResourceDataOut['AzaIsPere']){
-                    //         if (  this.statut == i){
-                    //             this.workOrderColor = this.colorStatut[i]['Color']
-                    //         }
-                    //     }
-                    // }
-                console.log('this.colorStatut[i][Id]', this.colorStatut['Color']);
+                    
+                
                 this.updateEventSetting(this.timelineResourceDataOut); 
                 // this.onActionComplete('');
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
@@ -582,7 +605,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 }
             }
             if (index === (containerArrayLength - 1)) {
-
+                this.field = {
+                    dataSource:  this.workOrderData,
+                    id: 'Id',
+                    text: 'Name',
+                    description: 'Description'
+                };
                 console.log('ready');
             }
         });
@@ -599,26 +627,33 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             if (this.WorkOrderByidgroup != []) {
                 this.WorkOrderByidgroup.map(workOrder => {
 
-                let StartTime =   new Date (workOrder.DateDebut) ,
-                EndTime = new Date (workOrder.DateFin);
-                let anneeDebut = StartTime.getFullYear(),
-                moisDebut =(StartTime.getMonth() + 1),
-                jourDebut = StartTime.getDate(),
-                heurDebut = StartTime.getHours(),
-                minuteDebut = StartTime.getMinutes();
+                    let StartTime =   moment(workOrder.DateDebut) ,
+                    EndTime = moment(workOrder.DateFin);
 
-                let anneefin = EndTime.getFullYear(),
-                moisfin = EndTime.getMonth(),
-                jourfin = EndTime.getDate(),
-                heurfin = EndTime.getHours(),
-                minutefin = EndTime.getMinutes();
+                    let dateDebut =  StartTime._d,
+                        dateFin= EndTime._d
 
-                this.statut = workOrder.Statut;
+
+                // let StartTime =   new Date (workOrder.DateDebut) ,
+                // EndTime = new Date (workOrder.DateFin);
+                // let anneeDebut = StartTime.getFullYear(),
+                // moisDebut =(StartTime.getMonth() + 1),
+                // jourDebut = StartTime.getDate(),
+                // heurDebut = StartTime.getHours(),
+                // minuteDebut = StartTime.getMinutes();
+
+                // let anneefin = EndTime.getFullYear(),
+                // moisfin = EndTime.getMonth(),
+                // jourfin = EndTime.getDate(),
+                // heurfin = EndTime.getHours(),
+                // minutefin = EndTime.getMinutes();
+
+               
                 this.workOrderData.push({
                     Id: workOrder.Id_Planning_Events,
                     Name: workOrder.libtypeWO,
-                    StartTime: new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut) ,
-                    EndTime: new Date(anneefin,moisfin,jourfin,heurfin,minutefin),
+                    StartTime: dateDebut ,
+                    EndTime:  dateFin,
                     CodeRessourceSalle: workOrder.CodeRessourceSalle,
                     Container: false,
                     numGroup:workOrder.Id_Planning_Events,
@@ -633,13 +668,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     DepartmentName: '',
                     IsAllDay: false,
                 });
-                this.field = {
-                    dataSource:  this.workOrderData,
-                    id: 'Id',
-                    text: 'Name',
-                    description: 'Description'
-                };
-                console.log('this.colorStatut[i][Id]', this.workOrderColor);
+              
+            
             });
         }
         console.log('WorkOrderByidgroup', this.workOrderData);
@@ -790,13 +820,14 @@ onNavigating(args){
     console.log('Schedule <b>Navigating</b> event called<hr>',args);
   if(args.currentView ==="TimelineDay")
   {
+
       console.log("TimelineDay")
       this.scheduleObj.timeScale.interval = 60
       this.scheduleObj.startHour ='06:00'
       this.scheduleObj.endHour ='23:00'
       this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
       this.scheduleObj.dataBind()
-
+    
   } else{ 
       if(args.currentView ==="TimelineWeek"){
           
@@ -811,16 +842,26 @@ onNavigating(args){
   }
   if(args.currentView ==="TimelineMonth" ||  args.currentView ==="Agenda" ){
     this.scheduleObj.readonly = true
-    this.colorReadOnly = '#93B3F0'
+   
   } else
   {
     this.scheduleObj.readonly = false
   }
 
-}
 
+  if(args.previousView === "MonthAgenda" && args.currentView ==="TimelineDay" )
+
+  {
+   
+    this.scheduleObj.activeViewOptions.option = "TimelineDay"
+ 
+  }
+
+}
+public  couleur
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
+     
         console.log(args);
         // if (args.type === 'EventContainer') {
         //     args.data.element.innerText = `Plus`;
@@ -836,8 +877,24 @@ onNavigating(args){
         //         console.log(this.scheduleObj);
         //     }
         // }
-   
-    
+       
+        if(args.type === 'QuickInfo')
+        {
+          
+            this.colorStatut.map(statut =>{
+                if(args.data.Statut == statut['Id'])
+                {
+                   this.couleur  = statut["Color"]
+                   
+                }
+                console.log( this.couleur , '+++++++++++++++++++++++++++++couleur++++++++++++++++++++++') 
+            })
+       
+        }
+          let colorRow = this.couleur
+        console.log(  this.workOrderColor , '+++++++++++++++++++++++++++++couleur++++++++++++++++++++++') 
+       
+
         args.element.hidden = false;
         if ((args.type === 'QuickInfo') &&  (args.data.name === 'cellClick')) {
             args.cancel = true;
@@ -845,6 +902,9 @@ onNavigating(args){
         if (this.cancelObjectModal) {
             args.cancel = true;
         }
+
+      
+    
         if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
             if (args.data.AzaIsPere) {
                 this.timelineResourceDataOut.map(item => {
@@ -860,12 +920,29 @@ onNavigating(args){
                 for (let i = 0; i < workOrders.length; i++) {
                     let idRegie = workOrders[i].DepartmentID;
                     let colorRegie: string;
+                 
                     this.departmentDataSource.map(item => {
                         if (item['Id'] === idRegie) {
                             colorRegie = item['Color'];
                         }
                     });
-                    row.innerHTML += `<div id='id${i}' style='background-color: ${this.workOrderColor};'>${workOrders[i].Name}</div>`;
+                    
+   
+                    console.log( this.couleur , '**********************************couleur*************************************') 
+                  
+                    row.innerHTML += `<div id='id${i}'  >${workOrders[i].Name}</div>`;
+                    
+                   
+                        let element = document.getElementById('id'+i)
+                        
+                        element.style.backgroundColor = colorRow
+
+
+                
+
+
+
+                console.log(element,"*********************ROW***********")
                 }
                 for (let e = 0; e < workOrders.length; e++) {
                     let child = document.getElementById(`id${e}`);
@@ -875,6 +952,7 @@ onNavigating(args){
                         this.openDialog(args, args.data, workOrders[e], this.departmentDataSource);
                     });
                 }
+              
             }
         }
         if (args.data.name === 'cellClick') {
@@ -958,7 +1036,8 @@ onNavigating(args){
             width: '365px',
             data: {
                 workorder: subObject,
-                regie: category
+                regie: category,
+                color:this.couleur
             }
         });
     }
@@ -1176,6 +1255,19 @@ onNavigating(args){
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
+        if (event.requestType === 'eventChange') {
+            if(this.open == true) {
+                this.open = true;
+                this.sidebar.show();
+                this.sidebar.position ='Right';
+                this.sidebar.animate =  false;
+            } else {
+                this.open = false;
+                this.sidebar.hide();
+                this.sidebar.position ='Right';
+                this.sidebar.animate =false;
+            }
+         }
         if (event.requestType === 'eventCreate') {
             console.log('eventCreate');
             console.log(event.requestType);
@@ -1279,6 +1371,19 @@ onNavigating(args){
 
     customActionBegin(args: any) { // CUSTOM ACTION BEGIN
         console.log('args customActionBegin ', args);
+        if (args.requestType === 'eventChange') {
+            if(this.open == true) {
+                this.open = true;
+                this.sidebar.show();
+                this.sidebar.position ='Right';
+                this.sidebar.animate =  false;
+            } else {
+                this.open = false;
+                this.sidebar.hide();
+                this.sidebar.position ='Right';
+                this.sidebar.animate =false;
+            }
+         }
         if (args.requestType === 'eventRemove') { // CUSTOM ACTION REMOVE
             this.deleteEvent(args);
         } else if (args.requestType === 'viewNavigate') {
@@ -1320,6 +1425,10 @@ onNavigating(args){
             //     )
             // };
         }
+
+     
+
+
     }
 
     checkDiffExistById(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute): boolean {
@@ -1834,18 +1943,30 @@ onNavigating(args){
     onEventRendered(args: EventRenderedArgs): void {
     
         let couleur
+
+        // this.colorStatut.map(statut =>{
+        //     if(args.data.Statut == statut['Id'])
+        //     {
+        //        couleur  = statut["Color"]
+        //        console.log(couleur , 'couleur++++++++++++++++++++++')
+        //     }
+        // })
+       
+      
         if (args.data.AzaIsPere ) {
                 return;
              
         } else {
-  
-             this.colorStatut.map(statut =>{
-                 if(args.data.Statut == statut['Id'])
-                 {
-                    couleur  = statut["Color"]
-                 }
-             })
-             this.workOrderColor = couleur
+
+            this.colorStatut.forEach(statut =>{
+                if(args.data.Statut === statut['Id'])
+                {
+                   couleur  = statut["Color"]
+                   console.log(couleur , 'couleur++++++++++++++++++++++')
+                }
+            })
+            this.workOrderColor = couleur
+           
                console.log("statut", args.data.Statut)
 
 
@@ -1853,6 +1974,7 @@ onNavigating(args){
                 (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
                 (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
                 args.element.style.borderLeftColor = this.workOrderColor;
+                console.log("statut", args)
          
             } else {
                 if (this.scheduleObj.currentView === 'Agenda') {
@@ -1899,20 +2021,16 @@ onNavigating(args){
     onRenderCell(args: RenderCellEventArgs): void {
         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
-            if(this.scheduleObj.readonly == false){
-            target.innerHTML = '<div class="e-icons e-edit-icon1 icon-vue" ></div>';
-        }else 
-        {
-            target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>'; 
+            if (this.scheduleObj.readonly == false) {
+                target.innerHTML = '<div class="e-icons e-edit-icon1 icon-vue" ></div>';
+            } else {
+                target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
+            }
         }
-        }
+
     }
 
 
 
 
 }
-
-
-
-

@@ -1,7 +1,7 @@
 <div style="margin: -25px;height: 310px; overflow-y: hidden; overflow-x: hidden;">
-    <div style="padding: 10px; background-color: #4295E8; color: #ffffff;height: 85px;">
+    <div style="padding: 10px;  color: #ffffff;height: 85px;"  [ngStyle]="{'background-color': data.color}">
         <!-- <h1 mat-dialog-title style="margin: 26px 0 0 15px;">{{data.subObject.title}}</h1> -->
-        <h1 mat-dialog-title class="title">{{data.workorder.Name}}</h1>
+        <h1 mat-dialog-title class="title">{{data.workorder.Name}} </h1>
     </div>
     <div mat-dialog-content style="margin: 0; height: 155px;">
         <!-- <p>{{data.StartTime}} ({{ data.StartTime}} - {{ data.EndTime}})</p> -->
@@ -15,6 +15,6 @@
     </div>
     <div mat-dialog-actions style="padding-left: 20px;">
         <!-- <button mat-button (click)="onNoClick()" color="primary">No Thanks</button> -->
-        <button class="btn btn-primary btn-square" (click)="close()" [mat-dialog-close]="data" cdkFocusInitial>Fermer</button>
+        <button class="btn  "  (click)="close()" [mat-dialog-close]="data" cdkFocusInitial>Fermer</button>
     </div>
 </div>
