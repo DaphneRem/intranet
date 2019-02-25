@@ -232,10 +232,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public count: number = 0;
     public groupeCharger: number = 10;
     public workOrderColor: string ;
-    public SelectDateDebut: Date = new Date(2019,0,4);
-    public SelectDateFin: Date = new Date(2019,1,5);
-    // public SelectDateDebut: Date = new Date(2019,0,1);
-    // public SelectDateFin: Date = new Date(2019,2,1);
+    // public SelectDateDebut: Date = new Date();
+    // public SelectDateFin: Date = new Date();
+    public SelectDateDebut: Date = new Date(2019,0,1);
+    public SelectDateFin: Date = new Date(2019,2,1);
     // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
     public weekInterval: number = 1;
     public intervalValue: string = '60';
@@ -470,18 +470,18 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     this.dataContainersByRessourceStartDateEndDate.map(data => {
                         this.idExisting.push(data.Id_Planning_Container);
                         console.log('data brut for conainer : ', data);
-                        let StartTime =   moment(data.DateDebutTheo) ,
-                        EndTime = moment(data.DateFinTheo);
+                        let StartTime =   moment(data.DateDebutTheo, moment.defaultFormat).toDate() ,
+                        EndTime = moment(data.DateFinTheo, moment.defaultFormat).toDate();
 
-                        let dateDebut =  StartTime._d,
-                            dateFin= EndTime._d
+                        let dateDebut =  StartTime,
+                            dateFin= EndTime
                         // console.log(debut, "*******************************debut")
                         //    console.log(data, "*******************************data")
                         //    console.log(data.DateDebutTheo, "*******************************data.DateDebutTheo")
                         //    console.log(StartTime, "*******************************StartTime")
-                           
-                        // let mois = moment(data.DateDebutTheo)
-                        // console.log(  mois, " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! moisDebut !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    //    let mois = moment(data.DateDebutTheo, moment.defaultFormat).toDate()
+                      
+                    //     console.log(  mois,'aa', mois._d, " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! moisDebut !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                       
                         // let anneeDebut = StartTime.getFullYear(),
                         // moisDebut =(StartTime.getMonth()+1), // +1
@@ -545,11 +545,11 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.WorkorderByContainerId = res;
                 if (this.WorkorderByContainerId != []) {
                     this.WorkorderByContainerId.map(data => {
-                        let StartTime =   moment(data.DateDebutTheo) ,
-                        EndTime = moment(data.DateFinTheo);
+                        let StartTime =   moment(data.DateDebutTheo, moment.defaultFormat).toDate() ,
+                        EndTime = moment(data.DateFinTheo, moment.defaultFormat).toDate();
 
-                        let dateDebut =  StartTime._d,
-                            dateFin= EndTime._d
+                        let dateDebut =  StartTime,
+                            dateFin= EndTime
                         // let anneeDebut = StartTime.getFullYear(),
                         // moisDebut =(StartTime.getMonth()+1), // +1
                         // jourDebut = StartTime.getDate(),
@@ -627,11 +627,15 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             if (this.WorkOrderByidgroup != []) {
                 this.WorkOrderByidgroup.map(workOrder => {
 
-                    let StartTime =   moment(workOrder.DateDebut) ,
-                    EndTime = moment(workOrder.DateFin);
 
-                    let dateDebut =  StartTime._d,
-                        dateFin= EndTime._d
+                    let StartTime =   moment(workOrder.DateDebut, moment.defaultFormat).toDate() ,
+                    EndTime = moment(workOrder.DateFin, moment.defaultFormat).toDate();
+
+                    let dateDebut =  StartTime,
+                        dateFin= EndTime
+               
+
+                  
 
 
                 // let StartTime =   new Date (workOrder.DateDebut) ,
@@ -818,10 +822,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 onNavigating(args){
     console.log('Schedule <b>Navigating</b> event called<hr>',args);
+    console.log('ScheduleObj', args.currentView ,this.scheduleObj);
+    let m = moment();
+    m.get('d');
+      console.log("TimelineDay",  m )
   if(args.currentView ==="TimelineDay")
   {
-
-      console.log("TimelineDay")
+ 
       this.scheduleObj.timeScale.interval = 60
       this.scheduleObj.startHour ='06:00'
       this.scheduleObj.endHour ='23:00'
@@ -847,15 +854,9 @@ onNavigating(args){
   {
     this.scheduleObj.readonly = false
   }
-
-
-  if(args.previousView === "MonthAgenda" && args.currentView ==="TimelineDay" )
-
-  {
-   
-    this.scheduleObj.activeViewOptions.option = "TimelineDay"
  
-  }
+
+ 
 
 }
 public  couleur
