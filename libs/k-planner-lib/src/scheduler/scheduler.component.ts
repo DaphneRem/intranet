@@ -153,6 +153,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
         }
     };
+
+    public btnRegieMessageAll    
     public colorReadOnly
     public currentView: View = 'TimelineDay';
     public workHours: WorkHoursModel = { start: '08:00', end: '20:00' };
@@ -235,8 +237,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     // public SelectDateDebut: Date = new Date();
     // public SelectDateFin: Date = new Date();
     public SelectDateDebut: Date = new Date(2019,0,1);
-    public SelectDateFin: Date = new Date(2019,2,1);
-    // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
+    public SelectDateFin: Date = new Date(2019,11,31);
+    // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);
     public weekInterval: number = 1;
     public intervalValue: string = '60';
     public intervalData: string[] = ['15', '30', '60', '120'];
@@ -269,13 +271,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             this.getAllCoordinateurs();
             console.log('*******constructor*******');
                 // public departmentDataSource: Object[] = [];
-
         }
 
     ngOnInit() {
         console.log(this.scheduleObj);
         console.log(this.scheduleObjDay, 'scheduleObjDay')
-        this.toggleBtn.content = 'Voir autres Régies';
+        this.toggleBtn.content = 'Voir toutes les Régies';
         // console.log(hospitalData);
         // console.log(this.eventSettings);
         // console.log(this.data);
@@ -294,7 +295,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     ngAfterViewInit() {
         this.departmentDataSource = this.departmentGroupDataSource;
-        this.getWorkOrderByidGroup(11);
+        // this.getWorkOrderByidGroup(11);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -312,7 +313,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         this.getSalleByGroup(item.Groupe);
                         // ID PROVISOIRE !!!
                         this.getMonteursByGroup(item.Groupe);
-                        // this.getWorkOrderByidGroup(item.Groupe);
+                        this.getWorkOrderByidGroup(item.Groupe);
                         this.getAllMonteurs(item.Groupe);
                         this.currentCoordinateur = item;
                    }
@@ -453,7 +454,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 console.log('container by ressource : ', data);
             });
     }
-
+    public allDataContainers = [];
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
         let debut =moment(datedebut).format("YYYY-MM-DD").toString();
         let fin = moment(datefin).format("YYYY-MM-DD").toString();
@@ -466,6 +467,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 console.log('container by ressource, startDate and endDate',  this.dataContainersByRessourceStartDateEndDate);
                 console.log(res.length);
                 if (res.length > 0) {
+                    this.allDataContainers = [...this.allDataContainers, ...res];
                     console.log('conainer present : ', res);
                     console.log(this.dataContainersByRessourceStartDateEndDate);
                     this.dataContainersByRessourceStartDateEndDate.map(data => {
@@ -686,6 +688,33 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 /**************************** POST ***************************/
 
+    deleteContainer(id, event) {
+        this.containersService.deleteContainer(id)
+            .subscribe(res => {
+                console.log('delete container with success : ', res);
+                this.timelineResourceDataOut.forEach(item => { // GARDER CETTE FONCTION POUR LA SUITE
+                    if ((+event.AzaNumGroupe === +item.AzaNumGroupe) && !item.AzaIsPere) {
+                        if (!this.field['dataSource'].includes(item)) {
+                           this.backToBacklog(item); // ICI AJOUTER FONCTION UPDATE WORKORDER (isBacklog : 1)
+                        }
+                    }
+                });
+                this.timelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
+                    if (+event.AzaNumGroupe !== +item.AzaNumGroupe) {
+                        return item;
+                    }
+                });
+                this.eventSettings = {
+                    dataSource: <Object[]>extend(
+                        [], this.timelineResourceDataOut, null, true
+                    )
+                };
+            }, error => {
+                console.error('error for delete container request : ', error);
+            }
+        )
+    }
+
     postContainer(containerToCreate, event) {
         this.containersService.postContainer(containerToCreate)
             .subscribe(res => {
@@ -786,11 +815,77 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 /**************************** PUT ***************************/
 
-    updateContainer(id, container) {
-        this.containersService.updateContainer(id, container)
+    updateContainer(args) {
+        let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+        console.log(this.allDataContainers);
+        args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
+        let event = args.data;
+        console.log(event);
+        let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
+        console.log(oldEvent);
+        let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
+        console.log(containerResult);
+        let container = containerResult[0];
+        console.log('container to update : ', container);
+
+        let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
+        let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+
+        let codeRessourceOperateur;
+        let libelleRessourceSalle;
+        let codeRessourceSalle;
+        this.monteurDataSource.map(item => {
+            if (item.Username === event.Operateur) {
+                codeRessourceOperateur = item.CodeRessource;
+            }
+        });
+        this.departmentGroupDataSource.map(item => {
+            if (item['Id'] === event.DepartmentID) {
+                libelleRessourceSalle = item['Text'];
+                codeRessourceSalle = item['codeRessource'];
+            }
+        });
+
+        let newContainer = {
+            Id_Planning_Container: container.Id_Planning_Container,
+            UserEnvoi: container.UserEnvoi,
+            DateEnvoi: container.DateEnvoi,
+            Titre: event.Name,
+            CodeRessourceOperateur: codeRessourceOperateur,
+            LibelleRessourceOperateur: event.Operateur,
+            CodeRessourceCoordinateur: container.codeRessourceCoordinateur,
+            LibelleRessourceCoordinateur: container.libelleRessourceCoordinateur,
+            DateSoumission: null,
+            DateDebut: startTime,
+            DateFin: endTime,
+            DateDebutTheo: startTime,
+            DateFinTheo: endTime,
+            CodeRessourceSalle: codeRessourceSalle,
+            LibelleRessourceSalle: libelleRessourceSalle,
+            Commentaire: '',
+            Commentaire_Planning: '',
+            DateMaj: now,
+            UserMaj: this.user.shortUserName,
+            PlanningEventsList: null
+        };
+        console.log('new container to update : ', newContainer)
+        console.log(oldEvent);
+        console.log(args);
+        this.containersService.updateContainer(newContainer.Id_Planning_Container, newContainer)
             .subscribe(res => {
-                console.log('succes post new container. RES : ', res);
-            });
+                console.log('succes update container. RES : ', res);
+                let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+                this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+                this.eventSettings = {
+                    dataSource: <Object[]>extend(
+                        [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
+                    )
+                };
+            }, error => {
+                console.error('error updatecontainer', error);
+            }
+        );
     }
 
 /*************************************************************************/
@@ -1401,7 +1496,9 @@ public  couleur
         if (args.requestType === 'eventRemove') { // CUSTOM ACTION REMOVE
             this.deleteEvent(args);
         } else if (args.requestType === 'viewNavigate') {
-        } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) {
+        } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) { // RESIZE CONTAINER
+            console.log('CALL CUSTOM ACTION BEGIN');
+            // this.updateContainer(args);
             args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
             let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
             let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
@@ -1499,25 +1596,16 @@ public  couleur
     /************************ DELETE ********************/
 
     deleteEvent(args: any) {
+        console.log('call deleteEvent()');
+        console.log('args : ', args);
+        console.log('this.allDataContainers : ', this.allDataContainers);
         let data = args.data[0];
         if (data['AzaIsPere']) { // REMOVE CONTAINER
-            this.timelineResourceDataOut.forEach(item => { // GARDER CETTE FONCTION POUR LA SUITE
-                if ((+data.AzaNumGroupe === +item.AzaNumGroupe) && !item.AzaIsPere) {
-                    if (!this.field['dataSource'].includes(item)) {
-                       this.backToBacklog(item);
-                    }
-                }
-            });
-            this.timelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
-                if (+data.AzaNumGroupe !== +item.AzaNumGroupe) {
-                    return item;
-                }
-            });
-            this.eventSettings = {
-                dataSource: <Object[]>extend(
-                    [], this.timelineResourceDataOut, null, true
-                )
-            };
+            // let selectedContainer = this.allDataContainers.filter(item => item.Id_Planning_Container === data.Id);
+            // console.log('selected container : ', selectedContainer);
+            // console.log('this.allDataContainers : ', this.allDataContainers);
+            // let idContainer = selectedContainer[0].Id_Planning_Container;
+            this.deleteContainer(data.Id, data);
         } else { // REMOVE WORKORDER
             let newGroup = [];
             let selectedItem;

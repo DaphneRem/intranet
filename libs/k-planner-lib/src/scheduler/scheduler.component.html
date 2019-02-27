@@ -49,9 +49,7 @@
                      
             </div>
           
-          
-             <button  #toggleBtn ejs-button id="btn"    (click)="displayRegies()"  class=" btn btn-outline-dark regie ml-3" style="padding:0" >
-            </button> 
+            <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3"></button> 
            
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
@@ -294,7 +292,7 @@
         
     </ejs-sidebar>  
    <div id="head" *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek' " >
-            <button ejs-button id="toggle" #togglebtnslide cssClass="e-flat"  isToggle="true" (click)="btnClickSlide()" content="" class="float-right btn-backlog"> BackLog
+            <button ejs-button id="toggle" #togglebtnslide cssClass="e-flat"  isToggle="true" (click)="btnClickSlide()" content="" class="btn btn-info float-right regie btn-backlog"> BackLog
                 <i *ngIf="!open" class="icofont icofont-navigation-menu"></i>
                 <span *ngIf="open == true" ><i class="icofont icofont-close-circled"></i></span>
             </button>

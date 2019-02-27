@@ -1,5 +1,27 @@
 $operatorColor: #BDBDBD;
+$navbarColor : #3b4650;
+$InfoBtnColor :  #17AAB2;
+$InfoBtnHoverColor :  #2eced6;
+// $cancelBtnColor : #c9c9c9;
+// $importantColor : #fd5f5f;
+// $iconColor : #7f7f7f;
 
+.regie {
+    background-color: $InfoBtnColor;
+    border-color: $InfoBtnColor;
+    color: #ffffff;
+    background-image: none;
+    transition: all ease-in 0.3s;
+    font-size: 1em;
+    padding: 8px 10px;
+    margin-bottom : 10px;
+    &:hover {
+        transition: all ease-in 0.3s;
+        color: #ffffff;
+        background-color: $InfoBtnHoverColor;
+        border-color: $InfoBtnHoverColor;
+    }
+}
 
 /deep/ .schedule-drag-drop .e-quick-popup-wrapper .e-event-popup .e-popup-content .e-sub-object-list {
     margin-top: 10px;
@@ -182,6 +204,8 @@ $operatorColor: #BDBDBD;
 }
 .btn-backlog{
     margin-left: -140px;
+    margin-top: 10px;
+    margin-right: 10px;
 }
 
 .e-schedule.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-category {

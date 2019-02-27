@@ -75,10 +75,10 @@ export class ContainersService {
 
   /************************* PUT *************************/
 
-  updateContainer(id, container: ContainerKP[]): Observable<ContainerKP[]> {
+  updateContainer(id, container: ContainerKP): Observable<ContainerKP[]> {
     return this.http
-      .put<ContainerKP[]>(
-        urlKPlanner + urlPlanningContainers + id,
+      .put<ContainerKP>(
+        urlKPlanner + urlOnePlanningContainers + id,
         container
       )
       .pipe(catchError(this.handleError));
@@ -97,9 +97,9 @@ export class ContainersService {
 
   /*********************** DELETE ************************/
 
-  deleteContainer(id, container: ContainerKP[]): Observable<ContainerKP> {
+  deleteContainer(id): Observable<ContainerKP> {
     return this.http
-      .delete<ContainerKP>(urlKPlanner + urlPlanningContainers + id)
+      .delete<ContainerKP>(urlKPlanner + urlOnePlanningContainers + id)
       .pipe(catchError(this.handleError));
   }
 
