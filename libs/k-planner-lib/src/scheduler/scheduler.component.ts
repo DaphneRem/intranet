@@ -186,7 +186,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
    ]
     // BACKLOGS INIT
     public waitingList;
-    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }, { 'text': 'gérer affichage' }];
+    public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
     public menuItems: MenuItemModel[] = [
         { text: 'Supprimer',
           iconCss: 'e-icons delete', }
@@ -232,13 +232,19 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public wOrderBackToBacklog;
     public  isAddedToBacklog: boolean;
     public count: number = 0;
-    public groupeCharger: number = 10;
+    public groupeCharger: number ;
     public workOrderColor: string ;
     // public SelectDateDebut: Date = new Date();
     // public SelectDateFin: Date = new Date();
     public SelectDateDebut: Date = new Date(2019,0,1);
     public SelectDateFin: Date = new Date(2019,11,31);
-    // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);
+    public startofWeek
+    public endofWeek
+    public startofMonth
+    public endofMonth
+    public startofDay
+    public endofDay
+    // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
     public weekInterval: number = 1;
     public intervalValue: string = '60';
     public intervalData: string[] = ['15', '30', '60', '120'];
@@ -282,24 +288,31 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         // console.log(this.data);
         // this.storeAppSubscription();
         console.log(this.store);
-        console.log(this.scheduleObj);
+     
         // this.getMonteur(10);
         // this.getAllContainer();
         // this.getContainersByRessource(118);
-        console.log(this.selectedDate);
+        console.log(this.selectedDate, moment().add(1, 'd').toDate());
         // this.getWorkorderByContainerId(1);
         //  this.getWorkOrderByidGroup(1)
         // this.getWorkOrderByidGroup(3);
         //  this.getSalleByGroup(10);
+    
+        // console.log(this.scheduleObj.currentView, "=========================================================================");
+       
     }
 
     ngAfterViewInit() {
+    
         this.departmentDataSource = this.departmentGroupDataSource;
-        // this.getWorkOrderByidGroup(11);
+        this.getWorkOrderByidGroup(3);
+    
+         
     }
 
     ngOnChanges(changes: SimpleChanges) {
         console.log('==============================================================================on change');
+        
     }
 
     getAllCoordinateurs() {
@@ -316,6 +329,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         this.getWorkOrderByidGroup(item.Groupe);
                         this.getAllMonteurs(item.Groupe);
                         this.currentCoordinateur = item;
+
+                
                    }
               });
         });
@@ -368,18 +383,30 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     console.log('regie departmentGroupDataSource', this.departmentDataSource);
                     console.log('item code salle fot container request : ', item.CodeSalle);
                     // this.getContainersByRessource(item.CodeRessource);
+                 
                 });
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        this.SelectDateDebut,
-                        this.SelectDateFin,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                });
-            });
+                
+        let startofDay = moment().toDate()
+        let endofDay = moment().add(1, 'd').toDate()
+ 
+     
+
+        this.salleDataSource.forEach(salle => {
+            let indexSalle = this.salleDataSource.indexOf(salle);
+            this.getContainersByRessourceStartDateEndDate(
+                salle.CodeRessource,
+                startofDay,
+                endofDay,
+                salle.CodeSalle,
+                indexSalle
+            );
+        });
+         
+           
+            
+            })
+
+        
     }
 
     getSalleAll(currentGroup) {
@@ -458,7 +485,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
         let debut =moment(datedebut).format("YYYY-MM-DD").toString();
         let fin = moment(datefin).format("YYYY-MM-DD").toString();
-
+        console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.log(debut,fin, 'debut fin !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
@@ -924,13 +951,22 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 /*************************************************************************/
 /*************************** MODALS M1ANAGEMENT **************************/
-
+public navigateFirstOfMouth
+public navigateLastOfMouth
 onNavigating(args){
     console.log('Schedule <b>Navigating</b> event called<hr>',args);
     console.log('ScheduleObj', args.currentView ,this.scheduleObj);
-    let m = moment();
-    m.get('d');
-      console.log("TimelineDay",  m )
+    console.log('ScheduleObj date',this.scheduleObj.activeView.colLevels[0][0].date );
+    this.startofWeek = moment(this.scheduleObj.activeView.colLevels[0][0].date).startOf('week').toDate(),
+        this.endofWeek = moment(this.scheduleObj.activeView.colLevels[0][0].date).endOf('week').toDate(),
+        this.startofMonth = moment(this.scheduleObj.activeView.colLevels[0][0].date ).startOf('month').toDate(),
+        this.endofMonth = moment(this.scheduleObj.activeView.colLevels[0][0].date ).endOf('month').toDate()
+console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+this.startofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).startOf('day').toDate()
+this.endofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).endOf('day').toDate()
+console.log( this.startofDay, "=========================================================================this.startofDay");
+console.log( this.endofDay, "=========================================================================  this.endofDay");
+   
   if(args.currentView ==="TimelineDay")
   {
  
@@ -939,6 +975,17 @@ onNavigating(args){
       this.scheduleObj.endHour ='23:00'
       this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
       this.scheduleObj.dataBind()
+    //   this.salleDataSource.forEach(salle => {
+    //     let indexSalle = this.salleDataSource.indexOf(salle);
+    //     this.getContainersByRessourceStartDateEndDate(
+    //         salle.CodeRessource,
+    //         this.SelectDateDebut,
+    //         this.SelectDateFin,
+    //         salle.CodeSalle,
+    //         indexSalle
+    //     );
+    // });
+
     
   } else{ 
       if(args.currentView ==="TimelineWeek"){
@@ -948,20 +995,106 @@ onNavigating(args){
         this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:1 }
            if(this.open || !this.open){
              this.scheduleObj.refresh();
-        
+            }
+      
     
-      }}
+      }
   }
   if(args.currentView ==="TimelineMonth" ||  args.currentView ==="Agenda" ){
+
     this.scheduleObj.readonly = true
+    if (args.action === "date"){
+        
+          this.scheduleObj.readonly = true
+          console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.scheduleObj.readonly)
+    
+  }
    
-  } else
+  } 
+  
+  if((args.currentView ==="TimelineWeek") || (args.currentView ==="TimelineDay") || (args.currentView ==="MonthAgenda")  )
+  
   {
     this.scheduleObj.readonly = false
+
   }
+
+  if(this.scheduleObj.currentView ==="TimelineMonth"){
  
+  if (args.action === "date"){
+    
+    this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+    this.navigateLastOfMouth = moment(args.currentDate).endOf('month').toDate()
+    console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
 
  
+
+    console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+        console.log(this.scheduleObj)
+        
+                 this.timelineResourceDataOut = []
+                 this.salleDataSource.forEach(salle => {
+                     let indexSalle = this.salleDataSource.indexOf(salle);
+                     this.getContainersByRessourceStartDateEndDate(
+                         salle.CodeRessource,
+                         this.navigateFirstOfMouth,
+                         this.navigateLastOfMouth ,
+                         salle.CodeSalle,
+                         indexSalle
+                     );
+                 });
+                       
+
+  }}
+      if(this.scheduleObj.currentView ==="TimelineWeek"){
+
+        if (args.action === "date"){
+    
+            let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
+            let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
+            console.log(navigateFirstOfWeek, "++++++++++++++++++++++++", navigateLastOfWeek )
+        
+                
+                         this.timelineResourceDataOut = []
+                         this.salleDataSource.forEach(salle => {
+                             let indexSalle = this.salleDataSource.indexOf(salle);
+                             this.getContainersByRessourceStartDateEndDate(
+                                 salle.CodeRessource,
+                                 navigateFirstOfWeek,
+                                 navigateLastOfWeek,
+                                 salle.CodeSalle,
+                                 indexSalle
+                             );
+                         });
+                               
+        
+          }
+      }
+      if(this.scheduleObj.currentView === "TimelineDay"){
+
+        if (args.action === "date"){
+    
+            let startofDay = moment(args.currentDate).toDate()
+            let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+            console.log(startofDay, "++++++++++++++++++++++++", endofDay )
+        
+                
+                         this.timelineResourceDataOut = []
+                         this.salleDataSource.forEach(salle => {
+                             let indexSalle = this.salleDataSource.indexOf(salle);
+                             this.getContainersByRessourceStartDateEndDate(
+                                 salle.CodeRessource,
+                                 startofDay,
+                                 endofDay,
+                                 salle.CodeSalle,
+                                 indexSalle
+                             );
+                         });
+                               
+        
+          }
+      }
+
 
 }
 public  couleur
@@ -1036,12 +1169,12 @@ public  couleur
    
                     console.log( this.couleur , '**********************************couleur*************************************') 
                   
-                    row.innerHTML += `<div id='id${i}'  >${workOrders[i].Name}</div>`;
+                    row.innerHTML += `<div id='id${i}'>${workOrders[i].Name}</div>`;
                     
                    
                         let element = document.getElementById('id'+i)
                         
-                        element.style.backgroundColor = colorRow
+                        element.style.backgroundColor = this.workOrderColor
 
 
                 
@@ -1364,6 +1497,10 @@ public  couleur
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
+
+    
+     
+     
         if (event.requestType === 'eventChange') {
             if(this.open == true) {
                 this.open = true;
@@ -1536,8 +1673,7 @@ public  couleur
             //     )
             // };
         }
-
-     
+        
 
 
     }
@@ -1591,6 +1727,56 @@ public  couleur
             )
         };
         this.treeObj.fields = this.field;
+        if(e.requestType === 'viewNavigate') {
+        if(this.scheduleObj.currentView === 'TimelineDay'){
+            this.timelineResourceDataOut = []
+            this.salleDataSource.forEach(salle => {
+                let indexSalle = this.salleDataSource.indexOf(salle);
+                this.getContainersByRessourceStartDateEndDate(
+                    salle.CodeRessource,
+                   this.startofDay,
+                   this.endofDay,
+                    salle.CodeSalle,
+                    indexSalle
+                );
+            });
+            console.log("journée", this.endofDay)
+        }
+
+        if(this.scheduleObj.currentView === "TimelineWeek"){
+            this.timelineResourceDataOut = []
+        this.salleDataSource.forEach(salle => {
+            let indexSalle = this.salleDataSource.indexOf(salle);
+            this.getContainersByRessourceStartDateEndDate(
+                salle.CodeRessource,
+                this.startofWeek,
+                this.endofWeek,
+                salle.CodeSalle,
+                indexSalle
+            );
+        });
+    }
+        
+if(this.scheduleObj.currentView === "TimelineMonth"){
+    this.timelineResourceDataOut = []
+    this.salleDataSource.forEach(salle => {
+        let indexSalle = this.salleDataSource.indexOf(salle);
+        this.getContainersByRessourceStartDateEndDate(
+            salle.CodeRessource,
+            this.startofMonth,
+            this.endofMonth,
+            salle.CodeSalle,
+            indexSalle
+        );
+    });
+ 
+  }
+ 
+    }
+
+   
+ 
+
     }
 
     /************************ DELETE ********************/
@@ -2090,7 +2276,8 @@ public  couleur
                 }
             }
         }
-   
+     
+      
     }
 
 
@@ -2129,7 +2316,7 @@ public  couleur
                 target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
             }
         }
-
+    
     }
 
 
