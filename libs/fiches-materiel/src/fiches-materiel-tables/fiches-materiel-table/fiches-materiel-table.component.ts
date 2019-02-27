@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-
+import * as moment from 'moment';
 import swal from 'sweetalert2';
 
 // lib imports
@@ -361,19 +361,25 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   displayColumns() {
     let that = this;
+    let today = moment().format('YYYY-MM-DD');
     this.customdatatablesOptions.columns = [
       {
         title : 'Deadline',
         // data: 'Deadline'
         data : function ( data, type, row, meta ) {
-          // return new Date(data.Deadline).toLocaleString();
-          // console.log(typeof data.Deadline);
           if (data.Deadline !== null) {
-            return data.Deadline.slice(0, 10);
+            let date = moment(data.Deadline).format('YYYY-MM-DD');
+            let isBefore = moment(date).isBefore(today);
+            if (isBefore) {
+              return `<span style="color: red">${data.Deadline.slice(0, 10)}</span>`;
+            } else {
+              return data.Deadline.slice(0, 10);
+            }
           } else {
-            return '<span style="color: red">Aucune Deadline</span>';
+            return '<span style="color: red"><span style="color: transparent">9</span>Aucune Deadline</span>';
           }
-        }
+        },
+        // className: 'red'
       },
       {
         title : 'Statut',
@@ -445,15 +451,18 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       },
       {
         title : 'distributeur',
-        data : 'distributeur'
+        data : 'distributeur',
+        className: 'datatble-fm-distributeur'
       },
       {
         title : 'titre vf',
-        data : 'TitreEpisodeVF'
+        data : 'TitreEpisodeVF',
+        className: 'datatable-fm-title'
       },
       {
         title : 'titre vo',
-        data : 'TitreEpisodeVO'
+        data : 'TitreEpisodeVO',
+        className: 'datatable-fm-title'
       },
       // {
       //   title : 'IdFicheAchat', // delete after tests ok
@@ -467,16 +476,26 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         title : 'N° eps AB',
         data : 'NumEpisode',
       },
-      // {
-      //   title : 'Date Livraison',
-      //   data : function ( data, type, row, meta ) {
-      //     if  (data.DateLivraison !== null && data.DateLivraison !== undefined) {
-      //       return data.DateLivraison.slice(0, 10);
-      //     } else {
-      //       return data.DateLivraison;
-      //     }
-      //   }
-      // },
+      {
+        title : 'Livraison',
+        data : function ( data, type, row, meta ) {
+          if  (data.DateLivraison !== null && data.DateLivraison !== undefined) {
+            return data.DateLivraison.slice(0, 10);
+          } else {
+            return data.DateLivraison;
+          }
+        }
+      },
+      {
+        title : 'Acceptation',
+        data : function ( data, type, row, meta ) {
+          if (data.DateAcceptation !== null && data.DateAcceptation !== undefined) {
+            return data.DateAcceptation.slice(0, 10);
+          } else {
+            return data.DateAcceptation;
+          }
+        }
+      },
       {
         title : 'n°fiche achat',
         data : 'NumEpisodeProd' // data manquante

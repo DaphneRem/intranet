@@ -42,7 +42,7 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
     } else {
       console.log(reload);
     }
-  }
+  }  
 
   openLg(content) {
     this.modalService.open(content, { size: 'lg' , centered: true});

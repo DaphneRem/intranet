@@ -122,7 +122,8 @@ public test = 'ookok';
       },
       buttons: {
             pageLength: {
-                _: 'Afficher %d éléments',
+                // _: 'Afficher %d éléments',
+                 _: 'Options d\'affichage',
                 '-1': 'Tout afficher'
             },
             copyTitle: 'Ajouté au presse-papiers',

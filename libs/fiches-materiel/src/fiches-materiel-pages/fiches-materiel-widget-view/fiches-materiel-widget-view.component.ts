@@ -40,7 +40,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       title: 'Toutes mes Fiches Matériel',
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
-      link: './my-material-sheets/all/0/desc',
+      link: './my-material-sheets/all/0/asc',
       color: '#5ED4FF'
     },
     {
@@ -48,7 +48,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       // icon: 'icofont icofont-file-text',
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
-      link: './all/0/desc',
+      link: './all/0/asc',
       color: '#1C2799'
     },
   ];

@@ -58,3 +58,19 @@
         outline: none;
     }
 }
+
+/deep/ .datatable-fm-title {
+    min-width: 150px;
+    max-width: 150px;
+    white-space: normal;
+}
+
+/deep/ .datatble-fm-distributeur {
+    min-width: 150px;
+    max-width: 150px;
+    white-space: normal;
+}
+
+/deep/ .red {
+    color: red;
+}

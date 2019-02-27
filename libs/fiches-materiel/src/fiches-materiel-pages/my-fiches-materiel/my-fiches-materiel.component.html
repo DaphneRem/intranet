@@ -18,8 +18,8 @@
   <div class="col-lg-11 buttons">
     <button class="btn btn-info btn-outline-info">Mes deals en Cours</button>
     <button class="btn btn-success btn-outline-success" [routerLink]="['/material-sheets/my-material-sheets/archived/0/desc']">Mes Fiches Matériel Archivées</button>
-    <button class="btn btn-primary btn-outline-primary" [routerLink]="['/material-sheets/my-material-sheets/all/0/desc']">Toutes mes fiches Matériel</button>
-    <button class="btn btn-inverse btn-outline-inverse" [routerLink]="['/material-sheets/all/0/desc']">Toutes les fiches Matériel</button>
+    <button class="btn btn-primary btn-outline-primary" [routerLink]="['/material-sheets/my-material-sheets/all/0/asc']">Toutes mes fiches Matériel</button>
+    <button class="btn btn-inverse btn-outline-inverse" [routerLink]="['/material-sheets/all/0/asc']">Toutes les fiches Matériel</button>
   </div>
   <div class="table-top col-lg-1">
     <custom-icon-badge *ngFor="let icon of icons" 
