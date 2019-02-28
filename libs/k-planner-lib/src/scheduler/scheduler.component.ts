@@ -263,6 +263,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public fieldMonteurDSource;
     public drowDownExist = false;
 
+    public WorkOrderByidgroup;
+    public statut;
+    public allDataContainers = [];
+
     constructor(
         public dialog: MatDialog,
         private coordinateurService: CoordinateurService,
@@ -481,7 +485,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 console.log('container by ressource : ', data);
             });
     }
-    public allDataContainers = [];
+
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
         let debut =moment(datedebut).format("YYYY-MM-DD").toString();
         let fin = moment(datefin).format("YYYY-MM-DD").toString();
@@ -510,9 +514,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         //    console.log(data.DateDebutTheo, "*******************************data.DateDebutTheo")
                         //    console.log(StartTime, "*******************************StartTime")
                     //    let mois = moment(data.DateDebutTheo, moment.defaultFormat).toDate()
-                      
                     //     console.log(  mois,'aa', mois._d, " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! moisDebut !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                      
                         // let anneeDebut = StartTime.getFullYear(),
                         // moisDebut =(StartTime.getMonth()+1), // +1
                         // jourDebut = StartTime.getDate(),
@@ -646,8 +648,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         });
     }
 
-   public  WorkOrderByidgroup;
-   public statut;
+
     getWorkOrderByidGroup(idGroup) {
         this.workorderService
         .getWorkOrderByidGroup(idGroup)
@@ -656,18 +657,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
             if (this.WorkOrderByidgroup != []) {
                 this.WorkOrderByidgroup.map(workOrder => {
-
-
                     let StartTime =   moment(workOrder.DateDebut, moment.defaultFormat).toDate() ,
                     EndTime = moment(workOrder.DateFin, moment.defaultFormat).toDate();
-
                     let dateDebut =  StartTime,
                         dateFin= EndTime
-               
-
-                  
-
-
                 // let StartTime =   new Date (workOrder.DateDebut) ,
                 // EndTime = new Date (workOrder.DateFin);
                 // let anneeDebut = StartTime.getFullYear(),
@@ -681,8 +674,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 // jourfin = EndTime.getDate(),
                 // heurfin = EndTime.getHours(),
                 // minutefin = EndTime.getMinutes();
-
-               
                 this.workOrderData.push({
                     Id: workOrder.Id_Planning_Events,
                     Name: workOrder.libtypeWO,
@@ -702,8 +693,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     DepartmentName: '',
                     IsAllDay: false,
                 });
-              
-            
             });
         }
         console.log('WorkOrderByidgroup', this.workOrderData);
@@ -747,11 +736,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             .subscribe(res => {
                 console.log('succes post new container. RES : ', res);
                 if (res) {
-                    // todo :
-                    // update de l'id avec la réponse
                     console.log('res from post => ', res);
-                    // event.StartTime.setMonth(event.StartTime.getMonth());
-                    // event.EndTime.setMonth(event.EndTime.getMonth());
+                    this.allDataContainers.push(res);
                     event.Id = res.Id_Planning_Container;
                     this.timelineResourceDataOut.push(event);
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -842,22 +828,51 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 /**************************** PUT ***************************/
 
+/********** PUT WITH RESIZE OR EDITOR ***********/
+
+    putContainer(id, container, event) { // RESIZE AND EditoR
+        this.containersService.updateContainer(id, container)
+            .subscribe(res => {
+                console.log('succes update container. RES : ', res);
+                let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+                this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+                this.timelineResourceDataOut.map(item => {
+                    if (item.Id === event.Id) {
+                        item.Name = event.Name;
+                        item.StartTime = event.StartTime;
+                        item.EndTime = event.EndTime;
+                        item.IsAllDay = event.IsAllDay;
+                        item.DepartmentID = event.DepartmentID;
+                        item.ConsultantID = event.ConsultantID;
+                        item.AzaIsPere = true;
+                        item.AzaNumGroupe = event.AzaNumGroupe;
+                        item.coordinateurCreate = event.coordinateurCreate;
+                        item.Operateur = event.Operateur;
+                        console.log(item);
+                    }
+                });
+                this.eventSettings = {
+                    dataSource: <Object[]>extend(
+                        [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
+                    )
+                };
+            }, error => {
+                console.error('error updatecontainer', error);
+                alert('error updatecontainer');
+            }
+        )
+    }
+
     updateContainer(args) {
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
-        console.log(this.allDataContainers);
         args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
         let event = args.data;
-        console.log(event);
         let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
-        console.log(oldEvent);
         let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
-        console.log(containerResult);
         let container = containerResult[0];
-        console.log('container to update : ', container);
-
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
-
         let codeRessourceOperateur;
         let libelleRessourceSalle;
         let codeRessourceSalle;
@@ -872,7 +887,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 codeRessourceSalle = item['codeRessource'];
             }
         });
-
         let newContainer = {
             Id_Planning_Container: container.Id_Planning_Container,
             UserEnvoi: container.UserEnvoi,
@@ -895,24 +909,33 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             UserMaj: this.user.shortUserName,
             PlanningEventsList: null
         };
-        console.log('new container to update : ', newContainer)
-        console.log(oldEvent);
-        console.log(args);
-        this.containersService.updateContainer(newContainer.Id_Planning_Container, newContainer)
+        this.putContainer(newContainer.Id_Planning_Container, newContainer, event);
+    }
+
+/****** PUT WITH OPERATEUR DRAG AND DROP *******/
+
+    putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject) { // RESIZE AND EditoR
+        this.containersService.updateContainer(id, container)
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
-                let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-                let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-                this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
-                this.eventSettings = {
-                    dataSource: <Object[]>extend(
-                        [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
-                    )
-                };
+                this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
+                this.onActionComplete('e');
             }, error => {
                 console.error('error updatecontainer', error);
+                alert('error updatecontainer');
             }
-        );
+        )
+    }
+
+    updateContainerFromDragDropOperateur(operateurObject, dragDropEvent) {
+        let indexContainerEvent = this.findIndexEventById(dragDropEvent.target.id);
+        let containerId = this.timelineResourceDataOut[indexContainerEvent]['Id']
+        let arrayContainerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === containerId);
+        let containerResult = arrayContainerResult[0];
+        containerResult.LibelleRessourceOperateur = operateurObject.Username;
+        containerResult.CodeRessourceOperateur = operateurObject.CodeRessource;
+        let id = containerResult.Id_Planning_Container;
+        this.putContainerFromDragDropOperateur(id, containerResult, indexContainerEvent, operateurObject);
     }
 
 /*************************************************************************/
@@ -1476,11 +1499,13 @@ public  couleur
                         this.draggedItemId = event.draggedNodeData.id as string;
                     } else { // Emplacement déjà pris par un event (container)
                         console.log(event);
-                        let indexContainerEvent = this.findIndexEventById(event.target.id);
-                        this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = filteredData[0].Username;
+                        // let indexContainerEvent = this.findIndexEventById(event.target.id);
+                        // this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = filteredData[0].Username;
                         this.isTreeItemDropped = true;
                         this.isTreeItemDroppedMonteur = true;
-                        this.onActionComplete('e');
+                        this.updateContainerFromDragDropOperateur(filteredData[0], event);
+                        // this.updateContainer(filteredData[0], event);
+                        // this.onActionComplete('e');
                     }
                 }
             }
@@ -1636,16 +1661,16 @@ public  couleur
         } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) { // RESIZE CONTAINER
             console.log('CALL CUSTOM ACTION BEGIN');
             // this.updateContainer(args);
-            args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
-            let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-            let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-            this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
-            this.eventSettings = {
-                dataSource: <Object[]>extend(
-                    [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
+            // args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
+            // let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+            // let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+            // this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+            // this.eventSettings = {
+            //     dataSource: <Object[]>extend(
+            //         [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
 
-                )
-            };
+            //     )
+            // };
         } else if (args.requestType === 'eventCreate') { // ADD EMPTY CONTAINER
             let data = args.data[0];
             this.randomId();
@@ -1709,6 +1734,7 @@ public  couleur
                 this.sidebar.position ='Right';
                 this.sidebar.animate =false;
             }
+            this.updateContainer(e);
         }
         this.isTreeItemDropped = false;
         this.isTreeItemDroppedMonteur = false;

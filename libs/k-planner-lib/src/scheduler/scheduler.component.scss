@@ -21,6 +21,13 @@ $InfoBtnHoverColor :  #2eced6;
         background-color: $InfoBtnHoverColor;
         border-color: $InfoBtnHoverColor;
     }
+    &:focus, &:focus-within, &:visited, &:active {
+        transition: all ease-in 0.3s;
+        background-color: $InfoBtnColor;
+        border-color: $InfoBtnColor;
+        color: #ffffff;
+        margin-right: 20px;
+    }
 }
 
 /deep/ .schedule-drag-drop .e-quick-popup-wrapper .e-event-popup .e-popup-content .e-sub-object-list {
