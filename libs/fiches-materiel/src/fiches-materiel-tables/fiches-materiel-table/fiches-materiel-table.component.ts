@@ -326,7 +326,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         value = path[0];
       }
       console.log(path);
-      this.router.navigate([`/material-sheets/${value}/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}`]);
+      this.router.navigate([`/material-sheets/${value}/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}/${dataRow.IdFicheDetail}`]);
     };
     this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour avoir une vue détaillée';
     console.log('display action ok');

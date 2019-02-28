@@ -47,6 +47,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   public sub;
   public idParamsFicheMateriel;
   public idParamsFicheAchat;
+  public idParamsFicheAchatDetail;
 
   public stepLib;
   public statusLib;
@@ -125,7 +126,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
         circleColorHover: '#2eced6',
         iconSize: '2.2em'
       },
-      link : '../../../0/desc',
+      link : '../../../../0/desc',
       tooltip : true,
       tooltipMessage : 'Retour aux fiches Matériel'
   };
@@ -146,11 +147,12 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     this.icons = [this.fichesMaterielModification, this.back];
     this.sub = this.route.params.subscribe(params => {
       this.idParamsFicheMateriel = +params['idFicheMateriel'];
-      this.idParamsFicheAchat = +params['idFicheAchatDetails'];
+      this.idParamsFicheAchat = +params['idFicheAchat'];
+      this.idParamsFicheAchatDetail = +params['idFicheAchatDetail'];
       console.log(this.idParamsFicheAchat);
       console.log(this.idParamsFicheMateriel);
     });
-    this.getFicheAchatDetails(this.idParamsFicheAchat);
+    this.getFicheAchatDetails(this.idParamsFicheAchatDetail);
     this.getFicheAchatGlobal(this.idParamsFicheAchat);
     this.getFicheMateriel(this.idParamsFicheMateriel);
     this.store.subscribe(data => (this.globalStore = data));
@@ -292,11 +294,12 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
 
   getFicheAchatDetails(id: number) {
     this.fichesAchatService
-    .getFichesAchatDetails(id)
+      .getFichesAchatDetailByIdDetail(id)
       .subscribe(data => {
         console.log(data);
         if (data !== null) {
-          this.myFicheAchatDetails = data[0];
+          // this.myFicheAchatDetails = data[0];
+          this.myFicheAchatDetails = data;
           this.dataDetailsReady = true;
           this.myFicheAchatDetailsExist = true;
         } else {
