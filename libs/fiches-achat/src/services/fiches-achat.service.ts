@@ -13,6 +13,7 @@ import { catchError, retry } from 'rxjs/operators';
 import {
   urlFicheAchat,
   urlDetailFicheAchat,
+  urlFicheAchatDetailByIdFicheDetail,
   urlFicheAchatTraitee,
   urlFicheAchatStatut,
   urlFicheAchatImport,
@@ -86,6 +87,17 @@ export class FichesAchatService {
       .map((res: any) => {
         console.log(res);
         console.log(urlFicheAchat + urlDetailFicheAchat + id);
+        return res as FicheAchatDetails[];
+      })
+      .catch(this.handleError);
+  }
+
+  getFichesAchatDetailByIdDetail(idFicheDetail) {
+    return this.http
+      .get(urlFicheAchat + urlFicheAchatDetailByIdFicheDetail + idFicheDetail)
+      .map((res: any) => {
+        console.log(res);
+        console.log(urlFicheAchat + urlFicheAchatDetailByIdFicheDetail + idFicheDetail);
         return res as FicheAchatDetails[];
       })
       .catch(this.handleError);
