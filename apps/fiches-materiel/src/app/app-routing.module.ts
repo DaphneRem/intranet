@@ -26,7 +26,7 @@ const routes: Routes = [
         data : { title : 'Suivi Fiches Matériel'}
       },
       {
-        path: 'my-material-sheets/details/:idFicheMateriel/:idFicheAchatDetails',
+        path: 'my-material-sheets/details/:idFicheMateriel/:idFicheAchat/:idFicheAchatDetail',
         component : FicheMaterielDetailsComponent,
         data : { title : 'Détails Fiche Matériel'}
       },
@@ -46,7 +46,7 @@ const routes: Routes = [
         data: { title: 'Mes Fiches Matériel Archivées' }
       },
       {
-        path: 'my-material-sheets/archived/details/:idFicheMateriel/:idFicheAchatDetails',
+        path: 'my-material-sheets/archived/details/:idFicheMateriel/:idFicheAchat/:idFicheAchatDetail',
         component : FicheMaterielDetailsComponent,
         data : { title : 'Détails Fiche Matériel'}
       },
@@ -56,7 +56,7 @@ const routes: Routes = [
         data: { title: 'Toutes Mes Fiches Matériel' }
       },
       {
-        path: 'my-material-sheets/all/details/:idFicheMateriel/:idFicheAchatDetails',
+        path: 'my-material-sheets/all/details/:idFicheMateriel/:idFicheAchat/:idFicheAchatDetail',
         component : FicheMaterielDetailsComponent,
         data : { title : 'Détails Fiche Matériel'}
       },
@@ -66,7 +66,7 @@ const routes: Routes = [
         data: { title: 'Toutes les Fiches Matériel' }
       },
       {
-        path: 'all/details/:idFicheMateriel/:idFicheAchatDetails',
+        path: 'all/details/:idFicheMateriel/:idFicheAchat/:idFicheAchatDetail',
         component : FicheMaterielDetailsComponent,
         data : { title : 'Détails Fiche Matériel'}
       },
