@@ -244,6 +244,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public endofMonth
     public startofDay
     public endofDay
+    public navigateFirstOfMouth
+    public navigateLastOfMouth
+    public navigateFirstOfWeek
+    public navigateLastOfWeek
+    public agendaStartDate
+    public agendaLastDate
+
     // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
     public weekInterval: number = 1;
     public intervalValue: string = '60';
@@ -262,10 +269,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public fieldArrayMonteur;
     public fieldMonteurDSource;
     public drowDownExist = false;
-
-    public WorkOrderByidgroup;
-    public statut;
-    public allDataContainers = [];
 
     constructor(
         public dialog: MatDialog,
@@ -363,7 +366,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 /**************************** GET ***************************/
 
-
+public calcule
     getSalleByGroup(idGroup) {
         // this.toggleBtn.content = 'Voir autres Régies';
         console.log(this.departmentDataSource);
@@ -406,7 +409,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             );
         });
          
-           
+           this.calcule = true
             
             })
 
@@ -485,7 +488,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 console.log('container by ressource : ', data);
             });
     }
-
+    public allDataContainers = [];
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
         let debut =moment(datedebut).format("YYYY-MM-DD").toString();
         let fin = moment(datefin).format("YYYY-MM-DD").toString();
@@ -514,7 +517,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         //    console.log(data.DateDebutTheo, "*******************************data.DateDebutTheo")
                         //    console.log(StartTime, "*******************************StartTime")
                     //    let mois = moment(data.DateDebutTheo, moment.defaultFormat).toDate()
+                      
                     //     console.log(  mois,'aa', mois._d, " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! moisDebut !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                      
                         // let anneeDebut = StartTime.getFullYear(),
                         // moisDebut =(StartTime.getMonth()+1), // +1
                         // jourDebut = StartTime.getDate(),
@@ -619,22 +624,46 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     });
               
                 });
-                    
+                this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                    dataSource: <Object[]>extend(
+                        [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                    )
+                };
                 
                 this.updateEventSetting(this.timelineResourceDataOut); 
+              
                 // this.onActionComplete('');
+                console.log('timeline data out iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',this.timelineResourceDataOut);
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 console.log('eventSettings 111', this.eventSettings);
                 if (indexSalle === this.salleDataSource.length - 1) {
                     console.log('*********** end to initial request for all regies container and workorders ***********');
                     this.updateEventSetting(this.timelineResourceDataOut); 
-                }
+
+                    
+                        // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                        //     dataSource: <Object[]>extend(
+                        //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                        //     )
+                        // };
+                        // console.log("+++++++++++++++++++++++++++++++++++++++++", this.calcule)
+                    }
+                
             } else {
                 console.log(indexSalle);
                 if (indexSalle === this.salleDataSource.length - 1) {
                     this.updateEventSetting(this.timelineResourceDataOut);
                     console.log('*********** end to initial request for all regies container and workorders ***********');
-                }
+
+                   
+                    //     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                    //         dataSource: <Object[]>extend(
+                    //             [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                    //         )
+                    //     };
+                    //     console.log("+++++++++++++++++++++++++++++++++++++++++", this.calcule)
+                     }
+                
             }
             if (index === (containerArrayLength - 1)) {
                 this.field = {
@@ -643,12 +672,22 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     text: 'Name',
                     description: 'Description'
                 };
+            //       if(this.calcule === true){
+            //     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+            //         dataSource: <Object[]>extend(
+            //             [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+            //         )
+            //     };
+            //     console.log("+++++++++++++++++++++++++++++++++++++++++", this.calcule)
+            // }
                 console.log('ready');
             }
         });
+        
     }
 
-
+   public  WorkOrderByidgroup;
+   public statut;
     getWorkOrderByidGroup(idGroup) {
         this.workorderService
         .getWorkOrderByidGroup(idGroup)
@@ -657,10 +696,18 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
             if (this.WorkOrderByidgroup != []) {
                 this.WorkOrderByidgroup.map(workOrder => {
+
+
                     let StartTime =   moment(workOrder.DateDebut, moment.defaultFormat).toDate() ,
                     EndTime = moment(workOrder.DateFin, moment.defaultFormat).toDate();
+
                     let dateDebut =  StartTime,
                         dateFin= EndTime
+               
+
+                  
+
+
                 // let StartTime =   new Date (workOrder.DateDebut) ,
                 // EndTime = new Date (workOrder.DateFin);
                 // let anneeDebut = StartTime.getFullYear(),
@@ -674,6 +721,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 // jourfin = EndTime.getDate(),
                 // heurfin = EndTime.getHours(),
                 // minutefin = EndTime.getMinutes();
+
+               
                 this.workOrderData.push({
                     Id: workOrder.Id_Planning_Events,
                     Name: workOrder.libtypeWO,
@@ -693,6 +742,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     DepartmentName: '',
                     IsAllDay: false,
                 });
+              
+            
             });
         }
         console.log('WorkOrderByidgroup', this.workOrderData);
@@ -736,8 +787,11 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             .subscribe(res => {
                 console.log('succes post new container. RES : ', res);
                 if (res) {
+                    // todo :
+                    // update de l'id avec la réponse
                     console.log('res from post => ', res);
-                    this.allDataContainers.push(res);
+                    // event.StartTime.setMonth(event.StartTime.getMonth());
+                    // event.EndTime.setMonth(event.EndTime.getMonth());
                     event.Id = res.Id_Planning_Container;
                     this.timelineResourceDataOut.push(event);
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -828,51 +882,22 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 /**************************** PUT ***************************/
 
-/********** PUT WITH RESIZE OR EDITOR ***********/
-
-    putContainer(id, container, event) { // RESIZE AND EditoR
-        this.containersService.updateContainer(id, container)
-            .subscribe(res => {
-                console.log('succes update container. RES : ', res);
-                let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-                let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-                this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
-                this.timelineResourceDataOut.map(item => {
-                    if (item.Id === event.Id) {
-                        item.Name = event.Name;
-                        item.StartTime = event.StartTime;
-                        item.EndTime = event.EndTime;
-                        item.IsAllDay = event.IsAllDay;
-                        item.DepartmentID = event.DepartmentID;
-                        item.ConsultantID = event.ConsultantID;
-                        item.AzaIsPere = true;
-                        item.AzaNumGroupe = event.AzaNumGroupe;
-                        item.coordinateurCreate = event.coordinateurCreate;
-                        item.Operateur = event.Operateur;
-                        console.log(item);
-                    }
-                });
-                this.eventSettings = {
-                    dataSource: <Object[]>extend(
-                        [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
-                    )
-                };
-            }, error => {
-                console.error('error updatecontainer', error);
-                alert('error updatecontainer');
-            }
-        )
-    }
-
     updateContainer(args) {
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+        console.log(this.allDataContainers);
         args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
         let event = args.data;
+        console.log(event);
         let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
+        console.log(oldEvent);
         let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
+        console.log(containerResult);
         let container = containerResult[0];
+        console.log('container to update : ', container);
+
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+
         let codeRessourceOperateur;
         let libelleRessourceSalle;
         let codeRessourceSalle;
@@ -887,6 +912,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 codeRessourceSalle = item['codeRessource'];
             }
         });
+
         let newContainer = {
             Id_Planning_Container: container.Id_Planning_Container,
             UserEnvoi: container.UserEnvoi,
@@ -909,33 +935,24 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             UserMaj: this.user.shortUserName,
             PlanningEventsList: null
         };
-        this.putContainer(newContainer.Id_Planning_Container, newContainer, event);
-    }
-
-/****** PUT WITH OPERATEUR DRAG AND DROP *******/
-
-    putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject) { // RESIZE AND EditoR
-        this.containersService.updateContainer(id, container)
+        console.log('new container to update : ', newContainer)
+        console.log(oldEvent);
+        console.log(args);
+        this.containersService.updateContainer(newContainer.Id_Planning_Container, newContainer)
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
-                this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
-                this.onActionComplete('e');
+                let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+                this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+                this.eventSettings = {
+                    dataSource: <Object[]>extend(
+                        [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
+                    )
+                };
             }, error => {
                 console.error('error updatecontainer', error);
-                alert('error updatecontainer');
             }
-        )
-    }
-
-    updateContainerFromDragDropOperateur(operateurObject, dragDropEvent) {
-        let indexContainerEvent = this.findIndexEventById(dragDropEvent.target.id);
-        let containerId = this.timelineResourceDataOut[indexContainerEvent]['Id']
-        let arrayContainerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === containerId);
-        let containerResult = arrayContainerResult[0];
-        containerResult.LibelleRessourceOperateur = operateurObject.Username;
-        containerResult.CodeRessourceOperateur = operateurObject.CodeRessource;
-        let id = containerResult.Id_Planning_Container;
-        this.putContainerFromDragDropOperateur(id, containerResult, indexContainerEvent, operateurObject);
+        );
     }
 
 /*************************************************************************/
@@ -974,21 +991,24 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 /*************************************************************************/
 /*************************** MODALS M1ANAGEMENT **************************/
-public navigateFirstOfMouth
-public navigateLastOfMouth
+public eventTemplate
 onNavigating(args){
-    console.log('Schedule <b>Navigating</b> event called<hr>',args);
-    console.log('ScheduleObj', args.currentView ,this.scheduleObj);
-    console.log('ScheduleObj date',this.scheduleObj.activeView.colLevels[0][0].date );
-    this.startofWeek = moment(this.scheduleObj.activeView.colLevels[0][0].date).startOf('week').toDate(),
-        this.endofWeek = moment(this.scheduleObj.activeView.colLevels[0][0].date).endOf('week').toDate(),
-        this.startofMonth = moment(this.scheduleObj.activeView.colLevels[0][0].date ).startOf('month').toDate(),
-        this.endofMonth = moment(this.scheduleObj.activeView.colLevels[0][0].date ).endOf('month').toDate()
-console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-this.startofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).startOf('day').toDate()
-this.endofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).endOf('day').toDate()
-console.log( this.startofDay, "=========================================================================this.startofDay");
-console.log( this.endofDay, "=========================================================================  this.endofDay");
+  
+ 
+    this.startofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).toDate()
+    this.endofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).add(1, 'd').toDate()
+      
+    this.startofWeek = moment().startOf('week').toDate(),
+    this.endofWeek = moment().endOf('week').add(1, 'd').toDate(),
+
+    this.startofMonth = moment().startOf('month').toDate(),
+    this.endofMonth = moment().endOf('month').add(1, 'd').toDate()
+
+    this.agendaStartDate =  moment().toDate()
+    this.agendaLastDate =  moment().add(7, 'd').toDate()
+       
+    console.log( args, "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{", this.startofDay,this.endofDay )
+       
    
   if(args.currentView ==="TimelineDay")
   {
@@ -998,16 +1018,7 @@ console.log( this.endofDay, "===================================================
       this.scheduleObj.endHour ='23:00'
       this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
       this.scheduleObj.dataBind()
-    //   this.salleDataSource.forEach(salle => {
-    //     let indexSalle = this.salleDataSource.indexOf(salle);
-    //     this.getContainersByRessourceStartDateEndDate(
-    //         salle.CodeRessource,
-    //         this.SelectDateDebut,
-    //         this.SelectDateFin,
-    //         salle.CodeSalle,
-    //         indexSalle
-    //     );
-    // });
+
 
     
   } else{ 
@@ -1016,9 +1027,9 @@ console.log( this.endofDay, "===================================================
         this.scheduleObj.startHour ='08:00'
         this.scheduleObj.endHour ='20:00'
         this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:1 }
-           if(this.open || !this.open){
-             this.scheduleObj.refresh();
-            }
+        //    if(this.open || !this.open){
+        //      this.scheduleObj.refresh();
+        //     }
       
     
       }
@@ -1042,20 +1053,20 @@ console.log( this.endofDay, "===================================================
 
   }
 
-  if(this.scheduleObj.currentView ==="TimelineMonth"){
- 
+  if(args.currentView === "TimelineMonth" ){
+  
   if (args.action === "date"){
-    
-    this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-    this.navigateLastOfMouth = moment(args.currentDate).endOf('month').toDate()
-    console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+            this.timelineResourceDataOut = []
+            this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+            this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
+                console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
 
  
 
-    console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-        console.log(this.scheduleObj)
+                console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+                console.log(this.scheduleObj)
         
-                 this.timelineResourceDataOut = []
+        
                  this.salleDataSource.forEach(salle => {
                      let indexSalle = this.salleDataSource.indexOf(salle);
                      this.getContainersByRessourceStartDateEndDate(
@@ -1068,23 +1079,92 @@ console.log( this.endofDay, "===================================================
                  });
                        
 
-  }}
-      if(this.scheduleObj.currentView ==="TimelineWeek"){
+  }
+  if (args.action === "view"){
+            
+    this.timelineResourceDataOut = []
+                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                 this.salleDataSource.forEach(salle => {
+               let indexSalle = this.salleDataSource.indexOf(salle);
+                        this.getContainersByRessourceStartDateEndDate(
+                    salle.CodeRessource,
+                    this.startofMonth,
+                    this.endofMonth,
+                    salle.CodeSalle,
+                    indexSalle
+                );
+            });
+                  console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+   
+  }
+
+}
+
+  if(args.currentView ==="MonthAgenda"){
+  
+    if (args.action === "date"){
+        this.timelineResourceDataOut = []
+      this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+      this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
+      console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+  
+   
+  
+      console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+          console.log(this.scheduleObj)
+          
+                  
+                   this.salleDataSource.forEach(salle => {
+                       let indexSalle = this.salleDataSource.indexOf(salle);
+                       this.getContainersByRessourceStartDateEndDate(
+                           salle.CodeRessource,
+                           this.navigateFirstOfMouth,
+                           this.navigateLastOfMouth ,
+                           salle.CodeSalle,
+                           indexSalle
+                       );
+                   });
+                         
+  
+    }
+    if (args.action === "view"){
+        this.timelineResourceDataOut = []
+        this.calcule = false
+        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+        this.salleDataSource.forEach(salle => {
+            let indexSalle = this.salleDataSource.indexOf(salle);
+            this.getContainersByRessourceStartDateEndDate(
+                salle.CodeRessource,
+                this.startofMonth,
+                this.endofMonth,
+                salle.CodeSalle,
+                indexSalle
+            );
+        });
+        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+       
+    }
+}
+
+
+
+  if(args.currentView ==="TimelineWeek"){ 
+    
 
         if (args.action === "date"){
-    
-            let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
-            let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
-            console.log(navigateFirstOfWeek, "++++++++++++++++++++++++", navigateLastOfWeek )
+            // this.timelineResourceDataOut = []
+          this.navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
+            this.navigateLastOfWeek = moment(args.currentDate).endOf('week').add(1,'d').toDate()
+           
         
                 
-                         this.timelineResourceDataOut = []
+                        
                          this.salleDataSource.forEach(salle => {
                              let indexSalle = this.salleDataSource.indexOf(salle);
                              this.getContainersByRessourceStartDateEndDate(
                                  salle.CodeRessource,
-                                 navigateFirstOfWeek,
-                                 navigateLastOfWeek,
+                                 this.navigateFirstOfWeek,
+                                 this.navigateLastOfWeek,
                                  salle.CodeSalle,
                                  indexSalle
                              );
@@ -1092,17 +1172,39 @@ console.log( this.endofDay, "===================================================
                                
         
           }
+          if (args.action === "view"){
+            this.timelineResourceDataOut = []
+            
+                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+        this.salleDataSource.forEach(salle => {
+            let indexSalle = this.salleDataSource.indexOf(salle);
+            this.getContainersByRessourceStartDateEndDate(
+                salle.CodeRessource,
+                this.startofWeek,
+                this.endofWeek,
+                salle.CodeSalle,
+                indexSalle
+            );
+           
+            
+        });
+        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+          }
       }
-      if(this.scheduleObj.currentView === "TimelineDay"){
+ 
+    
+     
+
+  if(this.scheduleObj.currentView === "TimelineDay" && args.currentView === "TimelineDay"){
 
         if (args.action === "date"){
-    
+            this.timelineResourceDataOut = []
             let startofDay = moment(args.currentDate).toDate()
             let endofDay = moment(args.currentDate).add(1, 'd').toDate()
             console.log(startofDay, "++++++++++++++++++++++++", endofDay )
         
                 
-                         this.timelineResourceDataOut = []
+                         
                          this.salleDataSource.forEach(salle => {
                              let indexSalle = this.salleDataSource.indexOf(salle);
                              this.getContainersByRessourceStartDateEndDate(
@@ -1112,11 +1214,70 @@ console.log( this.endofDay, "===================================================
                                  salle.CodeSalle,
                                  indexSalle
                              );
-                         });
-                               
-        
+                         }); 
           }
-      }
+          if (args.action === "view"){
+            this.timelineResourceDataOut = []
+            console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+            this.salleDataSource.forEach(salle => {
+                let indexSalle = this.salleDataSource.indexOf(salle);
+                this.getContainersByRessourceStartDateEndDate(
+                    salle.CodeRessource,
+                    this.startofDay,
+                    this.endofDay,
+                    salle.CodeSalle,
+                    indexSalle
+                );
+    
+    
+            });
+    
+          
+            console.log("currentView date ",  this.startofDay ,  this.endofDay, )
+        
+            console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+          }
+      
+    }
+      console.log("date agenda schedulerobj ......................................",this.scheduleObj)
+      if(args.currentView ==="Agenda"){
+     
+        if (args.action === "date"){
+                   let navigateFirstOfWeek =  moment(args.currentDate).toDate() ,
+                   navigateLastOfWeek = moment(args.currentDate).add(7, 'd').toDate()
+            this.timelineResourceDataOut = []
+                                 
+                                 this.salleDataSource.forEach(salle => {
+                                     let indexSalle = this.salleDataSource.indexOf(salle);
+                                     this.getContainersByRessourceStartDateEndDate(
+                                         salle.CodeRessource,
+                                         navigateFirstOfWeek,
+                                         navigateLastOfWeek,
+                                         salle.CodeSalle,
+                                         indexSalle
+                                     );
+                                 });
+                                       
+                
+                  }
+                  if (args.action === "view"){
+                    this.timelineResourceDataOut = []
+                    this.calcule = false
+                    console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.agendaStartDate,
+                        this.agendaLastDate,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            
+                  }  
+
+        }
 
 
 }
@@ -1499,13 +1660,11 @@ public  couleur
                         this.draggedItemId = event.draggedNodeData.id as string;
                     } else { // Emplacement déjà pris par un event (container)
                         console.log(event);
-                        // let indexContainerEvent = this.findIndexEventById(event.target.id);
-                        // this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = filteredData[0].Username;
+                        let indexContainerEvent = this.findIndexEventById(event.target.id);
+                        this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = filteredData[0].Username;
                         this.isTreeItemDropped = true;
                         this.isTreeItemDroppedMonteur = true;
-                        this.updateContainerFromDragDropOperateur(filteredData[0], event);
-                        // this.updateContainer(filteredData[0], event);
-                        // this.onActionComplete('e');
+                        this.onActionComplete('e');
                     }
                 }
             }
@@ -1522,6 +1681,18 @@ public  couleur
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
+        if(event.requestType === 'viewNavigate') {
+            
+            
+        
+              
+                 console.log("currentView",this.timelineResourceDataOut )
+
+
+
+          
+}
+
 
     
      
@@ -1658,19 +1829,20 @@ public  couleur
         if (args.requestType === 'eventRemove') { // CUSTOM ACTION REMOVE
             this.deleteEvent(args);
         } else if (args.requestType === 'viewNavigate') {
+                  
         } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) { // RESIZE CONTAINER
             console.log('CALL CUSTOM ACTION BEGIN');
             // this.updateContainer(args);
-            // args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
-            // let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-            // let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-            // this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
-            // this.eventSettings = {
-            //     dataSource: <Object[]>extend(
-            //         [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
+            args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
+            let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+            let endDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+            this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+            this.eventSettings = {
+                dataSource: <Object[]>extend(
+                    [], this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true
 
-            //     )
-            // };
+                )
+            };
         } else if (args.requestType === 'eventCreate') { // ADD EMPTY CONTAINER
             let data = args.data[0];
             this.randomId();
@@ -1734,7 +1906,6 @@ public  couleur
                 this.sidebar.position ='Right';
                 this.sidebar.animate =false;
             }
-            this.updateContainer(e);
         }
         this.isTreeItemDropped = false;
         this.isTreeItemDroppedMonteur = false;
@@ -1752,55 +1923,11 @@ public  couleur
                 [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
             )
         };
-        this.treeObj.fields = this.field;
-        if(e.requestType === 'viewNavigate') {
-        if(this.scheduleObj.currentView === 'TimelineDay'){
-            this.timelineResourceDataOut = []
-            this.salleDataSource.forEach(salle => {
-                let indexSalle = this.salleDataSource.indexOf(salle);
-                this.getContainersByRessourceStartDateEndDate(
-                    salle.CodeRessource,
-                   this.startofDay,
-                   this.endofDay,
-                    salle.CodeSalle,
-                    indexSalle
-                );
-            });
-            console.log("journée", this.endofDay)
-        }
-
-        if(this.scheduleObj.currentView === "TimelineWeek"){
-            this.timelineResourceDataOut = []
-        this.salleDataSource.forEach(salle => {
-            let indexSalle = this.salleDataSource.indexOf(salle);
-            this.getContainersByRessourceStartDateEndDate(
-                salle.CodeRessource,
-                this.startofWeek,
-                this.endofWeek,
-                salle.CodeSalle,
-                indexSalle
-            );
-        });
-    }
         
-if(this.scheduleObj.currentView === "TimelineMonth"){
-    this.timelineResourceDataOut = []
-    this.salleDataSource.forEach(salle => {
-        let indexSalle = this.salleDataSource.indexOf(salle);
-        this.getContainersByRessourceStartDateEndDate(
-            salle.CodeRessource,
-            this.startofMonth,
-            this.endofMonth,
-            salle.CodeSalle,
-            indexSalle
-        );
-    });
- 
-  }
- 
-    }
+        this.treeObj.fields = this.field;
 
-   
+     
+        
  
 
     }
@@ -1882,7 +2009,7 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
         // CALL ONINT => this.calculDateAll(this.data, false, null, false, false )
         // CALL ONRESIZE => this.calculDateAll(this.timelineResourceDataOut, true, args.data, startDifferent, endDifferent), null, true;
         let groupe = [], i;
-        console.log(atimelineResourceData);
+     
         for (i = 0; i < atimelineResourceData.length; i++) {
             if (!groupe.includes(atimelineResourceData[i]['AzaNumGroupe'])) {
                 groupe.push(atimelineResourceData[i]['AzaNumGroupe']);
@@ -1898,7 +2025,7 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
                 endDifferent
             );
         });
-        console.log('all AzaNumGroup present on planning :', groupe,);
+       
         return this.timelineResourceDataOut;
     }
 
@@ -1923,18 +2050,18 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
     }
 
     getCountWorkOrderByGroup(objectin: Object[], property: string, numGroup: number): number {
-        console.log('getCountWorkOrderByGroup()');
+  
         let countWorkorderSameGroup = 0;
-        console.log('numGroup : ', numGroup);
+       
         objectin.forEach(item => {
-            console.log(item[property]);
+   
             if (+item[property] === numGroup) {
                 if (!item['AzaIsPere']) {
                     countWorkorderSameGroup++;
                 }
             }
         });
-        console.log('countWorkorderSameGroup : ', countWorkorderSameGroup);
+      
         return countWorkorderSameGroup;
     }
 
@@ -1942,7 +2069,7 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
     getMinMaxNumgroupe(
         atimelineResourceData, numGroup: number, timePosition: string, isUpdate: boolean, Objupdate: Object[]
     ) {
-        console.log('groupe to check max or min date : ', numGroup);
+       
         let mindate, maxDate, regie: number;
         let arrayDatesGroup = [];
         atimelineResourceData.forEach(item => {
@@ -1973,7 +2100,7 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
                 }
             } else {
             }
-            console.log('min date for groupe', mindate);
+         
             return mindate;
         } else if (timePosition === 'EndTime') {
             if (isUpdate) {
@@ -1984,7 +2111,7 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
                 }
             } else {
             }
-            console.log('ma date for groupe', maxDate);
+            
             return maxDate;
         }
     }
@@ -2333,7 +2460,7 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
 
     }
 
-    onRenderCell(args: RenderCellEventArgs): void {
+    onRenderCell(args: RenderCellEventArgs) {
         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
             if (this.scheduleObj.readonly == false) {
@@ -2342,7 +2469,13 @@ if(this.scheduleObj.currentView === "TimelineMonth"){
                 target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
             }
         }
-    
+        if(args.elementType === "dateHeader") {
+          console.log('********************************************************************************', this.scheduleObj)
+        if(this.scheduleObj.currentView === "MonthAgenda"){
+          this.scheduleObj.currentView = "TimelineDay"
+    }
+          
+        }
     }
 
 

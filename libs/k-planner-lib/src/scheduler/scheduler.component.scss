@@ -206,7 +206,7 @@ $InfoBtnHoverColor :  #2eced6;
     right:12px;
     position: absolute;
 
-//    overflow: hidden;
+   overflow: hidden;
 
 }
 .btn-backlog{
@@ -361,7 +361,7 @@ $InfoBtnHoverColor :  #2eced6;
 }
 
 .e-item {
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -401,3 +401,6 @@ overflow: scroll
     content: '\e94a';
   }
  
+  /deep/ .e-schedule .e-schedule-toolbar .e-active-view .e-tbar-btn-text {
+      color: #e3165b
+  }
