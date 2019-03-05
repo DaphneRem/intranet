@@ -995,8 +995,8 @@ public eventTemplate
 onNavigating(args){
   
  
-    this.startofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).toDate()
-    this.endofDay =   moment(this.scheduleObj.activeView.colLevels[0][0].date).add(1, 'd').toDate()
+    this.startofDay =   moment(this.scheduleObj.activeView.renderDates[0]).toDate()
+    this.endofDay =   moment(this.scheduleObj.activeView.renderDates[0]).add(1, 'd').toDate()
       
     this.startofWeek = moment().startOf('week').toDate(),
     this.endofWeek = moment().endOf('week').add(1, 'd').toDate(),
@@ -1007,7 +1007,7 @@ onNavigating(args){
     this.agendaStartDate =  moment().toDate()
     this.agendaLastDate =  moment().add(7, 'd').toDate()
        
-    console.log( args, "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{", this.startofDay,this.endofDay )
+    console.log( args, "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{", args.currentView )
        
    
   if(args.currentView ==="TimelineDay")
@@ -1053,33 +1053,111 @@ onNavigating(args){
 
   }
 
+
+  if(this.scheduleObj.currentView ==="TimelineMonth"){
+
+    if (args.action === "date"){
+  
+      this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+      this.navigateLastOfMouth = moment(args.currentDate).endOf('month').toDate()
+      console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+  
+  
+  
+      console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+          console.log(this.scheduleObj)
+  
+                   this.timelineResourceDataOut = []
+                   this.salleDataSource.forEach(salle => {
+                       let indexSalle = this.salleDataSource.indexOf(salle);
+                       this.getContainersByRessourceStartDateEndDate(
+                           salle.CodeRessource,
+                           this.navigateFirstOfMouth,
+                           this.navigateLastOfMouth ,
+                           salle.CodeSalle,
+                           indexSalle
+                       );
+                   });
+  
+  
+    }}
+        if(this.scheduleObj.currentView ==="TimelineWeek"){
+  
+          if (args.action === "date"){
+  
+              let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
+              let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
+              console.log(navigateFirstOfWeek, "++++++++++++++++++++++++", navigateLastOfWeek )
+  
+  
+                           this.timelineResourceDataOut = []
+                           this.salleDataSource.forEach(salle => {
+                               let indexSalle = this.salleDataSource.indexOf(salle);
+                               this.getContainersByRessourceStartDateEndDate(
+                                   salle.CodeRessource,
+                                   navigateFirstOfWeek,
+                                   navigateLastOfWeek,
+                                   salle.CodeSalle,
+                                   indexSalle
+                               );
+                           });
+  
+  
+            }
+        }
+        if(this.scheduleObj.currentView === "TimelineDay"){
+  
+          if (args.action === "date"){
+  
+              let startofDay = moment(args.currentDate).toDate()
+              let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+              console.log(startofDay, "++++++++++++++++++++++++", endofDay )
+  
+  
+                           this.timelineResourceDataOut = []
+                           this.salleDataSource.forEach(salle => {
+                               let indexSalle = this.salleDataSource.indexOf(salle);
+                               this.getContainersByRessourceStartDateEndDate(
+                                   salle.CodeRessource,
+                                   startofDay,
+                                   endofDay,
+                                   salle.CodeSalle,
+                                   indexSalle
+                               );
+                           });
+  
+  
+            }
+        }
+  
+
   if(args.currentView === "TimelineMonth" ){
   
-  if (args.action === "date"){
-            this.timelineResourceDataOut = []
-            this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-            this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
-                console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+//   if (args.action === "date"){
+//             this.timelineResourceDataOut = []
+//             this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+//             this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
+//                 console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
 
  
 
-                console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-                console.log(this.scheduleObj)
+//                 console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+//                 console.log(this.scheduleObj)
         
         
-                 this.salleDataSource.forEach(salle => {
-                     let indexSalle = this.salleDataSource.indexOf(salle);
-                     this.getContainersByRessourceStartDateEndDate(
-                         salle.CodeRessource,
-                         this.navigateFirstOfMouth,
-                         this.navigateLastOfMouth ,
-                         salle.CodeSalle,
-                         indexSalle
-                     );
-                 });
+//                  this.salleDataSource.forEach(salle => {
+//                      let indexSalle = this.salleDataSource.indexOf(salle);
+//                      this.getContainersByRessourceStartDateEndDate(
+//                          salle.CodeRessource,
+//                          this.navigateFirstOfMouth,
+//                          this.navigateLastOfMouth ,
+//                          salle.CodeSalle,
+//                          indexSalle
+//                      );
+//                  });
                        
 
-  }
+//   }
   if (args.action === "view"){
             
     this.timelineResourceDataOut = []
@@ -1102,31 +1180,31 @@ onNavigating(args){
 
   if(args.currentView ==="MonthAgenda"){
   
-    if (args.action === "date"){
-        this.timelineResourceDataOut = []
-      this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-      this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
-      console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+    // if (args.action === "date"){
+    //     this.timelineResourceDataOut = []
+    //   this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+    //   this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
+    //   console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
   
    
   
-      console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-          console.log(this.scheduleObj)
+    //   console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+    //       console.log(this.scheduleObj)
           
                   
-                   this.salleDataSource.forEach(salle => {
-                       let indexSalle = this.salleDataSource.indexOf(salle);
-                       this.getContainersByRessourceStartDateEndDate(
-                           salle.CodeRessource,
-                           this.navigateFirstOfMouth,
-                           this.navigateLastOfMouth ,
-                           salle.CodeSalle,
-                           indexSalle
-                       );
-                   });
+    //                this.salleDataSource.forEach(salle => {
+    //                    let indexSalle = this.salleDataSource.indexOf(salle);
+    //                    this.getContainersByRessourceStartDateEndDate(
+    //                        salle.CodeRessource,
+    //                        this.navigateFirstOfMouth,
+    //                        this.navigateLastOfMouth ,
+    //                        salle.CodeSalle,
+    //                        indexSalle
+    //                    );
+    //                });
                          
   
-    }
+    // }
     if (args.action === "view"){
         this.timelineResourceDataOut = []
         this.calcule = false
@@ -1148,30 +1226,32 @@ onNavigating(args){
 
 
 
-  if(args.currentView ==="TimelineWeek"){ 
+//   if(args.currentView ==="TimelineWeek"){ 
     
 
-        if (args.action === "date"){
-            // this.timelineResourceDataOut = []
-          this.navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
-            this.navigateLastOfWeek = moment(args.currentDate).endOf('week').add(1,'d').toDate()
+        // if (args.action === "date"){
+        //     this.timelineResourceDataOut = []
+        //   this.navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
+        //     this.navigateLastOfWeek = moment(args.currentDate).endOf('week').add(1,'d').toDate()
            
         
                 
                         
-                         this.salleDataSource.forEach(salle => {
-                             let indexSalle = this.salleDataSource.indexOf(salle);
-                             this.getContainersByRessourceStartDateEndDate(
-                                 salle.CodeRessource,
-                                 this.navigateFirstOfWeek,
-                                 this.navigateLastOfWeek,
-                                 salle.CodeSalle,
-                                 indexSalle
-                             );
-                         });
+        //                  this.salleDataSource.forEach(salle => {
+        //                      let indexSalle = this.salleDataSource.indexOf(salle);
+        //                      this.getContainersByRessourceStartDateEndDate(
+        //                          salle.CodeRessource,
+        //                          this.navigateFirstOfWeek,
+        //                          this.navigateLastOfWeek,
+        //                          salle.CodeSalle,
+        //                          indexSalle
+        //                      );
+        //                  });
                                
         
-          }
+        //   }
+        // }
+        if(args.currentView ==="TimelineWeek"){ 
           if (args.action === "view"){
             this.timelineResourceDataOut = []
             
@@ -2469,13 +2549,9 @@ public  couleur
                 target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
             }
         }
-        if(args.elementType === "dateHeader") {
-          console.log('********************************************************************************', this.scheduleObj)
-        if(this.scheduleObj.currentView === "MonthAgenda"){
-          this.scheduleObj.currentView = "TimelineDay"
-    }
+    
           
-        }
+        
     }
 
 
