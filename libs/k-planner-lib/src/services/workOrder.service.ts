@@ -22,6 +22,7 @@ export class WorkOrderService {
     return this.http
     .get(urlKPlanner + urlPlanningEventsByidContainer + id)
     .map((res: any) => {
+      console.log('GETworkorderByIdContainer res : ', res);
       return res as Workorder[];
     });
   }
@@ -30,11 +31,14 @@ export class WorkOrderService {
     return this.http
       .get(urlKPlanner + urlPlanningEventsByidGroup + idGroup)
       .map((res: any) => {
+        console.log('GETworkorderByIdGroup present in backlog => res : ', res);
         return res as Workorder[];
     });
   }
 
-  updateWorkOrder(id: number, workorder: Workorder): Observable<Workorder> {
+  /************************* PUT ************************/
+
+  updateWorkOrder(id: number, workorder): Observable<Workorder> {
     return this.http
       .put<Workorder>(
         urlKPlanner + urlPanningEventsById + id,
@@ -42,6 +46,7 @@ export class WorkOrderService {
       )
       .pipe(catchError(this.handleError));
   }
+
   /*********************** ERROR ************************/
 
   private handleError(error: HttpErrorResponse) {

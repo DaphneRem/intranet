@@ -10,8 +10,16 @@ import { CheckBoxAllModule, ButtonComponent } from '@syncfusion/ej2-angular-butt
 import { ToolbarAllModule, SidebarModule } from '@syncfusion/ej2-angular-navigations';
 import { MaskedTextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule, MultiSelectAllModule} from '@syncfusion/ej2-angular-dropdowns';
-import { TreeViewModule, TabModule, BeforeOpenCloseMenuEventArgs, MenuEventArgs, MenuItemModel, ContextMenuComponent} from '@syncfusion/ej2-angular-navigations';
+import {
+  TreeViewModule,
+  TabModule,
+  BeforeOpenCloseMenuEventArgs,
+  MenuEventArgs,
+  MenuItemModel,
+  ContextMenuComponent
+} from '@syncfusion/ej2-angular-navigations';
 import { ListViewModule } from '@syncfusion/ej2-angular-lists';
+import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
 
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -53,9 +61,7 @@ import { HttpModule, JsonpModule } from '@angular/http';
     NgbModule,
     FormsModule,
     HttpModule,
-    SidebarModule,
-    
-
+    SidebarModule
   ],
   declarations: [
     SchedulerComponent,
@@ -63,15 +69,14 @@ import { HttpModule, JsonpModule } from '@angular/http';
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
     ContextMenuComponent,
-    FilterPipe ,
+    FilterPipe,
     ButtonComponent,
-   
+    TooltipComponent
   ],
   entryComponents: [
     MonPlanningComponent,
     SchedulerComponent,
     WorkorderDetailsModalComponent
-  ],
-  
+  ]
 })
 export class KPlannerLibModule {}

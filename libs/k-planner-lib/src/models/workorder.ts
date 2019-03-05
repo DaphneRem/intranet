@@ -6,9 +6,9 @@ export class Workorder {
     UserEnvoi: string;
     DateEnvoi: string | Date;
     CodeRessourceOperateur: number;
-    LibelleRessourceOperateur: string;
+    // LibelleRessourceOperateur: string;
     CodeRessourceCoordinateur: number;
-    LibelleRessourceCoordinateur: string;
+    // LibelleRessourceCoordinateur: string;
     DateSoumission: string | Date;
     DateDebut: string | Date;
     DateFin: string | Date;
@@ -26,7 +26,16 @@ export class Workorder {
     DateMaj: string | Date;
     UserMaj: string;
     Id_Planning_Container: number;
-    libtypeWO: string;
+    // libtypeWO: string;
     isbacklog: number;
+    // +
+    groupe: number;
+    libchaine: string;
+    typetravail: string;
+    titreoeuvre: string;
+    numepisode: number;
+    dureecommerciale: string; // vérifier le type
+    dureesegment: string; // vérifier le type
+    titreepisode: string; // vérifier le type
 }
 
