@@ -14,10 +14,14 @@ export class EventModel{
     AzaIsPere?: boolean;
     AzaNumGroupe?: number;
     DepartmentID?: number;
-
     DepartmentName?: string;
-        ConsultantID: number;
-IsAllDay: boolean;
+   ConsultantID: number;
+   IsAllDay: boolean;
+   libchaine:string;
+   typetravail?:string;
+   titreoeuvre?:string;
+   numepisode?:number;
+   dureecommerciale?:string;
 }
 
     // Id: number;

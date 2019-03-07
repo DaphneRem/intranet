@@ -33,7 +33,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { FilterPipe } from './filter.pipe';
 import { HttpModule, JsonpModule } from '@angular/http';
-
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
 
 @NgModule({
@@ -61,7 +61,9 @@ import { HttpModule, JsonpModule } from '@angular/http';
     NgbModule,
     FormsModule,
     HttpModule,
-    SidebarModule
+    SidebarModule,
+    NgbTooltipModule
+
   ],
   declarations: [
     SchedulerComponent,

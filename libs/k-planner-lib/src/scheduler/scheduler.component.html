@@ -2,7 +2,7 @@
 <div class="control-section" >
    
 
-            <table class="table-light table-sm" id="property" title="Properties" style="width: 100%" *ngIf="scheduleObj.currentView =='TimelineWeek' ">
+            <table class="table-light table-sm" id="property" title="Properties" style="width: 100%" *ngIf="scheduleObj.currentView =='TimelineWeek' || scheduleObj.currentView =='TimelineDay' ">
                 <tbody>
                     <tr style="height: 50px">
                         <td style="width: 5%">
@@ -69,8 +69,8 @@
                 (eventRendered)="onEventRendered($event)"
                 (renderCell)="onRenderCell($event)"
                 (navigating)="onNavigating($event)"
-                
                 [currentView]="currentView"
+                (change)="onChange($event)"
                 >
             
                 <!-- (renderCell)="onRenderCell($event)" -->
@@ -105,7 +105,7 @@
                             <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                 <div>
                                     <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                        <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
+                                        <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div>
                                         <u id="{{data.Id}}">{{data.Name }} </u> 
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                         <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
@@ -113,12 +113,19 @@
                                             class="float-right  fixed mr-1"> -->
                                     </div>
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} </span>
+                                     
+                                        <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
+                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" >{{data.Name }} <br> {{data.libchaine }} </span>
+                                       
                                     </div>
                                 </div>
                             </div>
                         </ng-template>
+                        <!-- <ng-template #tipContent  > <div *ngFor="let data of timelineResourceDataOut"> 
+                             {{data.typetravail }} {{data.dureecommerciale }} 
+                        </div></ng-template> -->
                     </e-view>
+                 
                     <e-view option="TimelineWeek" class="e-icons e-search"  >
                             <ng-template #eventTemplate let-data  class="event">
                                     <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
@@ -186,6 +193,7 @@
                 </e-views>
                 
             </ejs-schedule>
+
         </div>
    <!--************************************** tabItem ***********************************************************************-->
    
@@ -203,6 +211,8 @@
                                 <input type="text" class="form-control" placeholder="Filtrer..." #search (keyup)="onFilter(search.value,0)" >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
+
+                         
                             <ejs-treeview 
                                 #treeObj 
                                 [fields]='field' 
@@ -213,13 +223,19 @@
                                 <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
-                                            <div id="waitlist">{{dataWorkOrder.Name }} </div>
-                                            <div id="waitcategory">{{dataWorkOrder.Description}}</div>
+                                            <div id="waitlist">{{dataWorkOrder.typetravail}}  </div>
+                                            <div id="waitcategory"> {{dataWorkOrder.titreoeuvre}} ep {{dataWorkOrder.numepisode}} <br>
+                                                 {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}}
+                                        </div>
                                         </div>
                                     </div>
                                 </ng-template>
                                 
                             </ejs-treeview>
+
+
+
+
                         </div>
                     </ng-template>
                 </e-tabitem>

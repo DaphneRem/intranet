@@ -59,6 +59,7 @@
     "angular-datatables": "^5.0.0",
     "angular2-multiselect-dropdown": "^2.5.0",
     "angular2-tag-input": "^1.2.3",
+    "popper.js": "^1.13.0",
     "bootstrap": "^4.0.0",
     "classlist.js": "^1.1.20150312",
     "cldr-data": "^34.0.0",
@@ -80,7 +81,7 @@
     "ng2-toasty": "^4.0.3",
     "ngx-bar-rating": "^1.1.0",
     "ngx-perfect-scrollbar": "^5.3.5",
-    "popper.js": "^1.13.0",
+    
     "rxjs": "^5.5.2",
     "timecode": "0.0.4",
     "web-animations-js": "^2.3.1",
