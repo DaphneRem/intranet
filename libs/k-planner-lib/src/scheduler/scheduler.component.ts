@@ -107,7 +107,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public toggleBtn: ButtonComponent;
     @ViewChild('togglebtnslide')
     public togglebtnslide: ButtonComponent;
-    @ViewChild('tabInstance')
+    @ViewChild('element')
     public tabInstance: TabComponent;
     @ViewChild ('contentmenutree')
     public contentmenutree: ContextMenuComponent;
@@ -2813,8 +2813,8 @@ public  couleur
 
         this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
         // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
-        this.scheduleObj.dataBind();
-
+    
+        this.scheduleObj.refresh()
         console.log(e)
     }
     public isStrictMode: boolean = true;
