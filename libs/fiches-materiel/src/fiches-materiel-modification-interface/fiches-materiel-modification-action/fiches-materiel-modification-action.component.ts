@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
+import * as moment from 'moment';
 
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 import { FicheMateriel } from '../../models/fiche-materiel';
@@ -217,10 +218,12 @@ export class FichesMaterielModificationActionComponent implements OnInit {
 
   updatePutFicheMateriel(e) {
     console.log(e);
+    let now = moment().format('YYYY-MM-DDTHH:mm:ss');
     delete e.Fiche_Mat_LibEtape;
     delete e.Fiche_Mat_Qualite;
     delete e.Fiche_Mat_Version;
     e.UserModification = this.user;
+    e.DateModification = now;
     // delete e.Fiche_Mat_ElementsAnnexes;
     this.fichesMaterielService.updateFicheMateriel([e]).subscribe(data => {
       if (data) {
@@ -318,7 +321,9 @@ export class FichesMaterielModificationActionComponent implements OnInit {
         }
       }
     }
+    let now = moment().format('YYYY-MM-DDTHH:mm:ss');
     this.changedValues['UserModification'] = this.user;
+    this.changedValues['DateModification'] = now;
     this.displaymultiDataToUpdate(allId);
   }
 

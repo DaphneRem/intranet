@@ -48,9 +48,9 @@
                    
                      
             </div>
-          
+            
             <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3"></button> 
-           
+            <button class="btn btn-info regie refresh-btn" (click)="refreshScheduler()"><i class="icofont icofont-refresh"></i>Rafraichir</button>
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
                 (eventClick)="onEventClick()"
@@ -206,9 +206,13 @@
                     <ng-template #content>
                         <div class="treeview-container">
                             <div class="title-container">
+                                <button (click)="refreshWorkordersBacklog()" class="btn btn-info regie refresh-btn-workorder">
+                                    <i class="icofont icofont-refresh"></i>
+                                    Rafraichir
+                                </button>
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filtrer..." #search (keyup)="onFilter(search.value,0)" >
+                                <input type="text" class="form-control" placeholder="Rechercher..." #search (keyup)="onFilter(search.value,0)" >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
 
@@ -245,10 +249,10 @@
                             <div class="title-container">
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filtrer..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1)"  >
+                                <input type="text" class="form-control" placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1)"  >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
-                            <select class="form-control " ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
+                            <select class="form-control form-control-info" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
                                 <option >Plus de monteurs </option>
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select>
@@ -263,7 +267,7 @@
                                     (nodeDragging)="onItemDrag($event, 1)">
                                     <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon="" >
                                       
-                                   <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe)}">
+                                   <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe), 'background-color': getBackgroundColor(dataMon.Username, dataMon.codegroupe)}">
                                         <div id="waitdetails" class="monteurs">
                                             <br>
                                             <div id={{dataMon.CodeRessource}} class=" {{dataMon.Username}} ml-2" >{{dataMon.Username}}  </div>

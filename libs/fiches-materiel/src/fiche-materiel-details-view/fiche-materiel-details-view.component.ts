@@ -18,6 +18,12 @@ import { QualiteLib, QualiteFM } from '../models/qualite';
 
 import { VersionService } from '../services/version.service';
 
+import { AnnexElementsService } from '../services/annex-elements.service';
+import { AnnexElementStatus } from '../models/annex-element';
+
+import { RetourOriLibService } from '../services/retour-ori-lib.service';
+import { RetourOri } from '../models/retour-ori';
+
 import { StepsLibService } from '../services/steps-lib.service';
 import { Step } from '../models/step';
 import { StatusLibService } from '../services/status-lib.service';
@@ -33,9 +39,11 @@ import { CustomIconBadge } from '@ab/custom-icons';
     '../../../../assets/icon/icofont/css/icofont.scss'
   ],
   providers : [
+    AnnexElementsService,
     FichesAchatService,
     FichesMaterielService,
     QualiteService,
+    RetourOriLibService,
     StatusLibService,
     StepsLibService,
     VersionService,
@@ -77,12 +85,18 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   public myFicheAchatDetailsExist: boolean;
   public myFicheMaterielExist: boolean;
 
-  public dataMaterielReady = false;
-  public dataGloralReady = false;
-  public dataDetailsReady = false;
+  public dataMaterielReady: boolean = false;
+  public dataGloralReady: boolean = false;
+  public dataDetailsReady: boolean = false;
 
   public messageNoFicheAchat = ' pas de fiche Achat rattachée';
   public messageEmptyField = 'donnée non renseignée';
+
+  public annexElementsStatus: AnnexElementStatus[];
+  public annexElementsReady: boolean;
+
+  public retourOri: RetourOri[];
+  public retourOriReady: boolean;
 
   public icons: CustomIconBadge[];
   public fichesMaterielModification: CustomIconBadge = {
@@ -133,11 +147,13 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   constructor(
         private router: Router,
         private route: ActivatedRoute,
+        private annexElementsService: AnnexElementsService,
         private fichesAchatService: FichesAchatService,
         private fichesMaterielService: FichesMaterielService,
         private store: Store<FicheMaterielModification>,
         private qualiteService: QualiteService,
         private modalService: NgbModal,
+        private retourOriLibService: RetourOriLibService,
         private statusLibService: StatusLibService,
         private stepsLibService: StepsLibService,
         private versionService: VersionService
@@ -152,6 +168,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
       console.log(this.idParamsFicheAchat);
       console.log(this.idParamsFicheMateriel);
     });
+    this.getAnnexStatus();
+    this.getRetourOriLib();
     this.getFicheAchatDetails(this.idParamsFicheAchatDetail);
     this.getFicheAchatGlobal(this.idParamsFicheAchat);
     this.getFicheMateriel(this.idParamsFicheMateriel);
@@ -206,7 +224,37 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     });
   }
 
+/********************* GET LIB FOR LIBELLE *********************/
 
+  getAnnexStatus() {
+    this.annexElementsService
+      .getAnnexElementsStatus()
+      .subscribe(data => {
+        this.annexElementsStatus = data;
+        console.log(this.annexElementsStatus);
+        this.annexElementsReady = true;
+      });
+  }
+
+  diplayAnnexStatus(IdStatus) {
+    let libelleStatusSelected = this.annexElementsStatus.filter(item => item.IdStatutElementsAnnexes === IdStatus);
+    console.log('libelleStatusSelected : ', libelleStatusSelected);
+    return `${this.myFicheMateriel.IdStatutElementsAnnexes} - ${libelleStatusSelected[0].Libelle}`;
+  }
+
+  getRetourOriLib() {
+    this.retourOriLibService.getRetourOri().subscribe(data => {
+      this.retourOri = data;
+      console.log(data);
+      this.retourOriReady = true;
+    });
+  }
+
+  diplayRetourOri(IdRetourOri) {
+    let libelleRetourOriSelected = this.retourOri.filter(item => item.IdLibRetourOri === IdRetourOri);
+    console.log('libelleStatusSelected : ', libelleRetourOriSelected);
+    return `${this.myFicheMateriel.RetourOri} - ${libelleRetourOriSelected[0].Libelle}`;
+  }
   /*********************** GET LIBS ******************/
 
   getQualiteLib() {

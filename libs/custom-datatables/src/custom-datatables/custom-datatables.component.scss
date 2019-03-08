@@ -264,6 +264,19 @@ $disabledColor : rgb(189, 189, 189);
             color :$tableButton;
         }
         &.buttons-selected {
+
+            z-index: 999;
+            position: fixed;
+            right: 0;
+            bottom: 40%;
+            width: 150px;
+            height: 50px;
+            display: flex;
+            border-radius: 10px 0 0 10px;
+            padding-left: 40px;
+            margin-right: -10px;
+
+
             background: $warningColor;
             border-color: $warningColor;
             &:hover {

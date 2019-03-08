@@ -1,13 +1,14 @@
-import { Component,  ViewChild, OnInit, OnChanges, SimpleChanges, Input, AfterViewInit, ViewChildren } from '@angular/core';
+import { Component,  ViewChild, OnInit, OnChanges, SimpleChanges, Input, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfaces';
 import * as moment from 'moment';
+import swal from 'sweetalert2';
 
 // Syncfusion Imports
 // Synfucion Bases
 import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined, Internationalization } from '@syncfusion/ej2-base';
-
+import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
 import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item } from '@syncfusion/ej2-navigations';
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
 import { ChangeEventArgs as DropDownChangeArgs } from '@syncfusion/ej2-angular-dropdowns';
@@ -96,7 +97,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
-  
+    @ViewChild('tooltip')
+    public control: TooltipComponent;
     @ViewChild('scheduleObjDay')
     public scheduleObjDay:  ScheduleComponent;
     @ViewChild('treeObj')
@@ -134,9 +136,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     // public selectedDate: Date = new Date();
     public selectedDate: Date = new Date();
     public data: EventModel[] =  <EventModel[]>extend([], this.containerData, null, true);
-    
-    public temp
- 
+           public temp
+
     public eventSettings: EventSettingsModel  =  {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, false, null, false, false), null, true),
         // fields: {
@@ -167,7 +168,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public workHours: WorkHoursModel = { start: '08:00', end: '20:00' };
     public cssClass: string = 'custom';
     public readonly: boolean = true;
-  
+
     public openEditorCount = 0;
     public creationArray = [];
     public newData = [];
@@ -288,12 +289,11 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             this.getAllCoordinateurs();
             console.log('*******constructor*******');
                 // public departmentDataSource: Object[] = [];
-        
         }
 
     ngOnInit() {
         console.log(this.scheduleObj);
-      
+        console.log(this.scheduleObjDay, 'scheduleObjDay')
         this.toggleBtn.content = 'Voir toutes les Régies';
         this.activeViewTimelineDay = this.scheduleObj;
         // console.log(hospitalData);
@@ -304,23 +304,47 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         // this.getMonteur(10);
         // this.getAllContainer();
         // this.getContainersByRessource(118);
-      
+        console.log(this.selectedDate, moment().add(1, 'd').toDate());
         // this.getWorkorderByContainerId(1);
         //  this.getWorkOrderByidGroup(1)
         // this.getWorkOrderByidGroup(3);
         //  this.getSalleByGroup(10);
-     
+        // console.log(this.scheduleObj.currentView, '=========================================================================');
 
-        console.log(this.timelineResourceDataOut, '=========================================================================');
     }
 
     ngAfterViewInit() {
         this.departmentDataSource = this.departmentGroupDataSource;
-       
     }
 
     ngOnChanges(changes: SimpleChanges) {
         console.log('==============================================================================on change');
+    }
+
+    refreshScheduler() {
+        console.log('refresh scheduler click');
+        console.log('isClicked : ', this.isClicked);
+        this.timelineResourceDataOut = [];
+        this.allDataContainers = [];
+        this.allDataWorkorders = [];
+        if (this.isClicked) {
+            console.log('refresh scheduler with all regies');
+            this.toggleBtn.content = 'Voir mes Régies  ';
+            this.getSalleAll(this.currentCoordinateur.Groupe);
+        } else {
+            console.log('refresh scheduler with my regies group');
+            this.getSalleByGroup(this.currentCoordinateur.Groupe);
+            this.toggleBtn.content = 'Voir toutes les Régies';
+            this.departmentDataSource = this.departmentGroupDataSource;
+            console.log('faux');
+        }
+        this.scheduleObj.refresh();
+    }
+
+    refreshWorkordersBacklog() {
+        console.log('refresh workorders backlog click');
+        this.workOrderData = [];
+        this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
     }
 
     getAllCoordinateurs() {
@@ -557,14 +581,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             DepartmentID: codeSalle,
                             ConsultantID: 2,
                             DepartmentName: '',
-                            IsAllDay: false,
-
+                            IsAllDay: false
                         });
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
                         this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length, indexSalle);
                         
-                
+                    console.log('containerData starttime +++++++++++++++++++++++++++++++++++++++++++++++++++++',this.timelineResourceDataOut);
                     });
                     // timelineResourceDataOut
                     this.updateEventSetting(this.timelineResourceDataOut);
@@ -620,8 +643,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 });
                 console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 console.log('Planning Events', this.timelineResourceDataOut[0].AzaIsPere );
-           
-             
            for(let i = 0 ; i< this.timelineResourceDataOut.length; i++)
            {
                let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
@@ -636,9 +657,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
                    
            }
-              
-
-            
                 this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                     dataSource: <Object[]>extend(
                         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
@@ -710,9 +728,15 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             });
         }
         this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-          
             enableTooltip: true, tooltipTemplate: this.temp
         };
+        this.field = {
+            dataSource:  this.workOrderData,
+            id: 'Id',
+            text: 'Name',
+            description: 'typetravail'
+        };
+        this.treeObj.refresh();
         console.log('WorkOrderByidgroup', this.workOrderData);
         console.log('this.fieldArray', this.field);
         });
@@ -739,13 +763,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         return item;
                     }
                 });
-
-
                 this.eventSettings = {
                     dataSource: <Object[]>extend(
                         [], this.timelineResourceDataOut, null, true
-                    ),
-                   
+                    )
                 };
             }, error => {
                 console.error('error for delete container request : ', error);
@@ -788,15 +809,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                                     numepisode:item.numepisode,
                                     dureecommerciale:item.dureecommerciale,
                                     libchaine: item.libchaine,
-                        
                                 };
                                 this.updateWorkorderInDragDrop(newItemWorkorderAfterEditorUpdate, containerToCreate);
                                 console.log('new workorder from post container function: ', newItemWorkorderAfterEditorUpdate);
                         })
                     }
                     this.timelineResourceDataOut.push(event);
-                       
-        
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                         dataSource: <Object[]>extend(
                             [], this.timelineResourceDataOut, null, true
@@ -897,7 +915,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         item.AzaNumGroupe = event.AzaNumGroupe;
                         item.coordinateurCreate = event.coordinateurCreate;
                         item.Operateur = event.Operateur;
-                      
                         console.log(item);
                     }
                 });
@@ -998,7 +1015,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     updateWorkorderInDragDrop(event, containerParent) {
         console.log('event to workorder backlog => ', event);
         console.log('containerParent to workorder backlog => ', containerParent);
-   
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         let workorderResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id);
         let workorderSelected = workorderResult[0];
@@ -1057,13 +1073,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     putWorkorder(id, workorder, event) {
-      
         this.workorderService
             .updateWorkOrder(id, workorder)
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
-                this.allDataWorkorders.push(workorder)
+                this.allDataWorkorders.push(workorder);
                 this.timelineResourceDataOut.push(event);
                 this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                     dataSource: <Object[]>extend(
@@ -1144,8 +1159,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
                 let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === containerParent.Id_Planning_Container && item.AzaIsPere);
                 let containerPere = containerEvent[0];
-                this.timelineResourceDataOut.push(event);
                 this.allDataWorkorders.push(newWorkorder);
+                this.timelineResourceDataOut.push(event);
                  let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, "StartTime", "StartTime");
                  let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, "EndTime", "EndTime");
                  this.eventSettings = { 
@@ -1160,10 +1175,44 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     updateWorkorderBackToBacklog(event, containerPere) {
         console.log(event);
+        console.log(containerPere);
         console.log('event workorder to transform in workorder data : ', event);
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id);
+        console.log(this.allDataWorkorders);
         let workorderSelected = workorderResult[0];
+        let othersWorkorderForContainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere);
+        if (othersWorkorderForContainer.length  <= 0) {
+            swal({
+              title: 'Supprimer le container associé',
+              text:'Vous supprimez le dernier workorder du container, ' + 'souhaitez-vous supprimer le container ?',
+              showCancelButton: true,
+              cancelButtonText: 'NON',
+              confirmButtonText: 'SUPPRIMER'
+            }).then((result) => {
+                if (result.value) {
+                    this.containersService.deleteContainer(containerPere.Id)
+                        .subscribe(res => {
+                            console.log('delete container with success : ', res);
+                            this.allDataContainers = this.allDataContainers.filter(container => container.Id_Planning_Container !== containerPere.Id);
+                            console.log('this.allDataContainers after delete container : ', this.allDataContainers);
+                            this.timelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
+                                if (+event.AzaNumGroupe !== +item.AzaNumGroupe) {
+                                    return item;
+                                }
+                            });
+                            this.eventSettings = {
+                                dataSource: <Object[]>extend(
+                                    [], this.timelineResourceDataOut, null, true
+                                )
+                            };
+                        }, error => {
+                            console.error('error for delete container request : ', error);
+                        })
+                }
+            }
+        )};
+        console.log('othersWorkorderForContainer : ', othersWorkorderForContainer);
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
         let newWorkorder = {
@@ -1212,7 +1261,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.eventSettings = {
                     dataSource: <Object[]>extend([],
                         this.calculDateAll(this.timelineResourceDataOut, true, containerPere, startDifferent, endDifferent), null, true),
-                        enableTooltip: true, tooltipTemplate: this.temp
+                         enableTooltip: true, tooltipTemplate: this.temp
                 };
 
             }, error => {
@@ -1253,7 +1302,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         this.isAddedToBacklog = true;
         let targetNodeId: string = this.treeObj.selectedNodes[0];
         let nodeId: string = 'tree_' + newWorkorderForList.Id;
-        this.eventSettings = { 
+        this.eventSettings = {
             enableTooltip: true, tooltipTemplate: this.temp
         };
         this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
@@ -1303,6 +1352,7 @@ public activeView = 'TimelineDay';
 public eventTemplate;
 public agendaStartDate;
 public agendaLastDate;
+public calcule;
 onNavigating(args){
   
  
@@ -1652,7 +1702,7 @@ onNavigating(args){
                   }
                   if (args.action === "view"){
                     this.timelineResourceDataOut = []
-                
+                    this.calcule = false
                     console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
@@ -1875,14 +1925,11 @@ public  couleur
     onTreeDragStop(event: DragAndDropEventArgs): void {
         this.creationArray = [];
         this.newData = [];
-        
         let treeElement = closest(event.target, '.e-treeview');
         if (!treeElement) {
-         
             event.cancel = true;
             let scheduleElement: Element = <Element>closest(event.target, '.e-content-wrap');
             if (scheduleElement) { // IF EMPLACEMENT EST VIDE
-            
                 let treeviewData: { [key: string]: Object }[] =
                     this.treeObj.fields.dataSource as { [key: string]: Object }[];
                 if (event.target.classList.contains('e-work-cells')) {
@@ -1926,7 +1973,6 @@ public  couleur
                         titreoeuvre:filteredData[0].titreoeuvre,
                         numepisode:filteredData[0].numepisode,
                         dureecommerciale:filteredData[0].dureecommerciale,
-                        
                     };
                     this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
                     this.creationArray.push(containerData);
@@ -1941,7 +1987,6 @@ public  couleur
                             }
                         }
                     );
-                    
                 } else {  // IF EMPLACEMENT EST DEJA PRIS PAR UN CONTENEUR
                     if (event.target.id) {
                         let indexContainerEvent = this.findIndexEventById(event.target.id);
@@ -2087,13 +2132,13 @@ public  couleur
         console.log('onActionBegin()');
         console.log(event);
         console.log(this.isTreeItemDropped);
-   
+      
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
 
     
-        
+     
      
         if (event.requestType === 'eventChange') {
             if(this.open == true) {
@@ -2153,7 +2198,6 @@ public  couleur
                             AzaNumGroupe: item.AzaNumGroupe,
                             coordinateurCreate: item.coordinateurCreate,
                             Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
-                            
                         };
                         this.containerParent = newItemContainerAfterEditorUpdate;
                         console.log('newItemContainerAfterEditorUpdate', newItemContainerAfterEditorUpdate);
@@ -2295,7 +2339,6 @@ public  couleur
     onActionComplete(e) {
         console.log('onActionComplete()');
         console.log('event onActionComplete : ', e);
-
         // if (this.timelineResourceDataOut['container'] = true) {
         //     this.scheduleObj.eventSettings.enableTooltip = true;
         //     // this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
@@ -2338,8 +2381,6 @@ public  couleur
         this.treeObj.fields = this.field;
         if(e.requestType === 'viewNavigate') {
 
-  
- 
     }
 
    
@@ -2544,18 +2585,29 @@ public  couleur
                 this.addMonteur = true;
             }
         }
-    
+
     }
 
 
-    getColor (value, codeGroup) {
+    getColor(value, codeGroup) {
         if (value && codeGroup != this.groupeCharger ) {
-        for (let i = 0; i < this.monteurListe.length; i++) {
-            if (value === this.monteurListe[i].Username) {
-                return 'red';
+            for (let i = 0; i < this.monteurListe.length; i++) {
+                if (value === this.monteurListe[i].Username) {
+                    return '#17aab2';
+                }
+            }
+    }
+}
+
+    getBackgroundColor(value, codeGroup) {
+        if (value && codeGroup != this.groupeCharger ) {
+            for (let i = 0; i < this.monteurListe.length; i++) {
+                if (value === this.monteurListe[i].Username) {
+                    return 'rgba(23, 170, 178, 0.1)';
+                }
             }
         }
-    }}
+    }
 
 /**************************************************************** Filter Monteur  ******************************************************************/
 
@@ -2637,7 +2689,7 @@ public  couleur
                     return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  ;
+                        || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  ;                        
                 });
             }
             this.field['dataSource'] = this.data;
@@ -2667,7 +2719,7 @@ public  couleur
                 console.log('2eme click');
             }
         } else {
-            this.toggleBtn.content = 'Voir autres Régies';
+            this.toggleBtn.content = 'Voir toutes les Régies';
             this.departmentDataSource = this.departmentGroupDataSource;
             console.log('faux');
         }
@@ -2813,8 +2865,8 @@ public  couleur
 
         this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
         // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
-    
-        this.scheduleObj.refresh()
+        // this.scheduleObj.dataBind();
+        this.scheduleObj.refresh();
         console.log(e)
     }
     public isStrictMode: boolean = true;
@@ -2840,12 +2892,10 @@ public  couleur
         }
     
     }
-
     onChange(args: ChangeEventArgs): void {
    
     }
 
 
-    
 
 }

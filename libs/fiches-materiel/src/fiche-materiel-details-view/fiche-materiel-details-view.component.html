@@ -21,10 +21,17 @@
         </p>
         <p class="user user-last-modif" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Dernière modification : 
         </p>
-        <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">
+
+        <p class="user" *ngIf="myFicheMateriel.DateModification === null" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">
           <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
-            le 20 août 2018 par {{myFicheMateriel.UserModification}}user2 (donnée fictive pour le moment)
+          le {{myFicheMateriel.DateCreation | date}} par {{myFicheMateriel.UserCreation}}
         </p>
+        <p class="user" *ngIf="myFicheMateriel.DateModification !== null" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">
+          <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
+            le {{myFicheMateriel.DateModification | date}} 
+          <span *ngIf="myFicheMateriel.UserModification !== null">par {{myFicheMateriel.UserModification}}</span>
+        </p>
+
         <p class="user" [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''">Suivi par : 
           <span [ngClass]="!myFicheMateriel.SuiviPar ? 'empty-field' : ''"></span>
             {{myFicheMateriel.SuiviPar}}
@@ -256,7 +263,7 @@
       <div class="col-lg-4 fm-content">
         <div class="sections press">
           <i class="icofont icofont-newspaper section-icon"></i>
-          <p>Eléments annexes : {{myFicheMateriel.IdStatutElementsAnnexes ? myFicheMateriel.IdStatutElementsAnnexes : messageEmptyField}}</p> 
+          <p *ngIf="annexElementsReady">Eléments annexes : {{myFicheMateriel.IdStatutElementsAnnexes ? diplayAnnexStatus(myFicheMateriel.IdStatutElementsAnnexes) : messageEmptyField}}</p> 
           <!-- Eléments annexes => ajouter libellé plutot que number -->
           <p>Détails :</p>
           <annexes-elements-details-modal [IdFicheMateriel]="myFicheMateriel.IdFicheMateriel" ></annexes-elements-details-modal>
@@ -287,8 +294,8 @@
         <div class="sections ori">
           <i class="icofont icofont-space-shuttle section-icon"></i>
           <p>Retour Ori : 
-            <span [ngClass]="!myFicheMateriel.RetourOri ? 'empty-field' : ''">
-              {{myFicheMateriel.RetourOri ? myFicheMateriel.RetourOri : messageEmptyField}}
+            <span *ngIf="retourOriReady" [ngClass]="!myFicheMateriel.RetourOri ? 'empty-field' : ''">
+              {{myFicheMateriel.RetourOri ? diplayRetourOri(myFicheMateriel.RetourOri) : messageEmptyField}}
             </span>
           </p>
           <!-- Retour Ori => ajouter libellé plutot que number -->
