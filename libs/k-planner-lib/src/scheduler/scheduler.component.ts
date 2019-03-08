@@ -275,6 +275,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public statut;
     public allDataContainers = [];
 
+    public refreshDateStart;
+    public refreshDateEnd;
+
     constructor(
         public dialog: MatDialog,
         private coordinateurService: CoordinateurService,
@@ -310,7 +313,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         // this.getWorkOrderByidGroup(3);
         //  this.getSalleByGroup(10);
         // console.log(this.scheduleObj.currentView, '=========================================================================');
-
     }
 
     ngAfterViewInit() {
@@ -322,6 +324,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     refreshScheduler() {
+        console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.log('refresh scheduler click');
         console.log('isClicked : ', this.isClicked);
         this.timelineResourceDataOut = [];
@@ -330,10 +333,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         if (this.isClicked) {
             console.log('refresh scheduler with all regies');
             this.toggleBtn.content = 'Voir mes Régies  ';
-            this.getSalleAll(this.currentCoordinateur.Groupe);
+            this.getSalleAll(this.currentCoordinateur.Groupe, this.refreshDateStart, this.refreshDateEnd);
         } else {
             console.log('refresh scheduler with my regies group');
-            this.getSalleByGroup(this.currentCoordinateur.Groupe);
+            this.getSalleByGroup(this.currentCoordinateur.Groupe, this.refreshDateStart, this.refreshDateEnd);
             this.toggleBtn.content = 'Voir toutes les Régies';
             this.departmentDataSource = this.departmentGroupDataSource;
             console.log('faux');
@@ -349,13 +352,15 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     getAllCoordinateurs() {
           console.log('get ALL');
+        let startofDay = moment().toDate()
+        let endofDay = moment().add(1, 'd').toDate();
         this.coordinateurService.getAllCoordinateurs()
           .subscribe(data => {
               console.log('all coordinateurs : ', data);
               data.forEach(item => {
                   if (item.Username === this.user.shortUserName) {
                         console.log('COORDINATEUR => ', item);
-                        this.getSalleByGroup(item.Groupe);
+                        this.getSalleByGroup(item.Groupe, startofDay, endofDay);
                         // ID PROVISOIRE !!!
                         this.getMonteursByGroup(item.Groupe);
                         this.getWorkOrderByidGroup(item.Groupe);
@@ -390,7 +395,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 /**************************** GET ***************************/
 
 
-    getSalleByGroup(idGroup) {
+    getSalleByGroup(idGroup, start, end) {
         // this.toggleBtn.content = 'Voir autres Régies';
         console.log(this.departmentDataSource);
         this.salleService
@@ -414,14 +419,14 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     console.log('item code salle fot container request : ', item.CodeSalle);
                     // this.getContainersByRessource(item.CodeRessource);
                 });
-                let startofDay = moment().toDate()
-                let endofDay = moment().add(1, 'd').toDate();
+                // let startofDay = moment().toDate()
+                // let endofDay = moment().add(1, 'd').toDate();
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
                     this.getContainersByRessourceStartDateEndDate(
                         salle.CodeRessource,
-                        startofDay,
-                        endofDay,
+                        start,
+                        end,
                         salle.CodeSalle,
                         indexSalle
                     );
@@ -429,7 +434,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             })
     }
 
-    getSalleAll(currentGroup) {
+    getSalleAll(currentGroup, start, end) {
         this.toggleBtn.iconCss = 'e-play-icon';
         this.salleService
         .getSalle()
@@ -448,14 +453,14 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     });
                 }
             });
-            let startofDay = moment().toDate()
-            let endofDay = moment().add(1, 'd').toDate();
+            // let startofDay = moment().toDate()
+            // let endofDay = moment().add(1, 'd').toDate();
             this.salleDataSource.forEach(salle => {
                 let indexSalle = this.salleDataSource.indexOf(salle);
                 this.getContainersByRessourceStartDateEndDate(
                     salle.CodeRessource,
-                    startofDay,
-                    endofDay,
+                    start,
+                    end,
                     salle.CodeSalle,
                     indexSalle
                 );
@@ -604,10 +609,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         this.workorderService
             .getWorkOrderByContainerId(id)
             .subscribe(res => {
-                console.log('response workorder for container : ', res);
+                // console.log('response workorder for container : ', res);
                 this.WorkorderByContainerId = res;
                 this.allDataWorkorders = [...this.allDataWorkorders, ...res];
-                console.log('all data workorder : ', this.allDataWorkorders);
+                // console.log('all data workorder : ', this.allDataWorkorders);
                 if (this.WorkorderByContainerId != []) {
                     this.WorkorderByContainerId.map(data => {
                         let StartTime =   moment(data.DateDebutTheo, moment.defaultFormat).toDate() ,
@@ -641,8 +646,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
                     });
                 });
-                console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
-                console.log('Planning Events', this.timelineResourceDataOut[0].AzaIsPere );
+                // console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
+                // console.log('Planning Events', this.timelineResourceDataOut[0].AzaIsPere );
            for(let i = 0 ; i< this.timelineResourceDataOut.length; i++)
            {
                let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
@@ -657,9 +662,15 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
                    
            }
-                this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                //     dataSource: <Object[]>extend(
+                //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                //     ),
+                //     enableTooltip: true, tooltipTemplate: this.temp
+                // };
+                this.eventSettings = {
                     dataSource: <Object[]>extend(
-                        [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                        [], this.timelineResourceDataOut, null, true
                     ),
                     enableTooltip: true, tooltipTemplate: this.temp
                 };
@@ -1353,250 +1364,190 @@ public eventTemplate;
 public agendaStartDate;
 public agendaLastDate;
 public calcule;
-onNavigating(args){
-  
- 
-    this.startofDay =   moment(this.scheduleObj.activeView.renderDates[0]).toDate()
-    this.endofDay =   moment(this.scheduleObj.activeView.renderDates[0]).add(1, 'd').toDate()
-      
-    this.startofWeek = moment().startOf('week').toDate(),
-    this.endofWeek = moment().endOf('week').add(1, 'd').toDate(),
+    onNavigating(args) {
 
-    this.startofMonth = moment().startOf('month').toDate(),
-    this.endofMonth = moment().endOf('month').add(1, 'd').toDate()
+        this.startofDay =   moment(this.scheduleObj.activeView.renderDates[0]).toDate()
+        this.endofDay =   moment(this.scheduleObj.activeView.renderDates[0]).add(1, 'd').toDate()
 
-    this.agendaStartDate =  moment().toDate()
-    this.agendaLastDate =  moment().add(7, 'd').toDate()
-       
-    console.log( args, "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{", args.currentView )
-       
-   
-  if(args.currentView ==="TimelineDay")
-  {
- 
-      this.scheduleObj.timeScale.interval = 60
-      this.scheduleObj.startHour ='06:00'
-      this.scheduleObj.endHour ='23:00'
-      this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
-      this.scheduleObj.dataBind()
+        this.startofWeek = moment().startOf('week').toDate(),
+        this.endofWeek = moment().endOf('week').add(1, 'd').toDate(),
 
+        this.startofMonth = moment().startOf('month').toDate(),
+        this.endofMonth = moment().endOf('month').add(1, 'd').toDate()
 
-    
-  } else{ 
-      if(args.currentView ==="TimelineWeek"){
-          
-        this.scheduleObj.startHour ='08:00'
-        this.scheduleObj.endHour ='20:00'
-        this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:1 }
-        //    if(this.open || !this.open){
-        //      this.scheduleObj.refresh();
-        //     }
-      
-    
-      }
-  }
-  if(args.currentView ==="TimelineMonth" ||  args.currentView ==="Agenda" ){
+        this.agendaStartDate =  moment().toDate()
+        this.agendaLastDate =  moment().add(7, 'd').toDate()
+        console.log( args, "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{", args.currentView );
 
-    this.scheduleObj.readonly = true
-    if (args.action === "date"){
-        
-          this.scheduleObj.readonly = true
-          console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.scheduleObj.readonly)
-    
-  }
-   
-  } 
-  
-  if((args.currentView ==="TimelineWeek") || (args.currentView ==="TimelineDay") || (args.currentView ==="MonthAgenda")  )
-  
-  {
-    this.scheduleObj.readonly = false
+        if (args.currentView ==="TimelineDay") {
+            this.scheduleObj.timeScale.interval = 60
+            this.scheduleObj.startHour ='06:00'
+            this.scheduleObj.endHour ='23:00'
+            this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
+            this.scheduleObj.dataBind()
 
-  }
-
-
-  if(this.scheduleObj.currentView ==="TimelineMonth"){
-
-    if (args.action === "date"){
-  
-      this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-      this.navigateLastOfMouth = moment(args.currentDate).endOf('month').toDate()
-      console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
-  
-  
-  
-      console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-          console.log(this.scheduleObj)
-  
-                   this.timelineResourceDataOut = []
-                   this.salleDataSource.forEach(salle => {
-                       let indexSalle = this.salleDataSource.indexOf(salle);
-                       this.getContainersByRessourceStartDateEndDate(
-                           salle.CodeRessource,
-                           this.navigateFirstOfMouth,
-                           this.navigateLastOfMouth ,
-                           salle.CodeSalle,
-                           indexSalle
-                       );
-                   });
-  
-  
-    }}
-        if(this.scheduleObj.currentView ==="TimelineWeek"){
-  
-          if (args.action === "date"){
-  
-              let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
-              let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
-              console.log(navigateFirstOfWeek, "++++++++++++++++++++++++", navigateLastOfWeek )
-  
-  
-                           this.timelineResourceDataOut = []
-                           this.salleDataSource.forEach(salle => {
-                               let indexSalle = this.salleDataSource.indexOf(salle);
-                               this.getContainersByRessourceStartDateEndDate(
-                                   salle.CodeRessource,
-                                   navigateFirstOfWeek,
-                                   navigateLastOfWeek,
-                                   salle.CodeSalle,
-                                   indexSalle
-                               );
-                           });
-  
-  
+        } else {
+            if (args.currentView ==="TimelineWeek") {
+                this.scheduleObj.startHour ='08:00'
+                this.scheduleObj.endHour ='20:00'
+                this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:1 }
+                //    if(this.open || !this.open){
+                //      this.scheduleObj.refresh();
+                //     }
             }
         }
-        if(this.scheduleObj.currentView === "TimelineDay"){
-  
-          if (args.action === "date"){
-  
-              let startofDay = moment(args.currentDate).toDate()
-              let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-              console.log(startofDay, "++++++++++++++++++++++++", endofDay )
-  
-  
-                           this.timelineResourceDataOut = []
-                           this.salleDataSource.forEach(salle => {
-                               let indexSalle = this.salleDataSource.indexOf(salle);
-                               this.getContainersByRessourceStartDateEndDate(
-                                   salle.CodeRessource,
-                                   startofDay,
-                                   endofDay,
-                                   salle.CodeSalle,
-                                   indexSalle
-                               );
-                           });
-  
-  
+        if (args.currentView ==="TimelineMonth" ||  args.currentView ==="Agenda" ) {
+            this.scheduleObj.readonly = true
+            if (args.action === "date") {
+                this.scheduleObj.readonly = true
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.scheduleObj.readonly)
             }
         }
-  
-
-  if(args.currentView === "TimelineMonth" ){
-  
-//   if (args.action === "date"){
-//             this.timelineResourceDataOut = []
-//             this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-//             this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
-//                 console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
-
- 
-
-//                 console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-//                 console.log(this.scheduleObj)
-        
-        
-//                  this.salleDataSource.forEach(salle => {
-//                      let indexSalle = this.salleDataSource.indexOf(salle);
-//                      this.getContainersByRessourceStartDateEndDate(
-//                          salle.CodeRessource,
-//                          this.navigateFirstOfMouth,
-//                          this.navigateLastOfMouth ,
-//                          salle.CodeSalle,
-//                          indexSalle
-//                      );
-//                  });
-                       
-
-//   }
-  if (args.action === "view"){
-            
-    this.timelineResourceDataOut = []
+        if ((args.currentView ==="TimelineWeek") || (args.currentView ==="TimelineDay") || (args.currentView ==="MonthAgenda")) {
+            this.scheduleObj.readonly = false
+        }
+        if(this.scheduleObj.currentView ==="TimelineMonth") {
+            if (args.action === "date") {
+                this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+                this.navigateLastOfMouth = moment(args.currentDate).endOf('month').toDate()
+                console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth)
+                console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+                console.log(this.scheduleObj)
+                this.refreshDateStart = this.navigateFirstOfMouth;
+                this.refreshDateEnd = this.navigateLastOfMouth;
+                this.timelineResourceDataOut = []
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.navigateFirstOfMouth,
+                        this.navigateLastOfMouth ,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            }
+        }
+        if (this.scheduleObj.currentView ==="TimelineWeek") {
+            if (args.action === "date"){
+                let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
+                let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
+                console.log(navigateFirstOfWeek, "++++++++++++++++++++++++", navigateLastOfWeek )
+                this.timelineResourceDataOut = [];
+                this.refreshDateStart = navigateFirstOfWeek;
+                this.refreshDateEnd = navigateLastOfWeek;
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        navigateFirstOfWeek,
+                        navigateLastOfWeek,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            }
+        }
+        if (this.scheduleObj.currentView === "TimelineDay") {
+            if (args.action === "date") {
+                let startofDay = moment(args.currentDate).toDate()
+                let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+                console.log(startofDay, "++++++++++++++++++++++++", endofDay )
+                this.timelineResourceDataOut = [];
+                this.refreshDateStart = startofDay;
+                this.refreshDateEnd = endofDay;
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        startofDay,
+                        endofDay,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            }
+        }
+        if (args.currentView === "TimelineMonth" ) {
+    //   if (args.action === "date"){
+    //             this.timelineResourceDataOut = []
+    //             this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+    //             this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
+    //                 console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+    //                 console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+    //                 console.log(this.scheduleObj) 
+    //                  this.salleDataSource.forEach(salle => {
+    //                      let indexSalle = this.salleDataSource.indexOf(salle);
+    //                      this.getContainersByRessourceStartDateEndDate(
+    //                          salle.CodeRessource,
+    //                          this.navigateFirstOfMouth,
+    //                          this.navigateLastOfMouth ,
+    //                          salle.CodeSalle,
+    //                          indexSalle
+    //                      );
+    //                  });
+    //   }
+            if (args.action === "view") {
+                this.timelineResourceDataOut = []
                 console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-                 this.salleDataSource.forEach(salle => {
-               let indexSalle = this.salleDataSource.indexOf(salle);
-                        this.getContainersByRessourceStartDateEndDate(
+                this.refreshDateStart = this.startofMonth;
+                this.refreshDateEnd = this.endofMonth;
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.startofMonth,
+                        this.endofMonth,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+            }
+        }
+        if (args.currentView ==="MonthAgenda") {
+            // if (args.action === "date"){
+            //     this.timelineResourceDataOut = []
+            //   this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+            //   this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
+            //   console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+            //   console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+            //       console.log(this.scheduleObj)
+            //                this.salleDataSource.forEach(salle => {
+            //                    let indexSalle = this.salleDataSource.indexOf(salle);
+            //                    this.getContainersByRessourceStartDateEndDate(
+            //                        salle.CodeRessource,
+            //                        this.navigateFirstOfMouth,
+            //                        this.navigateLastOfMouth ,
+            //                        salle.CodeSalle,
+            //                        indexSalle
+            //                    );
+            //                });
+            // }
+            if (args.action === "view") {
+                this.timelineResourceDataOut = []
+                console.log(this.timelineResourceDataOut,"timelineResourceDataOut");
+                this.refreshDateStart = this.startofMonth;
+                this.refreshDateEnd = this.endofMonth;
+                this.salleDataSource.forEach(salle => {
+                let indexSalle = this.salleDataSource.indexOf(salle);
+                this.getContainersByRessourceStartDateEndDate(
                     salle.CodeRessource,
                     this.startofMonth,
                     this.endofMonth,
                     salle.CodeSalle,
                     indexSalle
                 );
-            });
-                  console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-   
-  }
+                });
+                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
 
-}
-
-  if(args.currentView ==="MonthAgenda"){
-  
-    // if (args.action === "date"){
-    //     this.timelineResourceDataOut = []
-    //   this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-    //   this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
-    //   console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
-  
-   
-  
-    //   console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-    //       console.log(this.scheduleObj)
-          
-                  
-    //                this.salleDataSource.forEach(salle => {
-    //                    let indexSalle = this.salleDataSource.indexOf(salle);
-    //                    this.getContainersByRessourceStartDateEndDate(
-    //                        salle.CodeRessource,
-    //                        this.navigateFirstOfMouth,
-    //                        this.navigateLastOfMouth ,
-    //                        salle.CodeSalle,
-    //                        indexSalle
-    //                    );
-    //                });
-                         
-  
-    // }
-    if (args.action === "view"){
-        this.timelineResourceDataOut = []
-        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-        this.salleDataSource.forEach(salle => {
-            let indexSalle = this.salleDataSource.indexOf(salle);
-            this.getContainersByRessourceStartDateEndDate(
-                salle.CodeRessource,
-                this.startofMonth,
-                this.endofMonth,
-                salle.CodeSalle,
-                indexSalle
-            );
-        });
-        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-       
-    }
-}
-
-
-
-//   if(args.currentView ==="TimelineWeek"){ 
-    
-
+            }
+        }
+        //   if(args.currentView ==="TimelineWeek"){
         // if (args.action === "date"){
         //     this.timelineResourceDataOut = []
         //   this.navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
         //     this.navigateLastOfWeek = moment(args.currentDate).endOf('week').add(1,'d').toDate()
-           
-        
-                
-                        
         //                  this.salleDataSource.forEach(salle => {
         //                      let indexSalle = this.salleDataSource.indexOf(salle);
         //                      this.getContainersByRessourceStartDateEndDate(
@@ -1607,60 +1558,53 @@ onNavigating(args){
         //                          indexSalle
         //                      );
         //                  });
-                               
-        
         //   }
         // }
-        if(args.currentView ==="TimelineWeek"){ 
-          if (args.action === "view"){
-            this.timelineResourceDataOut = []
-            
+        if (args.currentView ==="TimelineWeek") {
+            if (args.action === "view") {
+                this.timelineResourceDataOut = []
+                console.log(this.timelineResourceDataOut,"timelineResourceDataOut");
+                this.refreshDateStart = this.startofWeek;
+                this.refreshDateEnd = this.endofWeek;
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.startofWeek,
+                        this.endofWeek,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
                 console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-        this.salleDataSource.forEach(salle => {
-            let indexSalle = this.salleDataSource.indexOf(salle);
-            this.getContainersByRessourceStartDateEndDate(
-                salle.CodeRessource,
-                this.startofWeek,
-                this.endofWeek,
-                salle.CodeSalle,
-                indexSalle
-            );
-           
-            
-        });
-        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-          }
-      }
- 
-    
-     
-
-  if(this.scheduleObj.currentView === "TimelineDay" && args.currentView === "TimelineDay"){
-
-        if (args.action === "date"){
-            this.timelineResourceDataOut = []
-            let startofDay = moment(args.currentDate).toDate()
-            let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-            console.log(startofDay, "++++++++++++++++++++++++", endofDay )
-        
-                
-                         
-                         this.salleDataSource.forEach(salle => {
-                             let indexSalle = this.salleDataSource.indexOf(salle);
-                             this.getContainersByRessourceStartDateEndDate(
-                                 salle.CodeRessource,
-                                 startofDay,
-                                 endofDay,
-                                 salle.CodeSalle,
-                                 indexSalle
-                             );
-                         }); 
-          }
-          if (args.action === "view"){
+            }
+        }
+        if (this.scheduleObj.currentView === "TimelineDay" && args.currentView === "TimelineDay") {
+            if (args.action === "date") {
+                this.timelineResourceDataOut = []
+                let startofDay = moment(args.currentDate).toDate()
+                let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+                this.refreshDateStart = startofDay;
+                this.refreshDateEnd = endofDay;
+                console.log(startofDay, "++++++++++++++++++++++++", endofDay )
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        startofDay,
+                        endofDay,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            }
+              if (args.action === "view"){
             this.timelineResourceDataOut = []
             console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
             this.salleDataSource.forEach(salle => {
                 let indexSalle = this.salleDataSource.indexOf(salle);
+                this.refreshDateStart = this.startofDay;
+                this.refreshDateEnd = this.endofDay;
                 this.getContainersByRessourceStartDateEndDate(
                     salle.CodeRessource,
                     this.startofDay,
@@ -1686,7 +1630,8 @@ onNavigating(args){
                    let navigateFirstOfWeek =  moment(args.currentDate).toDate() ,
                    navigateLastOfWeek = moment(args.currentDate).add(7, 'd').toDate()
             this.timelineResourceDataOut = []
-                                 
+            this.refreshDateStart = navigateFirstOfWeek;
+            this.refreshDateEnd = navigateLastOfWeek;
                                  this.salleDataSource.forEach(salle => {
                                      let indexSalle = this.salleDataSource.indexOf(salle);
                                      this.getContainersByRessourceStartDateEndDate(
@@ -1704,6 +1649,8 @@ onNavigating(args){
                     this.timelineResourceDataOut = []
                     this.calcule = false
                     console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                    this.refreshDateStart = this.agendaStartDate;
+                    this.refreshDateEnd = this.agendaLastDate;
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
                     this.getContainersByRessourceStartDateEndDate(
@@ -2711,7 +2658,7 @@ public  couleur
         if (this.isClicked) {
             this.toggleBtn.content = 'Voir mes Régies  ';
             if (this.count == 0 || this.allRegies.length == 0) {
-                this.getSalleAll(this.currentCoordinateur.Groupe);
+                this.getSalleAll(this.currentCoordinateur.Groupe, this.refreshDateStart, this.refreshDateEnd);
                 this.count = this.count + 1;
                 console.log(this.count);
             } else {
