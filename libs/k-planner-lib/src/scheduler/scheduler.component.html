@@ -2,7 +2,7 @@
 <div class="control-section" >
    
 
-            <table class="table-light table-sm" id="property" title="Properties" style="width: 100%" *ngIf="scheduleObj.currentView =='TimelineWeek' || scheduleObj.currentView =='TimelineDay' ">
+            <table class="table-light table-sm" id="property" title="Properties" style="width: 100%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                 <tbody>
                     <tr style="height: 50px">
                         <td style="width: 5%">
@@ -11,7 +11,7 @@
                         </td>
                          <td >
                             <div>
-                                <ejs-dropdownlist style="width: 10%"  [dataSource]='intervalData' [value]='intervalValue' (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
+                                <ejs-dropdownlist style="width: 10%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
                             </div>
                         </td>
                        <!-- <td style="width: 10%" >
@@ -184,9 +184,9 @@
 
                     </e-view>
                  
-                    <e-view option="Agenda"   >
+                    <!-- <e-view option="Agenda"   >
                        
-                    </e-view>
+                    </e-view> -->
                     <!-- <e-view option="MonthAgenda" [readonly]="false">
                    
                     </e-view> -->

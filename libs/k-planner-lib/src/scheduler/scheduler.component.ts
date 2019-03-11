@@ -255,7 +255,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
     public weekInterval: number = 1;
     public intervalValue: string = '60';
-    public intervalData: string[] = ['15', '30', '60', '120'];
+    public intervalData: string[] = ['5','15', '30', '60', '120'];
     public instance: Internationalization = new Internationalization();
 
     // Editor
@@ -292,6 +292,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             this.getAllCoordinateurs();
             console.log('*******constructor*******');
                 // public departmentDataSource: Object[] = [];
+
         }
 
     ngOnInit() {
@@ -747,7 +748,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             text: 'Name',
             description: 'typetravail'
         };
-        this.treeObj.refresh();
+        // this.treeObj.refresh();
         console.log('WorkOrderByidgroup', this.workOrderData);
         console.log('this.fieldArray', this.field);
         });
@@ -1577,28 +1578,77 @@ public calcule;
                     );
                 });
                 console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+        this.salleDataSource.forEach(salle => {
+            let indexSalle = this.salleDataSource.indexOf(salle);
+            this.getContainersByRessourceStartDateEndDate(
+                salle.CodeRessource,
+                this.startofWeek,
+                this.endofWeek,
+                salle.CodeSalle,
+                indexSalle
+            );
+           
+            
+        });
+        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+          }
+
+
+          
+       
+            let value = 60
+            document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
+                let scheduleElement = document.getElementsByClassName("schedule-container");
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", scheduleElement)
+               
+               
+                if ( eKey.keyCode === 80 && scheduleElement ) {
+                  
+                    value = value +  15
+                    if (value <= 120){
+                    this.scheduleObj.timeScale.interval = parseInt(value as string, 10);
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
+                }
+            }else {  
+            if ( eKey.keyCode === 77 && scheduleElement ) {
+                value = value - 15
+              
+                if ( value >= 15){
+                    this.scheduleObj.timeScale.interval = parseInt(value as string, 10);
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
+                }}
             }
-        }
-        if (this.scheduleObj.currentView === "TimelineDay" && args.currentView === "TimelineDay") {
-            if (args.action === "date") {
-                this.timelineResourceDataOut = []
-                let startofDay = moment(args.currentDate).toDate()
-                let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-                this.refreshDateStart = startofDay;
-                this.refreshDateEnd = endofDay;
-                console.log(startofDay, "++++++++++++++++++++++++", endofDay )
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        startofDay,
-                        endofDay,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                });
-            }
-              if (args.action === "view"){
+            });
+
+
+        
+      }
+ 
+    
+     
+
+  if(this.scheduleObj.currentView === "TimelineDay" && args.currentView === "TimelineDay"){
+
+        if (args.action === "date"){
+            this.timelineResourceDataOut = []
+            let startofDay = moment(args.currentDate).toDate()
+            let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+            console.log(startofDay, "++++++++++++++++++++++++", endofDay )
+        
+                
+                         
+                         this.salleDataSource.forEach(salle => {
+                             let indexSalle = this.salleDataSource.indexOf(salle);
+                             this.getContainersByRessourceStartDateEndDate(
+                                 salle.CodeRessource,
+                                 startofDay,
+                                 endofDay,
+                                 salle.CodeSalle,
+                                 indexSalle
+                             );
+                         }); 
+          }
+          if (args.action === "view"){
             this.timelineResourceDataOut = []
             console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
             this.salleDataSource.forEach(salle => {
@@ -1697,6 +1747,7 @@ public  couleur
                    this.couleur  = statut['Color']
                 }
             })
+      
         }
         let colorRow = this.couleur
         args.element.hidden = false;
@@ -1761,6 +1812,7 @@ public  couleur
         }
         if (args.data.name === 'cellClick') {
             console.log('cell click',args);
+
         }
         if (args.type === 'Editor') {
             console.log(this.openEditorCount);
@@ -2222,6 +2274,8 @@ public  couleur
         if (args.requestType === 'eventRemove') { // CUSTOM ACTION REMOVE
             this.deleteEvent(args);
         } else if (args.requestType === 'viewNavigate') {
+          
+
         } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) { // RESIZE CONTAINER
             console.log('CALL CUSTOM ACTION BEGIN');
             // this.updateContainer(args);
@@ -2682,8 +2736,8 @@ public  couleur
             this.sidebar.position ='Right'
             this.sidebar.animate =false
             this.sidebar.locale = 'fr-CH'
-            
-     
+          
+            this.scheduleObj.refreshEvents()
         
         }
         else{
@@ -2693,8 +2747,8 @@ public  couleur
             this.sidebar.position ='Right'
             this.sidebar.animate =false
             this.sidebar.locale = 'fr-CH'
-         
-         
+            this.scheduleObj.refreshEvents()
+        
            
         }
         console.log('slidebar',this.sidebar)
@@ -2776,7 +2830,7 @@ public  couleur
             })
             this.workOrderColor = couleur
            
-               console.log('statut', args.data.Statut)
+              
 
 
             if (this.scheduleObj.currentView === 'MonthAgenda') {
@@ -2807,15 +2861,17 @@ public  couleur
 
 
      /******************************************* Zoom *******************/
-   
+   chan
     changeInterval(e: DropDownChangeArgs): void {
 
         this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
         // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
         // this.scheduleObj.dataBind();
-        this.scheduleObj.refresh();
-        console.log(e)
-    }
+        console.log(e.value)
+        console.log(parseInt(e.value) + 30)
+
+    
+     }
     public isStrictMode: boolean = true;
 
     onSubmit() {
