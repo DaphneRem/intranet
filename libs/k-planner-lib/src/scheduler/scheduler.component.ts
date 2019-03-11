@@ -658,23 +658,23 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 
                 this.temp =  
                 '<div class="tooltip-wrap">' +
-                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" >${titreoeuvre} ep ${numepisode}<br> Durée Commercial :&nbsp;${dureecommerciale} </>  </div> ${/if}' +
+                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > ${typetravail} ${titreoeuvre} ep ${numepisode}<br> Durée Commercial :&nbsp;${dureecommerciale} </>  </div> ${/if}' +
                 '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
                 '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
                    
            }
-                // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                //     dataSource: <Object[]>extend(
-                //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
-                //     ),
-                //     enableTooltip: true, tooltipTemplate: this.temp
-                // };
-                this.eventSettings = {
+                this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                     dataSource: <Object[]>extend(
-                        [], this.timelineResourceDataOut, null, true
+                        [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
                     ),
                     enableTooltip: true, tooltipTemplate: this.temp
                 };
+                // this.eventSettings = {
+                //     dataSource: <Object[]>extend(
+                //         [], this.timelineResourceDataOut, null, true
+                //     ),
+                //     enableTooltip: true, tooltipTemplate: this.temp
+                // };
                 if (indexSalle === this.salleDataSource.length - 1) {
                     console.log('*********** end to initial request for all regies container and workorders ***********');
                     this.updateEventSetting(this.timelineResourceDataOut);
@@ -1578,21 +1578,7 @@ public calcule;
                     );
                 });
                 console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-        this.salleDataSource.forEach(salle => {
-            let indexSalle = this.salleDataSource.indexOf(salle);
-            this.getContainersByRessourceStartDateEndDate(
-                salle.CodeRessource,
-                this.startofWeek,
-                this.endofWeek,
-                salle.CodeSalle,
-                indexSalle
-            );
-           
-            
-        });
-        console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-          }
-
+     
 
           
        
@@ -1604,16 +1590,18 @@ public calcule;
                
                 if ( eKey.keyCode === 80 && scheduleElement ) {
                   
-                    value = value +  15
-                    if (value <= 120){
+                 
+                    if (value < 120){
+                        value = value +  30
                     this.scheduleObj.timeScale.interval = parseInt(value as string, 10);
                     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
                 }
             }else {  
             if ( eKey.keyCode === 77 && scheduleElement ) {
-                value = value - 15
+               
               
                 if ( value >= 15){
+                    value = value - 30
                     this.scheduleObj.timeScale.interval = parseInt(value as string, 10);
                     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
                 }}
