@@ -982,7 +982,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     updateContainer(args) {
-        console.log('update contéainer function');
+        console.log('update container function');
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
         let event = args.data;
@@ -1622,8 +1622,9 @@ public calcule;
                         indexSalle
                     );
                 });
-                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-     
+            console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+          }
+
 
           
        
@@ -1634,14 +1635,12 @@ public calcule;
                
                
                 if ( eKey.keyCode === 80 && scheduleElement ) {
-                  
-                 
                     if (value < 120){
                         value = value +  30
                     this.scheduleObj.timeScale.interval = value
                     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
                 }
-            }else {  
+            } else {  
             if ( eKey.keyCode === 77 && scheduleElement ) {
                
               
@@ -1750,7 +1749,7 @@ public calcule;
         }
 
     }
-}
+
 public  couleur
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
@@ -2399,6 +2398,10 @@ public  couleur
         // }
         // this.scheduleObj.dataBind();
         if(e.requestType === 'eventChanged') {
+            if (e.data.AzaIsPere || (!e.data.AzaIsPere && this.isTreeItemDropped)) {
+              console.log("************************************************* onaction complete : update container");
+              this.updateContainer(e);
+            }
             if(this.open == true) {
                 this.open = true;
                 this.sidebar.show();
@@ -2410,7 +2413,7 @@ public  couleur
                 this.sidebar.position ='Right';
                 this.sidebar.animate =false;
             }
-            this.updateContainer(e);
+            // this.updateContainer(e);
         }
         this.isTreeItemDropped = false;
         this.isTreeItemDroppedMonteur = false;
@@ -2664,7 +2667,7 @@ public  couleur
         this.getSalleByGroup(codeGoupe, startofDay, endofDay);
       
         this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
-       if(value==="Mon plannings"){
+       if(value==="Mon planning"){
         this.isnotMyGroup = false
         this.scheduleObj.readonly = false
         this.departmentDataSource = [];
