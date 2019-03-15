@@ -22,6 +22,7 @@ export class EventModel{
    titreoeuvre?:string;
    numepisode?:number;
    dureecommerciale?:string;
+   libtypeWO?: string;
 }
 
     // Id: number;

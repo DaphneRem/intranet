@@ -1,6 +1,19 @@
 
-<div class="control-section" >
-   
+<div class="autre-planinngs">
+    
+<select  class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)" style="width: 25%">
+ <option value="Mon plannings" >Mon plannings</option>
+    <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}"   >{{libelle.Libelle}}   </option >
+
+</select>
+
+
+
+<!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
+</div>
+
+<div class="control-section"   >
+  
 
             <table class="table-light table-sm" id="property" title="Properties" style="width: 100%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                 <tbody>
@@ -42,15 +55,22 @@
                     </tr>
                 </tbody>
             </table>
-    <div class="drag-sample-wrapper">
+        
+    <div class="drag-sample-wrapper" >
         <div class="schedule-container">
-            <div class="title-container">
+            <div class="title-container" *ngIf="!isnotMyGroup " >
                    
                      
-            </div>
             
-            <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3"></button> 
-            <button class="btn btn-info regie refresh-btn" (click)="refreshScheduler()"><i class="icofont icofont-refresh"></i>Rafraichir</button>
+            
+            <button #toggleBtn  ejs-button id="btn" (click)="displayRegies()" content="Voir toutes les Régies" class="btn btn-info btn-outline-dark regie ml-3 "></button> 
+          
+            <button class="btn btn-info regie refresh-btn ml-3" (click)="refreshScheduler()"><i class="icofont icofont-refresh"></i>Rafraichir</button>
+           
+        </div>
+           
+
+
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
                 (eventClick)="onEventClick()"
@@ -71,6 +91,7 @@
                 (navigating)="onNavigating($event)"
                 [currentView]="currentView"
                 (change)="onChange($event)"
+                [ngStyle]="{'opacity':isnotMyGroup === true ?'0.7':'1' }"
                 >
             
                 <!-- (renderCell)="onRenderCell($event)" -->
@@ -115,7 +136,7 @@
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
                                      
                                         <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
-                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" >{{data.Name }} <br> {{data.libchaine }} </span>
+                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }} </span>
                                        
                                     </div>
                                 </div>
@@ -139,7 +160,7 @@
                                                     class="float-right  fixed mr-1"> -->
                                             </div>
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                                <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} <br> {{data.libchaine }}  </span>
+                                                <span style="padding-top: 5px; width: 100%; z-index: 2 !important"> {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
                                             </div>
                                         </div>
                                     </div>
@@ -176,7 +197,7 @@
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
                                         <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                            <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.Name }} <br> {{data.libchaine }}  </span>
+                                            <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
                                         </div>
                                     </div>
                                 </div>
@@ -196,8 +217,8 @@
 
         </div>
    <!--************************************** tabItem ***********************************************************************-->
-   
-  <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target' *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek' "  >
+   <div class="sidebar"  *ngIf="!isnotMyGroup ">
+  <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target' *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek' "   >
       
         <ejs-tab id="element" #element  class="content"   >
             <e-tabitems>
@@ -227,14 +248,14 @@
                                 <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
-                                            <div id="waitlist">{{dataWorkOrder.Name}}  </div>
-                                            <div id="waitcategory"> {{dataWorkOrder.typetravail}} {{dataWorkOrder.titreoeuvre}} ep {{dataWorkOrder.numepisode}} <br>
+                                            <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} ep {{dataWorkOrder.numepisode}} </div>
+                                            <div id="waitcategory">   {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}}
                                         </div>
                                         </div>
                                     </div>
                                 </ng-template>
-                                
+                             
                             </ejs-treeview>
 
 
@@ -294,11 +315,13 @@
 
         
     </ejs-sidebar>  
-   <div id="head" *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek' " >
+   <div id="head" *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek' "  >
             <button ejs-button id="toggle" #togglebtnslide isToggle="true" (click)="btnClickSlide()" content="" class="btn btn-info float-right regie btn-backlog"> BackLog
                 <i *ngIf="!open" class="icofont icofont-navigation-menu"></i>
                 <span *ngIf="open == true" ><i class="icofont icofont-close-circled"></i></span>
             </button>
         </div>  
+        </div>
     </div>
 </div>  
+

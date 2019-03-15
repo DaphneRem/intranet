@@ -34,7 +34,7 @@ import { FormsModule } from '@angular/forms';
 import { FilterPipe } from './filter.pipe';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
-
+import { DropDownButtonModule } from '@syncfusion/ej2-angular-splitbuttons';
 
 @NgModule({
   imports: [
@@ -62,7 +62,8 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
     FormsModule,
     HttpModule,
     SidebarModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    DropDownButtonModule
 
   ],
   declarations: [

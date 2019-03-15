@@ -26,7 +26,7 @@ export class Workorder {
     DateMaj: string | Date;
     UserMaj: string;
     Id_Planning_Container: number;
-    // libtypeWO: string;
+    libtypeWO: string;
     isbacklog: number;
     // +
     groupe: number;

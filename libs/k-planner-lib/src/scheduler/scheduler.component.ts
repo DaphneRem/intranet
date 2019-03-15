@@ -1,4 +1,5 @@
 import { Component,  ViewChild, OnInit, OnChanges, SimpleChanges, Input, AfterViewInit } from '@angular/core';
+import {NgForm} from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfaces';
@@ -9,7 +10,7 @@ import swal from 'sweetalert2';
 // Synfucion Bases
 import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined, Internationalization } from '@syncfusion/ej2-base';
 import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
-import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item } from '@syncfusion/ej2-navigations';
+import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item, ItemModel } from '@syncfusion/ej2-navigations';
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
 import { ChangeEventArgs as DropDownChangeArgs } from '@syncfusion/ej2-angular-dropdowns';
 import { TimePickerComponent } from '@syncfusion/ej2-angular-calendars';
@@ -63,6 +64,8 @@ import { MonteursService } from '../services/monteurs.service';
 import { WorkOrderService } from '../services/workOrder.service';
 import { group } from '@angular/animations';
 import { EventModel } from '../models/Events';
+import { LibGroupeService } from '../services/libGroupe.service';
+import { LibelleGroupe } from '../models/libelle-groupe';
 
 
 const localeFrenchData = require('./scheduler-fr.json');
@@ -89,7 +92,8 @@ loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
         MonteursService,
         Store,
         WorkOrderService,
-        MonthAgendaService
+        MonthAgendaService,
+        LibGroupeService
     ]
 })
 
@@ -150,10 +154,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             subject: { name: 'Name', validation: { required: [true, 'Ce champ est requis'] } },
             description: {
                 name: 'Description',
-                // {
-                // name: 'Description', validation: {
-                //     required: true, minLength: 5, maxLength: 500
-                // }
+            //     // {
+            //     // name: 'Description', validation: {
+            //     //     required: true, minLength: 5, maxLength: 500
+            //     // }
             },
             startTime: { name: 'StartTime', validation: { required: true } },
             endTime: { name: 'EndTime', validation: { required: true } },
@@ -177,20 +181,20 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public timeScale: TimeScaleModel = { enable: true, interval: 60, slotCount:2 };
 
     public colorStatut : Object []= [  
-    { Id: 0, Color: '#B01106' },
-    { Id: 1, Color: '#F96C63' },
-    { Id: 2, Color: '#F0AC2C' },
-    { Id: 3, Color: '#3ba506' },
-    { Id: 4, Color: '#B01106' },
-    { Id: 5, Color: '#F96C63' },
-    { Id: 6, Color: '#F0AC2C' },
-    { Id: 7, Color: '#3ba506' },
-    { Id: 8, Color: '#B01106' },
-    { Id: 9, Color: '#3ba506' },
-    { Id: 10, Color: '#3ba506' },
-    { Id: 11, Color: '#3ba506' },
-    { Id: 12, Color: '#3ba506' },
-    { Id: 13, Color: '#3ba506' }
+    // { Id: 0, Color: '#B01106' },
+    // { Id: 1, Color: '#F96C63' },
+    // { Id: 2, Color: '#F0AC2C' },
+    { Id: 3, Color: '#F3BE09' },
+    // { Id: 4, Color: '#B01106' },
+    // { Id: 5, Color: '#F96C63' },
+    { Id: 6, Color: '#3ba506' },
+    { Id: 7, Color: '#B01106' },
+    { Id: 8, Color: '#F39009' }
+    // { Id: 9, Color: '#3ba506' },
+    // { Id: 10, Color: '#3ba506' },
+    // { Id: 11, Color: '#3ba506' },
+    // { Id: 12, Color: '#3ba506' },
+    // { Id: 13, Color: '#3ba506' }
    ]
     // BACKLOGS INIT
     public waitingList;
@@ -213,9 +217,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public isClicked: boolean = false;
     public allowDragAndDrop: boolean = true;
     public isTreeItemDropped: boolean = false;
+    public isnotMyGroup : boolean = false;
     public isTreeItemDroppedMonteur: boolean = false;
     public draggedItemId: string = '';
-
+    
     public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
     public allowMultiple: Boolean = false;
     public filteredData: Object;
@@ -228,10 +233,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public departmentGroupDataSource: Object[] = [];
     public allRegies: Object[] = [];
     public idExisting = [];
+    public libGroupe : LibelleGroupe[] = []
     public lastRandomId;
 
     public WorkorderByContainerId;
     public  codegroupe;
+    public libelleGroupe
     public filtermonteurListeArray;
     public addMonteur: boolean;
     public fieldArray  =  this.field['dataSource']  ;
@@ -285,6 +292,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         private containersService: ContainersService,
         private monteursService: MonteursService,
         private workorderService: WorkOrderService,
+        private libGroupeService: LibGroupeService , 
         private store: Store<App>
         ) {
             console.log('*******constructor*******');
@@ -355,11 +363,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
           console.log('get ALL');
         let startofDay = moment().toDate()
         let endofDay = moment().add(1, 'd').toDate();
+  
         this.coordinateurService.getAllCoordinateurs()
           .subscribe(data => {
               console.log('all coordinateurs : ', data);
               data.forEach(item => {
                   if (item.Username === this.user.shortUserName) {
+                   
                         console.log('COORDINATEUR => ', item);
                         this.getSalleByGroup(item.Groupe, startofDay, endofDay);
                         // ID PROVISOIRE !!!
@@ -367,9 +377,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         this.getWorkOrderByidGroup(item.Groupe);
                         this.getAllMonteurs(item.Groupe);
                         this.currentCoordinateur = item;
-                   }
+                        this.getLibGroupe(item.Groupe)
+                   
+                }
               });
         });
+    
     }
 
     storeAppSubscription() {
@@ -415,8 +428,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     });
                     let newItem = [{ Text: item.NomSalle, Id: item.CodeSalle }];
                     // this.departmentDataSource = this.departmentDataSource.concat(newItem);
+                    console.log('regie departmentGroupDataSource', this.departmentGroupDataSource);
                     this.departmentDataSource = this.departmentGroupDataSource
-                    console.log('regie departmentGroupDataSource', this.departmentDataSource);
+                    console.log('regie departmentDataSource', this.departmentDataSource);
                     console.log('item code salle fot container request : ', item.CodeSalle);
                     // this.getContainersByRessource(item.CodeRessource);
                 });
@@ -433,6 +447,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     );
                 });
             })
+
     }
 
     getSalleAll(currentGroup, start, end) {
@@ -448,7 +463,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     this.departmentDataSourceAll.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
-                        Color: '#f9920b',
+                        Color: '#5A012B',
                         codeSalle: item.CodeSalle,
                         codeRessource: item.CodeRessource
                     });
@@ -486,9 +501,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     if (item.codegroupe !== group) {
                         this.monteurListe.push(item);
                          this.codegroupe = item.codegroupe;
+                         
                     }
                 });
+                
             });
+
+         
     }
 
     getMonteursByGroup(idGroup) {
@@ -527,7 +546,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
         let debut =moment(datedebut).format('YYYY-MM-DD').toString();
         let fin = moment(datefin).format('YYYY-MM-DD').toString();
-        console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+     
         console.log(debut,fin, 'debut fin !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
@@ -623,7 +642,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         this.timelineResourceDataOut.push({
 
                             Id: data.Id_Planning_Events,
-                            Name: data.libtypeWO,
+                            Name:  data.titreoeuvre  + data.numepisode,
                             StartTime: dateDebut ,
                             EndTime:  dateFin, // date provisoire
                             CodeRessourceSalle: codeSalle,
@@ -644,8 +663,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             titreoeuvre:data.titreoeuvre,
                             numepisode:data.numepisode,
                             dureecommerciale:data.dureecommerciale,
-
+                            libtypeWO:data.libtypeWO
                     });
+
                 });
                 // console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 // console.log('Planning Events', this.timelineResourceDataOut[0].AzaIsPere );
@@ -658,7 +678,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 
                 this.temp =  
                 '<div class="tooltip-wrap">' +
-                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > ${typetravail} ${titreoeuvre} ep ${numepisode}<br> Durée Commercial :&nbsp;${dureecommerciale} </>  </div> ${/if}' +
+                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </div> ${/if}' +
                 '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
                 '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
                    
@@ -715,7 +735,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         dateFin= EndTime
                 this.workOrderData.push({
                     Id: workOrder.Id_Planning_Events,
-                    Name: workOrder.libtypeWO,
+                    Name: workOrder.titreoeuvre  + workOrder.numepisode,
                     StartTime: dateDebut ,
                     EndTime:  dateFin,
                     CodeRessourceSalle: workOrder.CodeRessourceSalle,
@@ -736,6 +756,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     titreoeuvre:workOrder.titreoeuvre,
                     numepisode:workOrder.numepisode,
                     dureecommerciale:workOrder.dureecommerciale,
+                    libtypeWO:workOrder.libtypeWO
                 });
             });
         }
@@ -753,6 +774,23 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log('this.fieldArray', this.field);
         });
 
+    }
+
+
+    getLibGroupe(id){
+        let libGroupe
+        this.libGroupeService
+        .getLibGroupe(id)
+        .subscribe(donnees => {
+            libGroupe = donnees
+            libGroupe.map(donnees =>{
+                this.libGroupe.push({
+                    Libelle: donnees.Libelle,
+                    Code: donnees.Code
+                })
+            })
+        })
+        console.log('............................',  this.libGroupe)
     }
 
 /*************************** DELETE **************************/
@@ -1287,7 +1325,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log('item back to backlog : ', selectedItem);
         let newWorkorderForList = {
             Id: selectedItem.Id,
-            Name: selectedItem.Name,
+            Name: selectedItem.titreoeuvre  + selectedItem.numepisode,
             StartTime: selectedItem.StartTime,
             EndTime: selectedItem.EndTime,
             Statut:selectedItem.Statut,
@@ -1305,9 +1343,11 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             numGroup: null,
             libchaine:selectedItem.libchaine,
             typetravail:selectedItem.typetravail,
-             titreoeuvre:selectedItem.titreoeuvre,
-             numepisode:selectedItem.numepisode,
-             dureecommerciale:selectedItem.dureecommerciale,
+            titreoeuvre:selectedItem.titreoeuvre,
+            numepisode:selectedItem.numepisode,
+            dureecommerciale:selectedItem.dureecommerciale,
+            libtypeWO:selectedItem.libtypeWO
+
         };
         this.field['dataSource'].push(newWorkorderForList);
         this.wOrderBackToBacklog = this.field['dataSource'];
@@ -1406,6 +1446,11 @@ public calcule;
         }
         if ((args.currentView ==="TimelineWeek") || (args.currentView ==="TimelineDay") || (args.currentView ==="MonthAgenda")) {
             this.scheduleObj.readonly = false
+            if( this.isnotMyGroup == true){
+                this.scheduleObj.readonly = true
+            }else{
+                this.scheduleObj.readonly = false
+            }
         }
         if(this.scheduleObj.currentView ==="TimelineMonth") {
             if (args.action === "date") {
@@ -1593,16 +1638,16 @@ public calcule;
                  
                     if (value < 120){
                         value = value +  30
-                    this.scheduleObj.timeScale.interval = parseInt(value as string, 10);
+                    this.scheduleObj.timeScale.interval = value
                     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
                 }
             }else {  
             if ( eKey.keyCode === 77 && scheduleElement ) {
                
               
-                if ( value >= 15){
+                if ( value > 30){
                     value = value - 30
-                    this.scheduleObj.timeScale.interval = parseInt(value as string, 10);
+                    this.scheduleObj.timeScale.interval = value 
                     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
                 }}
             }
@@ -1704,7 +1749,7 @@ public calcule;
 
         }
 
-
+    }
 }
 public  couleur
     onPopupOpen(args) { // open container modal and display workorder list
@@ -1773,7 +1818,7 @@ public  couleur
    
                     console.log( this.couleur , '**********************************couleur*************************************') 
                   
-                    row.innerHTML += `<div id='id${i}'>${workOrders[i].Name}</div>`;
+                    row.innerHTML += `<div id='id${i}'>${workOrders[i].typetravail} ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
                     
                    
                         let element = document.getElementById('id'+i)
@@ -1796,8 +1841,22 @@ public  couleur
                     });
                 }
               
+            }else {
+                let elementworkorder: HTMLElement = <HTMLElement>args.element.querySelector('.e-subject');
+             
+                this.timelineResourceDataOut.map(item => {
+                    if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false) {
+                        workOrders.push(item);
+                    }
+                });
+                for (let i = 0; i < workOrders.length; i++) {
+                    // ${workOrders[i].typetravail}
+                elementworkorder.innerHTML=`<div class='e-subject e-text-ellipsis'> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode} </div>` 
             }
+            console.log(elementworkorder,"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+        
         }
+        } 
         if (args.data.name === 'cellClick') {
             console.log('cell click',args);
 
@@ -1826,9 +1885,12 @@ public  couleur
                         this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
                         console.log(args.data.Operateur);
                     }
+                 
+
                 } else { // dblclick workorder
                     containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
-                }
+                    console.log("edit click")
+                 }
             } else {
                 if (containerOperateur.length === 0) {
                     this.createDrowDownOperteurInput(args, container, inputEle);
@@ -2576,7 +2638,93 @@ public  couleur
         }
 
     }
+    onSelectPlannig(value){
+        console.log(value,"eeeeeeeeeeeeeeeeeeeeeeeeeeee")
+    let codeGoupe
 
+    this.timelineResourceDataOut = [];
+    this.allDataContainers = [];
+    this.allDataWorkorders = [];
+    this.salleDataSource = [];
+    this.departmentDataSource = [];
+    this.departmentGroupDataSource = [];
+        this.isnotMyGroup = true
+        this.scheduleObj.readonly = true
+        this.libGroupe.map(group =>{
+            if(value === group.Libelle){
+                codeGoupe = group.Code
+          
+        }
+        })
+        console.log(codeGoupe,"eeeeeeeeeeeeeeeeeeeeeeeeeeee")
+
+        
+        let startofDay = moment().toDate()
+        let endofDay = moment().add(1, 'd').toDate();
+        this.getSalleByGroup(codeGoupe, startofDay, endofDay);
+      
+        this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
+       if(value==="Mon plannings"){
+        this.isnotMyGroup = false
+        this.scheduleObj.readonly = false
+        this.departmentDataSource = [];
+        this.departmentGroupDataSource = [];
+
+        let startofDay = moment().toDate()
+        let endofDay = moment().add(1, 'd').toDate();
+  
+        this.coordinateurService.getAllCoordinateurs()
+          .subscribe(data => {
+              console.log('all coordinateurs : ', data);
+              data.forEach(item => {
+                  if (item.Username === this.user.shortUserName) {
+                   
+                        console.log('COORDINATEUR => ', item);
+                        this.getSalleByGroup(item.Groupe, startofDay, endofDay);
+                        this.getMonteursByGroup(item.Groupe);
+                        this.getWorkOrderByidGroup(item.Groupe);
+                        this.getAllMonteurs(item.Groupe);
+                        this.currentCoordinateur = item;
+                        
+                   
+                }
+              });
+        });
+        this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
+        this.scheduleObj.refresh();
+       }
+    }
+
+    backTomyPlanning(){
+        this.isnotMyGroup = false
+        this.scheduleObj.readonly = false
+        
+        this.departmentDataSource = [];
+        this.departmentGroupDataSource = [];
+
+        let startofDay = moment().toDate()
+        let endofDay = moment().add(1, 'd').toDate();
+  
+        this.coordinateurService.getAllCoordinateurs()
+          .subscribe(data => {
+              console.log('all coordinateurs : ', data);
+              data.forEach(item => {
+                  if (item.Username === this.user.shortUserName) {
+                   
+                        console.log('COORDINATEUR => ', item);
+                        this.getSalleByGroup(item.Groupe, startofDay, endofDay);
+                        this.getMonteursByGroup(item.Groupe);
+                        this.getWorkOrderByidGroup(item.Groupe);
+                        this.getAllMonteurs(item.Groupe);
+                        this.currentCoordinateur = item;
+                        
+                   
+                }
+              });
+        });
+        this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
+        this.scheduleObj.refresh();
+    }
 
     getColor(value, codeGroup) {
         if (value && codeGroup != this.groupeCharger ) {
@@ -2856,7 +3004,7 @@ public  couleur
         // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
         // this.scheduleObj.dataBind();
         console.log(e.value)
-        console.log(parseInt(e.value) + 30)
+   
 
     
      }
@@ -2886,7 +3034,7 @@ public  couleur
     onChange(args: ChangeEventArgs): void {
    
     }
-
+  
 
 
 }
