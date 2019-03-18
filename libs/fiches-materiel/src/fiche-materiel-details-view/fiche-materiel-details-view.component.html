@@ -95,6 +95,12 @@
             <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}</span>
           </p>
           <p *ngIf="!myFicheAchatGlobalExist">Type de fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+          <p *ngIf="myFicheAchatGlobalExist">
+            <a href="{{detailedReportLink}}" target="_blank" class="rapport-link" placement="top" ngbTooltip="Voir le rapport détaillé de la Fiche Achat">
+              <i class="icofont icofont-list rapport-icon"></i>
+              <span>Rapport détaillé</span>
+            </a>
+          </p>
         </div>
         <div class="sections info">
           <i class="icofont icofont-info-circle section-icon"></i>

@@ -51,6 +51,7 @@ $InfoBtnHoverColor :  #2eced6;
     }
 }
 
+
 /deep/ .e-tab .e-tab-header .e-indicator {
     background: #17aab2;
 }
@@ -152,7 +153,7 @@ $InfoBtnHoverColor :  #2eced6;
     font-family: "Segoe UI";
     font-size: 11px;
     color: #545554;
-    padding: 5px 0 0 10px;
+    padding: 3px 0 0 10px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -163,7 +164,7 @@ $InfoBtnHoverColor :  #2eced6;
     font-size: 9px;
     color: #545554;
     opacity: 0.6;
-    padding-left: 7px;
+    padding-left: 10px;
   
     overflow: hidden;
     text-overflow: ellipsis;
@@ -260,7 +261,8 @@ $InfoBtnHoverColor :  #2eced6;
 }
 
 /deep/  .e-sidebar.e-right{
-    height:825px;
+    // height: 795px;
+    height: 810px;
     position: absolute;
     overflow: hidden;
     margin-top: 60px;
@@ -390,11 +392,11 @@ $InfoBtnHoverColor :  #2eced6;
     top:10px
 }
 
-.e-item {
-    max-height: 70vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+// .e-item {
+//     max-height: 70vh;
+//     overflow-y: auto;
+//     overflow-x: hidden;
+// }
 
 /deep/ .e-schedule .e-timeline-month-view .e-appointment .e-appointment-details .template-wrap div .subject {
     .initiales {
@@ -431,7 +433,7 @@ $InfoBtnHoverColor :  #2eced6;
 }
 
 .e-item {
-    max-height: 85vh;
+    max-height: 80vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -532,6 +534,9 @@ overflow: scroll
                 background-image: none;
                 border-color: transparent;
                 color: #e3165b;
+            }
+            &:focus {
+                box-shadow: none;
             }
         }
         .swal2-styled.swal2-cancel {

@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import swal from 'sweetalert2';
 
+import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
+
 import { FichesAchatService } from '@ab/fiches-achat';
 import { FicheAchat, FicheAchatDetails } from '@ab/fiches-achat';
 
@@ -140,6 +142,8 @@ export class FichesMaterielModificationInterfaceComponent
   ];
   public annexElementsNgModel: Object;
   public allAnnexElementsFicheMateriel = [];
+
+  public detailedReportLink;
 
   public allFichesMateriel = [];
   public allIdSelectedFichesMateriel = [];
@@ -490,6 +494,7 @@ export class FichesMaterielModificationInterfaceComponent
   displayNewObject(length, ficheMateriel) {
     if (length === 1) {
       this.newObject = ficheMateriel;
+      this.detailedReportLink = `${urlDetailedReportFicheAchat}${ficheMateriel.IdFicheAchat}`;
       this.getFicheAchat(ficheMateriel.IdFicheAchat);
       this.getFicheAchatDetail(ficheMateriel.IdFicheAchat);
       this.changeDateFormat('arg');

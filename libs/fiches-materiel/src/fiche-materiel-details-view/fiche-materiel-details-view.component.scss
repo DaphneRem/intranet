@@ -145,6 +145,23 @@ $iconColor : #7f7f7f;
                     }
                     p {
                         font-size: 1.1em;
+                        .rapport-link {
+                            &:hover, &:focus {
+                                color: $creationBtnColor;
+                            }
+                             &:visited {
+                                color: #000000;
+                            }
+                            span {
+                                &:hover {
+                                    text-decoration: underline;
+                                }
+                            }
+                            .rapport-icon {
+                                font-size: 20px;
+                                margin-right: 5px;
+                            }
+                        }
                         .ban {
                             color : $importantColor;
                         }

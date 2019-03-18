@@ -3,6 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Store } from '@ngrx/store';
+
+import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
+
 import {
   FicheMaterielModification
 } from '@ab/fiches-materiel/src/fiches-materiel-modification-interface/+state/fiche-materiel-modification.interfaces';
@@ -98,6 +101,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   public retourOri: RetourOri[];
   public retourOriReady: boolean;
 
+  public detailedReportLink;
+
   public icons: CustomIconBadge[];
   public fichesMaterielModification: CustomIconBadge = {
     littleIcon: {
@@ -168,6 +173,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
       console.log(this.idParamsFicheAchat);
       console.log(this.idParamsFicheMateriel);
     });
+    this.detailedReportLink = `${urlDetailedReportFicheAchat}${this.idParamsFicheAchat}`;
     this.getAnnexStatus();
     this.getRetourOriLib();
     this.getFicheAchatDetails(this.idParamsFicheAchatDetail);

@@ -498,7 +498,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       },
       {
         title : 'n°fiche achat',
-        data : 'NumEpisodeProd' // data manquante
+        data : 'numficheachat'
       },
       {
         title : 'type fiche achat',

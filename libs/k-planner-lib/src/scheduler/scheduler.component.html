@@ -1,76 +1,66 @@
-
 <div class="autre-planinngs">
-    
-<select  class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)" style="width: 25%">
- <option value="Mon planning" >Mon planning</option>
-    <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}"   >{{libelle.Libelle}}   </option >
 
-</select>
+    <select class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)"
+        style="width: 25%">
+        <option value="Mon planning">Mon planning</option>
+        <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
+
+    </select>
 
 
 
-<!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
-</div>
+    <!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
+    </div>
 
-<div class="control-section"   >
-  
 
-            <table class="table-light table-sm" id="property" title="Properties" style="width: 100%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
-                <tbody>
-                    <tr style="height: 50px">
-                        <td style="width: 5%">
-                            <div style="text-align:center"> Intervalle  (Minutes)</div>
-                            
-                        </td>
-                         <td >
-                            <div>
-                                <ejs-dropdownlist style="width: 10%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
-                            </div>
-                        </td>
-                       <!-- <td style="width: 10%" >
-                            <div style="text-align:center" > Heur Début
-                            </div>
-                        </td>
-                        <td style="width: 10%;" >
-                            <div>
-                                <ejs-timepicker #ejStartTimePicker id="startTime"  format='HH:mm' [strictMode]='isStrictMode' ></ejs-timepicker>
-                            </div>
-                        </td>
-                
-                        <td style="width: 10%" >
-                            <div style="text-align:center">Heur Fin
-                            </div>
-                        </td>
-                        <td style="width: 10%;">
-                            <div>
-                                <ejs-timepicker #ejEndTimePicker id="endTime" format='HH:mm' [strictMode]='isStrictMode'></ejs-timepicker>
-                            </div>
-                        </td>
-                   
-                        <td>
-                            <div>
-                                <button ejs-button id='submit' class="ml-3" style="text-align:center" (click)="onSubmit()">Valider</button>
-                            </div>
-                        </td> -->
-                    </tr>
-                </tbody>
-            </table>
-        
-    <div class="drag-sample-wrapper" >
+<div class="control-section card" style="margin-bottom: 0;">
+    <div class="drag-sample-wrapper">
         <div class="schedule-container">
-            <div class="title-container" *ngIf="!isnotMyGroup " >
-                   
-                     
-            
-            
-            <button #toggleBtn  ejs-button id="btn" (click)="displayRegies()" content="Voir toutes les Régies" class="btn btn-info btn-outline-dark regie ml-3 "></button> 
-          
-            <button class="btn btn-info regie refresh-btn ml-3" (click)="refreshScheduler()"><i class="icofont icofont-refresh"></i>Rafraichir</button>
-           
-        </div>
-           
-
-
+            <div class="title-container">                  
+            </div>
+            <div style="display: flex;">
+                <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button> 
+                <button class="btn btn-info regie refresh-btn mr-3" (click)="refreshScheduler()"><i class="icofont icofont-refresh"></i>Rafraichir</button>
+                <table class="table-light table-sm" id="property" title="Properties" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                    <tbody>
+                        <tr style="height: 40px">
+                            <td style="width: 5%">
+                                <div style="text-align:center"> Intervalle  (Minutes)</div>          
+                            </td>
+                            <td>
+                                <div>
+                                    <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
+                                </div>
+                            </td>
+                        <!-- <td style="width: 10%" >
+                                <div style="text-align:center" > Heur Début
+                                </div>
+                            </td>
+                            <td style="width: 10%;" >
+                                <div>
+                                    <ejs-timepicker #ejStartTimePicker id="startTime"  format='HH:mm' [strictMode]='isStrictMode' ></ejs-timepicker>
+                                </div>
+                            </td>
+                    
+                            <td style="width: 10%" >
+                                <div style="text-align:center">Heur Fin
+                                </div>
+                            </td>
+                            <td style="width: 10%;">
+                                <div>
+                                    <ejs-timepicker #ejEndTimePicker id="endTime" format='HH:mm' [strictMode]='isStrictMode'></ejs-timepicker>
+                                </div>
+                            </td>
+                    
+                            <td>
+                                <div>
+                                    <button ejs-button id='submit' class="ml-3" style="text-align:center" (click)="onSubmit()">Valider</button>
+                                </div>
+                            </td> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
                 (eventClick)="onEventClick()"
@@ -93,7 +83,6 @@
                 (change)="onChange($event)"
                 [ngStyle]="{'opacity':isnotMyGroup === true ?'0.7':'1' }"
                 >
-            
                 <!-- (renderCell)="onRenderCell($event)" -->
                 <e-resources>
                     <e-resource 
@@ -120,7 +109,6 @@
                             </div>
                         </ng-template > -->
                 <e-views>
-                        
                     <e-view option='TimelineDay'  #scheduleObjDay  >
                         <ng-template #eventTemplate let-data  class="event">
                             <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >

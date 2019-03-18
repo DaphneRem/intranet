@@ -145,6 +145,23 @@ $modificationColor: #FFB64D;
                     margin: 10px;
                     padding-bottom : 10px;
                     border : 1px solid $modificationColor;
+                    .rapport-link {
+                        &:hover, &:focus{
+                            color: $creationBtnColor;
+                        }
+                        &:visited {
+                            color: #000000;
+                        }
+                        span {
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                        .rapport-icon {
+                            font-size: 20px;
+                            margin-right: 5px;
+                        }
+                    }
                     .form-group {
                         // margin-bottom : 0;
                         &.livraison-datepicker {

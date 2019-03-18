@@ -156,6 +156,12 @@
           <p *ngIf="selectionType === 'one'">Type de fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.libelle_type_fiche}}</span>
           </p>
+          <p *ngIf="selectionType === 'one'">
+            <a href="{{detailedReportLink}}" target="_blank" class="rapport-link" placement="top" ngbTooltip="Voir le rapport détaillé de la Fiche Achat">
+              <i class="icofont icofont-list rapport-icon"></i>
+              <span>Rapport détaillé</span>
+            </a>
+          </p>
           <p *ngIf="selectionType === 'one' && ficheAchatReady"> Distributeur :
             <span *ngIf="ficheAchat.Distributeur">
               {{ficheAchat.Distributeur}}
