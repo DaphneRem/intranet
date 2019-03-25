@@ -2986,28 +2986,42 @@ public zoom : boolean = true;
 /********** Add Monteur  *********/
  public ajoutMonteur
  public monteurListArray
+ public countAdd : number  = 0
     onSelect(value) {
     let monteurListArray;
+    let fieldMonteur
         for (let i = 0; i < this.monteurListe.length; i++) {
             if (value === this.monteurListe[i].Username  ) {
-                monteurListArray = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift( this.monteurListe[i]))
-               
-                console.log(' this.ajoutMonteur>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',  monteurListArray);
+
+                fieldMonteur = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift( this.monteurListe[i])) //pour l'affichage dans le treeview
+                fieldMonteur.pop()
+
+                this.monteurDataSource.push(this.monteurListe[i])
+                this.monteurDataSource.unshift(this.monteurListe[i])
+                monteurListArray =  this.monteurDataSource
                 monteurListArray.pop();
-                this.fieldMonteur = { dataSource: monteurListArray , text: 'Username' };
+       
+              
                 
                 this.ajoutMonteur = this.monteurListe[i]
                 this.monteurListArray = monteurListArray
                 console.log('monteurListArray', this.monteurListArray);
                 this.filtermonteurListeArray = monteurListArray;
+                
                 console.log(  this.fieldMonteur);
                 this.addMonteur = true;
+
+
+                this.fieldMonteur['dataSource'] = fieldMonteur
+                  this.fieldMonteur = { dataSource:fieldMonteur , text: 'Username' };
+                  this.countAdd = this.countAdd +1
+                 
             }
         }
 
     }
     onSelectPlannig(value){
-        console.log(value,"eeeeeeeeeeeeeeeeeeeeeeeeeeee")
+     
     let codeGoupe
 
     this.timelineResourceDataOut = [];
@@ -3024,7 +3038,7 @@ public zoom : boolean = true;
           
         }
         })
-        console.log(codeGoupe,"eeeeeeeeeeeeeeeeeeeeeeeeeeee")
+      
 
         
         let startofDay = moment().toDate()
@@ -3125,32 +3139,25 @@ public zoom : boolean = true;
         if (tabIndex == 1) {
 
             if (!searchText  ) {
-                if( !this.addMonteur ){
+                
                 console.log('searchText', typeof searchText, searchText);
+              
                 this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
+        console.log("!!!!!!!!!!!!!!!!!!!!searchText",this.treeObjMonteur.fields['dataSource'] )
+
+
             }
              
             
+           
+       if(this.countAdd === 1) {
+        this.monteurDataSource.splice(0,1)
+       }
+           
+       
+     
+       
 
-            // else{
-                
-            //     this.filtermonteurListeArray = this.monteurDataSource
-            //     // .concat(this.ajoutMonteur)
-            //     this.filtermonteurListeArray.unshift(this.ajoutMonteur)
-            //     // this.filtermonteurListeArray.pop()
-            //     console.log('.......................................',   this.filtermonteurListeArray);
-              
-            // } 
-            // if(this.addMonteur ){
-            //     this.filtermonteurListeArray =  this.monteurDataSource.concat(this.ajoutMonteur)
-               
-           
-            //     console.log('this.filtermonteurListeArray aprés ajout', this.monteurDataSource);
-            //     console.log('this.filtermonteurListeArray aprés ajout', this.filtermonteurListeArray);
-            // }
-           
-        }
-        
     
        if(!this.isDelete){
             if (!this.addMonteur) {
@@ -3169,14 +3176,8 @@ public zoom : boolean = true;
                
                 });
                 console.log('this.dataMonteur', this.dataMonteur);
-                // if(!searchText){
-                //     this.dataMonteur =   this.filtermonteurListeArray.filter(monteurs => {
-                //         return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                //         // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
-                //         // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
-                   
-                //     }); 
-                // }
+                console.log('dataMonteur', this.fieldArrayMonteur);
+             
             }
 
         } else {
@@ -3186,17 +3187,18 @@ public zoom : boolean = true;
                 // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
                 // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
             });
-            console.log('dataMonteur', this.fieldArrayMonteur[0]);
+          
             console.log('dataMonteur', this.dataMonteur);
         }
-        console.log('monteurListArray', this.monteurListArray);
+            console.log('monteurListArray', this.monteurListArray);
             this.fieldMonteur['dataSource'] = this.dataMonteur;
             this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource']
             console.log('monteur datasource', this.monteurDataSource)
             console.log('filteredData', this.fieldMonteur);
             console.log('filteredData', this.dataMonteur);
             console.log(tabIndex);
-
+         
+    
         }
      
      
