@@ -31,7 +31,7 @@ export class AnnexesElementsDetailsModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getAnnexElementsCategories();
+    this.getAnnexElementsCategories(); // with comments
     this.getAnnexElementsAllSubCategories();
     this.getAnnexElementsFicheMateriel(this.IdFicheMateriel);
   }

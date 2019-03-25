@@ -31,6 +31,7 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
   public previousValueStatus;
   public previousValueStep;
   public addCommentStepStatus = true;
+  public openWarningSwalModal = false;
 
   constructor() { }
 
@@ -49,16 +50,58 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
       if (this.init) {
         // ne se lance pas à l'initialisation du composant
         if (changeStatus.currentValue === 3) {
+          console.log('change Statut current value => ', changeStatus.currentValue);
           console.log(this.allFichesMateriel.length);
           console.log(this.newObject.IdStatutElementsAnnexes);
           console.log(this.newObject.Renouvellement);
+          console.log(typeof this.newObject.DateAcceptation);
           console.log(this.newObject.DateAcceptation);
           console.log(this.newObject.IdStatutElementsAnnexes);
+          let statusIsOk = false;
+          let renouvellementIsOk = false;
+          let dateAcceptationIsOk = false;
+          if (this.newObject.IdStatutElementsAnnexes === 3) {
+            statusIsOk = true;
+          } else {
+            statusIsOk = false;
+          }
           if (
-            ((this.newObject.IdStatutElementsAnnexes !== 3)
-            || ((this.newObject.Renouvellement === this.valueNotToChangeLibelle) || (this.newObject.DateAcceptation === this.valueNotToChangeLibelle))
-            // || (this.newObject.Renouvellement === 1 && this.newObject.DateAcceptation !== null)
-            || ((this.newObject.Renouvellement === 0 || this.newObject.Renouvellement === null) && this.newObject.DateAcceptation === null))) {
+              this.newObject.Renouvellement === this.valueNotToChangeLibelle
+              || this.newObject.Renouvellement === 0
+              || this.newObject.Renouvellement === null
+            ) {
+              renouvellementIsOk = false;
+            } else {
+              renouvellementIsOk = true;
+          }
+          if (
+              this.newObject.DateAcceptation === null
+              || this.newObject.DateAcceptation === this.valueNotToChangeLibelle
+              || this.newObject.DateAcceptation === 'dd-mm-yyyy'
+            ) {
+              dateAcceptationIsOk = false;
+            } else {
+              dateAcceptationIsOk = true;
+          }
+          // if (
+          //     (this.newObject.IdStatutElementsAnnexes !== 3)
+          //     || (
+          //         (this.newObject.Renouvellement === this.valueNotToChangeLibelle)
+          //         || (this.newObject.DateAcceptation === this.valueNotToChangeLibelle)
+          //         || (this.newObject.DateAcceptation === 'dd-mm-yyyy')
+          //       )
+          //     || (
+          //         (this.newObject.Renouvellement === 0 || this.newObject.Renouvellement === null)
+          //         && (this.newObject.DateAcceptation === null || this.newObject.DateAcceptation === 'dd-mm-yyyy' || this.newObject.DateAcceptation === this.valueNotToChangeLibelle)
+          //         )
+              
+          //   ) {
+          console.log('statusIsOk => ', statusIsOk);
+          console.log('renouvellementIsOk => ', renouvellementIsOk);
+          console.log('dateAcceptationIsOk => ', dateAcceptationIsOk);
+          if (!statusIsOk || (!renouvellementIsOk && !dateAcceptationIsOk)) {
+            console.log('warning modal call');
+            this.openWarningSwalModal = true;
             this.openWarningSwal();
           // } else if (this.allFichesMateriel.length > 1) {
           //   const arrayIdStatutElementsAnnexes = [];
@@ -76,17 +119,20 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
           //     this.openWarningSwal();
           //   }
           } else {
+            console.log('!openswalWArning : all options are good for comment');
             this.openCommentSwal();
           }
         } else {
           if (this.addCommentStepStatus) {
+            console.log('add comment statut without change step');
             this.openCommentSwal();
           }
         }
       }
-      this.init++;
-      this.addCommentStepStatus = true;
+      // this.init++;
+      // this.addCommentStepStatus = true;
     } else if ((changes.step) && (!changes.status)) {
+      console.log(changes.status);
       console.log(changes.status);
       if (!changes.status) {
         console.log('change STEP');
@@ -96,13 +142,16 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
             this.previousValueStep = changeStep.previousValue;
         }
         console.log(changeStep);
-        if (this.init) {
+        if (this.init && !this.openWarningSwalModal) {
+          console.log('add comment');
           this.openCommentSwal();
         }
-        this.init++;
-        this.addCommentStepStatus = true;
+        // this.init++;
+        // this.addCommentStepStatus = true;
       }
     }
+          this.init++;
+          this.addCommentStepStatus = true;
   }
 
   onCommentChange(comment: string) {
@@ -142,6 +191,7 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
     }).then((result) => {
       this.onStatusChange(this.previousValueStatus);
       this.addCommentStepStatus = false;
+      this.openWarningSwalModal = false;
     });
   }
 

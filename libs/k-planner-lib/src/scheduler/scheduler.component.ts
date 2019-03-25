@@ -216,7 +216,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public fieldMonteur: Object;
     public isClicked: boolean = false;
     public allowDragAndDrop: boolean = true;
-    public isnotMyGroup : boolean = false
+    public isnotMyGroup : boolean = false;
     public draggedItemId: string = '';
     
     public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
@@ -305,13 +305,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         private libGroupeService: LibGroupeService , 
         private store: Store<App>
         ) {
+            this.isnotMyGroup = false;
             console.log('*******constructor*******');
             this.storeAppSubscription();
             this.getAllCoordinateurs();
             console.log('*******constructor*******');
                 // public departmentDataSource: Object[] = [];
-
-        }
+    }
 
     ngOnInit() {
         console.log(this.scheduleObj);
@@ -343,13 +343,23 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     refreshScheduler() {
+        this.timelineResourceDataOut = [];
         this.openEditorCount = 0;
         console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.log('refresh scheduler click');
         console.log('isClicked : ', this.isClicked);
-        this.timelineResourceDataOut = [];
+        this.departmentDataSource = [];
+        this.departmentDataSourceAll = [];
+        this.departmentGroupDataSource = [];
         this.allDataContainers = [];
         this.allDataWorkorders = [];
+        // this.departmentGroupDataSource = [];
+        console.log('this.refreshDateStart : ', this.refreshDateStart);
+        console.log('this.refreshDateEnd : ', this.refreshDateEnd);
+        if ((this.refreshDateStart === undefined || this.refreshDateEnd === undefined) && this.scheduleObj.currentView === 'TimelineDay') {
+            this.refreshDateStart = moment().toDate();
+            this.refreshDateEnd = moment().add(1, 'd').toDate();
+        }
         if (this.isClicked) {
             console.log('refresh scheduler with all regies');
             this.toggleBtn.content = 'Voir mes Régies  ';
@@ -372,16 +382,18 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     getAllCoordinateurs() {
-          console.log('get ALL');
+        this.timelineResourceDataOut = [];
+        this.departmentGroupDataSource = [];
+        this.allDataContainers = [];
+        this.allDataWorkorders = [];
+        console.log('get ALL Coordinateurs');
         let startofDay = moment().toDate()
         let endofDay = moment().add(1, 'd').toDate();
-  
         this.coordinateurService.getAllCoordinateurs()
-          .subscribe(data => {
-              console.log('all coordinateurs : ', data);
-              data.forEach(item => {
-                  if (item.Username === this.user.shortUserName) {
-                   
+            .subscribe(data => {
+                console.log('all coordinateurs : ', data);
+                data.forEach(item => {
+                    if (item.Username === this.user.shortUserName) {
                         console.log('COORDINATEUR => ', item);
                         this.getSalleByGroup(item.Groupe, startofDay, endofDay);
                         // ID PROVISOIRE !!!
@@ -390,11 +402,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         this.getAllMonteurs(item.Groupe);
                         this.currentCoordinateur = item;
                         this.getLibGroupe(item.Groupe)
-                   
-                }
-              });
-        });
-    
+                    }
+                });
+            });
     }
 
     storeAppSubscription() {
@@ -403,10 +413,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             this.user = data['app'].user;
             console.log(this.user);
         });
-
-
-        // this.getWorkOrderByidGroup(3);
-        // this.getAllMonteurs();
     }
 
     onEventClick(e: ActionEventArgs) {
@@ -425,6 +431,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     getSalleByGroup(idGroup, start, end) {
         // this.toggleBtn.content = 'Voir autres Régies';
         console.log(this.departmentDataSource);
+        console.log(this.departmentGroupDataSource);
         this.salleService
             .getGroupSalle(idGroup)
             .subscribe(donnees => {
@@ -451,6 +458,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 // let endofDay = moment().add(1, 'd').toDate();
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
+                    console.log('--------------------------------------------------indexSalle => ', indexSalle);
                     this.getContainersByRessourceStartDateEndDate(
                         salle.CodeRessource,
                         start,
@@ -482,10 +490,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     });
                 }
             });
-            // let startofDay = moment().toDate()
-            // let endofDay = moment().add(1, 'd').toDate();
             this.salleDataSource.forEach(salle => {
                 let indexSalle = this.salleDataSource.indexOf(salle);
+                console.log('--------------------------------------------------indexSalle => ', indexSalle);
                 this.getContainersByRessourceStartDateEndDate(
                     salle.CodeRessource,
                     start,
@@ -514,13 +521,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     if (item.codegroupe !== group) {
                         this.monteurListe.push(item);
                          this.codegroupe = item.codegroupe;
-                         
                     }
                 });
-                
             });
-
-         
     }
 
     getMonteursByGroup(idGroup) {
@@ -556,63 +559,47 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             });
     }
 
+    public lastSalleCall = false;
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
+        console.log('--------------------------------------------------indexSalle => ', indexSalle);
         let debut =moment(datedebut).format('YYYY-MM-DD').toString();
         let fin = moment(datefin).format('YYYY-MM-DD').toString();
-     
-        console.log(debut,fin, 'debut fin !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        if (indexSalle === (this.salleDataSource.length - 1)) {
+            this.lastSalleCall = true;
+        }
+        console.log('******************************** this.lastSalleCall ===> ', this.lastSalleCall);
+        console.log('debut =>', debut);
+        console.log('fin =>', fin);
+        console.log('coderessource salle => ', coderessource);
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
             .subscribe(res => {
                 this.dataContainersByRessourceStartDateEndDate = res;
-                console.log('container by ressource, startDate and endDate',  this.dataContainersByRessourceStartDateEndDate);
-                console.log(res.length);
+                console.log('container present in regie : ',  this.dataContainersByRessourceStartDateEndDate);
+                console.log('debut =>', debut);
+                console.log('fin =>', fin);
+                console.log('coderessource salle => ', coderessource);
+                console.log('container res.length :', res.length);
                 if (res.length > 0) {
                     this.allDataContainers = [...this.allDataContainers, ...res];
-                    console.log('conainer present : ', res);
-                    console.log(this.dataContainersByRessourceStartDateEndDate);
+                    console.log('regie contains container : ', res.length);
                     this.dataContainersByRessourceStartDateEndDate.map(data => {
                         this.idExisting.push(data.Id_Planning_Container);
-                        console.log('data brut for conainer : ', data);
-                        let StartTime =   moment(data.DateDebutTheo, moment.defaultFormat).toDate() ,
-                        EndTime = moment(data.DateFinTheo, moment.defaultFormat).toDate();
-
-                        let dateDebut =  StartTime,
-                            dateFin= EndTime
-                        // console.log(debut, '*******************************debut')
-                        //    console.log(data, '*******************************data')
-                        //    console.log(data.DateDebutTheo, '*******************************data.DateDebutTheo')
-                        //    console.log(StartTime, '*******************************StartTime')
-                    //    let mois = moment(data.DateDebutTheo, moment.defaultFormat).toDate()
-                    //     console.log(  mois,'aa', mois._d, ' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! moisDebut !!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                        // let anneeDebut = StartTime.getFullYear(),
-                        // moisDebut =(StartTime.getMonth()+1), // +1
-                        // jourDebut = StartTime.getDate(),
-                        // heurDebut = StartTime.getHours(),
-                        // minuteDebut = StartTime.getMinutes();
-
-                        // let anneefin = EndTime.getFullYear(),
-                        // moisfin = (EndTime.getMonth()+1),
-                        // jourfin = EndTime.getDate(),
-                        // heurfin = EndTime.getHours(),
-                        // minutefin = EndTime.getMinutes();
-                        // console.log(  new Date(anneeDebut,moisDebut,jourDebut,heurDebut,minuteDebut), ' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEW DATE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                        // console.log(EndTime.getTime(),'day');
-                        // console.log(datefin,'datefin');
-
+                        console.log('item in container present in regie (map) : ', data);
+                        let dateDebut =   moment(data.DateDebutTheo, moment.defaultFormat).toDate();
+                        let dateFin = moment(data.DateFinTheo, moment.defaultFormat).toDate();
                         let initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0,1);
-                        console.log('initiales =====> ', initiales);
 
                         this.timelineResourceDataOut.push({
                             Id: data.Id_Planning_Container,
-                            Name: (data.Titre === null || typeof(data.Titre) === 'undefined') ? 'Titre null' : data.Titre,
-                            StartTime:dateDebut,
-                            EndTime:  dateFin  , // date provisoire
+                            Name: (data.Titre === null || typeof(data.Titre) === 'undefined') ? 'Titre' : data.Titre,
+                            StartTime: dateDebut,
+                            EndTime: dateFin ,
                             CodeRessourceSalle: coderessource,
                             Container: true,
-                            numGroup:data.Id_Planning_Container,
-                            Description:data.Commentaire,
-                            Operateur:data.LibelleRessourceOperateur === null ? '' : data.LibelleRessourceOperateur,
+                            numGroup: data.Id_Planning_Container,
+                            Description: data.Commentaire,
+                            Operateur: data.LibelleRessourceOperateur === null ? '' : data.LibelleRessourceOperateur,
                             coordinateurCreate: initiales,
                             AzaIsPere: true,
                             AzaNumGroupe:  data.Id_Planning_Container,
@@ -623,22 +610,28 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         });
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
+                        console.log('--------------------------------------------------indexSalle => ', indexSalle);
                         this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length, indexSalle);
-                        
-                    console.log('containerData starttime +++++++++++++++++++++++++++++++++++++++++++++++++++++',this.timelineResourceDataOut);
                     });
+                    console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
                     // timelineResourceDataOut
                     this.updateEventSetting(this.timelineResourceDataOut);
                     // this.departmentDataSource = this.departmentGroupDataSource;
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
                     console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
                 } else {
-                    console.log('conainer not present for regie : ', coderessource, res);
+                    console.log('container not present for regie : ', coderessource, res);
                 }
         });
     }
     public allDataWorkorders = [];
     getWorkorderByContainerId(id, codeSalle, index, containerArrayLength, indexSalle) {
+        console.log('--------------------------------------------------indexSalle => ', indexSalle);
+        console.log('id container to check workorder => ', id)
+        console.log('codeSalle => ', codeSalle);
+        console.log('index => ', index);
+        console.log('containerArrayLength => ', containerArrayLength);
+        console.log('this.salleDataSource.length => ', this.salleDataSource.length)
         this.workorderService
             .getWorkOrderByContainerId(id)
             .subscribe(res => {
@@ -646,14 +639,15 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.WorkorderByContainerId = res;
                 this.allDataWorkorders = [...this.allDataWorkorders, ...res];
                 // console.log('all data workorder : ', this.allDataWorkorders);
-                if (this.WorkorderByContainerId != []) {
+                console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
+                console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
+                if (this.WorkorderByContainerId.length > 0) {
                     this.WorkorderByContainerId.map(data => {
-                        let StartTime =   moment(data.DateDebutTheo, moment.defaultFormat).toDate() ,
-                        EndTime = moment(data.DateFinTheo, moment.defaultFormat).toDate();
+                        let StartTime =   moment(data.DateDebutTheo, moment.defaultFormat).toDate(),
+                            EndTime = moment(data.DateFinTheo, moment.defaultFormat).toDate();
                         let dateDebut =  StartTime,
                             dateFin= EndTime
-                        this.timelineResourceDataOut.push({
-
+                        let newWorkorderEvent = {
                             Id: data.Id_Planning_Events,
                             Name:  data.titreoeuvre  + data.numepisode,
                             StartTime: dateDebut ,
@@ -678,47 +672,63 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             dureecommerciale:data.dureecommerciale,
                             libtypeWO:data.libtypeWO,
                             Commentaire_Planning:data.Commentaire_Planning
+                        }
+                        this.timelineResourceDataOut.push(newWorkorderEvent);
                     });
-
-                });
                 // console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
                 // console.log('Planning Events', this.timelineResourceDataOut[0].AzaIsPere );
-           for(let i = 0 ; i< this.timelineResourceDataOut.length; i++)
-           {
-               let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
-               numepisode = this.timelineResourceDataOut[i].numepisode,
-               dureecommerciale=this.timelineResourceDataOut[i].dureecommerciale,
-                AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere
-                
-                this.temp =  
-                '<div class="tooltip-wrap">' +
-                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > Type de Travail: &nbsp; ${typetravail}<br> ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </>  </div> ${/if}' +
-                '${if(  Commentaire_Planning !== null && Commentaire_Planning !== undefined )}<div> Description : &nbsp; ${Commentaire_Planning} </>  </div> ${/if}'+
-                '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
-                '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
-                   
-           }
-                this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                    dataSource: <Object[]>extend(
-                        [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
-                    ),
-                    enableTooltip: true, tooltipTemplate: this.temp
-                };
-                // this.eventSettings = {
+                //    for(let i = 0 ; i< this.timelineResourceDataOut.length; i++)
+                //    {
+                //        let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
+                //        numepisode = this.timelineResourceDataOut[i].numepisode,
+                //        dureecommerciale=this.timelineResourceDataOut[i].dureecommerciale,
+                //         AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere
+                //         this.temp =  
+                //         '<div class="tooltip-wrap">' +
+                //         '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </div> ${/if}' +
+                //         '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
+                //         '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
+                //    }
+                this.createTooltipWorkorder();
+                console.log('workorder function get : call calculDateAll function');
+
+                // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                 //     dataSource: <Object[]>extend(
-                //         [], this.timelineResourceDataOut, null, true
+                //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
                 //     ),
                 //     enableTooltip: true, tooltipTemplate: this.temp
                 // };
+
+                this.eventSettings = {
+                    dataSource: <Object[]>extend(
+                        [], this.timelineResourceDataOut, null, true
+                    ),
+                    enableTooltip: true, tooltipTemplate: this.temp
+                };
+                console.log('indexSalle => ', indexSalle);
+                console.log('this.salleDataSource.length => ', this.salleDataSource.length);
                 if (indexSalle === this.salleDataSource.length - 1) {
                     console.log('*********** end to initial request for all regies container and workorders ***********');
                     this.updateEventSetting(this.timelineResourceDataOut);
+                    this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                        dataSource: <Object[]>extend(
+                            [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                        ),
+                        enableTooltip: true, tooltipTemplate: this.temp
+                    };
                 }
             } else {
-                console.log(indexSalle);
-                if (indexSalle === this.salleDataSource.length - 1) {
+                console.log('indexSalle => ', indexSalle);
+                console.log('this.salleDataSource.length => ', this.salleDataSource.length);
+                if (indexSalle === (this.salleDataSource.length - 1)) {
                     this.updateEventSetting(this.timelineResourceDataOut);
                     console.log('*********** end to initial request for all regies container and workorders ***********');
+                    this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                        dataSource: <Object[]>extend(
+                            [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                        ),
+                        enableTooltip: true, tooltipTemplate: this.temp
+                    };
                 }
             }
             if (index === (containerArrayLength - 1)) {
@@ -733,6 +743,21 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         });
     }
 
+    createTooltipWorkorder() {
+        for (let i = 0 ; i< this.timelineResourceDataOut.length; i++) {
+            let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
+                numepisode = this.timelineResourceDataOut[i].numepisode,
+                dureecommerciale=this.timelineResourceDataOut[i].dureecommerciale,
+                AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere
+            this.temp = '<div class="tooltip-wrap">' +
+                '<div class="tooltip-wrap">' +
+                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > Type de Travail: &nbsp; ${typetravail}<br> ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </>  </div> ${/if}' +
+                '${if(  Commentaire_Planning !== null && Commentaire_Planning !== undefined )}<div> Description : &nbsp; ${Commentaire_Planning} </>  </div> ${/if}'+
+                '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
+                '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
+        }
+    }
+
 
     getWorkOrderByidGroup(idGroup) {
         console.log(this.workOrderData);
@@ -745,8 +770,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 let testUser = 'VITIPON-C';
                 this.WorkOrderByidgroup.map(workOrder => {
                     console.log('workorder to map : ', workOrder)
-                    let StartTime =   moment(workOrder.DateDebut, moment.defaultFormat).toDate() ,
-                    EndTime = moment(workOrder.DateFin, moment.defaultFormat).toDate();
+                    let StartTime = moment(workOrder.DateDebutTheo, moment.defaultFormat).toDate(),
+                      EndTime = moment(workOrder.DateFinTheo, moment.defaultFormat).toDate();
                     let dateDebut =  StartTime,
                         dateFin= EndTime
                 this.workOrderData.push({
@@ -775,7 +800,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     libtypeWO:workOrder.libtypeWO,
                     Commentaire_Planning: workOrder.Commentaire_Planning
                 });
-            })
+            }),
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                 enableTooltip: true, tooltipTemplate: this.temp
             };
@@ -789,8 +814,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             console.log('WorkOrderByidgroup', this.workOrderData);
             console.log('this.fieldArray', this.field);
         }
-    });
-
+        });
     }
 
 
@@ -960,14 +984,71 @@ public createJustContainerAction = false;
     }
 
 
-/************************************************************/
-/**************************** PUT ***************************/
+/******************************************************************************************************************************************/
+/********************************************************************** PUT ***************************************************************/
+/******************************************************************************************************************************************/
 
-/******************* CONTAINER ******************/
 
-/**** PUT CONTAINER WITH RESIZE OR EDITOR ****/
+/******************************************************************************************************************/
+/***************************************************** CONTAINER **************************************************/
+
+/**************** PUT CONTAINER WITH RESIZE OR EDITOR ************/
 public updateContainerAction;
-    putContainer(id, container, event) { // RESIZE AND EditoR
+public isBackToBacklog: boolean = false;
+
+    updateContainer(args) { // CALL IN RESIZE, DEPLACEMENTS AND EDITOR
+        this.updateContainerAction = true;
+        console.log('update container function');
+        let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+        args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
+        let event = args.data;
+        let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
+        console.log('old Event container :', oldEvent);
+        let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
+        let container = containerResult[0];
+        let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
+        let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+        let codeRessourceOperateur;
+        let libelleRessourceSalle;
+        let codeRessourceSalle;
+        this.monteurDataSource.map(item => {
+            if (item.Username === event.Operateur) {
+                codeRessourceOperateur = item.CodeRessource;
+            }
+        });
+        console.log(this.departmentDataSource);
+        this.departmentDataSource.map(item => {
+            if (item['Id'] === event.DepartmentID) {
+                libelleRessourceSalle = item['Text'];
+                codeRessourceSalle = item['codeRessource'];
+            }
+        });
+        let newContainer = {
+            Id_Planning_Container: container.Id_Planning_Container,
+            UserEnvoi: container.UserEnvoi,
+            DateEnvoi: container.DateEnvoi,
+            Titre: event.Name,
+            CodeRessourceOperateur: codeRessourceOperateur,
+            LibelleRessourceOperateur: event.Operateur,
+            CodeRessourceCoordinateur: container.codeRessourceCoordinateur,
+            LibelleRessourceCoordinateur: container.libelleRessourceCoordinateur,
+            DateSoumission: null,
+            DateDebut: container.DateDebut,
+            DateFin: container.DateFin,
+            DateDebutTheo: startTime,
+            DateFinTheo: endTime,
+            CodeRessourceSalle: codeRessourceSalle,
+            LibelleRessourceSalle: libelleRessourceSalle,
+            Commentaire: '',
+            Commentaire_Planning: '',
+            DateMaj: now,
+            UserMaj: this.user.shortUserName,
+            PlanningEventsList: null
+        };
+        this.putContainer(newContainer.Id_Planning_Container, newContainer, event);
+    }
+
+    putContainer(id, container, event) { // call in resize, deplacement and Editor (call in updateContainer() function)
         this.containersService.updateContainer(id, container)
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
@@ -997,6 +1078,7 @@ public updateContainerAction;
                     ),
                     enableTooltip: true, tooltipTemplate: this.temp
                 };
+                this.updateWorkorderInContainerUpdate(id, container, event);
                 // this.eventSettings = {
                 //     dataSource: <Object[]>extend(
                 //         [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
@@ -1005,7 +1087,6 @@ public updateContainerAction;
                 // };
             }, error => {
                 console.error('error updatecontainer', error);
-                // alert('error updatecontainer');
                 swal({
                   title: 'Attention',
                   text:'Le déplacement est impossible car l\'emplacement est occupé par un autre container',
@@ -1016,59 +1097,6 @@ public updateContainerAction;
         )
     }
 
-    updateContainer(args) {
-        this.updateContainerAction = true;
-        console.log('update container function');
-        let now = moment().format('YYYY-MM-DDTHH:mm:ss');
-        args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
-        let event = args.data;
-        console.log('event', event)
-        let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
-        console.log('old Event container :', oldEvent);
-        let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
-        let container = containerResult[0];
-        console.log('container ', container )
-        let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
-        let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
-        let codeRessourceOperateur;
-        let libelleRessourceSalle;
-        let codeRessourceSalle;
-        this.monteurDataSource.map(item => {
-            if (item.Username === event.Operateur) {
-                codeRessourceOperateur = item.CodeRessource;
-            }
-        });
-        console.log(this.departmentDataSource);
-        this.departmentDataSource.map(item => {
-            if (item['Id'] === event.DepartmentID) {
-                libelleRessourceSalle = item['Text'];
-                codeRessourceSalle = item['codeRessource'];
-            }
-        });
-        let newContainer = {
-            Id_Planning_Container: container.Id_Planning_Container,
-            UserEnvoi: container.UserEnvoi,
-            DateEnvoi: container.DateEnvoi,
-            Titre: event.Name,
-            CodeRessourceOperateur: codeRessourceOperateur,
-            LibelleRessourceOperateur: event.Operateur,
-            CodeRessourceCoordinateur: container.codeRessourceCoordinateur,
-            LibelleRessourceCoordinateur: container.libelleRessourceCoordinateur,
-            DateSoumission: null,
-            DateDebut: startTime,
-            DateFin: endTime,
-            DateDebutTheo: startTime,
-            DateFinTheo: endTime,
-            CodeRessourceSalle: codeRessourceSalle,
-            LibelleRessourceSalle: libelleRessourceSalle,
-            Commentaire: '',
-            Commentaire_Planning: '',
-            DateMaj: now,
-            UserMaj: this.user.shortUserName,
-            PlanningEventsList: null
-        };
-        this.putContainer(newContainer.Id_Planning_Container, newContainer, event);
-    }
 
 /**** PUT CONTAINER WITH OPERATEUR DRAG AND DROP ****/
 
@@ -1084,7 +1112,7 @@ public updateContainerAction;
         this.putContainerFromDragDropOperateur(id, containerResult, indexContainerEvent, operateurObject);
     }
 
-    putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject) { // RESIZE AND EditoR
+    putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject) { // RESIZE AND EDITOR
         this.containersService.updateContainer(id, container)
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
@@ -1097,7 +1125,75 @@ public updateContainerAction;
         )
     }
 
-/******************* WORKORDER ******************/
+/*************************************************** WORKORDER ****************************************************/
+
+/*** PUT WORKORDER IN CONTAINER UPDATE ***/
+
+    updateWorkorderInContainerUpdate(id, container, event) { // RESIZE AND EDITOR
+         let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere);
+            console.log('workorderEventToUpdate => ', workorderEventToUpdate);
+            let numberOfWorkorder = workorderEventToUpdate.length;
+            if (workorderEventToUpdate.length > 0) {
+                // this.createJustContainerAction = false;
+                workorderEventToUpdate.map(item => {
+                    this.putWorkorderFromUpdateContainer(id, container, event, item);
+                });
+            };
+    }
+
+    putWorkorderFromUpdateContainer(id, container, eventContainer, eventWorkorder) { // RESIZE AND EDITOR
+        let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+        let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === eventWorkorder.Id);
+        let workorderSelected = workorderResult[0];
+        let startTime = moment(eventWorkorder.StartTime).format('YYYY-MM-DDTHH:mm:ss');
+        let endTime = moment(eventWorkorder.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+        let newWorkorder = {
+            Id_Planning_Events: workorderSelected.Id_Planning_Events,
+            Iddetail: workorderSelected.Iddetail,
+            IdTypeWO: workorderSelected.IdTypeWO,
+            UserEnvoi: workorderSelected.UserEnvoi,
+            DateEnvoi: workorderSelected.DateEnvoi,
+            CodeRessourceOperateur: container.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
+            CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
+            DateSoumission: workorderSelected.DateSoumission,
+            DateDebut: startTime,
+            DateFin: startTime,
+            DateDebutTheo: startTime,
+            DateFinTheo: endTime,
+            CodeRessourceSalle: container.CodeRessourceSalle,
+            Commentaire: null,
+            Support1Cree: null,
+            Support2Cree: null,
+            MustWaitFor: null,
+            Statut: workorderSelected.Statut,
+            idplanningprec: null,
+            Regroup: null,
+            Commentaire_Planning: eventWorkorder.Commentaire_Planning,
+            DateMaj: now,
+            UserMaj: this.user.shortUserName,
+            Id_Planning_Container: container.Id_Planning_Container,
+            isbacklog: 0,
+            libchaine: workorderSelected.libchaine,
+            typetravail:workorderSelected.typetravail,
+            titreoeuvre:workorderSelected.titreoeuvre,
+            numepisode:workorderSelected.numepisode,
+            dureecommerciale:workorderSelected.dureecommerciale,
+        }
+        console.log("newWorkorder => ", newWorkorder);
+        this.workorderService
+            .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
+            .subscribe(res => {
+                console.log('update workorder with success : ', res);
+                console.log(this.allDataWorkorders); // all brut workorder data in backlog
+                this.allDataWorkorders = this.allDataWorkorders.filter(item => item.Id !== newWorkorder.Id_Planning_Events);
+                this.allDataWorkorders.push(newWorkorder);
+                console.log(this.allDataWorkorders);
+            }, error => {
+                alert('error update workorder');
+                console.error('error update workorder : ', error)
+            }
+        );
+    }
 
 /**** PUT WORKORDER IN DRAG AND DROP ****/
 
@@ -1157,7 +1253,7 @@ public updateContainerAction;
             numepisode:workorderSelected.numepisode,
             dureecommerciale:workorderSelected.dureecommerciale,
             libtypeWO:workorderSelected.libtypeWO,
-         
+        
         }
         console.log('workorder data selected', newWorkorder);
         this.putWorkorder(newWorkorder.Id_Planning_Events, newWorkorder, event);
@@ -1192,8 +1288,12 @@ public updateContainerAction;
         let workorderResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id);
         let workorderSelected = workorderResult[0];
         console.log('workorderSelected', workorderSelected);
+        let otherWorkorderExistForCOntainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere);
+        console.log('otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+        // let startTime = moment(containerParent.StartTime).format('YYYY-MM-DDTHH:mm:ss');
+        // let endTime = moment(containerParent.EndTime).format('YYYY-MM-DDTHH:mm:ss');
         let codeRessourceOperateur;
         let libelleRessourceSalle;
         let codeRessourceSalle;
@@ -1209,42 +1309,66 @@ public updateContainerAction;
                 codeRessourceSalle = item['codeRessource'];
             }
         });
-        this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
-        let newWorkorder = {
-            Id_Planning_Events: workorderSelected.Id_Planning_Events,
-            Iddetail: workorderSelected.Iddetail,
-            IdTypeWO: workorderSelected.IdTypeWO,
-            UserEnvoi: workorderSelected.UserEnvoi,
-            DateEnvoi: workorderSelected.DateEnvoi,
-            CodeRessourceOperateur: containerParent.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
-            CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
-            DateSoumission: workorderSelected.DateSoumission,
-            DateDebut: startTime,
-            DateFin: startTime,
-            DateDebutTheo: startTime,
-            DateFinTheo: endTime,
-            CodeRessourceSalle: containerParent.CodeRessourceSalle,
-            Commentaire: null,
-            Support1Cree: null,
-            Support2Cree: null,
-            MustWaitFor: null,
-            Statut: workorderSelected.Statut,
-            idplanningprec: null,
-            Regroup: null,
-            Commentaire_Planning: workorderSelected.Commentaire_Planning,
-            DateMaj: now,
-            UserMaj: this.user.shortUserName,
-            Id_Planning_Container: containerParent.Id_Planning_Container,
-            isbacklog: 0,
-            libchaine:workorderSelected.libchaine,
-            typetravail:workorderSelected.typetravail,
-            titreoeuvre:workorderSelected.titreoeuvre,
-            numepisode:workorderSelected.numepisode,
-            dureecommerciale:workorderSelected.dureecommerciale,
-            libtypeWO:workorderSelected.libtypeWO,
-         
+        if (otherWorkorderExistForCOntainer.length > 0) {
+            console.log('otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
+            let startDifferent = this.checkDiffExistById(containerParent, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+            let endDifferent = this.checkDiffExistById(containerParent, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+            this.timelineResourceDataOut.push(event);
+            let provisionalTimelineDataOut = this.calculPrevisonalDateGroup(
+                this.timelineResourceDataOut,
+                event.AzaNumGroupe, true, event,
+                startDifferent, endDifferent
+            );
+            console.log('provisionalTimelineDataOut => ', provisionalTimelineDataOut);
+            console.log(event.Id);
+            let eventNewDates = provisionalTimelineDataOut.filter(item => item['AzaNumGroupe'] === event.AzaNumGroupe && !item['AzaIsPere']);
+            console.log(eventNewDates);
+            for (let i = 0; i < eventNewDates.length; i++) {
+                console.log(eventNewDates[i]);
+                this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent, provisionalTimelineDataOut);
+            }
+        } else {
+            console.log('NO otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
+            this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
+            let newWorkorder = {
+                Id_Planning_Events: workorderSelected.Id_Planning_Events,
+                Iddetail: workorderSelected.Iddetail,
+                IdTypeWO: workorderSelected.IdTypeWO,
+                UserEnvoi: workorderSelected.UserEnvoi,
+                DateEnvoi: workorderSelected.DateEnvoi,
+                CodeRessourceOperateur: containerParent.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
+                CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
+                DateSoumission: workorderSelected.DateSoumission,
+                DateDebut: startTime,
+                DateFin: startTime,
+                DateDebutTheo: startTime,
+                DateFinTheo: endTime,
+                CodeRessourceSalle: containerParent.CodeRessourceSalle,
+                Commentaire: null,
+                Support1Cree: null,
+                Support2Cree: null,
+                MustWaitFor: null,
+                Statut: workorderSelected.Statut,
+                idplanningprec: null,
+                Regroup: null,
+                Commentaire_Planning: null,
+                DateMaj: now,
+                UserMaj: this.user.shortUserName,
+                Id_Planning_Container: containerParent.Id_Planning_Container,
+                isbacklog: 0,
+                libchaine:workorderSelected.libchaine,
+                typetravail:workorderSelected.typetravail,
+                titreoeuvre:workorderSelected.titreoeuvre,
+                numepisode:workorderSelected.numepisode,
+                dureecommerciale:workorderSelected.dureecommerciale,
+            }
+            console.log('workorder data selected', newWorkorder);
+            this.putWorkorderWithCalcul(newWorkorder, event, containerParent, this.timelineResourceDataOut, true);
         }
-        console.log('workorder data selected', newWorkorder);
+
+    }
+
+    putWorkorderWithCalcul(newWorkorder, eventWorkorder, containerParent, timelineDataOut, pushEvent) {
         this.workorderService
             .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
             .subscribe(res => {
@@ -1253,12 +1377,26 @@ public updateContainerAction;
                 let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === containerParent.Id_Planning_Container && item.AzaIsPere);
                 let containerPere = containerEvent[0];
                 this.allDataWorkorders.push(newWorkorder);
-                this.timelineResourceDataOut.push(event);
-                 let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, "StartTime", "StartTime");
-                 let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, "EndTime", "EndTime");
-                 this.eventSettings = {
-                     dataSource: <Object[]>extend([], this.calculDateAll(this.timelineResourceDataOut, true, containerPere, startDifferent, endDifferent), null, true),  
-                       enableTooltip: true, tooltipTemplate: this.temp };
+                console.log('eventWorkorder =================>', eventWorkorder);
+                if(pushEvent) {
+                    this.timelineResourceDataOut.push(eventWorkorder);
+                }
+                let startDifferent = this.checkDiffExistById(containerPere, timelineDataOut, 'StartTime', 'StartTime');
+                let endDifferent = this.checkDiffExistById(containerPere, timelineDataOut, 'EndTime', 'EndTime');
+                console.log('update only group in timelinesDataOut');
+                this.timelineResourceDataOut =  this.calculDateGroup(
+                            timelineDataOut,
+                            containerPere.Id_Planning_Container,
+                            true,
+                            containerPere,
+                            startDifferent,
+                            endDifferent
+                        );
+                console.log('this.timelineResourceDataOut after calcul workorder update => ', this.timelineResourceDataOut);
+                this.eventSettings = {
+                    dataSource: <Object[]>extend([], this.timelineResourceDataOut, null, true),
+                        enableTooltip: true, tooltipTemplate: this.temp
+                };
             }, error => {
                 alert('error update workorder');
                 console.error('error update workorder : ', error)
@@ -1266,9 +1404,67 @@ public updateContainerAction;
         );
     }
 
+    updateStartTimeAndEndTimeWorkorder(event, containerParent, provisionalTimelineDataOut) {
+        console.log(event);
+        let workorder;
+        let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+        let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
+        let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+        console.log('event ID ============> ', event.Id);
+        console.log('this.allDataWorkorders -----> ', this.allDataWorkorders);
+        console.log('this.WorkOrderByidgroup -----> ', this.WorkOrderByidgroup);
+        let workorderPlanningResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id);
+        let workorderBacklogResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id);
+        if (workorderPlanningResult.length > 0) {
+            workorder = workorderPlanningResult[0];
+            console.log(workorderPlanningResult);
+        } else {
+            workorder = workorderBacklogResult[0];
+            console.log(workorderBacklogResult);
+        }
+        console.log('workorder before => ', workorder);
+        let newWorkorder = {
+            Id_Planning_Events: workorder.Id_Planning_Events,
+            Iddetail: workorder.Iddetail,
+            IdTypeWO: workorder.IdTypeWO,
+            UserEnvoi: workorder.UserEnvoi,
+            DateEnvoi: workorder.DateEnvoi,
+            CodeRessourceOperateur: containerParent.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
+            CodeRessourceCoordinateur: workorder.CodeRessourceCoordinateur,
+            DateSoumission: workorder.DateSoumission,
+            DateDebut:  workorder.DateDebut,
+            DateFin:  workorder.DateFin,
+            DateDebutTheo: startTime,
+            DateFinTheo: endTime,
+            CodeRessourceSalle: containerParent.CodeRessourceSalle,
+            Commentaire: null,
+            Support1Cree: null,
+            Support2Cree: null,
+            MustWaitFor: null,
+            Statut: workorder.Statut,
+            idplanningprec: null,
+            Regroup: null,
+            Commentaire_Planning: workorder.Commentaire_Planning,
+            DateMaj: now,
+            UserMaj: this.user.shortUserName,
+            Id_Planning_Container: containerParent.Id_Planning_Container,
+            isbacklog: 0,
+            libchaine:workorder.libchaine,
+            typetravail:workorder.typetravail,
+            titreoeuvre:workorder.titreoeuvre,
+            numepisode:workorder.numepisode,
+            dureecommerciale:workorder.dureecommerciale,
+            libtypeWO:workorder.libtypeWO,
+        }
+
+        console.log('workorder after => ', newWorkorder);
+        this.putWorkorderWithCalcul(newWorkorder, event, containerParent, provisionalTimelineDataOut, false);
+    }
+
 /**** PUT WORKORDER BACK TO BACKLOG ****/
 
     updateWorkorderBackToBacklog(event, containerPere) {
+        this.isBackToBacklog = true;
         console.log(event);
         console.log(containerPere);
         console.log('event workorder to transform in workorder data : ', event);
@@ -1305,8 +1501,33 @@ public updateContainerAction;
                             console.error('error for delete container request : ', error);
                         })
                 }
-            }
-        )};
+            })
+        } else {
+            // console.log('other workorders presents for container');
+            // let provisionaldeletetimelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
+            //     if (+event.Id !== +item.Id) {
+            //         return item;
+            //     }
+            // });
+            // console.log(provisionaldeletetimelineResourceDataOut);
+            // let startDifferent = this.checkDiffExistById(containerPere, provisionaldeletetimelineResourceDataOut, 'StartTime', 'StartTime');
+            // let endDifferent = this.checkDiffExistById(containerPere, provisionaldeletetimelineResourceDataOut, 'EndTime', 'EndTime');
+            // console.log('startDifferent => ', startDifferent);
+            // console.log('endDifferent => ', endDifferent);
+            // let provisionalTimelineDataOut = this.calculPrevisonalDateGroup(
+            //     provisionaldeletetimelineResourceDataOut,
+            //     event.AzaNumGroupe, true, event,
+            //     true, true
+            // );
+            // console.log('provisionalTimelineDataOut => ', provisionalTimelineDataOut);
+            // console.log(event.Id);
+            // let eventNewDates = provisionalTimelineDataOut.filter(item => item["AzaNumGroupe"] === event.AzaNumGroupe && !item["AzaIsPere"]);
+            // console.log(eventNewDates);
+            // for (let i = 0; i < eventNewDates.length; i++) {
+            //     console.log(eventNewDates[i]);
+            //     // this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerPere, provisionalTimelineDataOut);
+            // }
+        }
         console.log('othersWorkorderForContainer : ', othersWorkorderForContainer);
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
@@ -1338,11 +1559,11 @@ public updateContainerAction;
             isbacklog: 1,
             libchaine:workorderSelected.libchaine,
             typetravail:workorderSelected.typetravail,
-            titreoeuvre:workorderSelected.titreoeuvre,
-            numepisode:workorderSelected.numepisode,
-            dureecommerciale:workorderSelected.dureecommerciale,
-            libtypeWO:workorderSelected.libtypeWO,
-         
+             titreoeuvre:workorderSelected.titreoeuvre,
+             numepisode:workorderSelected.numepisode,
+             dureecommerciale:workorderSelected.dureecommerciale,
+             libtypeWO:workorderSelected.libtypeWO,
+
         }
         console.log(newWorkorder);
         this.workorderService
@@ -1353,8 +1574,8 @@ public updateContainerAction;
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
                 this.backToBacklog(event);
                 this.WorkOrderByidgroup.push(newWorkorder);
-                let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, "StartTime", "StartTime");
-                let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, "EndTime", "EndTime");
+                let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'EndTime', 'EndTime');
                 console.log('this.deleteContainerAction', this.deleteContainerAction)
                 if (this.deleteContainerAction) {
                     this.eventSettings = {
@@ -1364,9 +1585,25 @@ public updateContainerAction;
                 } else {
                     this.eventSettings = {
                         dataSource: <Object[]>extend([],
-                            this.calculDateAll(this.timelineResourceDataOut, true, containerPere, startDifferent, endDifferent), null, true),
-                             enableTooltip: true, tooltipTemplate: this.temp
+                            this.calculDateGroup(
+                                this.timelineResourceDataOut,
+                                event.AzaNumGroupe,
+                                true,
+                                containerPere,
+                                startDifferent,
+                                endDifferent
+                            ), null, true),
+                            enableTooltip: true, tooltipTemplate: this.temp
                     };
+                    console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
+                    console.log(event.Id);
+                    let containerParent = this.allDataContainers.filter(item => item.Id_Planning_Container === containerPere.Id);
+                    let eventNewDates = this.timelineResourceDataOut.filter(item => item['AzaNumGroupe'] === containerPere.Id && !item['AzaIsPere']);
+                    console.log(eventNewDates);
+                    for (let i = 0; i < eventNewDates.length; i++) {
+                        console.log(eventNewDates[i]);
+                        this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent[0], this.timelineResourceDataOut);
+                    }
                 }
             }, error => {
                 alert('error update workorder');
@@ -1400,7 +1637,7 @@ public updateContainerAction;
             titreoeuvre:selectedItem.titreoeuvre,
             numepisode:selectedItem.numepisode,
             dureecommerciale:selectedItem.dureecommerciale,
-            libtypeWO:selectedItem.libtypeWO,
+                        libtypeWO:selectedItem.libtypeWO,
             Commentaire_Planning: selectedItem.Commentaire_Planning
 
         };
@@ -1415,7 +1652,7 @@ public updateContainerAction;
         this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
         console.log('wOrderBackToBacklog', this.wOrderBackToBacklog);
     }
-/************************************************ PUT Workorder *****************************************/
+    /************************************************ PUT Workorder *****************************************/
 updateWorkOrder(args) {
       
     console.log('update workorder function');
@@ -1493,6 +1730,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
             let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
             this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+            let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === workorder.Id_Planning_Container);
+            let containerPere = containerEvent[0];
             console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
             this.timelineResourceDataOut.map(item => {
                 if (item.Id === event.Id) {
@@ -1517,10 +1756,18 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                     console.log(item);
                 }
             });
-            this.calculDateGroup(this.timelineResourceDataOut, event.AzaNumGroupe, true, event, startDifferent, endDifferent);
             this.eventSettings = {
                 dataSource: <Object[]>extend(
-                    [], this.timelineResourceDataOut, null, true
+                    [],
+                    this.calculDateGroup(
+                        this.timelineResourceDataOut,
+                        event.AzaNumGroupe,
+                        true,
+                        containerPere,
+                        startDifferent,
+                        endDifferent
+                    ),
+                    null, true
                 ),
                 enableTooltip: true, tooltipTemplate: this.temp
             };
@@ -1584,8 +1831,14 @@ public eventTemplate;
 public agendaStartDate;
 public agendaLastDate;
 public calcule;
+public navigateTimelineDay;
     onNavigating(args) {
-
+        console.log(' ============================> NEW NAVIGATION ====================> ', args);
+        console.log(this.field);
+        console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
+        this.timelineResourceDataOut = [];
+        console.log(this.departmentDataSource);
+        // console.log('this.timelineResourceDataOut vide => ', this.timelineResourceDataOut)
         this.startofDay =   moment(this.scheduleObj.activeView.renderDates[0]).toDate()
         this.endofDay =   moment(this.scheduleObj.activeView.renderDates[0]).add(1, 'd').toDate()
 
@@ -1597,7 +1850,6 @@ public calcule;
 
         this.agendaStartDate =  moment().toDate()
         this.agendaLastDate =  moment().add(7, 'd').toDate()
-        console.log( args, "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{", args.currentView );
 
         if (args.currentView ==="TimelineDay") {
             this.scheduleObj.timeScale.interval = 60
@@ -1605,7 +1857,6 @@ public calcule;
             this.scheduleObj.endHour ='23:00'
             this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
             this.scheduleObj.dataBind()
-
         } else {
             if (args.currentView ==="TimelineWeek") {
                 this.scheduleObj.startHour ='08:00'
@@ -1616,6 +1867,67 @@ public calcule;
                 //     }
             }
         }
+        if (args.currentView === 'TimelineDay') {
+            this.scheduleObj.currentView = 'TimelineDay';
+            this.navigateTimelineDay = true;
+            let startofDay = moment(args.currentDate).toDate()
+            let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+            console.log(startofDay, "++++++++++++++++++++++++", endofDay )
+            this.timelineResourceDataOut = [];
+            this.refreshDateStart = startofDay;
+            this.refreshDateEnd = endofDay;
+            this.salleDataSource.forEach(salle => {
+                let indexSalle = this.salleDataSource.indexOf(salle);
+                this.getContainersByRessourceStartDateEndDate(
+                    salle.CodeRessource,
+                    startofDay,
+                    endofDay,
+                    salle.CodeSalle,
+                    indexSalle
+                );
+            });
+        }
+        if (this.scheduleObj.currentView === 'TimelineDay' && args.currentView === 'TimelineDay') {
+          console.log('TIMELINEDAY !!!!')
+            if (args.action === 'date') {
+                console.log('TIMELINEDAY !!!! => date contition');
+                this.timelineResourceDataOut = []
+                let startofDay = moment(args.currentDate).toDate()
+                let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+                this.refreshDateStart = startofDay;
+                this.refreshDateEnd = endofDay;
+                console.log(startofDay, ' ++++++++++++++++++++++++ ', endofDay )
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        startofDay,
+                        endofDay,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+              }
+              if (args.action === 'view') {
+                console.log('TIMELINEDAY !!!! => view contition');
+                this.timelineResourceDataOut = []
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.refreshDateStart = this.startofDay;
+                    this.refreshDateEnd = this.endofDay;
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.startofDay,
+                        this.endofDay,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+                console.log("currentView date ",  this.startofDay ,  this.endofDay, )
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
+              }
+            }
         if (args.currentView ==="TimelineMonth" ||  args.currentView ==="Agenda" ) {
             this.scheduleObj.readonly = true
             if (args.action === "date") {
@@ -1713,8 +2025,8 @@ public calcule;
     //                  });
     //   }
             if (args.action === "view") {
-                this.timelineResourceDataOut = []
-                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                this.timelineResourceDataOut = [];
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
                 this.refreshDateStart = this.startofMonth;
                 this.refreshDateEnd = this.endofMonth;
                 this.salleDataSource.forEach(salle => {
@@ -1727,7 +2039,7 @@ public calcule;
                         indexSalle
                     );
                 });
-                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
             }
         }
         if (args.currentView ==="MonthAgenda") {
@@ -1750,8 +2062,8 @@ public calcule;
             //                });
             // }
             if (args.action === "view") {
-                this.timelineResourceDataOut = []
-                console.log(this.timelineResourceDataOut,"timelineResourceDataOut");
+                this.timelineResourceDataOut = [];
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
                 this.refreshDateStart = this.startofMonth;
                 this.refreshDateEnd = this.endofMonth;
                 this.salleDataSource.forEach(salle => {
@@ -1764,7 +2076,7 @@ public calcule;
                     indexSalle
                 );
                 });
-                console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
 
             }
         }
@@ -1787,8 +2099,8 @@ public calcule;
         // }
         if (args.currentView ==="TimelineWeek") {
             if (args.action === "view") {
-                this.timelineResourceDataOut = []
-                console.log(this.timelineResourceDataOut,"timelineResourceDataOut");
+                this.timelineResourceDataOut = [];
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
                 this.refreshDateStart = this.startofWeek;
                 this.refreshDateEnd = this.endofWeek;
                 this.salleDataSource.forEach(salle => {
@@ -1801,9 +2113,9 @@ public calcule;
                         indexSalle
                     );
                 });
-            console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
           }
-
+                        
           if(args.previousView === "TimelineDay"){
      
             this.zoom = true
@@ -1844,72 +2156,40 @@ public calcule;
            
           
                 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.zoom)
+            let value = 60
+            document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
+                let scheduleElement = document.getElementsByClassName("schedule-container");
+                if ( eKey.keyCode === 80 && scheduleElement ) {
+                    if (value < 120){
+                        value = value +  30
+                    this.scheduleObj.timeScale.interval = value
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
+                }
+            } else {  
+            if ( eKey.keyCode === 77 && scheduleElement ) {
+                if ( value > 30){
+                    value = value - 30
+                    this.scheduleObj.timeScale.interval = value 
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
+                }}
+                            }
+        }
+
+
             }
+            });
         }
 
-
-        }
-            });
-
-
-        
-      }
- 
-      if(args.currentView === "TimelineDay"){
+        if(args.currentView === "TimelineDay"){
      
-this.zoom = false
+        this.zoom = false
       }
-     
 
-  if(this.scheduleObj.currentView === "TimelineDay" && args.currentView === "TimelineDay"){
 
-        if (args.action === "date"){
-            this.timelineResourceDataOut = []
-            let startofDay = moment(args.currentDate).toDate()
-            let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-            console.log(startofDay, "++++++++++++++++++++++++", endofDay )
-        
-                
-                         
-                         this.salleDataSource.forEach(salle => {
-                             let indexSalle = this.salleDataSource.indexOf(salle);
-                             this.getContainersByRessourceStartDateEndDate(
-                                 salle.CodeRessource,
-                                 startofDay,
-                                 endofDay,
-                                 salle.CodeSalle,
-                                 indexSalle
-                             );
-                         }); 
-          }
-          if (args.action === "view"){
-            this.timelineResourceDataOut = []
-            console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-            this.salleDataSource.forEach(salle => {
-                let indexSalle = this.salleDataSource.indexOf(salle);
-                this.refreshDateStart = this.startofDay;
-                this.refreshDateEnd = this.endofDay;
-                this.getContainersByRessourceStartDateEndDate(
-                    salle.CodeRessource,
-                    this.startofDay,
-                    this.endofDay,
-                    salle.CodeSalle,
-                    indexSalle
-                );
-    
-    
-            });
-    
-          
-            console.log("currentView date ",  this.startofDay ,  this.endofDay, )
-        
-            console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
-          }
-      
-    }
-      console.log("date agenda schedulerobj ......................................",this.scheduleObj)
+
+       
+        console.log("date agenda schedulerobj ......................................",this.scheduleObj)
       if(args.currentView ==="Agenda"){
-     
         if (args.action === "date"){
                    let navigateFirstOfWeek =  moment(args.currentDate).toDate() ,
                    navigateLastOfWeek = moment(args.currentDate).add(7, 'd').toDate()
@@ -1926,13 +2206,11 @@ this.zoom = false
                                          indexSalle
                                      );
                                  });
-                                       
-                
                   }
                   if (args.action === "view"){
                     this.timelineResourceDataOut = []
                     this.calcule = false
-                    console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
+                    console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
                     this.refreshDateStart = this.agendaStartDate;
                     this.refreshDateEnd = this.agendaLastDate;
                 this.salleDataSource.forEach(salle => {
@@ -1945,14 +2223,12 @@ this.zoom = false
                         indexSalle
                     );
                 });
-            
-                  }  
-
+            }
         }
 
     }
 
-public  couleur
+public  couleur;
 
 public zoom : boolean = true;
     onPopupOpen(args) { // open container modal and display workorder list
@@ -1973,8 +2249,8 @@ public zoom : boolean = true;
         //         console.log(this.scheduleObj);
         //     }
         // }
-
        
+
         if(args.type === 'QuickInfo')
         {
           
@@ -1994,7 +2270,7 @@ public zoom : boolean = true;
         if (this.cancelObjectModal) {
             args.cancel = true;
         }
-        if ((args.type === 'QuickInfo') &&  (args.name === 'popupOpen')){
+                if ((args.type === 'QuickInfo') &&  (args.name === 'popupOpen')){
             let title = document.getElementsByClassName('e-subject-container');
             let subTitle =  document.getElementsByClassName('e-location-container');
             let Debut =  document.getElementsByClassName('e-start-container');
@@ -2008,7 +2284,7 @@ public zoom : boolean = true;
             fin[0]['style'].display = 'block';
             regie[0]['style'].display = 'block';
         }
-      
+
     
         if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
             if (args.data.AzaIsPere) {
@@ -2035,7 +2311,7 @@ public zoom : boolean = true;
    
                     console.log( this.couleur , '**********************************couleur*************************************') 
                   
-                    row.innerHTML += `<div id='id${i}'>${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
+                    row.innerHTML += `<div id='id${i}'>${workOrders[i].typetravail} ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
                     
                    
                         let element = document.getElementById('id'+i)
@@ -2056,7 +2332,7 @@ public zoom : boolean = true;
                         args.element.hidden = true;
                         this.openDialog(args, args.data, workOrders[e], this.departmentDataSource);
                         console.log(child)
-                    });
+                        });
                 }
               
             }else {
@@ -2102,7 +2378,7 @@ public zoom : boolean = true;
             this.isTreeItemDropped = false;
         }
         if (args.type === 'Editor') {
-            
+
             this.zoom = false
             console.log('Editor Open and this.isTreeItemDropped = ', this.isTreeItemDropped);
             console.log(this.openEditorCount);
@@ -2113,7 +2389,7 @@ public zoom : boolean = true;
                 let repeat = document.getElementsByClassName('e-editor');
                 console.log('repeat', repeat[0]);
                 repeat[0]['style'].display = 'none';
-               
+                               
                 if (!args.data.AzaIsPere) {
                     let title = document.getElementsByClassName('e-subject-container');
                     let subTitle =  document.getElementsByClassName('e-location-container');
@@ -2140,7 +2416,7 @@ public zoom : boolean = true;
             let inputEle: HTMLInputElement;
             let container: HTMLElement;
             let containerOperateur = document.getElementsByClassName('custom-field-container');
-
+            
             let annuler = document.getElementsByClassName("e-event-cancel")
             console.log(annuler);
             annuler[0].addEventListener('click', () => {
@@ -2150,7 +2426,7 @@ public zoom : boolean = true;
 
 
             if (args.data.hasOwnProperty('AzaIsPere')) {
-                
+
                 console.log('open Editor', args);
                 console.log(this.drowDownOperateurList);
                 if (args.data.AzaIsPere) { // dblclick container
@@ -2177,7 +2453,7 @@ public zoom : boolean = true;
                 } else { // dblclick workorder
                     containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
                     console.log("edit click")
-                    if (!args.data.AzaIsPere) {
+                     if (!args.data.AzaIsPere) {
                         let title = document.getElementsByClassName('e-subject-container');
                         let subTitle =  document.getElementsByClassName('e-location-container');
                         let Debut =  document.getElementsByClassName('e-start-container');
@@ -2192,14 +2468,10 @@ public zoom : boolean = true;
                         regie[0]['style'].display = 'none';
     
                         console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")  
-                      
                  }
-
-
-
                  }
             } else {
-                if(  args.name === 'popupOpen') 
+                                if(  args.name === 'popupOpen') 
        
                 {
                  let title = document.getElementsByClassName('e-subject-container');
@@ -2369,10 +2641,13 @@ public zoom : boolean = true;
                     if (event.target.id) {
                         let indexContainerEvent = this.findIndexEventById(event.target.id);
                         let containerSelected = this.timelineResourceDataOut[indexContainerEvent];
+                        console.log('containerSelected => ', containerSelected);
                         const filteredDataW =
                             treeviewData.filter((item: any) => item.Id === parseInt(event.draggedNodeData.id as string, 10));
                         let container = this.allDataContainers.filter(item => item.Id_Planning_Container === containerSelected.Id);
-                        let containerDataSelected = container [0];
+                        let containerDataSelected = container[0];
+                        console.log('container => ', container);
+                        console.log('containerDataSelected => ', containerDataSelected);
                         let newEventData = { // DISPLAY DATA FOR EVENT
                             Id: filteredDataW[0].Id,
                             Name: filteredDataW[0].Name,
@@ -2383,7 +2658,7 @@ public zoom : boolean = true;
                             DepartmentID: containerSelected.DepartmentID,
                             ConsultantID: containerSelected.ConsultantID,
                             AzaIsPere: false,
-                            AzaNumGroupe: containerSelected.AzaNumGroupe,
+                            AzaNumGroupe: containerDataSelected.Id_Planning_Container,
                             coordinateurCreate: this.user.initials,
                             Operateur: '',
                             Statut:filteredDataW[0].Statut,
@@ -2396,11 +2671,11 @@ public zoom : boolean = true;
                             Commentaire_Planning: filteredDataW[0].Commentaire_Planning
                         };
                         this.creationArray = [newEventData];
+                        this.isTreeItemDropped = true;
                         console.log('filteredDataW : ', filteredDataW);
                         console.log('containerDataSelected : ', containerDataSelected);
                         this.updateWorkorderInDragDropAddToContainer(newEventData, containerDataSelected);
                         // this.timelineResourceDataOut.push(newEventData);
-                        this.isTreeItemDropped = true;
                         this.draggedItemId = event.draggedNodeData.id as string;
                             let nData = this.field['dataSource'].filter(item => {
                                 if (+item.Id !== +this.draggedItemId) {
@@ -2520,17 +2795,17 @@ public zoom : boolean = true;
         console.log('onActionBegin()');
         console.log(event);
         console.log(this.isTreeItemDropped);
-  
+      
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
 
-  
+    
      
-  
+     
         if (event.requestType === 'eventChange') {
-            this.zoom = true
-       
+             this.zoom = true
+
             if(this.open == true) {
                 this.open = true;
                 this.sidebar.show();
@@ -2746,7 +3021,7 @@ public zoom : boolean = true;
               console.log("************************************************* onaction complete : update container");
               this.updateContainer(e);
             }
-          else
+            else
             {
                 if (!e.data.AzaIsPere){
                 console.log("************************************************* onaction complete : update WorkOrder");
@@ -2772,15 +3047,24 @@ public zoom : boolean = true;
             this.drowDownOperateurList.value = null;
         }
         console.log('------------------- ', this.timelineResourceDataOut);
-        if (!this.isTreeItemDroppedMonteur && !this.deleteContainerAction && !this.updateContainerAction && !this.createJustContainerAction) {
+        if (
+            !this.isTreeItemDropped &&
+            !this.isTreeItemDroppedMonteur &&
+            !this.deleteContainerAction &&
+            !this.updateContainerAction &&
+            !this.createJustContainerAction &&
+            !this.isBackToBacklog &&
+            e.requestType !== 'eventChanged'
+            // !this.navigateTimelineDay
+        ) {
             console.log('=======> args : ', e);
             console.log(this.createJustContainerAction);
-            this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                dataSource: <Object[]>extend(
-                    [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
-                ),
-                enableTooltip: true, tooltipTemplate: this.temp
-            };
+            // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+            //     dataSource: <Object[]>extend(
+            //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+            //     ),
+            //     enableTooltip: true, tooltipTemplate: this.temp
+            // };
         } else if (this.deleteContainerAction) {
             console.log('delete container without call calcul function');
         } else {
@@ -2797,6 +3081,8 @@ public zoom : boolean = true;
         this.deleteContainerAction = false;
         this.updateContainerAction = false;
         this.createJustContainerAction = false;
+        this.isBackToBacklog = false;
+        this.navigateTimelineDay = false;
     }
 
     /************************ DELETE ********************/
@@ -2883,6 +3169,7 @@ public zoom : boolean = true;
         atimelineResourceData: Object[], numGroup: number, needUpdate: boolean,
         itemToUpdate: Object[], startDifferent: boolean, endDifferent: boolean)
     : Object[] {
+        console.log('-------------------> CALCUL DATE GROUP !!!!!!!!!!!!')
         let minDateGroup = this.getMinMaxNumgroupe(
             atimelineResourceData, numGroup, 'StartTime', needUpdate, itemToUpdate
         );
@@ -2897,6 +3184,25 @@ public zoom : boolean = true;
         atimelineResourceData = this.calcultimesforalljobs(atimelineResourceData, numGroup, minDateGroup, maxDateGroup, Seconds_for_a_job);
         this.timelineResourceDataOut = atimelineResourceData;
         return atimelineResourceData;
+    }
+
+    calculPrevisonalDateGroup(atimelineResourceData: Object[], numGroup: number, needUpdate: boolean,
+        itemToUpdate: Object[], startDifferent: boolean, endDifferent: boolean)
+    : Object[] {
+        console.log('-------------------> CALCUL "PREVISIONAL" DATE GROUP !!!!!!!!!!!!')
+        let minDateGroup = this.getMinMaxNumgroupe(
+            atimelineResourceData, numGroup, 'StartTime', needUpdate, itemToUpdate
+        );
+        let maxDateGroup = this.getMinMaxNumgroupe(
+            atimelineResourceData, numGroup, 'EndTime', needUpdate, itemToUpdate
+        );
+        let diffMinMax = +maxDateGroup - +minDateGroup;
+        let Seconds_from_T1_to_T2 = diffMinMax / 1000;
+        let Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
+        let countWorkorderSameGroup = this.getCountWorkOrderByGroup(atimelineResourceData, 'AzaNumGroupe', +numGroup);
+        let Seconds_for_a_job = Seconds_Between_Dates / countWorkorderSameGroup;
+        let newAtimelineResourceData = this.calcultimesforalljobs(atimelineResourceData, numGroup, minDateGroup, maxDateGroup, Seconds_for_a_job);
+        return newAtimelineResourceData;
     }
 
     getCountWorkOrderByGroup(objectin: Object[], property: string, numGroup: number): number {
@@ -3147,7 +3453,7 @@ public zoom : boolean = true;
 
 
             }
-             
+                         
             
            
        if(this.countAdd === 1) {
@@ -3171,7 +3477,7 @@ public zoom : boolean = true;
              {
                 this.dataMonteur =   this.filtermonteurListeArray.filter(monteurs => {
                     return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                    // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
+                     // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
                     // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
                
                 });
@@ -3201,7 +3507,7 @@ public zoom : boolean = true;
     
         }
      
-     
+
         if (tabIndex == 0) {
 
            
@@ -3316,7 +3622,7 @@ public zoom : boolean = true;
             if ( (item.codegroupe === this.currentCoordinateur.Groupe) ) {
                 args.cancel = true;
                 let targetNode: Element = document.querySelector(`[data-uid='${targetNodeId}']`);
-               
+
                 if (targetNode.classList.contains('remove')) {
                     this.contentmenutree.enableItems(['Supprimer'], true);
                 }
@@ -3326,12 +3632,12 @@ public zoom : boolean = true;
                     if(itemliste.codegroupe != 10){
                 args.cancel = false;
                 } }
-               
+
             });
             
         });
        
-       
+
     }
 
 
@@ -3412,7 +3718,7 @@ public zoom : boolean = true;
 
 
      /******************************************* Zoom *******************/
- 
+   
     changeInterval(e: DropDownChangeArgs): void {
 
         this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);

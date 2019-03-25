@@ -20,6 +20,10 @@ import {
   FicheMaterielModification
 } from '@ab/fiches-materiel/src/fiches-materiel-modification-interface/+state/fiche-materiel-modification.interfaces';
 
+// Elements Annexes import
+import { AnnexElementsService } from '../../services/annex-elements.service';
+import { AnnexElementStatus } from '../../models/annex-element';
+
 // Steps import
 import { StepsLibService } from '../../services/steps-lib.service';
 import { Step } from '../../models/step';
@@ -34,6 +38,7 @@ import { Status } from '../../models/status';
   styleUrls: ['./fiches-materiel-table.component.scss'],
   providers : [
     FichesMaterielService,
+    AnnexElementsService,
     FichesAchatService,
     StatusLibService,
     StepsLibService,
@@ -72,6 +77,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   public stepLibReady: Boolean = false;
   public statusLib: Status[];
   public statusLibReady: Boolean = false;
+  public elementsAnnexesStatusLib: AnnexElementStatus[];
+  public elementsAnnexesStatusLibReady: Boolean = false;
 
   public selectedRows = [];
   public sortingData;
@@ -123,7 +130,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private store: Store<FicheMaterielModification>,
     private stepsLibService: StepsLibService,
-    private statusLibService: StatusLibService
+    private statusLibService: StatusLibService,
+    private annexElementsService: AnnexElementsService
   ) {}
 
   ngOnInit() {
@@ -141,6 +149,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.todayTime = this.todayDate.getTime();
     console.log(this.columnParams);
     console.log(this.orderParams);
+    this.getElementsAnnexesStatusLib();
     this.getStatusLib();
     this.checkLinks();
     this.displayAction();
@@ -190,6 +199,15 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         console.log(data);
         this.statusLibReady = true;
         this.getStepsLib();
+      });
+  }
+
+  getElementsAnnexesStatusLib() {
+    this.annexElementsService
+      .getAnnexElementsStatus()
+      .subscribe(data => {
+        this.elementsAnnexesStatusLib = data;
+        this.elementsAnnexesStatusLibReady = true;
       });
   }
 
@@ -418,7 +436,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
             if (currentItemLib.IdLibEtape <= 6) {
               return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
             }  else if (currentItemLib.IdLibEtape > 6 && currentItemLib.IdLibEtape <= 10) {
-                return '<span class="label bg-info">' + currentItemLib.Libelle + "</span>"; // color : red;
+                return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>'; // color : blue;
             } else if (currentItemLib.IdLibEtape === 25 || currentItemLib.IdLibEtape === 18) {
                 return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>'; // color : red;
             } else if (currentItemLib.IdLibEtape === 26) {
@@ -450,6 +468,24 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         }
       },
       {
+        title : 'E-Annexes',
+        data : function ( data, type, row, meta ) {
+          let currentItemLib;
+          that.elementsAnnexesStatusLib.map(item => {
+            if (item.IdStatutElementsAnnexes === data.IdStatutElementsAnnexes) {
+              currentItemLib = item;
+            }
+          });
+          if (currentItemLib.IdStatutElementsAnnexes === 1) {
+            return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
+          } else if (currentItemLib.IdStatutElementsAnnexes === 2) {
+            return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>';
+          } else if (currentItemLib.IdStatutElementsAnnexes === 3) {
+            return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>';
+          }
+        }
+      },
+      {
         title : 'distributeur',
         data : 'distributeur',
         className: 'datatble-fm-distributeur'
@@ -473,7 +509,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
       //   data : 'IdFicheMateriel'
       // },
       {
-        title : 'N° eps AB',
+        title : 'ep. AB',
         data : 'NumEpisode',
       },
       {
@@ -501,7 +537,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         data : 'numficheachat'
       },
       {
-        title : 'type fiche achat',
+        title : 'type FA',
         data : 'typefiche' // data manquante
       },
     ];

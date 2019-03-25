@@ -8,7 +8,8 @@ import {
   urlOnePlanningContainers,
   urlPlanningContainersByRessource,
   urlPlanningContainersBystartDate,
-  urlPlanningContainersByendDate
+  urlPlanningContainersByendDate,
+  urlPlanningContainersDetailsByRessource
 } from '.privates-url';
 import { Observable } from 'rxjs/Observable';
 import { catchError } from 'rxjs/operators';
@@ -61,6 +62,7 @@ export class ContainersService {
         .get(
           urlKPlanner +
           urlPlanningContainersByRessource +
+          // urlPlanningContainersDetailsByRessource +
           coderessource +
           urlPlanningContainersBystartDate +
           datedebut +
