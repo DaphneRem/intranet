@@ -23,6 +23,8 @@ export class EventModel{
    numepisode?:number;
    dureecommerciale?:string;
    libtypeWO?: string;
+   Commentaire_Planning?: string;
+   Id_Planning_Container?:number;
 }
 
     // Id: number;

@@ -1,7 +1,7 @@
 <div style="margin: -25px;height: 310px; overflow-y: hidden; overflow-x: hidden;">
-    <div style="padding: 2px;  color: #ffffff;height: 90px;"  [ngStyle]="{'background-color': data.color}">
+    <div style="padding: 2px;  color: #faf8f8;height: 90px;"  [ngStyle]="{'background-color': data.color ? data.color : '#bbb7b7'}">
         <!-- <h1 mat-dialog-title style="margin: 26px 0 0 15px;">{{data.subObject.title}}</h1> -->
-        <h2 mat-dialog-title class="title"> {{data.workorder.Name}} </h2>
+        <h2 mat-dialog-title class="title"> {{data.workorder.titreoeuvre}}  ep {{data.workorder.numepisode}} </h2>
     </div>
     <div mat-dialog-content style="margin: 0; height: 155px;">
         <!-- <p>{{data.StartTime}} ({{ data.StartTime}} - {{ data.EndTime}})</p> -->
@@ -12,9 +12,9 @@
         </p>
         <p>{{data.workorder.Description}}</p>
         <p>{{data.regie.Text}}</p>
-        <p>{{data.workorder.libtypeWO}}</p>
-        <p>{{data.workorder.libchaine}}</p>
-        <p>{{data.workorder.typetravail}}</p>
+        <p>  {{data.workorder.libtypeWO}}</p>
+        <p> Libellé chaine : {{data.workorder.libchaine}}</p>
+        <p> Type de travail :  {{data.workorder.typetravail}}</p>
       
     </div>
     <div mat-dialog-actions style="padding-left: 20px;">
