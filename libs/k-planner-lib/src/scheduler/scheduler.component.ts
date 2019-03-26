@@ -2099,8 +2099,8 @@ public navigateTimelineDay;
         // }
         if (args.currentView ==="TimelineWeek") {
             if (args.action === "view") {
-                this.timelineResourceDataOut = [];
-                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
+                this.timelineResourceDataOut = []
+                console.log(this.timelineResourceDataOut,"timelineResourceDataOut");
                 this.refreshDateStart = this.startofWeek;
                 this.refreshDateEnd = this.endofWeek;
                 this.salleDataSource.forEach(salle => {
@@ -2113,9 +2113,9 @@ public navigateTimelineDay;
                         indexSalle
                     );
                 });
-                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
+            console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
           }
-                        
+
           if(args.previousView === "TimelineDay"){
      
             this.zoom = true
@@ -2156,29 +2156,16 @@ public navigateTimelineDay;
            
           
                 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.zoom)
-            let value = 60
-            document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
-                let scheduleElement = document.getElementsByClassName("schedule-container");
-                if ( eKey.keyCode === 80 && scheduleElement ) {
-                    if (value < 120){
-                        value = value +  30
-                    this.scheduleObj.timeScale.interval = value
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
-                }
-            } else {  
-            if ( eKey.keyCode === 77 && scheduleElement ) {
-                if ( value > 30){
-                    value = value - 30
-                    this.scheduleObj.timeScale.interval = value 
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
-                }}
-                            }
-        }
-
-
             }
-            });
         }
+
+
+        }
+            });
+
+
+        
+      }
 
         if(args.currentView === "TimelineDay"){
      
@@ -2311,7 +2298,7 @@ public zoom : boolean = true;
    
                     console.log( this.couleur , '**********************************couleur*************************************') 
                   
-                    row.innerHTML += `<div id='id${i}'>${workOrders[i].typetravail} ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
+                    row.innerHTML += `<div id='id${i}'> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
                     
                    
                         let element = document.getElementById('id'+i)
@@ -3302,23 +3289,35 @@ public zoom : boolean = true;
                 fieldMonteur = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift( this.monteurListe[i])) //pour l'affichage dans le treeview
                 fieldMonteur.pop()
 
-                this.monteurDataSource.push(this.monteurListe[i])
+        
                 this.monteurDataSource.unshift(this.monteurListe[i])
+                console.log('monteurDataSource',this.monteurDataSource);
+           
+                for(let i = 0 ; i<this.monteurDataSource.length ; i++)
+                {
+                    if(this.monteurDataSource[i] === this.monteurDataSource[i+1] ){
+                    delete this.monteurDataSource[i]
+                   
+                }
+            
+            
+            
+            }
                 monteurListArray =  this.monteurDataSource
-                monteurListArray.pop();
-       
+
+              console.log('monteurListArray',monteurListArray);
               
                 
                 this.ajoutMonteur = this.monteurListe[i]
                 this.monteurListArray = monteurListArray
                 console.log('monteurListArray', this.monteurListArray);
                 this.filtermonteurListeArray = monteurListArray;
-                
+                console.log('filtermonteurListeArray', this.filtermonteurListeArray);
                 console.log(  this.fieldMonteur);
                 this.addMonteur = true;
 
 
-                this.fieldMonteur['dataSource'] = fieldMonteur
+                this.fieldMonteur['dataSource'] = monteurListArray
                   this.fieldMonteur = { dataSource:fieldMonteur , text: 'Username' };
                   this.countAdd = this.countAdd +1
                  
@@ -3396,7 +3395,7 @@ public zoom : boolean = true;
         this.coordinateurService.getAllCoordinateurs()
           .subscribe(data => {
               console.log('all coordinateurs : ', data);
-              data.forEach(item => {
+              data.forEach(item => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
                   if (item.Username === this.user.shortUserName) {
                    
                         console.log('COORDINATEUR => ', item);
@@ -3450,18 +3449,36 @@ public zoom : boolean = true;
               
                 this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
         console.log("!!!!!!!!!!!!!!!!!!!!searchText",this.treeObjMonteur.fields['dataSource'] )
+           if(this.isDelete){
+         
+             for(let i = 0 ; i<this.monteurListArray.length ; i++)
+             {
+                 if(this.monteurListArray[i] ===this.elementDelete ){
+                 delete this.monteurListArray[i]
+                
+             }
+             this.filtermonteurListeArray =  this.monteurListArray
+    
+         
+         }
 
+            }
 
+            if(this.dataMonteur.length == 0){
+             
+                this.dataMonteur =   this.filtermonteurListeArray.filter(monteurs => {
+                    return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
+                     // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
+                    // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
+               
+                });
+                console.log( this.dataMonteur )
+            }
             }
                          
             
-           
-       if(this.countAdd === 1) {
-        this.monteurDataSource.splice(0,1)
-       }
-           
-       
-     
+      
+         
        
 
     
@@ -3481,6 +3498,8 @@ public zoom : boolean = true;
                     // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
                
                 });
+
+               
                 console.log('this.dataMonteur', this.dataMonteur);
                 console.log('dataMonteur', this.fieldArrayMonteur);
              
@@ -3492,6 +3511,9 @@ public zoom : boolean = true;
                 return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
                 // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
                 // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
+
+              
+              
             });
           
             console.log('dataMonteur', this.dataMonteur);
@@ -3639,7 +3661,7 @@ public zoom : boolean = true;
        
 
     }
-
+public elementDelete
 
     menuclick(args: MenuEventArgs) {
         let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
@@ -3649,7 +3671,8 @@ public zoom : boolean = true;
             if (CodeRessourceToString === targetNodeId) {
                 if (args.item.text == 'Supprimer') {
                     this.treeObjMonteur.removeNodes([CodeRessourceToString]);
-                   console.log('element supprimer');
+                   console.log('element supprimer',this.monteurListe[i]);
+                   this.elementDelete = this.monteurListe[i]
                    this.isDelete = true;
                     //  this.monteurDataSource= this.treeObjMonteur['groupedData']
                 }
@@ -3660,7 +3683,10 @@ public zoom : boolean = true;
         this.fieldMonteur['dataSource'] = this.fieldArrayMonteur[0];
         this.fieldMonteurDSource = this.fieldMonteur['dataSource']
         if (this.isDelete) {
+
             this.filtermonteurListeArray = this.fieldArrayMonteur[0];
+            
+          
         }
         console.log('field Array Monteur', this.fieldArrayMonteur);
         console.log('field Array Monteur DS', this.filtermonteurListeArray);
