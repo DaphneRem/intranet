@@ -22,7 +22,7 @@ export class WorkOrderService {
     return this.http
     .get(urlKPlanner + urlPlanningEventsByidContainer + id)
     .map((res: any) => {
-      console.log('GETworkorderByIdContainer res : ', res);
+      // console.log('GETworkorderByIdContainer res : ', res);
       return res as Workorder[];
     });
   }
@@ -31,7 +31,7 @@ export class WorkOrderService {
     return this.http
       .get(urlKPlanner + urlPlanningEventsByidGroup + idGroup)
       .map((res: any) => {
-        console.log('GETworkorderByIdGroup present in backlog => res : ', res);
+        // console.log('GETworkorderByIdGroup present in backlog => res : ', res);
         return res as Workorder[];
     });
   }

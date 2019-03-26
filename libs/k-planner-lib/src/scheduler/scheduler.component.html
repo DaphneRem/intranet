@@ -7,14 +7,14 @@
 
 
 <div class="control-section card" style="margin-bottom: 0;">
-        <div class="autre-planinngs">
+        <!-- <div class="autre-planinngs">
 
                 <select class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)"
                     style="width: 25%">
                     <option value="Mon planning">Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
                 </select>  
-            </div> 
+            </div>  -->
     <div class="drag-sample-wrapper">
         <div class="schedule-container">
             <div class="title-container">
@@ -23,6 +23,10 @@
             <div style="display: flex;">
                 <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button> 
                 <button class="btn btn-info regie refresh-btn mr-3" (click)="refreshScheduler()"><i class="icofont icofont-refresh"></i>Rafraichir</button>
+                <select class="form-control form-control-info m-0 select-plannings" placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)">
+                    <option value="Mon planning">Mon planning</option>
+                    <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
+                </select>
                 <table class="table-light table-sm" id="property" title="Properties" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                     <tbody>
                         <tr style="height: 40px">

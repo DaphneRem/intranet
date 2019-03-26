@@ -348,6 +348,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.log('refresh scheduler click');
         console.log('isClicked : ', this.isClicked);
+        console.log('this.refreshDateStart => ', this.refreshDateStart);
+        console.log('this.refreshDateEnd => ', this.refreshDateEnd);
         this.departmentDataSource = [];
         this.departmentDataSourceAll = [];
         this.departmentGroupDataSource = [];
@@ -561,31 +563,31 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     public lastSalleCall = false;
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
-        console.log('--------------------------------------------------indexSalle => ', indexSalle);
+        // console.log('--------------------------------------------------indexSalle => ', indexSalle);
         let debut =moment(datedebut).format('YYYY-MM-DD').toString();
         let fin = moment(datefin).format('YYYY-MM-DD').toString();
         if (indexSalle === (this.salleDataSource.length - 1)) {
             this.lastSalleCall = true;
         }
-        console.log('******************************** this.lastSalleCall ===> ', this.lastSalleCall);
-        console.log('debut =>', debut);
-        console.log('fin =>', fin);
-        console.log('coderessource salle => ', coderessource);
+        // console.log('******************************** this.lastSalleCall ===> ', this.lastSalleCall);
+        // console.log('debut =>', debut);
+        // console.log('fin =>', fin);
+        // console.log('coderessource salle => ', coderessource);
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
             .subscribe(res => {
                 this.dataContainersByRessourceStartDateEndDate = res;
-                console.log('container present in regie : ',  this.dataContainersByRessourceStartDateEndDate);
-                console.log('debut =>', debut);
-                console.log('fin =>', fin);
-                console.log('coderessource salle => ', coderessource);
-                console.log('container res.length :', res.length);
+                // console.log('container present in regie : ',  this.dataContainersByRessourceStartDateEndDate);
+                // console.log('debut =>', debut);
+                // console.log('fin =>', fin);
+                // console.log('coderessource salle => ', coderessource);
+                // console.log('container res.length :', res.length);
                 if (res.length > 0) {
                     this.allDataContainers = [...this.allDataContainers, ...res];
-                    console.log('regie contains container : ', res.length);
+                    // console.log('regie contains container : ', res.length);
                     this.dataContainersByRessourceStartDateEndDate.map(data => {
                         this.idExisting.push(data.Id_Planning_Container);
-                        console.log('item in container present in regie (map) : ', data);
+                        // console.log('item in container present in regie (map) : ', data);
                         let dateDebut =   moment(data.DateDebutTheo, moment.defaultFormat).toDate();
                         let dateFin = moment(data.DateFinTheo, moment.defaultFormat).toDate();
                         let initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0,1);
@@ -610,28 +612,28 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         });
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
-                        console.log('--------------------------------------------------indexSalle => ', indexSalle);
+                        // console.log('--------------------------------------------------indexSalle => ', indexSalle);
                         this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length, indexSalle);
                     });
-                    console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
+                    // console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
                     // timelineResourceDataOut
                     this.updateEventSetting(this.timelineResourceDataOut);
                     // this.departmentDataSource = this.departmentGroupDataSource;
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
-                    console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
+                    // console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
                 } else {
-                    console.log('container not present for regie : ', coderessource, res);
+                    // console.log('container not present for regie : ', coderessource, res);
                 }
         });
     }
     public allDataWorkorders = [];
     getWorkorderByContainerId(id, codeSalle, index, containerArrayLength, indexSalle) {
-        console.log('--------------------------------------------------indexSalle => ', indexSalle);
-        console.log('id container to check workorder => ', id)
-        console.log('codeSalle => ', codeSalle);
-        console.log('index => ', index);
-        console.log('containerArrayLength => ', containerArrayLength);
-        console.log('this.salleDataSource.length => ', this.salleDataSource.length)
+        // console.log('--------------------------------------------------indexSalle => ', indexSalle);
+        // console.log('id container to check workorder => ', id)
+        // console.log('codeSalle => ', codeSalle);
+        // console.log('index => ', index);
+        // console.log('containerArrayLength => ', containerArrayLength);
+        // console.log('this.salleDataSource.length => ', this.salleDataSource.length)
         this.workorderService
             .getWorkOrderByContainerId(id)
             .subscribe(res => {
@@ -639,8 +641,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.WorkorderByContainerId = res;
                 this.allDataWorkorders = [...this.allDataWorkorders, ...res];
                 // console.log('all data workorder : ', this.allDataWorkorders);
-                console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
-                console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
+                // console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
+                // console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
                 if (this.WorkorderByContainerId.length > 0) {
                     this.WorkorderByContainerId.map(data => {
                         let StartTime =   moment(data.DateDebutTheo, moment.defaultFormat).toDate(),
@@ -690,7 +692,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 //         '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
                 //    }
                 this.createTooltipWorkorder();
-                console.log('workorder function get : call calculDateAll function');
+                // console.log('workorder function get : call calculDateAll function');
 
                 // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                 //     dataSource: <Object[]>extend(
@@ -705,10 +707,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     ),
                     enableTooltip: true, tooltipTemplate: this.temp
                 };
-                console.log('indexSalle => ', indexSalle);
-                console.log('this.salleDataSource.length => ', this.salleDataSource.length);
+                // console.log('indexSalle => ', indexSalle);
+                // console.log('this.salleDataSource.length => ', this.salleDataSource.length);
                 if (indexSalle === this.salleDataSource.length - 1) {
-                    console.log('*********** end to initial request for all regies container and workorders ***********');
+                    // console.log('*********** end to initial request for all regies container and workorders ***********');
                     this.updateEventSetting(this.timelineResourceDataOut);
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                         dataSource: <Object[]>extend(
@@ -718,11 +720,11 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     };
                 }
             } else {
-                console.log('indexSalle => ', indexSalle);
-                console.log('this.salleDataSource.length => ', this.salleDataSource.length);
+                // console.log('indexSalle => ', indexSalle);
+                // console.log('this.salleDataSource.length => ', this.salleDataSource.length);
                 if (indexSalle === (this.salleDataSource.length - 1)) {
                     this.updateEventSetting(this.timelineResourceDataOut);
-                    console.log('*********** end to initial request for all regies container and workorders ***********');
+                    // console.log('*********** end to initial request for all regies container and workorders ***********');
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                         dataSource: <Object[]>extend(
                             [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
@@ -738,7 +740,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     text: 'Name',
                     description: 'typetravail'
                 };
-                console.log('ready');
+                // console.log('ready');
             }
         });
     }
@@ -1867,7 +1869,7 @@ public navigateTimelineDay;
                 //     }
             }
         }
-        if (args.currentView === 'TimelineDay') {
+        if (args.currentView === 'TimelineDay' ) {
             this.scheduleObj.currentView = 'TimelineDay';
             this.navigateTimelineDay = true;
             let startofDay = moment(args.currentDate).toDate()
@@ -1914,8 +1916,10 @@ public navigateTimelineDay;
                 console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
-                    this.refreshDateStart = this.startofDay;
-                    this.refreshDateEnd = this.endofDay;
+                    let startofDay = moment(args.currentDate).toDate()
+                    let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+                    this.refreshDateStart = startofDay;
+                    this.refreshDateEnd = endofDay;
                     this.getContainersByRessourceStartDateEndDate(
                         salle.CodeRessource,
                         this.startofDay,
@@ -2115,66 +2119,42 @@ public navigateTimelineDay;
                 });
             console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
           }
-
-          if(args.previousView === "TimelineDay"){
-     
+        if (args.previousView === 'TimelineDay') {
             this.zoom = true
-                  }
-          
-
-     
-       
-            let value = 60
-            document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
-                let scheduleElement = document.getElementsByClassName("schedule-container");
-               
-    if(this.zoom === true){
-                            if ( eKey.keyCode === 80 && scheduleElement ) {
-                                if (value < 120){
-                                  value = value +  30
-                             this.scheduleObj.timeScale.interval = value
-                                      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
+        }
+        let value = 60
+        document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
+                let scheduleElement = document.getElementsByClassName('schedule-container');
+                if (this.zoom === true) {
+                    if ( eKey.keyCode === 80 && scheduleElement ) {
+                        if (value < 120) {
+                            value = value +  30
+                            this.scheduleObj.timeScale.interval = value;
+                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
+                        }
+                    } else {
+                        if ( eKey.keyCode === 77 && scheduleElement ) {
+                            if ( value > 30) {
+                                value = value - 30
+                                this.scheduleObj.timeScale.interval = value 
+                                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
                             }
-                      } else {  
-                     if ( eKey.keyCode === 77 && scheduleElement ) {
-               
-              
-                          if ( value > 30){
-                              value = value - 30
-                              this.scheduleObj.timeScale.interval = value 
-                              console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.scheduleObj.timeScale.interval)
-                                   }}
-                     }
-         } else {
-
-            if ( eKey.keyCode === 80 && scheduleElement ) {
-            
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.zoom)
-            
-        } else {  
-        if ( eKey.keyCode === 77 && scheduleElement ) {
-           
-          
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++",  this.zoom)
-            }
-        }
-
-
-        }
+                        }
+                    }
+                } else {
+                    if ( eKey.keyCode === 80 && scheduleElement ) {
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
+                    } else {
+                        if ( eKey.keyCode === 77 && scheduleElement ) {
+                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
+                        }
+                    }
+                }
             });
-
-
-        
-      }
-
-        if(args.currentView === "TimelineDay"){
-     
-        this.zoom = false
-      }
-
-
-
-       
+        }
+        if (args.currentView === "TimelineDay") {
+            this.zoom = false
+        }      
         console.log("date agenda schedulerobj ......................................",this.scheduleObj)
       if(args.currentView ==="Agenda"){
         if (args.action === "date"){
@@ -2298,7 +2278,7 @@ public zoom : boolean = true;
    
                     console.log( this.couleur , '**********************************couleur*************************************') 
                   
-                    row.innerHTML += `<div id='id${i}'> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
+                    row.innerHTML += `<div id='id${i}'>${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
                     
                    
                         let element = document.getElementById('id'+i)
