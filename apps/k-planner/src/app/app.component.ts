@@ -87,6 +87,7 @@ export class AppComponent implements OnInit {
     }
 
     // Log the user information to the console
+
     console.log('username ' + this.adal5Service.userInfo.username);
     console.log('authenticated: ' + this.adal5Service.userInfo.authenticated);
     console.log('name: ' + this.adal5Service.userInfo.profile.name);

@@ -8,7 +8,7 @@ import swal from 'sweetalert2';
 
 // Syncfusion Imports
 // Synfucion Bases
-import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined, Internationalization } from '@syncfusion/ej2-base';
+import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined, Internationalization, removeClass } from '@syncfusion/ej2-base';
 import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
 import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item, ItemModel } from '@syncfusion/ej2-navigations';
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
@@ -207,6 +207,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public monteurDataSource: MonteursData[];
     public timelineResourceDataOut = [];
     public dataMonteur: MonteursData[] = <MonteursData[]>extend([], this.monteurDataSource, null, true);
+    public dataRegie ;
     public field: Object  = {
         dataSource:  this.workOrderData,
         id: 'Id',
@@ -286,6 +287,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     // ALL ACTIONS
     public isTreeItemDropped: boolean = false; // drag and drop wworkorder
     public isTreeItemDroppedMonteur: boolean = false; // drag and drop operateur
+    public zoomCont : number = 0
+    public valueMax :number = 60
+    public value : number
+    public valueAdd : number = 10
     // public fistCallAction: boolean = false;
     // public deleteWorkorderAction: boolean = false;
     // public deleteContainerAction: boolean = false;
@@ -294,7 +299,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     // public resizeContainerAction: boolean = false;
     // public addWorkorderToContainerAction: boolean = false;
     // public changeOperateurToContainerAction: boolean = false;
-
+   
     constructor(
         public dialog: MatDialog,
         private coordinateurService: CoordinateurService,
@@ -311,6 +316,61 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             this.getAllCoordinateurs();
             console.log('*******constructor*******');
                 // public departmentDataSource: Object[] = [];
+                
+              
+              
+                this.value = 60
+               
+                document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
+                        let scheduleElement = document.getElementsByClassName('schedule');
+                    
+                     
+                      if(this.filtre){
+                        if (this.zoom === true ) {
+                            if ( eKey.keyCode === 77 && scheduleElement ) {
+                                if (this.value < this.valueMax ){
+                                    this.value = this.value +  this.valueAdd
+                                    this.scheduleObj.timeScale.interval = this.value;
+                                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
+                                 
+                                }
+                            } else {
+                                if ( eKey.keyCode === 80 && scheduleElement ) {
+                                    if ( this.value > this.valueAdd) {
+                                        this.value = this.value - this.valueAdd
+                                        this.scheduleObj.timeScale.interval = this.value 
+                                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
+                                    }
+                                }
+                            }
+
+                            
+                        } else {
+                            if ( eKey.keyCode === 80 && scheduleElement ) {
+                                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
+                            } else {
+                                if ( eKey.keyCode === 77 && scheduleElement ) {
+                                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
+                                }
+                            }
+                        } 
+                    }else {
+                      
+                            if ( eKey.keyCode === 80 && !scheduleElement ) {
+                                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
+                            } else {
+                                if ( eKey.keyCode === 77 && !scheduleElement ) {
+                                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
+                                }
+                            }
+                        }
+                    });
+  
+           
+ 
+ 
+                                          
+ 
     }
 
     ngOnInit() {
@@ -332,6 +392,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         // this.getWorkOrderByidGroup(3);
         //  this.getSalleByGroup(10);
         // console.log(this.scheduleObj.currentView, '=========================================================================');
+    
     }
 
     ngAfterViewInit() {
@@ -342,39 +403,51 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log('==============================================================================on change');
     }
 
+   public disabledrefresh : boolean
     refreshScheduler() {
-        this.timelineResourceDataOut = [];
+        this.disabledrefresh = true
+        console.log('refresh scheduler click', this.disabledrefresh );
+         this.timelineResourceDataOut = []
         this.openEditorCount = 0;
         console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.log('refresh scheduler click');
         console.log('isClicked : ', this.isClicked);
         console.log('this.refreshDateStart => ', this.refreshDateStart);
         console.log('this.refreshDateEnd => ', this.refreshDateEnd);
+        this.allDataWorkorders = []
         this.departmentDataSource = [];
         this.departmentDataSourceAll = [];
         this.departmentGroupDataSource = [];
         this.allDataContainers = [];
-        this.allDataWorkorders = [];
+       
         // this.departmentGroupDataSource = [];
         console.log('this.refreshDateStart : ', this.refreshDateStart);
         console.log('this.refreshDateEnd : ', this.refreshDateEnd);
+    
         if ((this.refreshDateStart === undefined || this.refreshDateEnd === undefined) && this.scheduleObj.currentView === 'TimelineDay') {
             this.refreshDateStart = moment().toDate();
             this.refreshDateEnd = moment().add(1, 'd').toDate();
         }
-        if (this.isClicked) {
-            console.log('refresh scheduler with all regies');
-            this.toggleBtn.content = 'Voir mes Régies  ';
-            this.getSalleAll(this.currentCoordinateur.Groupe, this.refreshDateStart, this.refreshDateEnd);
-        } else {
+        // if (this.isClicked) {
+        //     console.log('refresh scheduler with all regies');
+        //     this.toggleBtn.content = 'Voir mes Régies  ';
+        //     this.getSalleAll(this.currentCoordinateur.Groupe, this.refreshDateStart, this.refreshDateEnd);
+        // } else {
+          
+             
             console.log('refresh scheduler with my regies group');
+            console.log(this.timelineResourceDataOut)
             this.getSalleByGroup(this.currentCoordinateur.Groupe, this.refreshDateStart, this.refreshDateEnd);
-            this.toggleBtn.content = 'Voir toutes les Régies';
+            // this.toggleBtn.content = 'Voir toutes les Régies';
             this.departmentDataSource = this.departmentGroupDataSource;
             console.log('faux');
-        }
+     
+        // }
+     
         this.scheduleObj.refresh();
         this.openEditorCount = 0;
+  
+      
     }
 
     refreshWorkordersBacklog() {
@@ -419,6 +492,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     onEventClick(e: ActionEventArgs) {
         console.log('event clicked !!!!!!!!!!!');
+      
     }
 
 
@@ -432,6 +506,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     getSalleByGroup(idGroup, start, end) {
         // this.toggleBtn.content = 'Voir autres Régies';
+    
         console.log(this.departmentDataSource);
         console.log(this.departmentGroupDataSource);
         this.salleService
@@ -444,7 +519,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     this.departmentGroupDataSource.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
-                        Color: '#19716B',
+                        Color: '#AC4BC6',
                         codeSalle: item.CodeSalle,
                         codeRessource: item.CodeRessource
                     });
@@ -461,6 +536,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
                     console.log('--------------------------------------------------indexSalle => ', indexSalle);
+                    this.timelineResourceDataOut = []
                     this.getContainersByRessourceStartDateEndDate(
                         salle.CodeRessource,
                         start,
@@ -470,7 +546,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     );
                 });
             })
-
+           
     }
 
     getSalleAll(currentGroup, start, end) {
@@ -486,7 +562,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     this.departmentDataSourceAll.push({
                         Text: item.NomSalle,
                         Id: item.CodeSalle,
-                        Color: '#5A012B',
+                        Color: '#AC4BC6',
                         codeSalle: item.CodeSalle,
                         codeRessource: item.CodeRessource
                     });
@@ -563,7 +639,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     public lastSalleCall = false;
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
-        // console.log('--------------------------------------------------indexSalle => ', indexSalle);
+     
         let debut =moment(datedebut).format('YYYY-MM-DD').toString();
         let fin = moment(datefin).format('YYYY-MM-DD').toString();
         if (indexSalle === (this.salleDataSource.length - 1)) {
@@ -608,7 +684,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             DepartmentID: codeSalle,
                             ConsultantID: 2,
                             DepartmentName: '',
-                            IsAllDay: false
+                            IsAllDay: false,
+                            Commentaire:data.Commentaire
                         });
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
@@ -621,13 +698,18 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     // this.departmentDataSource = this.departmentGroupDataSource;
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
                     // console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
+                    this.disabledrefresh = false
+                    console.log('refresh scheduler click', this.disabledrefresh );
                 } else {
                     // console.log('container not present for regie : ', coderessource, res);
                 }
+             
         });
+      
     }
     public allDataWorkorders = [];
     getWorkorderByContainerId(id, codeSalle, index, containerArrayLength, indexSalle) {
+       
         // console.log('--------------------------------------------------indexSalle => ', indexSalle);
         // console.log('id container to check workorder => ', id)
         // console.log('codeSalle => ', codeSalle);
@@ -640,6 +722,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 // console.log('response workorder for container : ', res);
                 this.WorkorderByContainerId = res;
                 this.allDataWorkorders = [...this.allDataWorkorders, ...res];
+              
                 // console.log('all data workorder : ', this.allDataWorkorders);
                 // console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
                 // console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
@@ -673,7 +756,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             numepisode:data.numepisode,
                             dureecommerciale:data.dureecommerciale,
                             libtypeWO:data.libtypeWO,
-                            Commentaire_Planning:data.Commentaire_Planning
+                            Commentaire_Planning:data.Commentaire_Planning,
+                            IdGenerationWO:data.IdGenerationWO,
                         }
                         this.timelineResourceDataOut.push(newWorkorderEvent);
                     });
@@ -755,6 +839,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 '<div class="tooltip-wrap">' +
                 '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > Type de Travail: &nbsp; ${typetravail}<br> ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </>  </div> ${/if}' +
                 '${if(  Commentaire_Planning !== null && Commentaire_Planning !== undefined )}<div> Description : &nbsp; ${Commentaire_Planning} </>  </div> ${/if}'+
+                '${if (AzaIsPere && Operateur !== null && Operateur !== "" ) }<div class="time">Operateur:&nbsp;${Operateur} </div> ${/if}' +
                 '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
                 '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
         }
@@ -762,7 +847,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 
     getWorkOrderByidGroup(idGroup) {
-        console.log(this.workOrderData);
+        console.log("++++++++++++++++++++++",this.workOrderData);
         this.workorderService
         .getWorkOrderByidGroup(idGroup)
         .subscribe(donnees => {
@@ -800,7 +885,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     numepisode:workOrder.numepisode,
                     dureecommerciale:workOrder.dureecommerciale,
                     libtypeWO:workOrder.libtypeWO,
-                    Commentaire_Planning: workOrder.Commentaire_Planning
+                    Commentaire_Planning: workOrder.Commentaire_Planning,
+                    IdGenerationWO:workOrder.IdGenerationWO
                 });
             }),
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -810,7 +896,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 dataSource:  this.workOrderData,
                 id: 'Id',
                 text: 'Name',
-                description: 'typetravail'
+                description: 'Commentaire_Planning'
+               
             };
             // this.treeObj.refresh();
             console.log('WorkOrderByidgroup', this.workOrderData);
@@ -909,7 +996,10 @@ public createJustContainerAction = false;
                                 numepisode:item.numepisode,
                                 dureecommerciale:item.dureecommerciale,
                                 libchaine: item.libchaine,
-                                Commentaire_Planning:item.Commentaire_Planning
+                                Commentaire_Planning:item.Commentaire_Planning,
+                                IdGenerationWO:item.IdGenerationWO,
+                                libtypeWO:item.libtypeWO,
+
                             };
                             this.updateWorkorderInDragDrop(newItemWorkorderAfterEditorUpdate, containerToCreate);
                             console.log('new workorder from post container function: ', newItemWorkorderAfterEditorUpdate);
@@ -973,7 +1063,7 @@ public createJustContainerAction = false;
             DateFinTheo: endTime,
             CodeRessourceSalle: codeRessourceSalle,
             LibelleRessourceSalle: libelleRessourceSalle,
-            Commentaire: '',
+            Commentaire:event.Commentaire,
             Commentaire_Planning: '',
             DateMaj: now,
             UserMaj: libelleRessourceCoordinateur,
@@ -1041,7 +1131,7 @@ public isBackToBacklog: boolean = false;
             DateFinTheo: endTime,
             CodeRessourceSalle: codeRessourceSalle,
             LibelleRessourceSalle: libelleRessourceSalle,
-            Commentaire: '',
+            Commentaire:container.Commentaire,
             Commentaire_Planning: '',
             DateMaj: now,
             UserMaj: this.user.shortUserName,
@@ -1070,6 +1160,7 @@ public isBackToBacklog: boolean = false;
                         item.AzaNumGroupe = event.AzaNumGroupe;
                         item.coordinateurCreate = event.coordinateurCreate;
                         item.Operateur = event.Operateur;
+                        item.Commentaire = event.Commentaire
                         console.log(item);
                     }
                 });
@@ -1163,7 +1254,7 @@ public isBackToBacklog: boolean = false;
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: container.CodeRessourceSalle,
-            Commentaire: null,
+            Commentaire: workorderSelected.Commentaire,
             Support1Cree: null,
             Support2Cree: null,
             MustWaitFor: null,
@@ -1180,6 +1271,9 @@ public isBackToBacklog: boolean = false;
             titreoeuvre:workorderSelected.titreoeuvre,
             numepisode:workorderSelected.numepisode,
             dureecommerciale:workorderSelected.dureecommerciale,
+            libtypeWO:workorderSelected.libtypeWO,
+            IdGenerationWO:workorderSelected.IdGenerationWO,
+
         }
         console.log("newWorkorder => ", newWorkorder);
         this.workorderService
@@ -1237,7 +1331,7 @@ public isBackToBacklog: boolean = false;
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: containerParent.CodeRessourceSalle,
-            Commentaire: null,
+            Commentaire: workorderSelected.Commentaire,
             Support1Cree: null,
             Support2Cree: null,
             MustWaitFor: null,
@@ -1255,6 +1349,8 @@ public isBackToBacklog: boolean = false;
             numepisode:workorderSelected.numepisode,
             dureecommerciale:workorderSelected.dureecommerciale,
             libtypeWO:workorderSelected.libtypeWO,
+            IdGenerationWO:workorderSelected.IdGenerationWO,
+            
         
         }
         console.log('workorder data selected', newWorkorder);
@@ -1346,7 +1442,7 @@ public isBackToBacklog: boolean = false;
                 DateDebutTheo: startTime,
                 DateFinTheo: endTime,
                 CodeRessourceSalle: containerParent.CodeRessourceSalle,
-                Commentaire: null,
+                Commentaire: workorderSelected.Commentaire,
                 Support1Cree: null,
                 Support2Cree: null,
                 MustWaitFor: null,
@@ -1363,6 +1459,8 @@ public isBackToBacklog: boolean = false;
                 titreoeuvre:workorderSelected.titreoeuvre,
                 numepisode:workorderSelected.numepisode,
                 dureecommerciale:workorderSelected.dureecommerciale,
+                libtypeWO:workorderSelected.libtypeWO,
+                IdGenerationWO:workorderSelected.IdGenerationWO,
             }
             console.log('workorder data selected', newWorkorder);
             this.putWorkorderWithCalcul(newWorkorder, event, containerParent, this.timelineResourceDataOut, true);
@@ -1439,7 +1537,7 @@ public isBackToBacklog: boolean = false;
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: containerParent.CodeRessourceSalle,
-            Commentaire: null,
+            Commentaire: workorder.Commentaire,
             Support1Cree: null,
             Support2Cree: null,
             MustWaitFor: null,
@@ -1457,6 +1555,7 @@ public isBackToBacklog: boolean = false;
             numepisode:workorder.numepisode,
             dureecommerciale:workorder.dureecommerciale,
             libtypeWO:workorder.libtypeWO,
+            IdGenerationWO:workorder.IdGenerationWO,
         }
 
         console.log('workorder after => ', newWorkorder);
@@ -1547,7 +1646,7 @@ public isBackToBacklog: boolean = false;
             DateDebutTheo: workorderSelected.DateDebutTheo,
             DateFinTheo: workorderSelected.DateFinTheo,
             CodeRessourceSalle: event.CodeRessourceSalle,
-            Commentaire: null,
+            Commentaire: workorderSelected.Commentaire,
             Support1Cree: null,
             Support2Cree: null,
             MustWaitFor: null,
@@ -1563,8 +1662,10 @@ public isBackToBacklog: boolean = false;
             typetravail:workorderSelected.typetravail,
              titreoeuvre:workorderSelected.titreoeuvre,
              numepisode:workorderSelected.numepisode,
-             dureecommerciale:workorderSelected.dureecommerciale,
              libtypeWO:workorderSelected.libtypeWO,
+             dureecommerciale:workorderSelected.dureecommerciale,
+             IdGenerationWO:workorderSelected.IdGenerationWO,
+            
 
         }
         console.log(newWorkorder);
@@ -1639,12 +1740,14 @@ public isBackToBacklog: boolean = false;
             titreoeuvre:selectedItem.titreoeuvre,
             numepisode:selectedItem.numepisode,
             dureecommerciale:selectedItem.dureecommerciale,
-                        libtypeWO:selectedItem.libtypeWO,
-            Commentaire_Planning: selectedItem.Commentaire_Planning
+            libtypeWO:selectedItem.libtypeWO,
+            Commentaire_Planning: selectedItem.Commentaire_Planning,
+            IdGenerationWO:selectedItem.IdGenerationWO,
+            Commentaire: selectedItem.Commentaire,
 
         };
         this.field['dataSource'].push(newWorkorderForList);
-        this.wOrderBackToBacklog = this.field['dataSource'];
+      
         this.isAddedToBacklog = true;
         let targetNodeId: string = this.treeObj.selectedNodes[0];
         let nodeId: string = 'tree_' + newWorkorderForList.Id;
@@ -1652,6 +1755,7 @@ public isBackToBacklog: boolean = false;
             enableTooltip: true, tooltipTemplate: this.temp
         };
         this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
+        this.wOrderBackToBacklog =  this.field['dataSource'];
         console.log('wOrderBackToBacklog', this.wOrderBackToBacklog);
     }
     /************************************************ PUT Workorder *****************************************/
@@ -1699,7 +1803,7 @@ updateWorkOrder(args) {
         DateDebutTheo: startTime,
         DateFinTheo: endTime,
         CodeRessourceSalle: event.CodeRessourceSalle,
-        Commentaire: null,
+        Commentaire: workorder.Commentaire,
         Support1Cree: null,
         Support2Cree: null,
         MustWaitFor: null,
@@ -1717,6 +1821,7 @@ updateWorkOrder(args) {
         dureecommerciale:workorder.dureecommerciale,
         libtypeWO:workorder.libtypeWO,
         Commentaire_Planning: event.Commentaire_Planning,
+        IdGenerationWO:event.IdGenerationWO,
       
     }
     console.log('workorder data selected', newWorkorder);
@@ -1754,7 +1859,9 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                     item.dureecommerciale=  event.dureecommerciale;
                     item.libtypeWO= event.libtypeWO;
                     item.Commentaire_Planning= event.Commentaire_Planning;
-                    item.Id_Planning_Container = event.Id_Planning_Container
+                    item.Id_Planning_Container = event.Id_Planning_Container;
+                    item.IdGenerationWO = event.IdGenerationWO,
+                    item.Commentaire = event.Commentaire,
                     console.log(item);
                 }
             });
@@ -1835,10 +1942,16 @@ public agendaLastDate;
 public calcule;
 public navigateTimelineDay;
     onNavigating(args) {
+       
+        
+        console.log( args.currentView)
         console.log(' ============================> NEW NAVIGATION ====================> ', args);
         console.log(this.field);
-        console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
         this.timelineResourceDataOut = [];
+        console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
+    
+        this.refreshWorkordersBacklog()
+
         console.log(this.departmentDataSource);
         // console.log('this.timelineResourceDataOut vide => ', this.timelineResourceDataOut)
         this.startofDay =   moment(this.scheduleObj.activeView.renderDates[0]).toDate()
@@ -1855,42 +1968,53 @@ public navigateTimelineDay;
 
         if (args.currentView ==="TimelineDay") {
             this.scheduleObj.timeScale.interval = 60
-            this.scheduleObj.startHour ='06:00'
-            this.scheduleObj.endHour ='23:00'
+            
             this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
             this.scheduleObj.dataBind()
+            this.valueMax =   60 
+            this.value = 60
+            this.valueAdd = 10
+
         } else {
             if (args.currentView ==="TimelineWeek") {
-                this.scheduleObj.startHour ='08:00'
-                this.scheduleObj.endHour ='20:00'
+               
+               
+               
                 this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:1 }
                 //    if(this.open || !this.open){
                 //      this.scheduleObj.refresh();
                 //     }
-            }
+                this.valueMax =   120 
+                this.value = 60
+                this.valueAdd = 30
         }
-        if (args.currentView === 'TimelineDay' ) {
-            this.scheduleObj.currentView = 'TimelineDay';
-            this.navigateTimelineDay = true;
-            let startofDay = moment(args.currentDate).toDate()
-            let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-            console.log(startofDay, "++++++++++++++++++++++++", endofDay )
-            this.timelineResourceDataOut = [];
-            this.refreshDateStart = startofDay;
-            this.refreshDateEnd = endofDay;
-            this.salleDataSource.forEach(salle => {
-                let indexSalle = this.salleDataSource.indexOf(salle);
-                this.getContainersByRessourceStartDateEndDate(
-                    salle.CodeRessource,
-                    startofDay,
-                    endofDay,
-                    salle.CodeSalle,
-                    indexSalle
-                );
-            });
         }
+        // if (args.currentView === 'TimelineDay' ) {
+        //     this.scheduleObj.currentView = 'TimelineDay';
+        //     this.navigateTimelineDay = true;
+        //     let startofDay = moment(args.currentDate).toDate()
+        //     let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+        //     console.log(startofDay, "++++++++++++++++++++++++", endofDay )
+        //     this.timelineResourceDataOut = [];
+        //     this.refreshDateStart = startofDay;
+        //     this.refreshDateEnd = endofDay;
+        //     this.salleDataSource.forEach(salle => {
+        //         let indexSalle = this.salleDataSource.indexOf(salle);
+        //         this.getContainersByRessourceStartDateEndDate(
+        //             salle.CodeRessource,
+        //             startofDay,
+        //             endofDay,
+        //             salle.CodeSalle,
+        //             indexSalle
+        //         );
+        //     });
+
+        // }
+
         if (this.scheduleObj.currentView === 'TimelineDay' && args.currentView === 'TimelineDay') {
+           
           console.log('TIMELINEDAY !!!!')
+               console.log(this.open ,"-------------")
             if (args.action === 'date') {
                 console.log('TIMELINEDAY !!!! => date contition');
                 this.timelineResourceDataOut = []
@@ -1930,6 +2054,9 @@ public navigateTimelineDay;
                 });
                 console.log("currentView date ",  this.startofDay ,  this.endofDay, )
                 console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
+
+                
+           
               }
             }
         if (args.currentView ==="TimelineMonth" ||  args.currentView ==="Agenda" ) {
@@ -1970,6 +2097,9 @@ public navigateTimelineDay;
             }
         }
         if (this.scheduleObj.currentView ==="TimelineWeek") {
+           
+
+            console.log('TIMELINEWEEK!!!!')
             if (args.action === "date"){
                 let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
                 let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
@@ -2102,6 +2232,7 @@ public navigateTimelineDay;
         //   }
         // }
         if (args.currentView ==="TimelineWeek") {
+           
             if (args.action === "view") {
                 this.timelineResourceDataOut = []
                 console.log(this.timelineResourceDataOut,"timelineResourceDataOut");
@@ -2119,42 +2250,9 @@ public navigateTimelineDay;
                 });
             console.log(this.timelineResourceDataOut,"timelineResourceDataOut")
           }
-        if (args.previousView === 'TimelineDay') {
-            this.zoom = true
+   
         }
-        let value = 60
-        document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
-                let scheduleElement = document.getElementsByClassName('schedule-container');
-                if (this.zoom === true) {
-                    if ( eKey.keyCode === 80 && scheduleElement ) {
-                        if (value < 120) {
-                            value = value +  30
-                            this.scheduleObj.timeScale.interval = value;
-                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
-                        }
-                    } else {
-                        if ( eKey.keyCode === 77 && scheduleElement ) {
-                            if ( value > 30) {
-                                value = value - 30
-                                this.scheduleObj.timeScale.interval = value 
-                                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
-                            }
-                        }
-                    }
-                } else {
-                    if ( eKey.keyCode === 80 && scheduleElement ) {
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
-                    } else {
-                        if ( eKey.keyCode === 77 && scheduleElement ) {
-                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
-                        }
-                    }
-                }
-            });
-        }
-        if (args.currentView === "TimelineDay") {
-            this.zoom = false
-        }      
+     
         console.log("date agenda schedulerobj ......................................",this.scheduleObj)
       if(args.currentView ==="Agenda"){
         if (args.action === "date"){
@@ -2192,15 +2290,21 @@ public navigateTimelineDay;
                 });
             }
         }
-
+       
+        
+        if(this.filtre == true){
+            this.filtre = true
+        }
     }
 
 public  couleur;
 
 public zoom : boolean = true;
+public CellClick : boolean = true;
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
-     
+        // this.filtre = true
+        // this.zoom = true
         console.log(args);
         // if (args.type === 'EventContainer') {
         //     args.data.element.innerText = `Plus`;
@@ -2217,7 +2321,12 @@ public zoom : boolean = true;
         //     }
         // }
        
-
+        if(args.target.className === "e-header-cells e-current-day" || args.target.className === "e-header-cells" )
+        {
+            args.data.cancel = true
+            args.cancel = true
+           console.log(args,"-----------------------------------")
+        }
         if(args.type === 'QuickInfo')
         {
           
@@ -2264,6 +2373,8 @@ public zoom : boolean = true;
                     className: 'e-sub-object-list'
                 });
                 let elementParent: HTMLElement = <HTMLElement>args.element.querySelector('.e-popup-content');
+                elementParent.style.overflow = "auto"
+                elementParent.style.height = '40vh'
                 elementParent.appendChild(row);
                 for (let i = 0; i < workOrders.length; i++) {
                     let idRegie = workOrders[i].DepartmentID;
@@ -2278,7 +2389,7 @@ public zoom : boolean = true;
    
                     console.log( this.couleur , '**********************************couleur*************************************') 
                   
-                    row.innerHTML += `<div id='id${i}'>${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
+                    row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
                     
                    
                         let element = document.getElementById('id'+i)
@@ -2312,7 +2423,7 @@ public zoom : boolean = true;
                 });
                 for (let i = 0; i < workOrders.length; i++) {
                     // ${workOrders[i].typetravail}
-                elementworkorder.innerHTML=`<div class='e-subject e-text-ellipsis'> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode} </div>` 
+                elementworkorder.innerHTML=`<div class='e-subject e-text-ellipsis' style="color : black"> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode} </div>` 
             }
             console.log(elementworkorder,"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
         
@@ -2320,6 +2431,15 @@ public zoom : boolean = true;
         } 
         if (args.data.name === 'cellClick') {
             console.log('cell click',args);
+         
+        
+             if(args.target.className === "e-header-cells  e-current-day" || args.target.className === "e-header-cells")
+             {
+                args.cancel = true
+                 args.data.cancel = true
+                console.log(args,"-----------------------------------")
+             }
+            console.log( this.scheduleObj.selectedDate)
             console.log(this.isTreeItemDropped);
             this.creationArray = [];
             this.isTreeItemDropped = false;
@@ -2331,7 +2451,7 @@ public zoom : boolean = true;
             console.log('repeat', title[0]);
             console.log('repeat', subTitle[0]);
             title[0]['style'].display = 'block';
-            subTitle[0]['style'].display = 'block';
+            subTitle[0]['style'].display = 'none';
             Debut[0]['style'].display = 'block';
             fin[0]['style'].display = 'block';
             regie[0]['style'].display = 'block';
@@ -2343,9 +2463,23 @@ public zoom : boolean = true;
             console.log(this.isTreeItemDropped);
             this.creationArray = [];
             this.isTreeItemDropped = false;
+            
         }
-        if (args.type === 'Editor') {
+        if(  args.data.name ==="cellClick"  ){
+            this.filtre = true
+            this.zoom = true
+            this.CellClick = true
+        }
+        if(  this.filtre == false && this.CellClick == true ){
+            this.filtre = true
+            this.zoom = true
+          
+        }
+    
 
+    
+        if (args.type === 'Editor') {
+            this.filtre = false
             this.zoom = false
             console.log('Editor Open and this.isTreeItemDropped = ', this.isTreeItemDropped);
             console.log(this.openEditorCount);
@@ -2356,6 +2490,9 @@ public zoom : boolean = true;
                 let repeat = document.getElementsByClassName('e-editor');
                 console.log('repeat', repeat[0]);
                 repeat[0]['style'].display = 'none';
+                let subTitle =  document.getElementsByClassName('e-location-container');
+                console.log('subTitle', subTitle[0]);
+                subTitle[0]['style'].display = 'none';
                                
                 if (!args.data.AzaIsPere) {
                     let title = document.getElementsByClassName('e-subject-container');
@@ -2374,11 +2511,34 @@ public zoom : boolean = true;
                     console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")  
                   
              }
-
-
-
-
             }
+
+            if (!args.data.AzaIsPere) {
+                let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                let repeat = document.getElementsByClassName('e-editor');
+                let title = document.getElementsByClassName('e-subject-container');
+                let subTitle =  document.getElementsByClassName('e-location-container');
+                let Debut =  document.getElementsByClassName('e-start-container');
+                let fin=  document.getElementsByClassName('e-end-container');
+                let regie =  document.getElementsByClassName('e-resources');
+                console.log('repeat', title[0]);
+                console.log('repeat', subTitle[0]);
+                title[0]['style'].display = 'none';
+                subTitle[0]['style'].display = 'none';
+                Debut[0]['style'].display = 'none';
+                fin[0]['style'].display = 'none';
+                regie[0]['style'].display = 'none';
+                console.log('isAllDay :', isAllDay[0]);
+                isAllDay[0]['style'].display = 'none';
+                console.log('repeat', repeat[0]);
+                repeat[0]['style'].display = 'none';
+                console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")  
+              
+         } else {
+            let subTitle =  document.getElementsByClassName('e-location-container');
+            console.log('subTitle', subTitle[0]);
+            subTitle[0]['style'].display = 'none';
+         }
             console.log('Open Editor');
             let inputEle: HTMLInputElement;
             let container: HTMLElement;
@@ -2388,7 +2548,8 @@ public zoom : boolean = true;
             console.log(annuler);
             annuler[0].addEventListener('click', () => {
                 this.zoom = true
-                console.log('click annuler ', this.zoom)
+                this.filtre = false
+                console.log('click annuler ', this.zoom, this.filtre)
                  });
 
 
@@ -2412,7 +2573,7 @@ public zoom : boolean = true;
                     console.log('repeat', title[0]);
                     console.log('repeat', subTitle[0]);
                     title[0]['style'].display = 'block';
-                    subTitle[0]['style'].display = 'block';
+                    
                     Debut[0]['style'].display = 'block';
                     fin[0]['style'].display = 'block';
                     regie[0]['style'].display = 'block';
@@ -2438,7 +2599,7 @@ public zoom : boolean = true;
                  }
                  }
             } else {
-                                if(  args.name === 'popupOpen') 
+            if(  args.name === 'popupOpen') 
        
                 {
                  let title = document.getElementsByClassName('e-subject-container');
@@ -2448,7 +2609,7 @@ public zoom : boolean = true;
                  let regie =  document.getElementsByClassName('e-resources');
                
                  title[0]['style'].display = 'block';
-                 subTitle[0]['style'].display = 'block';
+                
                  Debut[0]['style'].display = 'block';
                  fin[0]['style'].display = 'block';
                  regie[0]['style'].display = 'block';
@@ -2566,7 +2727,8 @@ public zoom : boolean = true;
                         AzaIsPere: true,
                         AzaNumGroupe: this.lastRandomId,
                         coordinateurCreate: this.user.initials,
-                        Operateur: ''
+                        Operateur: '',
+                       
                     };
                     console.log(filteredData[0], 'filteredData[0]');
                     let eventData: { [key: string]: Object } = { // DISPLAY DATA FOR EVENT
@@ -2589,6 +2751,7 @@ public zoom : boolean = true;
                         dureecommerciale:filteredData[0].dureecommerciale,
                         Commentaire_Planning: filteredData[0].Commentaire_Planning,
                         libtypeWO:filteredData[0].libtypeWO,
+                        IdGenerationWO:filteredData[0].IdGenerationWO,
 
                     };
                     this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
@@ -2635,7 +2798,8 @@ public zoom : boolean = true;
                             numepisode:filteredDataW[0].numepisode,
                             dureecommerciale:filteredDataW[0].dureecommerciale,
                             libtypeWO:filteredDataW[0].libtypeWO,
-                            Commentaire_Planning: filteredDataW[0].Commentaire_Planning
+                            Commentaire_Planning: filteredDataW[0].Commentaire_Planning,
+                            IdGenerationWO:filteredDataW[0].IdGenerationWO,
                         };
                         this.creationArray = [newEventData];
                         this.isTreeItemDropped = true;
@@ -2761,15 +2925,13 @@ public zoom : boolean = true;
         this.containerParent = {};
         console.log('onActionBegin()');
         console.log(event);
+        console.log(this.scheduleObj.currentView)
         console.log(this.isTreeItemDropped);
       
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
 
-    
-     
-     
         if (event.requestType === 'eventChange') {
              this.zoom = true
 
@@ -2908,8 +3070,15 @@ public zoom : boolean = true;
             this.deleteEvent(args);
         } else if (args.requestType === 'viewNavigate') {
           
-
-        } else if ((args.requestType !== 'toolbarItemRendering') && (args.data['AzaIsPere'])) { // RESIZE CONTAINER
+            if(this.open == true) {
+                this.open = true;
+                
+            } else {
+                this.open = false;
+              
+            }
+console.log(this.open,'----------------------------------------------')
+        } else if ((args.requestType !== 'toolbarItemRendering') && (args.data.AzaIsPere)) { // RESIZE CONTAINER
             console.log('CALL CUSTOM ACTION BEGIN');
             // this.updateContainer(args);
             // args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
@@ -2975,6 +3144,7 @@ public zoom : boolean = true;
     onActionComplete(e) {
         console.log('onActionComplete()');
         console.log('event onActionComplete : ', e);
+
         // if (this.timelineResourceDataOut['container'] = true) {
         //     this.scheduleObj.eventSettings.enableTooltip = true;
         //     // this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
@@ -3026,6 +3196,7 @@ public zoom : boolean = true;
         ) {
             console.log('=======> args : ', e);
             console.log(this.createJustContainerAction);
+       
             // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
             //     dataSource: <Object[]>extend(
             //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
@@ -3345,7 +3516,7 @@ public zoom : boolean = true;
               console.log('all coordinateurs : ', data);
               data.forEach(item => {
                   if (item.Username === this.user.shortUserName) {
-                   
+                
                         console.log('COORDINATEUR => ', item);
                         this.getSalleByGroup(item.Groupe, startofDay, endofDay);
                         this.getMonteursByGroup(item.Groupe);
@@ -3416,15 +3587,27 @@ public zoom : boolean = true;
 /**************************************************************** Filter Monteur  ******************************************************************/
 
 
-/********** Filter Monteur  *********/
-
+/************************************************************ Filter Monteur et régies ***********************************************************************************/
+countText
     onFilter(searchText: string, tabIndex) {
+     
+    
+   
 
+
+        if(searchText.length >= 0){
+            this.zoom = false
+            this.filtre = false
+            console.log(this.zoom, searchText.length, '*******************************************')
+        }
+        this.countText = searchText.length
+        // this.filtre == true
+        
        
         if (tabIndex == 1) {
-
+           
             if (!searchText  ) {
-                
+               
                 console.log('searchText', typeof searchText, searchText);
               
                 this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
@@ -3448,7 +3631,7 @@ public zoom : boolean = true;
              
                 this.dataMonteur =   this.filtermonteurListeArray.filter(monteurs => {
                     return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                     // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
+                     || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
                     // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
                
                 });
@@ -3466,7 +3649,7 @@ public zoom : boolean = true;
             if (!this.addMonteur) {
                 this.dataMonteur = this.monteurDataSource.filter(monteurs => {
                     return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                    // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
+                    || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
                     // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());
                 });
             } 
@@ -3474,7 +3657,7 @@ public zoom : boolean = true;
              {
                 this.dataMonteur =   this.filtermonteurListeArray.filter(monteurs => {
                     return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                     // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
+                     || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
                     // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
                
                 });
@@ -3489,7 +3672,7 @@ public zoom : boolean = true;
 
             this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
                 return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                // || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
+                || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
                 // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
 
               
@@ -3512,44 +3695,56 @@ public zoom : boolean = true;
 
         if (tabIndex == 0) {
 
-           
+        
             if (!searchText) {
+                
                 console.log('searchText', typeof searchText, searchText)
                 if (!this.isAddedToBacklog){
                 if (!this.isDragged){
                  this.field['dataSource'] = this.fieldArray;
                 } else {
-                    this.field['dataSource'] = this.newField;
+                    this.workOrderData = [];
+                    this.newField = this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
+                    // this.data =this.fieldArray['dataSource'];
+                   console.log(this.newField)
                 }
 
             } else {
                 this.field['dataSource'] = this.wOrderBackToBacklog;
             }
+            this.workOrderData = [];
+            this.field['dataSource'] = this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe)
             console.log('   this.field[dataSource]  quand le champs est vide',this.field['dataSource'])
             }
+
             if (!this.isAddedToBacklog) {
                 if (!this.isDragged) {
 
-                    this.data = this.field['dataSource'].filter(WorkOrder => {
+                    this.data = this.workOrderData.filter(WorkOrder => {
                         return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  ;
+                            || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase()) 
+                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) ;
                     });
                 } else {
                     this.data = this.newField.filter(WorkOrder => {
                         return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  ;
+                            || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  
+                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) ;
                     });
+                   
                 }
             } else {
+                console.log('wOrderBackToBacklog', this.wOrderBackToBacklog);
                 this.data = this.wOrderBackToBacklog.filter(WorkOrder => {
                     return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  ;                        
+                        || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  
+                        || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) ;                       
                 });
             }
             this.field['dataSource'] = this.data;
@@ -3559,7 +3754,44 @@ public zoom : boolean = true;
             console.log('Data', this.data);
         }
     }
+    public filtre : boolean 
+    Filter(){
+        let schedule = document.getElementsByClassName('recherche');
+        console.log(schedule)
+        schedule[0].addEventListener('mousedown', (eKey: KeyboardEvent) => {
+            this.zoom = false
+            this.filtre = false
 
+        })
+        schedule[1].addEventListener('mousedown', (eKey: KeyboardEvent) => {
+            this.zoom = false
+            this.filtre = false
+
+        })
+    }
+    onFilterRegie(search) {
+    
+       
+
+    
+
+
+        if(search.length >= 0){
+            this.zoom = false
+            this.filtre = false
+            console.log(this.zoom, search.length, '*******************************************')
+        }
+   
+        // this.filtre = true
+        console.log(search.length)
+        this.dataRegie = this.departmentGroupDataSource.filter(regie => {
+            return regie.Text.toLowerCase().includes(search.toLowerCase())
+        })
+        this.departmentDataSource = this.dataRegie
+
+        console.log(this.dataRegie)
+
+    }
 
 /**************************************************** Add Regies ************************************************************ *********/
 
@@ -3584,7 +3816,12 @@ public zoom : boolean = true;
             console.log('faux');
         }
     }
+
+
+
     public open
+
+
     
     btnClickSlide(){
 
@@ -3715,6 +3952,8 @@ public elementDelete
             }
         }
      
+  
+     
       
     }
 
@@ -3748,6 +3987,13 @@ public elementDelete
     }
 
     onRenderCell(args: RenderCellEventArgs): void {
+
+   
+ if( this.scheduleObj.currentView =='TimelineWeek'){
+        if (args.element.classList.contains('e-work-cells') && ((args.date.getDate() % 2) === 0 )) {
+            args.element.style.background ='#E5FCFD';
+        }
+    }
         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
             if (this.scheduleObj.readonly == false) {
@@ -3756,12 +4002,17 @@ public elementDelete
                 target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
             }
         }
-    
-    }
+
+  
+}
+
     onChange(args: ChangeEventArgs): void {
    
     }
   
+    onResize(args){
+        console.log(args)
+    }
 
 
 }

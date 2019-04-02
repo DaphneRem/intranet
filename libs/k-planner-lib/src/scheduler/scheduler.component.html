@@ -21,9 +21,12 @@
                              
             </div>
             <div style="display: flex;">
-                <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button> 
-                <button class="btn btn-info regie refresh-btn mr-3" (click)="refreshScheduler()"><i class="icofont icofont-refresh"></i>Rafraichir</button>
-                <select class="form-control form-control-info m-0 select-plannings" placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)">
+                <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
+                <button class="btn btn-info regie refresh-btn ml-3" (click)="refreshScheduler()" [disabled]="disabledrefresh"   ><i class="icofont icofont-refresh"></i>Rafraichir</button>
+                <input type="text" class="form-control form-control-info col-2 recherche" placeholder="Rechercher une régie..." #search (keyup)="onFilterRegie(search.value)" (mousedown)="Filter()" value="" >
+              
+              
+                <select class="form-control form-control-info m-0 select-plannings float-right mt-1 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)">
                     <option value="Mon planning">Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
                 </select>
@@ -67,6 +70,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="schedule">
+
+           
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
                 (eventClick)="onEventClick()"
@@ -87,7 +93,9 @@
                 (navigating)="onNavigating($event)"
                 [currentView]="currentView"
                 (change)="onChange($event)"
-                [ngStyle]="{'opacity':isnotMyGroup === true ?'0.7':'1' }"
+             
+                [firstDayOfWeek]="1"
+                
                 >
                 <!-- (renderCell)="onRenderCell($event)" -->
                 <e-resources>
@@ -101,6 +109,7 @@
                         colorField='Color' 
                         groupIDField="Id" 
                         [allowMultiple]='allowMultiple'
+                   
                         >
                     </e-resource>
                 </e-resources>                
@@ -127,7 +136,7 @@
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                             class="float-right  fixed mr-1"> -->
                                     </div>
-                                    <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                    <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                      
                                         <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
                                         <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }} </span>
@@ -141,7 +150,7 @@
                         </div></ng-template> -->
                     </e-view>
                  
-                    <e-view option="TimelineWeek" class="e-icons e-search"  >
+                    <e-view option="TimelineWeek" class="e-icons e-search"    >
                             <ng-template #eventTemplate let-data  class="event">
                                     <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                         <div>
@@ -153,7 +162,7 @@
                                                 <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                     class="float-right  fixed mr-1"> -->
                                             </div>
-                                            <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                            <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                                 <span style="padding-top: 5px; width: 100%; z-index: 2 !important"> {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
                                             </div>
                                         </div>
@@ -190,7 +199,7 @@
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
-                                        <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
+                                        <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                             <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
                                         </div>
                                     </div>
@@ -208,11 +217,11 @@
                 </e-views>
                 
             </ejs-schedule>
-
+        </div>
         </div>
    <!--************************************** tabItem ***********************************************************************-->
-   <div class="sidebar"  *ngIf="!isnotMyGroup ">
-  <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target' *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek' "   >
+   <div class="sidebar"  *ngIf="!isnotMyGroup " [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
+  <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target'  [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
       
         <ejs-tab id="element" #element  class="content"   >
             <e-tabitems>
@@ -227,7 +236,7 @@
                                 </button>
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Rechercher..." #search (keyup)="onFilter(search.value,0)" >
+                                <input type="text" class="form-control recherche" placeholder="Rechercher..." #search (keyup)="onFilter(search.value,0)" (mousedown)="Filter()" >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
 
@@ -238,8 +247,10 @@
                                 cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop'
                                 (nodeDragStop)="onTreeDragStop($event)" 
-                                (nodeDragging)="onItemDrag($event, 0)">
-                                <ng-template #nodeTemplate="" let-dataWorkOrder="">
+                                (nodeDragging)="onItemDrag($event, 0)"
+                               >
+                                <ng-template #nodeTemplate="" let-dataWorkOrder=""
+                                >
                                     <div id="waiting">
                                         <div id="waitdetails" >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} ep {{dataWorkOrder.numepisode}} </div>
@@ -264,7 +275,7 @@
                             <div class="title-container">
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1)"  >
+                                <input type="text" class="form-control recherche" placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1)" (mousedown)="Filter()" >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
                             <select class="form-control form-control-info" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
@@ -311,8 +322,16 @@
 
         
     </ejs-sidebar>  
-   <div id="head" *ngIf="scheduleObj.currentView =='TimelineDay'  || scheduleObj.currentView =='TimelineWeek' "  >
-            <button ejs-button id="toggle" #togglebtnslide isToggle="true" (click)="btnClickSlide()" content="" class="btn btn-info float-right regie btn-backlog"> BackLog
+   <div id="head"   >
+            <button ejs-button 
+            id="toggle" #togglebtnslide 
+            isToggle="true" 
+            (click)="btnClickSlide()" 
+            content="" 
+            class="btn btn-info float-right regie btn-backlog"
+            [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"
+            > 
+            BackLog
                 <i *ngIf="!open" class="icofont icofont-navigation-menu"></i>
                 <span *ngIf="open == true" ><i class="icofont icofont-close-circled"></i></span>
             </button>
