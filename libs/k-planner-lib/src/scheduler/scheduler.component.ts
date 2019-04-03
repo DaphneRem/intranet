@@ -10,7 +10,13 @@ import swal from 'sweetalert2';
 // Synfucion Bases
 import { extend, closest, remove, createElement, addClass, L10n, loadCldr, isNullOrUndefined, Internationalization, removeClass } from '@syncfusion/ej2-base';
 import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
-import { DragAndDropEventArgs, BeforeOpenCloseMenuEventArgs, MenuEventArgs, Item, ItemModel } from '@syncfusion/ej2-navigations';
+import {
+  DragAndDropEventArgs,
+  BeforeOpenCloseMenuEventArgs,
+  MenuEventArgs,
+  Item,
+  ItemModel
+} from "@syncfusion/ej2-navigations";
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
 import { ChangeEventArgs as DropDownChangeArgs } from '@syncfusion/ej2-angular-dropdowns';
 import { TimePickerComponent } from '@syncfusion/ej2-angular-calendars';
@@ -2840,6 +2846,12 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
             }
         }
 
+    }
+
+    selectTabWitoutSwip (e: SelectEventArgs) {
+      if (e.isSwiped) {
+        e.cancel = true;
+      }
     }
 
 /******* DRAG AND DROP WORKORDERS *******/
