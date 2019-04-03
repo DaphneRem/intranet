@@ -375,9 +375,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     ngOnInit() {
-        console.log(this.scheduleObj);
-        console.log(this.scheduleObjDay, 'scheduleObjDay')
-        this.toggleBtn.content = 'Voir toutes les Régies';
+      
+       
+        // this.toggleBtn.content = 'Voir toutes les Régies';
         this.activeViewTimelineDay = this.scheduleObj;
         // console.log(hospitalData);
         // console.log(this.eventSettings);
@@ -406,6 +406,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     public disabledrefresh : boolean
     refreshScheduler() {
+        console.log(this.scheduleObj);
         this.disabledrefresh = true
         console.log('refresh scheduler click', this.disabledrefresh );
         this.timelineResourceDataOut = []
@@ -2066,7 +2067,7 @@ public navigateTimelineDay;
                 //    if(this.open || !this.open){
                 //      this.scheduleObj.refresh();
                 //     }
-                this.valueMax =   180 
+                this.valueMax =   240 
                 this.value = 60
                 this.valueAdd = 60
         }
