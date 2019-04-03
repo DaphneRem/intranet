@@ -70,7 +70,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="schedule">
+            <div class="schedule"   >
 
            
             <ejs-schedule #scheduleObj 
@@ -79,7 +79,7 @@
                 (popupOpen)="onPopupOpen($event)" 
                 cssClass='schedule-drag-drop' 
                 width='100%'
-                height='810px' 
+                
                 [group]="group" 
                 [currentView]="currentView" 
                 [selectedDate]="selectedDate" 
@@ -93,8 +93,8 @@
                 (navigating)="onNavigating($event)"
                 [currentView]="currentView"
                 (change)="onChange($event)"
-             
                 [firstDayOfWeek]="1"
+                [ngStyle]="{'height': this.filtreRegie === true ? '100px':'810px' }"
                 
                 >
                 <!-- (renderCell)="onRenderCell($event)" -->

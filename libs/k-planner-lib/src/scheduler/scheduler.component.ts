@@ -291,6 +291,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public valueMax :number = 60
     public value : number
     public valueAdd : number = 10
+    
     // public fistCallAction: boolean = false;
     // public deleteWorkorderAction: boolean = false;
     // public deleteContainerAction: boolean = false;
@@ -1094,10 +1095,12 @@ public isBackToBacklog: boolean = false;
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
         let event = args.data;
+        console.log(event,'event container')
         let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
         console.log('old Event container :', oldEvent);
         let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
         let container = containerResult[0];
+        console.log(container,'event container')
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
         let codeRessourceOperateur;
@@ -1125,8 +1128,8 @@ public isBackToBacklog: boolean = false;
             CodeRessourceCoordinateur: container.codeRessourceCoordinateur,
             LibelleRessourceCoordinateur: container.libelleRessourceCoordinateur,
             DateSoumission: null,
-            DateDebut: container.DateDebut,
-            DateFin: container.DateFin,
+            DateDebut: event.DateDebut,
+            DateFin: event.DateFin,
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: codeRessourceSalle,
@@ -1144,6 +1147,12 @@ public isBackToBacklog: boolean = false;
         this.containersService.updateContainer(id, container)
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
+                console.log(this.allDataContainers,'allDataContainers')
+              
+                
+                console.log(this.allDataContainers,'allDataContainers')
+
+
                 let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
                 let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
                 this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
@@ -1162,8 +1171,33 @@ public isBackToBacklog: boolean = false;
                         item.Operateur = event.Operateur;
                         item.Commentaire = event.Commentaire
                         console.log(item);
+                       
                     }
+
+                   
                 });
+                  this.allDataContainers.map(item =>{
+                    if(item.Id_Planning_Container === res['Id_Planning_Container']){
+                        item.CodeRessourceCoordinateur = res['CodeRessourceCoordinateur'] 
+                        item.CodeRessourceOperateur =  res['CodeRessourceOperateur']
+                        item.CodeRessourceSalle =  res['CodeRessourceSalle']
+                        item.Commentaire =  res['Commentaire']
+                        item.Commentaire_Planning =  res['Commentaire_Planning']
+                        item.DateDebut =  res['DateDebut']
+                        item.DateDebutTheo =  res['DateDebutTheo']
+                        item.DateEnvoi =  res['DateDebutTheo']
+                        item.DateFin =  res['DateFin']
+                        item.DateFinTheo =  res['DateFinTheo']
+                        item.DateMaj =  res['DateMaj']
+                        item.DateSoumission =  res['DateSoumission']
+                        item.Id_Planning_Container =  res['Id_Planning_Container']
+                        item.Titre =  res['Titre']
+                        item.UserEnvoi =  res['UserEnvoi']
+                        item.UserMaj =  res['UserMaj']
+                
+                    }
+                })
+                console.log(this.allDataContainers,'allDataContainers')
                 this.calculDateGroup(this.timelineResourceDataOut, event.AzaNumGroupe, true, event, startDifferent, endDifferent);
                 this.eventSettings = {
                     dataSource: <Object[]>extend(
@@ -1195,8 +1229,12 @@ public isBackToBacklog: boolean = false;
 
     updateContainerFromDragDropOperateur(operateurObject, dragDropEvent) {
         console.log('updateContainer from drag and drop ');
+        
+
         let indexContainerEvent = this.findIndexEventById(dragDropEvent.target.id);
         let containerId = this.timelineResourceDataOut[indexContainerEvent]['Id']
+  
+     
         let arrayContainerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === containerId);
         let containerResult = arrayContainerResult[0];
         containerResult.LibelleRessourceOperateur = operateurObject.Username;
@@ -1210,6 +1248,7 @@ public isBackToBacklog: boolean = false;
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
                 this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
+
                 this.onActionComplete('e');
             }, error => {
                 console.error('error updatecontainer', error);
@@ -1984,9 +2023,9 @@ public navigateTimelineDay;
                 //    if(this.open || !this.open){
                 //      this.scheduleObj.refresh();
                 //     }
-                this.valueMax =   120 
+                this.valueMax =   180 
                 this.value = 60
-                this.valueAdd = 30
+                this.valueAdd = 60
         }
         }
         // if (args.currentView === 'TimelineDay' ) {
@@ -3769,13 +3808,12 @@ countText
 
         })
     }
+
+
+public filtreRegie
+
     onFilterRegie(search) {
-    
-       
-
-    
-
-
+        this.filtreRegie = true
         if(search.length >= 0){
             this.zoom = false
             this.filtre = false
@@ -3785,7 +3823,7 @@ countText
         // this.filtre = true
         console.log(search.length)
         this.dataRegie = this.departmentGroupDataSource.filter(regie => {
-            return regie.Text.toLowerCase().includes(search.toLowerCase())
+            return regie['Text'].toLowerCase().includes(search.toLowerCase())
         })
         this.departmentDataSource = this.dataRegie
 
@@ -3989,11 +4027,12 @@ public elementDelete
     onRenderCell(args: RenderCellEventArgs): void {
 
    
- if( this.scheduleObj.currentView =='TimelineWeek'){
+        if( this.scheduleObj.currentView =='TimelineWeek'){
         if (args.element.classList.contains('e-work-cells') && ((args.date.getDate() % 2) === 0 )) {
-            args.element.style.background ='#E5FCFD';
+            args.element['style'].background ='#E5FCFD';
         }
     }
+
         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
             if (this.scheduleObj.readonly == false) {
