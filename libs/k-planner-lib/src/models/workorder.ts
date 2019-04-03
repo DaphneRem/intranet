@@ -37,5 +37,10 @@ export class Workorder {
     dureecommerciale: string; // vérifier le type
     dureesegment: string; // vérifier le type
     titreepisode: string; // vérifier le type
+    // +
+    debut: Date | string;
+    fin: Date | string;
+    dureeestime: any; // vérifier le type
+    IdGenerationWO: number; // vérifier le type
+    idwoprec: number; // vérifier le type
 }
-
