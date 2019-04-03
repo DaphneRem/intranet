@@ -57,7 +57,7 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
       title: 'Ajouter un commentaire : Date de livraison',
       input: 'textarea',
       showCancelButton: true,
-      cancelButtonText: 'Annuler',
+      cancelButtonText: 'Aucun commentaire',
       confirmButtonText: 'Valider',
       confirmButtonColor: 'rgb(23, 170, 178)',
     }).then((result) => {

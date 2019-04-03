@@ -116,12 +116,16 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   checkDeadline(newObject) {
     console.log(newObject.Deadline);
     if (
-      newObject.IdLibEtape === 17 ||
-      newObject.IdLibstatut === 3 ||
-      newObject.IdLibstatut === 5
+      // newObject.IdLibEtape === 17 ||
+      // newObject.IdLibstatut === 3 ||
+      // newObject.IdLibstatut === 5
+      newObject.IdLibEtape === 20 || // Terminé (accepté)
+      newObject.IdLibEtape === 21 || // Terminé (annulé)
+      newObject.IdLibEtape === 24 // traité par un autre service
     ) {
-      newObject.Deadline = null;
-      newObject.isarchived = 1;
+      this.newObject.Deadline = null;
+      this.newObject.isarchived = 1;
+      console.log('this.newObject.Deadline => ', this.newObject.Deadline);
     } else {
       newObject.Deadline = `${newObject.Deadline.year}-${
         newObject.Deadline.month
@@ -136,6 +140,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       newObject.Deadline !== this.valueNotToChangeLibelle
     ) {
       this.checkDeadline(newObject);
+    } else if (newObject.Deadline === null) {
+      this.newObject.Deadline = null;
     }
     if (
       newObject.DateLivraison !== null &&
@@ -287,13 +293,17 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     // CALL IF SELECTION TYPE IS 'MULTI'
     // let changedValues = {};
     console.log(allId);
+    console.log(this.newObject);
     this.resetDateFormat(this.newObject);
+    console.log(this.newObject);
     for (let key in this.newObject) {
       if (this.newObject[key] !== this.valueNotToChangeLibelle) {
         if (typeof this.newObject[key] !== 'object') {
           // IF value is Object
           this.changedValues[key] = this.newObject[key];
           console.log(this.changedValues);
+        } else if (this.newObject[key] === null) {
+          this.changedValues[key] = this.newObject[key];
         } else if (
           typeof this.newObject[key] === 'object' &&
           !Array.isArray(this.newObject[key]) // IF value is Object but not Array
@@ -319,7 +329,21 @@ export class FichesMaterielModificationActionComponent implements OnInit {
             console.log(this.changedValues);
           }
         }
+      } else {
+        console.log('key => ', key);
+        console.log('this.newObject[key] (value) => ', this.newObject[key]);
       }
+    }
+    if (this.newObject.Deadline === null) {
+      console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+      this.changedValues['isarchived'] = 1;
+      this.changedValues['Deadline'] = null;
+    } else {
+      console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+      this.changedValues['isarchived'] = 0;
+      alert('remplir une deadline');
+      this.changedValues['Deadline'] = this.newObject.Deadline;
+
     }
     let now = moment().format('YYYY-MM-DDTHH:mm:ss');
     this.changedValues['UserModification'] = this.user;

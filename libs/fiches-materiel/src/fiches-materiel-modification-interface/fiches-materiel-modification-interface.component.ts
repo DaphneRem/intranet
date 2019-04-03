@@ -183,7 +183,8 @@ export class FichesMaterielModificationInterfaceComponent
     DateCreation: this.valueNotToChangeLibelle,
     DateModification: this.valueNotToChangeLibelle,
     CommentairesDateLivraison: this.valueNotToChangeLibelle,
-    CommentairesStatutEtape: this.valueNotToChangeLibelle
+    CommentairesStatutEtape: this.valueNotToChangeLibelle,
+    isarchived: this.valueNotToChangeLibelle
     // Fiche_Mat_ElementsAnnexes: [],
     // Fiche_Mat_LibRetourOri: this.valueNotToChangeLibelle,
     // Fiche_Mat_LibStatutElementsAnnexes: this.valueNotToChangeLibelle,
@@ -248,13 +249,20 @@ export class FichesMaterielModificationInterfaceComponent
 
   disabledDeadline() {
     // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
+    console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
     if (
-      this.newObject.IdLibEtape === 20 ||
-      this.newObject.IdLibEtape === 21 ||
-      this.newObject.IdLibEtape === 24
+      this.newObject.IdLibEtape === 20 || // Terminé (accepté)
+      this.newObject.IdLibEtape === 21 || // Terminé (annulé)
+      this.newObject.IdLibEtape === 24 // traité par un autre service
     ) {
+      if (this.selectionType === 'multi') {
+        this.newObject.Deadline = null;
+      }
       return true;
     } else {
+      if (this.selectionType === 'multi') {
+        this.newObject.Deadline = this.valueNotToChangeLibelle;
+      }
       return false;
     }
   }
@@ -795,12 +803,14 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   clickStatusOptions() {
+    console.log(this.status);
+    console.log('this.newObject.IdLibstatut on click statut ==== >', this.newObject.IdLibstatut);
     this.initValueStatus = false;
     if (this.firstClick) {
       if (this.steps['id' + this.newObject.IdLibstatut].length > 0) {
         console.log(this.steps['id' + this.newObject.IdLibstatut]);
         if (this.newObject.IdLibstatut === 2) {
-          // STATUT ACCEPTE
+          // STATUT ANNULEE
           if (this.newObject.RetourOri === 1) {
             // retour ori à faire (1)
             this.newObject.IdLibEtape = this.steps[
@@ -814,10 +824,16 @@ export class FichesMaterielModificationInterfaceComponent
             ][3].IdLibEtape; // IdLibEtape: 20, Libelle: 'Terminé'
           }
         } else if (this.newObject.IdLibstatut === 3) {
-          // STATUT ANNULE
-          this.newObject.IdLibEtape = this.steps[
-            'id' + this.newObject.IdLibstatut
-          ][1].IdLibEtape; // IdLibEtape: 21, Libelle: 'Terminé'
+          // STATUT ACCEPTE
+          if (this.newObject.RetourOri === 1) {
+            this.newObject.IdLibEtape = this.steps[
+              'id' + this.newObject.IdLibstatut
+            ][1].IdLibEtape; // IdLibEtape: 15, Libelle: 'Retour ORI'
+          } else {
+            this.newObject.IdLibEtape = this.steps[
+              'id' + this.newObject.IdLibstatut
+            ][3].IdLibEtape; // IdLibEtape: 15, Libelle: 'Retour ORI'
+          }
         } else if (this.newObject.IdLibstatut === 5) {
           // STATUT Traité par un autre service
           this.newObject.IdLibEtape = this.steps[
