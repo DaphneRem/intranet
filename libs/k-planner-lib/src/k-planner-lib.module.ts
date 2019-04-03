@@ -35,6 +35,8 @@ import { FilterPipe } from './filter.pipe';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { LoadersModule } from '@ab/loaders';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -62,7 +64,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     HttpModule,
     SidebarModule,
     NgbTooltipModule,
-
+    LoadersModule
   ],
   declarations: [
     SchedulerComponent,

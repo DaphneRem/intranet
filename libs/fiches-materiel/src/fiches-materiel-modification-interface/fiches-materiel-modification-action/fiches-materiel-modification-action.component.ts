@@ -335,9 +335,11 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       }
     }
     if (this.newObject.Deadline === null) {
+      let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
+      console.log('nullDate => --------------------------------------- ', nullDate);
       console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
       this.changedValues['isarchived'] = 1;
-      this.changedValues['Deadline'] = null;
+      this.changedValues['Deadline'] = nullDate;
     } else {
       console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
       this.changedValues['isarchived'] = 0;

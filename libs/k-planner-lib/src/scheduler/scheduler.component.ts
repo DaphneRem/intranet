@@ -126,7 +126,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     @ViewChild('ejEndTimePicker')
     public ejEndTimePicker: TimePickerComponent;
 
-
+    public dataRegieReady = false;
     public activeViewTimelineDay: ScheduleComponent;
     /******** STORE *******/
     public user: User;
@@ -514,6 +514,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         this.salleService
             .getGroupSalle(idGroup)
             .subscribe(donnees => {
+                this.dataRegieReady = true;
                 this.salleDataSource = donnees;
                 console.log('salles group result : ', donnees);
                 this.salleDataSource.map(item => {
@@ -687,7 +688,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             ConsultantID: 2,
                             DepartmentName: '',
                             IsAllDay: false,
-                            Commentaire:data.Commentaire
+                            Commentaire:data.Commentaire,
+                            Commentaire_Planning:data.Commentaire_Planning
                         });
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
@@ -1072,7 +1074,7 @@ public createJustContainerAction = false;
             CodeRessourceSalle: codeRessourceSalle,
             LibelleRessourceSalle: libelleRessourceSalle,
             Commentaire:event.Commentaire,
-            Commentaire_Planning: '',
+            Commentaire_Planning: event.Commentaire_Planning,
             DateMaj: now,
             UserMaj: libelleRessourceCoordinateur,
             PlanningEventsList: null
@@ -1142,7 +1144,7 @@ public isBackToBacklog: boolean = false;
             CodeRessourceSalle: codeRessourceSalle,
             LibelleRessourceSalle: libelleRessourceSalle,
             Commentaire:container.Commentaire,
-            Commentaire_Planning: '',
+            Commentaire_Planning: event.Commentaire_Planning,
             DateMaj: now,
             UserMaj: this.user.shortUserName,
             PlanningEventsList: null
@@ -1177,6 +1179,7 @@ public isBackToBacklog: boolean = false;
                         item.coordinateurCreate = event.coordinateurCreate;
                         item.Operateur = event.Operateur;
                         item.Commentaire = event.Commentaire
+                        item.Commentaire_Planning = event.Commentaire_Planning,
                         console.log(item);
                        
                     }
@@ -3136,6 +3139,7 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                             AzaNumGroupe: item.AzaNumGroupe,
                             coordinateurCreate: item.coordinateurCreate,
                             Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
+                            Commentaire_Planning: event.data[0].Commentaire_Planning
                         };
                         this.containerParent = newItemContainerAfterEditorUpdate;
                         console.log('newItemContainerAfterEditorUpdate', newItemContainerAfterEditorUpdate);
@@ -3175,6 +3179,7 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                         AzaNumGroupe: item.AzaNumGroupe,
                         coordinateurCreate: item.coordinateurCreate,
                         Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
+                        Commentaire_Planning: event.data[0].Commentaire_Planning
                     };
                     console.log('newItemContainerFromMonteurAfterEditorUpdate ==== ', newItemContainerFromMonteurAfterEditorUpdate);
                     // this.timelineResourceDataOut.push(newItemContainerFromMonteurAfterEditorUpdate);
@@ -3252,7 +3257,8 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                 AzaNumGroupe: this.lastRandomId,
                 coordinateurCreate: this.user.initials,
                 Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur,
-                
+                Commentaire_Planning: data.Commentaire_Planning
+
             };
             this.createContainer(containerData);
             // this.timelineResourceDataOut.push(containerData);

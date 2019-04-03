@@ -4,9 +4,9 @@
 
     <!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
  
+<loader-animation *ngIf="!dataRegieReady"></loader-animation>
 
-
-<div class="control-section card" style="margin-bottom: 0;">
+<div *ngIf="dataRegieReady" class="control-section card" style="margin-bottom: 0;">
         <!-- <div class="autre-planinngs">
 
                 <select class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)"
@@ -16,6 +16,7 @@
                 </select>  
             </div>  -->
     <div class="drag-sample-wrapper">
+
         <div class="schedule-container">
             <div class="title-container">
                              
@@ -72,7 +73,8 @@
             </div>
             <div class="schedule"   >
 
-           
+
+
             <ejs-schedule #scheduleObj 
                 locale="fr-CH"
                 (eventClick)="onEventClick()"
