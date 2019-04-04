@@ -2763,7 +2763,7 @@ public CellClick : boolean = true;
         }
 
        
-         if (args.target["className"] === "e-header-cells e-current-day" || args.target["className"] === "e-header-cells") {
+         if (args.target != undefined && (args.target.classList.value === "e-header-cells e-current-day" || args.target.classList.value === "e-header-cells")) {
             args.data.cancel = true
             args.cancel = true
             console.log(args, "-----------------------------------")
