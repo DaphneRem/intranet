@@ -1017,6 +1017,7 @@ public createJustContainerAction = false;
                         })
                     }
                     this.timelineResourceDataOut.push(event);
+                    console.log( this.timelineResourceDataOut, 'timelineResourceDataOut')
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                         dataSource: <Object[]>extend(
                             [], this.timelineResourceDataOut, null, true
@@ -2447,48 +2448,43 @@ public CellClick : boolean = true;
         //         console.log(this.scheduleObj);
         //     }
         // }
+
        
-        if(args.target.className === "e-header-cells e-current-day" || args.target.className === "e-header-cells" )
-        {
-            args.data.cancel = true
-            args.cancel = true
-           console.log(args,"-----------------------------------")
-        }
-        if(args.type === 'QuickInfo')
-        {
-          
-            this.colorStatut.map(statut =>{
-                if(args.data.Statut == statut['Id'])
-                {
-                   this.couleur  = statut['Color']
+        if (args.type === 'QuickInfo') {
+
+            this.colorStatut.map(statut => {
+                if (args.data.Statut == statut['Id']) {
+                    this.couleur = statut['Color']
                 }
             })
-      
+
         }
         let colorRow = this.couleur
         args.element.hidden = false;
-        if ((args.type === 'QuickInfo') &&  (args.data.name === 'cellClick')) {
+        if ((args.type === 'QuickInfo') && (args.data.name === 'cellClick')) {
             args.cancel = true;
         }
         if (this.cancelObjectModal) {
             args.cancel = true;
         }
-                if ((args.type === 'QuickInfo') &&  (args.name === 'popupOpen')){
+        if ((args.type === 'QuickInfo') && (args.name === 'popupOpen')) {
             let title = document.getElementsByClassName('e-subject-container');
-            let subTitle =  document.getElementsByClassName('e-location-container');
-            let Debut =  document.getElementsByClassName('e-start-container');
-            let fin=  document.getElementsByClassName('e-end-container');
-            let regie =  document.getElementsByClassName('e-resources');
-            console.log('repeat', title[0]);
-            console.log('repeat', subTitle[0]);
+            let subTitle = document.getElementsByClassName('e-location-container');
+            let Debut = document.getElementsByClassName('e-start-container');
+            let fin = document.getElementsByClassName('e-end-container');
+            let regie = document.getElementsByClassName('e-resources');
+            let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+            let repeat = document.getElementsByClassName('e-editor');
+            isAllDay[0]['style'].display = 'none';
+            repeat[0]['style'].display = 'none';
             title[0]['style'].display = 'block';
-            subTitle[0]['style'].display = 'block';
+            subTitle[0]['style'].display = 'none';
             Debut[0]['style'].display = 'block';
             fin[0]['style'].display = 'block';
             regie[0]['style'].display = 'block';
         }
 
-    
+
         if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
             if (args.data.AzaIsPere) {
                 this.timelineResourceDataOut.map(item => {
@@ -2506,29 +2502,23 @@ public CellClick : boolean = true;
                 for (let i = 0; i < workOrders.length; i++) {
                     let idRegie = workOrders[i].DepartmentID;
                     let colorRegie: string;
-                 
+
                     this.departmentDataSource.map(item => {
                         if (item['Id'] === idRegie) {
                             colorRegie = item['Color'];
                         }
                     });
-                    
-   
-                    console.log( this.couleur , '**********************************couleur*************************************') 
-                  
-row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;                    
-    
-
-                        let element = document.getElementById('id'+i)
-                        
-                        element.style.backgroundColor = this.workOrderColor
 
 
-                
+                    console.log(this.couleur, '**********************************couleur*************************************')
+
+                    row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
 
 
+                    let element = document.getElementById('id' + i)
 
-                console.log(element,'*********************ROW***********')
+                    element.style.backgroundColor = this.workOrderColor
+
                 }
                 for (let e = 0; e < workOrders.length; e++) {
                     let child = document.getElementById(`id${e}`);
@@ -2537,12 +2527,12 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                         args.element.hidden = true;
                         this.openDialog(args, args.data, workOrders[e], this.departmentDataSource);
                         console.log(child)
-                        });
+                    });
                 }
-              
-            }else {
+
+            } else {
                 let elementworkorder: HTMLElement = <HTMLElement>args.element.querySelector('.e-subject');
-             
+
                 this.timelineResourceDataOut.map(item => {
                     if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false) {
                         workOrders.push(item);
@@ -2550,33 +2540,35 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                 });
                 for (let i = 0; i < workOrders.length; i++) {
                     // ${workOrders[i].typetravail}
-                elementworkorder.innerHTML=`<div class='e-subject e-text-ellipsis' style="color : black"> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode} </div>` 
+                    elementworkorder.innerHTML = `<div class='e-subject e-text-ellipsis' style="color : black"> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode} </div>`
+                }
+              
+
             }
-            console.log(elementworkorder,"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
-        
         }
-        } 
         if (args.data.name === 'cellClick') {
-            console.log('cell click',args);
-                     
-        
-             if(args.target.className === "e-header-cells  e-current-day" || args.target.className === "e-header-cells")
-             {
+            console.log('cell click', args)
+            this.filtre = true
+            this.zoom = true
+            this.CellClick = true
+            if (args.target.className === "e-header-cells  e-current-day" || args.target.className === "e-header-cells") {
                 args.cancel = true
-                 args.data.cancel = true
-                console.log(args,"-----------------------------------")
-             }
-            console.log( this.scheduleObj.selectedDate)
+                args.data.cancel = true
+                console.log(args, "-----------------------------------")
+            }
+            console.log(this.scheduleObj.selectedDate)
             console.log(this.isTreeItemDropped);
             this.creationArray = [];
             this.isTreeItemDropped = false;
             let title = document.getElementsByClassName('e-subject-container');
-            let subTitle =  document.getElementsByClassName('e-location-container');
-            let Debut =  document.getElementsByClassName('e-start-container');
-            let fin=  document.getElementsByClassName('e-end-container');
-            let regie =  document.getElementsByClassName('e-resources');
-            console.log('repeat', title[0]);
-            console.log('repeat', subTitle[0]);
+            let subTitle = document.getElementsByClassName('e-location-container');
+            let Debut = document.getElementsByClassName('e-start-container');
+            let fin = document.getElementsByClassName('e-end-container');
+            let regie = document.getElementsByClassName('e-resources');
+            let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+            let repeat = document.getElementsByClassName('e-editor');
+            isAllDay[0]['style'].display = 'none';
+            repeat[0]['style'].display = 'none';
             title[0]['style'].display = 'block';
             subTitle[0]['style'].display = 'none';
             Debut[0]['style'].display = 'block';
@@ -2586,23 +2578,23 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
 
         }
         if (args.data.name === 'cellDoubleClick') {
-            console.log('cell double click',args);
+            console.log('cell double click', args);
             console.log(this.isTreeItemDropped);
             this.creationArray = [];
             this.isTreeItemDropped = false;
 
         }
-        if(  args.data.name ==="cellClick"  ){
+      
+        if (this.filtre == false && this.CellClick == true) {
             this.filtre = true
             this.zoom = true
-            this.CellClick = true
+
         }
-        if(  this.filtre == false && this.CellClick == true ){
-            this.filtre = true
-            this.zoom = true
-          
-        }
-    
+
+
+     
+
+
         if (((args.type === 'Editor') && this.eventClick) || ((args.type === 'Editor') && this.checkIfContainerAlreadyExists(args) === false)) {
             console.log('this.checkIfContainerAlreadyExists(args); => ', this.checkIfContainerAlreadyExists(args));
             this.filtre = false
@@ -2610,43 +2602,41 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
             console.log('Editor Open and this.isTreeItemDropped = ', this.isTreeItemDropped);
             console.log(this.openEditorCount);
             if (this.openEditorCount === 0) { // diplay none for IsAllDay and Repeat field in editor
+
                 let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
-                console.log('isAllDay :', isAllDay[0]);
                 isAllDay[0]['style'].display = 'none';
                 let repeat = document.getElementsByClassName('e-editor');
-                console.log('repeat', repeat[0]);
                 repeat[0]['style'].display = 'none';
-                let subTitle =  document.getElementsByClassName('e-location-container');
-                console.log('subTitle', subTitle[0]);
+                let subTitle = document.getElementsByClassName('e-location-container');
                 subTitle[0]['style'].display = 'none';
-                               
+
                 if (!args.data.AzaIsPere) {
+                    let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                    let repeat = document.getElementsByClassName('e-editor');
                     let title = document.getElementsByClassName('e-subject-container');
-                    let subTitle =  document.getElementsByClassName('e-location-container');
-                    let Debut =  document.getElementsByClassName('e-start-container');
-                    let fin=  document.getElementsByClassName('e-end-container');
-                    let regie =  document.getElementsByClassName('e-resources');
-                    console.log('repeat', title[0]);
-                    console.log('repeat', subTitle[0]);
+                    let subTitle = document.getElementsByClassName('e-location-container');
+                    let Debut = document.getElementsByClassName('e-start-container');
+                    let fin = document.getElementsByClassName('e-end-container');
+                    let regie = document.getElementsByClassName('e-resources');
                     title[0]['style'].display = 'none';
                     subTitle[0]['style'].display = 'none';
                     Debut[0]['style'].display = 'none';
                     fin[0]['style'].display = 'none';
                     regie[0]['style'].display = 'none';
-
-                    console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")  
-                  
-             }
+                    isAllDay[0]['style'].display = 'none';
+                    repeat[0]['style'].display = 'none';
+                }
+             
             }
 
-             if (!args.data.AzaIsPere) {
+            if (!args.data.AzaIsPere) {
                 let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
                 let repeat = document.getElementsByClassName('e-editor');
                 let title = document.getElementsByClassName('e-subject-container');
-                let subTitle =  document.getElementsByClassName('e-location-container');
-                let Debut =  document.getElementsByClassName('e-start-container');
-                let fin=  document.getElementsByClassName('e-end-container');
-                let regie =  document.getElementsByClassName('e-resources');
+                let subTitle = document.getElementsByClassName('e-location-container');
+                let Debut = document.getElementsByClassName('e-start-container');
+                let fin = document.getElementsByClassName('e-end-container');
+                let regie = document.getElementsByClassName('e-resources');
                 console.log('repeat', title[0]);
                 console.log('repeat', subTitle[0]);
                 title[0]['style'].display = 'none';
@@ -2658,25 +2648,32 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                 isAllDay[0]['style'].display = 'none';
                 console.log('repeat', repeat[0]);
                 repeat[0]['style'].display = 'none';
-                console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")  
-              
-         } else {
-            let subTitle =  document.getElementsByClassName('e-location-container');
-            console.log('subTitle', subTitle[0]);
-            subTitle[0]['style'].display = 'none';
+                console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
+
+            } else {
+                let subTitle = document.getElementsByClassName('e-location-container');
+                let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                let repeat = document.getElementsByClassName('e-editor');
+                console.log('subTitle', subTitle[0]);
+                subTitle[0]['style'].display = 'none';
+                console.log('isAllDay :', isAllDay[0]);
+                isAllDay[0]['style'].display = 'none';
+                console.log('repeat', repeat[0]);
+                repeat[0]['style'].display = 'none';
+
             }
             console.log('Open Editor');
             let inputEle: HTMLInputElement;
             let container: HTMLElement;
             let containerOperateur = document.getElementsByClassName('custom-field-container');
-            
+
             let annuler = document.getElementsByClassName("e-event-cancel")
             console.log(annuler);
             annuler[0].addEventListener('click', () => {
                 this.zoom = true
                 this.filtre = false
                 console.log('click annuler ', this.zoom, this.filtre)
-                 });
+            });
 
 
             if (args.data.hasOwnProperty('AzaIsPere')) {
@@ -2690,16 +2687,19 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                         this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
                         console.log(args.data.Operateur);
                     }
-                 
+                    let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                    let repeat = document.getElementsByClassName('e-editor');
                     let title = document.getElementsByClassName('e-subject-container');
-                    let subTitle =  document.getElementsByClassName('e-location-container');
-                    let Debut =  document.getElementsByClassName('e-start-container');
-                    let fin=  document.getElementsByClassName('e-end-container');
-                    let regie =  document.getElementsByClassName('e-resources');
+                    let subTitle = document.getElementsByClassName('e-location-container');
+                    let Debut = document.getElementsByClassName('e-start-container');
+                    let fin = document.getElementsByClassName('e-end-container');
+                    let regie = document.getElementsByClassName('e-resources');
                     console.log('repeat', title[0]);
                     console.log('repeat', subTitle[0]);
                     title[0]['style'].display = 'block';
-
+                    isAllDay[0]['style'].display = 'none';
+                    console.log('repeat', repeat[0]);
+                    repeat[0]['style'].display = 'none';
                     Debut[0]['style'].display = 'block';
                     fin[0]['style'].display = 'block';
                     regie[0]['style'].display = 'block';
@@ -2707,12 +2707,14 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                 } else { // dblclick workorder
                     containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
                     console.log("edit click")
-                     if (!args.data.AzaIsPere) {
+                    if (!args.data.AzaIsPere) {
+                        let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                        let repeat = document.getElementsByClassName('e-editor');
                         let title = document.getElementsByClassName('e-subject-container');
-                        let subTitle =  document.getElementsByClassName('e-location-container');
-                        let Debut =  document.getElementsByClassName('e-start-container');
-                        let fin=  document.getElementsByClassName('e-end-container');
-                        let regie =  document.getElementsByClassName('e-resources');
+                        let subTitle = document.getElementsByClassName('e-location-container');
+                        let Debut = document.getElementsByClassName('e-start-container');
+                        let fin = document.getElementsByClassName('e-end-container');
+                        let regie = document.getElementsByClassName('e-resources');
                         console.log('repeat', title[0]);
                         console.log('repeat', subTitle[0]);
                         title[0]['style'].display = 'none';
@@ -2720,27 +2722,32 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
                         Debut[0]['style'].display = 'none';
                         fin[0]['style'].display = 'none';
                         regie[0]['style'].display = 'none';
-    
-                        console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")  
-                 }
-                 }
+                        isAllDay[0]['style'].display = 'none';
+                        console.log('repeat', repeat[0]);
+                        repeat[0]['style'].display = 'none';
+                        console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
+                    }
+                }
             } else {
-                                if(  args.name === 'popupOpen') 
-       
-                {
-                 let title = document.getElementsByClassName('e-subject-container');
-                 let subTitle =  document.getElementsByClassName('e-location-container');
-                 let Debut =  document.getElementsByClassName('e-start-container');
-                 let fin=  document.getElementsByClassName('e-end-container');
-                 let regie =  document.getElementsByClassName('e-resources');
-               
-                 title[0]['style'].display = 'block';
+                if (args.name === 'popupOpen') {
+                    let title = document.getElementsByClassName('e-subject-container');
+                    let subTitle = document.getElementsByClassName('e-location-container');
+                    let Debut = document.getElementsByClassName('e-start-container');
+                    let fin = document.getElementsByClassName('e-end-container');
+                    let regie = document.getElementsByClassName('e-resources');
+                    let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                    let repeat = document.getElementsByClassName('e-editor');
+                    title[0]['style'].display = 'block';
+                    subTitle[0]['style'].display = 'none';
+                    Debut[0]['style'].display = 'block';
+                    fin[0]['style'].display = 'block';
+                    regie[0]['style'].display = 'block';
+                    console.log('title', title[0]);
+                    console.log('subtitle', subTitle[0]);
+                    isAllDay[0]['style'].display = 'none';
+                    console.log('repeat', repeat[0]);
+                    repeat[0]['style'].display = 'none';
 
-                 Debut[0]['style'].display = 'block';
-                 fin[0]['style'].display = 'block';
-                 regie[0]['style'].display = 'block';
-                 console.log('title', title[0]);
-                 console.log('subtitle', subTitle[0]);
                 }
 
 
@@ -2753,6 +2760,13 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
         } else if ((args.type === 'Editor') && this.checkIfContainerAlreadyExists(args)) {
             console.log('this.checkIfContainerAlreadyExists(args); => ', this.checkIfContainerAlreadyExists(args));
             args.cancel = true;
+        }
+
+       
+         if (args.target["className"] === "e-header-cells e-current-day" || args.target["className"] === "e-header-cells") {
+            args.data.cancel = true
+            args.cancel = true
+            console.log(args, "-----------------------------------")
         }
     }
 
@@ -2988,6 +3002,7 @@ row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoe
 /******* DRAG AND DROP OPERATEURS *******/
 
     onTreeDragStopMonteur(event: DragAndDropEventArgs): void {
+        console.log(event)
         this.creationArray = [];
         let treeElement = closest(event.target, '.e-treeview');
         let classElement = this.scheduleObj.element.querySelector('.e-device-hover');

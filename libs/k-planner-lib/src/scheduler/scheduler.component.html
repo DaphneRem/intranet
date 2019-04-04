@@ -223,7 +223,7 @@
         </div>
    <!--************************************** tabItem ***********************************************************************-->
    <div class="sidebar"  *ngIf="!isnotMyGroup " [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
-  <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target'  [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
+  <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target'    >
       
         <ejs-tab id="element" #element  class="content"  (selecting)="selectTabWitoutSwip($event)" >
             <e-tabitems>
