@@ -31,15 +31,25 @@
                     <option value="Mon planning">Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
                 </select>
-                <table class="table-light table-sm" id="property" title="Properties" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                <table class="table-light table-sm" id="property" title="Properties" >
                     <tbody>
-                        <tr style="height: 40px">
+                        <tr style="height: 40px"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                             <td style="width: 5%">
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
                             </td>
                             <td>
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="scheduleObj.currentView =='TimelineDay'  "  style="height: 40px">
+                            <td style="width: 5%">
+                                <div style="text-align:center"> Intervalle  (Minutes)</div>          
+                            </td>
+                            <td>
+                                <div>
+                                    <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
                         <!-- <td style="width: 10%" >
@@ -125,6 +135,7 @@
                                 </div>
                             </div>
                         </ng-template > -->
+                       
                 <e-views>
                     <e-view option='TimelineDay'  #scheduleObjDay  >
                         <ng-template #eventTemplate let-data  class="event">
@@ -132,7 +143,7 @@
                                 <div>
                                     <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                         <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div>
-                                        <u id="{{data.Id}}">{{data.Name }}</u> 
+                                        <u id="{{data.Id}}">{{data.Name }} </u> 
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                         <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
@@ -141,8 +152,8 @@
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                      
                                         <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
-                                        <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }} </span>
-                                       
+                                        <span *ngIf="nameService === 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                        <span *ngIf="nameService != 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +176,8 @@
                                                     class="float-right  fixed mr-1"> -->
                                             </div>
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
-                                                <span style="padding-top: 5px; width: 100%; z-index: 2 !important"> {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                                <span *ngIf="nameService === 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                                <span *ngIf="nameService != 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                             </div>
                                         </div>
                                     </div>
@@ -202,7 +214,8 @@
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
                                         <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
-                                            <span style="padding-top: 5px; width: 100%; z-index: 2 !important">{{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                            <span *ngIf="nameService === 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                            <span *ngIf="nameService != 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                         </div>
                                     </div>
                                 </div>

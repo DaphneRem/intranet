@@ -40,6 +40,7 @@ export class AppComponent implements OnInit {
   ) {
     this.navbarStoreOpen = this.store;
     this.adal5Service.init(config);
+    
   }
 
   public globalStore;
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit {
     console.log(this.adal5Service.userInfo);
     // Handle callback if this is a redirect from Azure
     this.adal5Service.handleWindowCallback(); // ajouter condition
+  
     // check navbar.open state from store
     console.log(this.store);
     console.log(this.appStore);
@@ -102,6 +104,7 @@ export class AppComponent implements OnInit {
 
     this.userNameSplit = this.userName.split('@');
     this.shortUserName = this.userNameSplit[0];
+
     console.log(this.shortUserName);
     this.user = {
       name: this.name,

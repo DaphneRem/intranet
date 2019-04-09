@@ -190,12 +190,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     // { Id: 0, Color: '#B01106' },
     // { Id: 1, Color: '#F96C63' },
     // { Id: 2, Color: '#F0AC2C' },
-    { Id: 3, Color: '#F3BE09' },
+    { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER
     // { Id: 4, Color: '#B01106' },
     // { Id: 5, Color: '#F96C63' },
-    { Id: 6, Color: '#3ba506' },
-    { Id: 7, Color: '#B01106' },
-    { Id: 8, Color: '#F39009' }
+    { Id: 6, Color: '#3ba506' }, //  STATUT_TERMINE_OK 
+    { Id: 7, Color: '#B01106' }, //   STATUT_TERMINE_KO 
+    { Id: 8, Color: '#F39009' } //   STATUT_EN_ATTENTE
     // { Id: 9, Color: '#3ba506' },
     // { Id: 10, Color: '#3ba506' },
     // { Id: 11, Color: '#3ba506' },
@@ -266,8 +266,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public endofDay
     // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
     public weekInterval: number = 1;
-    public intervalValue: string = '60';
-    public intervalData: string[] = ['5','15', '30', '60', '120'];
+    public intervalValue: string = '120'
+    public intervalValueDay: string = '60'
+    public intervalData: string[]  = ['10','20','30','40','50','60']
+  
     public instance: Internationalization = new Internationalization();
 
     // Editor
@@ -286,10 +288,16 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public WorkOrderByidgroup;
     public statut;
     public allDataContainers = [];
-
     public refreshDateStart;
     public refreshDateEnd;
-
+    public ajoutMonteur
+    public monteurListArray
+    public countAdd : number  = 0
+    public nameService : string = 'Mon planning'
+    public comptText
+    public filtre : boolean 
+    public open
+    public elementDelete
     // ALL ACTIONS
     public isTreeItemDropped: boolean = false; // drag and drop wworkorder
     public isTreeItemDroppedMonteur: boolean = false; // drag and drop operateur
@@ -329,44 +337,66 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.value = 60
                
                 document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
+                    console.log(eKey)
                         let scheduleElement = document.getElementsByClassName('schedule');
-                    
-                     
-                      if(this.filtre){
-                        if (this.zoom === true ) {
-                            if ( eKey.keyCode === 77 && scheduleElement ) {
-                                if (this.value < this.valueMax ){
-                                    this.value = this.value +  this.valueAdd
+                        if (  eKey.keyCode === 115  && scheduleElement ) {
+                            this.refreshScheduler()
+                             this.refreshWorkordersBacklog()
+                            }
+
+                    if (this.filtre) {
+                        if (this.zoom === true) {
+                            if (eKey.keyCode === 109 && scheduleElement) {
+                                if (this.value < this.valueMax) {
+                                    this.value = this.value + this.valueAdd
                                     this.scheduleObj.timeScale.interval = this.value;
-                                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
-                                 
+                                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval);
+                                    if (this.valueMax === 60) {
+                                        this.intervalValueDay = this.value.toLocaleString()
+                                        console.log(this.intervalValueDay, "value day ")
+                                    } else {
+                                        this.intervalValue = this.value.toLocaleString()
+                                        console.log(this.intervalValue)
+                                    }
+
+
                                 }
                             } else {
-                                if ( eKey.keyCode === 80 && scheduleElement ) {
-                                    if ( this.value > this.valueAdd) {
+                                if (eKey.keyCode === 107 && scheduleElement) {
+                                    if (this.value > this.valueAdd) {
                                         this.value = this.value - this.valueAdd
-                                        this.scheduleObj.timeScale.interval = this.value 
-                                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
+                                        this.scheduleObj.timeScale.interval = this.value
+                                        // this.intervalValue = this.value.toLocaleString()
+                                        // this.intervalValueDay = this.value.toLocaleString()
+                                        if (this.valueMax === 60) {
+                                            this.intervalValueDay = this.value.toLocaleString()
+                                            console.log(this.intervalValueDay, "value day ")
+                                        } else {
+                                            this.intervalValue = this.value.toLocaleString()
+                                            console.log(this.intervalValue)
+                                        }
+
+                                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval);
                                     }
                                 }
                             }
 
                             
                         } else {
-                            if ( eKey.keyCode === 80 && scheduleElement ) {
+                            if ( eKey.keyCode === 109 && scheduleElement ) {
                                 console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
                             } else {
-                                if ( eKey.keyCode === 77 && scheduleElement ) {
+                                if ( eKey.keyCode === 107 && scheduleElement ) {
                                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
                                 }
                             }
                         } 
                     }else {
                       
-                            if ( eKey.keyCode === 80 && !scheduleElement ) {
+                            if ( eKey.keyCode === 109 && !scheduleElement ) {
                                 console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
                             } else {
-                                if ( eKey.keyCode === 77 && !scheduleElement ) {
+                                if ( eKey.keyCode === 107 && !scheduleElement ) {
                                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
                                 }
                             }
@@ -841,14 +871,27 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     createTooltipWorkorder() {
+        let nameService = false
+        this.libGroupe.map( libelle => {
+        if(this.nameService === "BANDES ANNONCES"){
+            if(this.nameService === libelle.Libelle){
+              nameService =  true
+              console.log(nameService)
+            }
+        }
+        })
+       
         for (let i = 0 ; i< this.timelineResourceDataOut.length; i++) {
             let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
                 numepisode = this.timelineResourceDataOut[i].numepisode,
                 dureecommerciale=this.timelineResourceDataOut[i].dureecommerciale,
-                AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere
+                AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere,
+                libchaine = this.timelineResourceDataOut[i].libchaine
+               
+              
             this.temp = '<div class="tooltip-wrap">' +
                 '<div class="tooltip-wrap">' +
-                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > Type de Travail: &nbsp; ${typetravail}<br> ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </>  </div> ${/if}' +
+                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${typetravail} <br> Libellé chaine : &nbsp; ${libchaine}  <br> ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </>  </div> ${/if}' +
                 '${if(  Commentaire_Planning !== null && Commentaire_Planning !== undefined )}<div> Description : &nbsp; ${Commentaire_Planning} </>  </div> ${/if}'+
                 '${if (AzaIsPere && Operateur !== null && Operateur !== "" ) }<div class="time">Operateur:&nbsp;${Operateur} </div> ${/if}' +
                 '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
@@ -882,7 +925,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     numGroup:workOrder.Id_Planning_Events,
                     Description:workOrder.Commentaire,
                     Operateur:workOrder.LibelleRessourceOperateur,
-                    coordinateurCreate:workOrder.LibelleRessourceCoordinateur,
+                    coordinateurCreate:workOrder.UserEnvoi,
                     Statut:workOrder.Statut,
                     AzaIsPere: false,
                     AzaNumGroupe:  workOrder.Id_Planning_Events,
@@ -897,7 +940,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     dureecommerciale:workOrder.dureecommerciale,
                     libtypeWO:workOrder.libtypeWO,
                     Commentaire_Planning: workOrder.Commentaire_Planning,
-                    IdGenerationWO:workOrder.IdGenerationWO
+                    IdGenerationWO:workOrder.IdGenerationWO,
+                    
                 });
             }),
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -1517,7 +1561,7 @@ public isBackToBacklog: boolean = false;
                 Statut: workorderSelected.Statut,
                 idplanningprec: null,
                 Regroup: null,
-                Commentaire_Planning: null,
+                Commentaire_Planning:  workorderSelected.Commentaire_Planning,
                 DateMaj: now,
                 UserMaj: this.user.shortUserName,
                 Id_Planning_Container: containerParent.Id_Planning_Container,
@@ -1815,7 +1859,7 @@ public isBackToBacklog: boolean = false;
             Description: null,
             IsAllDay: false,
             Operateur: null,
-            coordinateurCreate: null,
+            coordinateurCreate: this.user.initials,
             numGroup: null,
             libchaine:selectedItem.libchaine,
             typetravail:selectedItem.typetravail,
@@ -2055,51 +2099,26 @@ public navigateTimelineDay;
 
         this.agendaStartDate =  moment().toDate()
         this.agendaLastDate =  moment().add(7, 'd').toDate()
+        
+        if (args.currentView === "TimelineDay") {
 
-        if (args.currentView ==="TimelineDay") {
-            this.scheduleObj.timeScale.interval = 60
-
-            this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:2 }
-            this.scheduleObj.dataBind()
-            this.valueMax =   60 
-            this.value = 60
+            this.valueMax = 60
+            this.value = parseInt(this.intervalValueDay as string, 10)
             this.valueAdd = 10
-
+            this.intervalData = ['10', '20', '30', '40', '50', '60'];
+            this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValueDay as string, 10), slotCount: 2 }
         } else {
-            if (args.currentView ==="TimelineWeek") {
-
-
-
-                this.scheduleObj.timeScale =  { enable: true, interval: 60, slotCount:1 }
-                //    if(this.open || !this.open){
-                //      this.scheduleObj.refresh();
-                //     }
-                this.valueMax =   240 
-                this.value = 60
+            if (args.currentView === "TimelineWeek") {
+                this.value = parseInt(this.intervalValue as string, 10)
+                this.valueMax = 240
                 this.valueAdd = 60
-        }
-        }
-        // if (args.currentView === 'TimelineDay' ) {
-        //     this.scheduleObj.currentView = 'TimelineDay';
-        //     this.navigateTimelineDay = true;
-        //     let startofDay = moment(args.currentDate).toDate()
-        //     let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-        //     console.log(startofDay, "++++++++++++++++++++++++", endofDay )
-        //     this.timelineResourceDataOut = [];
-        //     this.refreshDateStart = startofDay;
-        //     this.refreshDateEnd = endofDay;
-        //     this.salleDataSource.forEach(salle => {
-        //         let indexSalle = this.salleDataSource.indexOf(salle);
-        //         this.getContainersByRessourceStartDateEndDate(
-        //             salle.CodeRessource,
-        //             startofDay,
-        //             endofDay,
-        //             salle.CodeSalle,
-        //             indexSalle
-        //         );
-        //     });
+                this.intervalData = ['60', '120', '180', '240'];
+                this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValue as string, 10), slotCount: 1 }
 
-        // }
+            }
+
+        }
+
 
         if (this.scheduleObj.currentView === 'TimelineDay' && args.currentView === 'TimelineDay') {
           
@@ -2155,6 +2174,7 @@ public navigateTimelineDay;
                 this.scheduleObj.readonly = true
                 console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.scheduleObj.readonly)
             }
+       
         }
         if ((args.currentView ==="TimelineWeek") || (args.currentView ==="TimelineDay") || (args.currentView ==="MonthAgenda")) {
             this.scheduleObj.readonly = false
@@ -2344,44 +2364,7 @@ public navigateTimelineDay;
         }
      
         console.log("date agenda schedulerobj ......................................",this.scheduleObj)
-        //   }
-        // if (args.previousView === 'TimelineDay') {
-        //     this.zoom = true
-        // }
-        // let value = 60
-        // document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
-        //         let scheduleElement = document.getElementsByClassName('schedule-container');
-        //         if (this.zoom === true) {
-        //             if ( eKey.keyCode === 80 && scheduleElement ) {
-        //                 if (value < 120) {
-        //                     value = value +  30
-        //                     this.scheduleObj.timeScale.interval = value;
-        //                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
-        //                 }
-        //             } else {
-        //                 if ( eKey.keyCode === 77 && scheduleElement ) {
-        //                     if ( value > 30) {
-        //                         value = value - 30
-        //                         this.scheduleObj.timeScale.interval = value 
-        //                         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.scheduleObj.timeScale.interval);
-        //                     }
-        //                 }
-        //             }
-        //         } else {
-        //             if ( eKey.keyCode === 80 && scheduleElement ) {
-        //                 console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
-        //             } else {
-        //                 if ( eKey.keyCode === 77 && scheduleElement ) {
-        //                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++',  this.zoom)
-        //                 }
-        //             }
-        //         }
-        //     });
-        // }
-        // if (args.currentView === "TimelineDay") {
-        //     this.zoom = false
-        // }      
-        // console.log("date agenda schedulerobj ......................................",this.scheduleObj)
+       
       if(args.currentView ==="Agenda"){
         if (args.action === "date"){
                    let navigateFirstOfWeek =  moment(args.currentDate).toDate() ,
@@ -3620,71 +3603,73 @@ public CellClick : boolean = true;
 /************************* OPERATEUR MANAGEMENT **************************/
 
 /********** Add Monteur  *********/
- public ajoutMonteur
- public monteurListArray
- public countAdd : number  = 0
-    onSelect(value) {
-    let monteurListArray;
-    let fieldMonteur
-        for (let i = 0; i < this.monteurListe.length; i++) {
-            if (value === this.monteurListe[i].Username  ) {
 
-                fieldMonteur = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift( this.monteurListe[i])) //pour l'affichage dans le treeview
+
+
+    onSelect(value) {
+        let monteurListArray;
+        let fieldMonteur
+        for (let i = 0; i < this.monteurListe.length; i++) {
+            if (value === this.monteurListe[i].Username) {
+
+                fieldMonteur = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift(this.monteurListe[i])) //pour l'affichage dans le treeview
                 fieldMonteur.pop()
 
-        
-                this.monteurDataSource.unshift(this.monteurListe[i])
-                console.log('monteurDataSource',this.monteurDataSource);
-           
-                for(let i = 0 ; i<this.monteurDataSource.length ; i++)
-                {
-                    if(this.monteurDataSource[i] === this.monteurDataSource[i+1] ){
-                    delete this.monteurDataSource[i]
-                   
-                }
-            
-            
-            
-            }
-                monteurListArray =  this.monteurDataSource
 
-              console.log('monteurListArray',monteurListArray);
-              
-                
+                this.monteurDataSource.unshift(this.monteurListe[i])
+                console.log('monteurDataSource', this.monteurDataSource);
+
+                for (let i = 0; i < this.monteurDataSource.length; i++) {
+                    if (this.monteurDataSource[i] === this.monteurDataSource[i + 1]) {
+                        delete this.monteurDataSource[i]
+
+                    }
+
+
+
+                }
+                monteurListArray = this.monteurDataSource
+
+                console.log('monteurListArray', monteurListArray);
+
+
                 this.ajoutMonteur = this.monteurListe[i]
                 this.monteurListArray = monteurListArray
                 console.log('monteurListArray', this.monteurListArray);
                 this.filtermonteurListeArray = monteurListArray;
                 console.log('filtermonteurListeArray', this.filtermonteurListeArray);
-                console.log(  this.fieldMonteur);
+                console.log(this.fieldMonteur);
                 this.addMonteur = true;
 
 
                 this.fieldMonteur['dataSource'] = monteurListArray
-                  this.fieldMonteur = { dataSource:fieldMonteur , text: 'Username' };
-                  this.countAdd = this.countAdd +1
-                 
+                this.fieldMonteur = { dataSource: fieldMonteur, text: 'Username' };
+                this.countAdd = this.countAdd + 1
+
             }
         }
 
     }
-    onSelectPlannig(value){
-     
-    let codeGoupe
+   
 
-    this.timelineResourceDataOut = [];
-    this.allDataContainers = [];
-    this.allDataWorkorders = [];
-    this.salleDataSource = [];
-    this.departmentDataSource = [];
-    this.departmentGroupDataSource = [];
+    onSelectPlannig(value){
+        this.nameService = value
+        console.log(this.nameService)
+        let codeGoupe
+
+        this.timelineResourceDataOut = [];
+        this.allDataContainers = [];
+        this.allDataWorkorders = [];
+        this.salleDataSource = [];
+        this.departmentDataSource = [];
+        this.departmentGroupDataSource = [];
         this.isnotMyGroup = true
         this.scheduleObj.readonly = true
-        this.libGroupe.map(group =>{
-            if(value === group.Libelle){
+        this.libGroupe.map(group => {
+            if (value === group.Libelle) {
                 codeGoupe = group.Code
-          
-        }
+
+            }
         })
       
 
@@ -3780,7 +3765,7 @@ public CellClick : boolean = true;
 
 
 /************************************************************ Filter Monteur et régies ***********************************************************************************/
-countText
+
     onFilter(searchText: string, tabIndex) {
 
 
@@ -3792,7 +3777,7 @@ countText
             this.filtre = false
             console.log(this.zoom, searchText.length, '*******************************************')
         }
-        this.countText = searchText.length
+        this.comptText = searchText.length
         // this.filtre == true
         
         
@@ -3917,7 +3902,8 @@ countText
                             || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase()) 
-                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) ;                    
+                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) 
+                            || WorkOrder.coordinateurCreate.toLowerCase().includes(searchText.toLowerCase()) ;                    
                         });
                 } else {
                     this.data = this.newField.filter(WorkOrder => {
@@ -3925,7 +3911,8 @@ countText
                             || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())  
-                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) ;
+                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase())
+                            || WorkOrder.coordinateurCreate.toLowerCase().includes(searchText.toLowerCase()) ;
                     });
 
                 }
@@ -3936,7 +3923,8 @@ countText
                         || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) ;
+                        || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase()) 
+                        || WorkOrder.coordinateurCreate.toLowerCase().includes(searchText.toLowerCase());
                 });
             }
             this.field['dataSource'] = this.data;
@@ -3946,7 +3934,7 @@ countText
             console.log('Data', this.data);
         }
     }
-    public filtre : boolean 
+  
     Filter(){
         let schedule = document.getElementsByClassName('recherche');
         console.log(schedule)
@@ -4010,7 +3998,7 @@ public filtreRegie
 
 
 
-    public open
+ 
     
 
 
@@ -4069,7 +4057,7 @@ public filtreRegie
        
 
     }
-public elementDelete
+
 
     menuclick(args: MenuEventArgs) {
         let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
@@ -4104,45 +4092,44 @@ public elementDelete
 
 
     onEventRendered(args: EventRenderedArgs): void {
-    
+
         let couleur
 
-      
-        if (args.data.AzaIsPere ) {
-                return;
-             
+
+        if (args.data.AzaIsPere) {
+            return;
+
         } else {
 
-            this.colorStatut.forEach(statut =>{
-                if(args.data.Statut === statut['Id'])
-                {
-                   couleur  = statut['Color']
+            this.colorStatut.forEach(statut => {
+                if (args.data.Statut === statut['Id']) {
+                    couleur = statut['Color']
                 }
             })
             this.workOrderColor = couleur
-           
-              
+
+
 
 
             if (this.scheduleObj.currentView === 'MonthAgenda') {
                 (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
-                (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
+                (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
                 args.element.style.borderLeftColor = this.workOrderColor;
                 console.log('statut', args)
-         
+
             } else {
                 if (this.scheduleObj.currentView === 'Agenda') {
-                    (args.element.firstChild as HTMLElement).style.borderLeftColor =  this.workOrderColor;
-                    (args.element.firstChild as HTMLElement).style.marginLeft ='30px'
+                    (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
+                    (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
                     // args.element.style.borderLeftColor =  this.workOrderColor;
-                    
+
                 } else {
-                    (args.element.firstChild as HTMLElement).style.backgroundColor =  this.workOrderColor;
-                    args.element.style.backgroundColor =  this.workOrderColor;
+                    (args.element.firstChild as HTMLElement).style.backgroundColor = this.workOrderColor;
+                    args.element.style.backgroundColor = this.workOrderColor;
                 }
             }
         }
-     
+
       
 
 
@@ -4156,26 +4143,38 @@ public elementDelete
      /******************************************* Zoom *******************/
    
     changeInterval(e: DropDownChangeArgs): void {
-
-        this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
         // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
         // this.scheduleObj.dataBind();
+        console.log(e)
+        this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
+        this.intervalValue = e.value as string
+        this.value = parseInt(e.value as string, 10);
         console.log(e.value)
-   
-
-    
-     }
-    public isStrictMode: boolean = true;
-
-    onSubmit() {
-        let temps = (this.ejEndTimePicker.value.getHours()) - (this.ejStartTimePicker.value.getHours())
-        console.log('date picker ', temps);
-        if (temps >= 12) {
-            this.scheduleObj.startHour = this.instance.formatDate(this.ejStartTimePicker.value, { skeleton: 'Hm' });
-            this.scheduleObj.endHour = this.instance.formatDate(this.ejEndTimePicker.value, { skeleton: 'Hm' });
-        }
-
+        console.log(this.intervalValue)
+        this.scheduleObj.dataBind();
     }
+
+    changeIntervalDay(e: DropDownChangeArgs) {
+        this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
+        this.intervalValueDay = e.value as string
+        this.value = parseInt(e.value as string, 10);
+
+        console.log(this.intervalValueDay)
+        this.scheduleObj.dataBind();
+    }
+
+/*************************************************************************************** */
+
+
+    // onSubmit() {
+    //     let temps = (this.ejEndTimePicker.value.getHours()) - (this.ejStartTimePicker.value.getHours())
+    //     console.log('date picker ', temps);
+    //     if (temps >= 12) {
+    //         this.scheduleObj.startHour = this.instance.formatDate(this.ejStartTimePicker.value, { skeleton: 'Hm' });
+    //         this.scheduleObj.endHour = this.instance.formatDate(this.ejEndTimePicker.value, { skeleton: 'Hm' });
+    //     }
+
+    // }
 
     onRenderCell(args: RenderCellEventArgs): void {
         
@@ -4198,13 +4197,6 @@ public elementDelete
 
     }
 
-    onChange(args: ChangeEventArgs): void {
-   
-    }
-    
-    onResize(args){
-        console.log(args)
-    }
 
 
 }
