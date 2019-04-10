@@ -1,10 +1,11 @@
-import { Component, OnInit, Compiler, NgZone } from '@angular/core';
+import { Component, OnInit, Compiler, NgZone, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 
 
 import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
+import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 
@@ -22,25 +23,26 @@ import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur
   providers : [
     CoordinateurService,
     Store,
-    AuthAdalService
+    AuthService,
+    // AuthAdalService
   ]
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
+    private authService: AuthService,
     private compiler: Compiler,
     private coordinateurService: CoordinateurService,
     private store: Store<Navbar>,
     private appStore: Store<App>,
-    private authAdalService: AuthAdalService,
-    private adal5Service: Adal5Service,
+    // private authAdalService: AuthAdalService,
+    // private adal5Service: Adal5Service,
     private router: Router,
     private _zone: NgZone
   ) {
     this.navbarStoreOpen = this.store;
-    this.adal5Service.init(config);
-    
+    // this.adal5Service.init(config);
   }
 
   public globalStore;
@@ -66,15 +68,21 @@ export class AppComponent implements OnInit {
   public currentCoordinateur: Coordinateur;
 
   ngOnInit() {
-    console.log(this.adal5Service);
-    console.log(this.authAdalService);
-    console.log(this.adal5Service.userInfo);
-    // Handle callback if this is a redirect from Azure
-    this.adal5Service.handleWindowCallback(); // ajouter condition
+    if (!this.authService.authenticated) {
+      this.signIn();
+    }
   
+    // console.log(this.adal5Service);
+    // console.log(this.authAdalService);
+    // console.log(this.adal5Service.userInfo);
+
+    // Handle callback if this is a redirect from Azure
+    // this.adal5Service.handleWindowCallback(); // ajouter condition
     // check navbar.open state from store
+
     console.log(this.store);
     console.log(this.appStore);
+
     this.compiler.clearCache();
     this.store.subscribe(data => (this.globalStore = data));
     this.navbarState = this.globalStore.navbar.open;
@@ -83,37 +91,102 @@ export class AppComponent implements OnInit {
 
 
     // Check if the user is authenticated. If not, call the login() method
-    if (!this.adal5Service.userInfo.authenticated) {
-      this.adal5Service.login();
-      console.log('adalDervicde login()');
-    }
+    // if (!this.adal5Service.userInfo.authenticated) {
+    //   this.adal5Service.login();
+    //   console.log('adalDervicde login()');
+    // }
 
     // Log the user information to the console
 
-    console.log('username ' + this.adal5Service.userInfo.username);
-    console.log('authenticated: ' + this.adal5Service.userInfo.authenticated);
-    console.log('name: ' + this.adal5Service.userInfo.profile.name);
-    console.log('token: ' + this.adal5Service.userInfo.token);
-    console.log(this.adal5Service.userInfo.profile);
+    // console.log('username ' + this.adal5Service.userInfo.username);
+    // console.log('authenticated: ' + this.adal5Service.userInfo.authenticated);
+    // console.log('name: ' + this.adal5Service.userInfo.profile.name);
+    // console.log('token: ' + this.adal5Service.userInfo.token);
+    // console.log(this.adal5Service.userInfo.profile);
 
-    this.userName = this.adal5Service.userInfo.username;
-    this.name = this.adal5Service.userInfo.profile.name;
-    this.firstName = this.adal5Service.userInfo.profile.given_name;
-    this.lastName = this.adal5Service.userInfo.profile.family_name;
+    // this.userName = this.adal5Service.userInfo.username;
+    // this.name = this.adal5Service.userInfo.profile.name;
+    // this.firstName = this.adal5Service.userInfo.profile.given_name;
+    // this.lastName = this.adal5Service.userInfo.profile.family_name;
+    // this.initials = `${this.firstName.slice(0, 1).toUpperCase()}${this.lastName.slice(0, 1).toUpperCase()}`;
+
+    // this.userNameSplit = this.userName.split('@');
+    // this.shortUserName = this.userNameSplit[0];
+    // console.log(this.shortUserName);
+    // this.user = {
+    //   name: this.name,
+    //   userName: this.userName,
+    //   initials: this.initials,
+    //   shortUserName: this.shortUserName
+    // };
+    // console.log(this.appStore);
+  }
+
+  ngAfterViewInit() {
+    console.log(this.authService);
+    if (this.authService) {
+        console.log(this.authService);
+      if (this.authService.user !== null && this.authService.user !== undefined) {
+         this.displayUser();
+      } else {
+        setTimeout(() => {
+           this.displayUser();
+        }, 10000);
+      }
+    }
+  }
+
+  // async signIn(): Promise<void> {
+  //   await this.authService.signIn();
+  //   console.log(this.authService);
+  // }
+  public myUser;
+  signIn() {
+      this.authService.signIn();
+      console.log(this.authService);
+      // this.addUser(this.authService.user);
+  }
+
+  displayUser() {
+    console.log(this.authService);
+    console.log(this.authService.user);
+    this.userName = this.authService.user.email; // prenom.nom@mediawan.com
+    this.name = this.authService.user['displayName']; // NOM Prénom
+
+    let arrName = this.name.split(' ');
+    this.firstName = arrName[1]; // Prénom
+    this.lastName = arrName[0]; // Nom
     this.initials = `${this.firstName.slice(0, 1).toUpperCase()}${this.lastName.slice(0, 1).toUpperCase()}`;
+    this.shortUserName = this.authService.user['samaccountname'];
+    // console.log(this.adal5Service);
+    // console.log(this.authAdalService);
+    // console.log(this.adal5Service.userInfo);
 
-    this.userNameSplit = this.userName.split('@');
-    this.shortUserName = this.userNameSplit[0];
+    // Handle callback if this is a redirect from Azure
+    // this.adal5Service.handleWindowCallback(); // ajouter condition
+    // check navbar.open state from store
 
-    console.log(this.shortUserName);
+    console.log(this.store);
+    console.log(this.appStore);
     this.user = {
       name: this.name,
       userName: this.userName,
       initials: this.initials,
       shortUserName: this.shortUserName
     };
-    console.log(this.appStore);
-    this.getAllCoordinateurs();
+    this.appStore.dispatch({
+                    type: 'ADD_USER',
+                    payload: {
+                      user : {
+                        username: this.userName,
+                        name: this.name,
+                        initials: this.initials,
+                        shortUserName: this.shortUserName,
+                        numGroup: ''
+                      }
+                    }
+                  });
+    // this.getAllCoordinateurs();
   }
 
   getAllCoordinateurs() {
@@ -134,7 +207,7 @@ export class AppComponent implements OnInit {
                       }
                     }
                   });
-               }
+                }
           });
     });
   }
@@ -144,7 +217,8 @@ export class AppComponent implements OnInit {
       this.store.dispatch({
         type: 'DELETE_USER'
       });
-      this.adal5Service.logOut();
+      this.authService.signOut();
+      // this.adal5Service.logOut();
     }
   }
 
