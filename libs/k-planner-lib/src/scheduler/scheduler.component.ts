@@ -531,7 +531,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                       console.log(this.user);
                     });
                     this.getAllCoordinateurs();
-        }, 10000);
+        }, 11000);
 
     }
 
@@ -2486,8 +2486,8 @@ public CellClick : boolean = true;
                     className: 'e-sub-object-list'
                 });
                 let elementParent: HTMLElement = <HTMLElement>args.element.querySelector('.e-popup-content');
-                elementParent.style.overflow = "auto"
-                elementParent.style.height = '40vh'
+                elementParent.style.overflow = 'auto'
+                elementParent.style.maxHeight = '40vh'
                 elementParent.appendChild(row);
                 for (let i = 0; i < workOrders.length; i++) {
                     let idRegie = workOrders[i].DepartmentID;
