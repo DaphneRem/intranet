@@ -3660,7 +3660,10 @@ public CellClick : boolean = true;
    
 
     onSelectPlannig(value){
-        this.nameService = value
+        setTimeout(() => {
+            this.nameService = value
+        },200)
+       
         console.log(this.nameService)
         let codeGoupe
 
@@ -4185,7 +4188,7 @@ public filtreRegie
 
     onRenderCell(args: RenderCellEventArgs): void {
         
-   
+
         if( this.scheduleObj.currentView =='TimelineWeek'){
         if (args.element.classList.contains('e-work-cells') && ((args.date.getDate() % 2) === 0 )) {
             args.element['style'].background ='#E5FCFD';
@@ -4200,7 +4203,7 @@ public filtreRegie
                 target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
             }
         }
-    
+
 
     }
 
