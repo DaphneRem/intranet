@@ -328,7 +328,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             this.isnotMyGroup = false;
             console.log('*******constructor*******');
             this.storeAppSubscription();
-            this.getAllCoordinateurs();
+            // this.getAllCoordinateurs();
             console.log('*******constructor*******');
                 // public departmentDataSource: Object[] = [];
                                 
@@ -438,6 +438,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     ngOnChanges(changes: SimpleChanges) {
         console.log('==============================================================================on change');
+        console.log(changes.user);
+        console.log(changes);
     }
 
     public disabledrefresh : boolean
@@ -495,6 +497,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     getAllCoordinateurs() {
+        console.log('this.user => ', this.user);
         this.timelineResourceDataOut = [];
         this.departmentGroupDataSource = [];
         this.allDataContainers = [];
@@ -521,11 +524,15 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     storeAppSubscription() {
-        this.store.subscribe(data => {
-            console.log(data);
-            this.user = data['app'].user;
-            console.log(this.user);
-        });
+        setTimeout(() => {
+                    this.store.subscribe(data => {
+                      console.log(data);
+                      this.user = data["app"].user;
+                      console.log(this.user);
+                    });
+                    this.getAllCoordinateurs();
+        }, 10000);
+
     }
 
     onEventClick(e: ActionEventArgs) {

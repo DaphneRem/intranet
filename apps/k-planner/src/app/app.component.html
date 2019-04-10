@@ -6,6 +6,7 @@
   (logOutEvent)="logout($event)"
   (headerNav)="checkHeaderNav($event)">
 </root-header>
+
 <div 
     class="pcoded-main-container app" 
     [style.margin-left]="marginLeft" 
@@ -16,6 +17,23 @@
     <div class="pcoded-content">
       <div class="pcoded-wrapper">
         <div class="main-body">
+          <!-- <div *ngIf="authService.authenticated && authService.user !== null; then welcomeUser else signInPrompt"></div>
+          <ng-template #welcomeUser>
+            <h4>Welcome {{ authService.user.displayName }}!</h4>
+            <h4>SAM : {{authService.user.samaccountname}}</h4>
+            <p>Use the navigation bar at the top of the page to get started.</p>
+          </ng-template>
+          <ng-template #signInPrompt>
+            <a href="javascript:undefined" class="btn btn-primary btn-large" role="button" (click)="signIn()">Click here to sign in</a>
+          </ng-template> -->
+          <!-- <div *ngIf="authService">
+            <div *ngIf="authService.user">
+
+          
+            <h4 *ngIf="authService.authenticated && authService.user !== null && authService.user !== 'undefined'">Welcome {{ authService.user['displayName']}}!</h4>
+            <h4 *ngIf="authService.authenticated && authService.user !== null && authService.user !== 'undefined'">SAM : {{authService.user['displayName']}}</h4>
+          </div>
+          </div> -->
           <router-outlet></router-outlet>
           <root-footer></root-footer>
         </div>
