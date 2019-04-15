@@ -6,6 +6,7 @@ import { Adal5Service, Adal5HTTPService } from 'adal-angular5';
 import { MsalModule } from '@azure/msal-angular';
 import { OAuthSettings } from './../../../../.privates-url';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AuthService } from './auth/auth.service';
 
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { appReducer } from './+state/app.reducer';

@@ -524,15 +524,12 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     storeAppSubscription() {
-        setTimeout(() => {
-                    this.store.subscribe(data => {
-                      console.log(data);
-                      this.user = data["app"].user;
-                      console.log(this.user);
-                    });
-                    this.getAllCoordinateurs();
-        }, 11000);
-
+        this.store.subscribe(data => {
+            console.log(data);
+            this.user = data["app"].user;
+            console.log(this.user);
+        });
+        this.getAllCoordinateurs();
     }
 
     onEventClick(e: ActionEventArgs) {

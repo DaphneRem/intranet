@@ -6,9 +6,9 @@ import { environment } from './environments/environment';
 
 if (environment.production) {
   enableProdMode();
-  if(window){
+  // if(window){
     window.console.log=function(){}; // supprimer les console.log lors du build 
-  }
+  // }
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule)

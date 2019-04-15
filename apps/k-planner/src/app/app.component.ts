@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 
 
-import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
+// import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
 import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
@@ -64,6 +64,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public userNameSplit: string[];
   public shortUserName: string;
   public numGroup: number;
+  public userIsReady = false;
 
   public currentCoordinateur: Coordinateur;
 
@@ -71,7 +72,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (!this.authService.authenticated) {
       this.signIn();
     }
-  
     // console.log(this.adal5Service);
     // console.log(this.authAdalService);
     // console.log(this.adal5Service.userInfo);
@@ -175,17 +175,18 @@ export class AppComponent implements OnInit, AfterViewInit {
       shortUserName: this.shortUserName
     };
     this.appStore.dispatch({
-                    type: 'ADD_USER',
-                    payload: {
-                      user : {
-                        username: this.userName,
-                        name: this.name,
-                        initials: this.initials,
-                        shortUserName: this.shortUserName,
-                        numGroup: ''
-                      }
-                    }
-                  });
+      type: 'ADD_USER',
+      payload: {
+        user : {
+          username: this.userName,
+          name: this.name,
+          initials: this.initials,
+          shortUserName: this.shortUserName,
+          numGroup: ''
+        }
+      }
+    });
+    this.userIsReady = true;
     // this.getAllCoordinateurs();
   }
 
