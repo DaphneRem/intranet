@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import swal from 'sweetalert2';
+import * as moment from 'moment';
 
 import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
 
@@ -145,6 +146,12 @@ export class FichesMaterielModificationInterfaceComponent
 
   public detailedReportLink;
 
+  public deadlineIsValid: boolean = true;
+  public livraisonIsValid: boolean = true;
+  public acceptationIsValid: boolean = true;
+  public premiereDiff: boolean = true;
+  public accesLabo: boolean = true;
+
   public allFichesMateriel = [];
   public allIdSelectedFichesMateriel = [];
   public dataIdFicheMaterielReady = false;
@@ -220,6 +227,76 @@ export class FichesMaterielModificationInterfaceComponent
     this.displaySelectionMode(this.storeFichesToModif);
   }
 
+  checkValidDate(date): boolean {
+    console.log(date);
+    if (date !== null) {
+      if (typeof date === 'string') {
+        if ((date === 'dd-mm-yyyy') || (date === this.valueNotToChangeLibelle)) {
+          return true;
+        } else if (
+            (date.length === 10)
+            && (date[2] === '-')
+            && (date[5] === '-')
+          ) {
+          let arrDate = date.split('-');
+          console.log(arrDate);
+          let day = arrDate[0];
+          let month = arrDate[1];
+          let year = arrDate[2];
+          let dayInMonth = moment( `${year}-${month}`, 'YYYY-MM').daysInMonth();
+          if (
+            (+day <= +dayInMonth)
+            && (year.length === 4)
+            && (+month <= 12)
+            && (+month > 0)
+            && (month.length === 2)
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        let month = date.month < 10 ? `0${date.month}` : date.month.toString();
+        let dayInMonth = moment(`${date.year}-${month}`, 'YYYY-MM').daysInMonth();
+        let yearLenght = date.year.toString().length;
+        console.log(month);
+        console.log(dayInMonth);
+        console.log(yearLenght);
+        if (
+          (+date.day <= +dayInMonth)
+          && (date.year.toString().length === 4)
+          && (+date.month <= 12)
+          && (+date.month > 0)
+          && (month.length === 2)
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } else {
+      return true;
+    }
+  }
+
+  displayValidDate(date, type) {
+    console.log(this.selectionType);
+      if (type === 'deadline') {
+        this.deadlineIsValid = this.checkValidDate(date);
+      } else if (type === 'livraison') {
+        this.livraisonIsValid = this.checkValidDate(date);
+      } else if (type === 'acceptation') {
+        this.acceptationIsValid = this.checkValidDate(date);
+      } else if (type === 'diff') {
+        this.premiereDiff = this.checkValidDate(date);
+      } else if (type === 'labo') {
+        this.accesLabo = this.checkValidDate(date);
+      }
+  }
+
   ngOnDestroy() {
     this.store.dispatch({
       type: 'DELETE_ALL_FICHE_MATERIEL_IN_MODIF',
@@ -245,7 +322,6 @@ export class FichesMaterielModificationInterfaceComponent
     console.log(this.newObject);
   }
 
-  
 
   disabledDeadline() {
     // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
@@ -260,9 +336,9 @@ export class FichesMaterielModificationInterfaceComponent
       }
       return true;
     } else {
-      if (this.selectionType === 'multi') {
-        this.newObject.Deadline = this.valueNotToChangeLibelle;
-      }
+      // if (this.selectionType === 'multi') {
+      //   this.newObject.Deadline = this.valueNotToChangeLibelle;
+      // }
       return false;
     }
   }

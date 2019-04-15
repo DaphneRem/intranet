@@ -24,6 +24,11 @@
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
       [allAnnexElementsFicheMateriel]="allAnnexElementsFicheMateriel"
       [user]="user"
+      [deadlineIsValid]="deadlineIsValid"
+      [livraisonIsValid]="livraisonIsValid"
+      [acceptationIsValid]="acceptationIsValid"
+      [premiereDiff]="premiereDiff"
+      [accesLabo]="accesLabo"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
     <!-- {{annexElementsFicheMateriel | json}} -->
@@ -33,13 +38,15 @@
           <label class="deadline clo-lg-4 col-form-label">
             Deadline :</label>
               <div class="input-group col-lg-8">
-                {{deadlineNewStringFormat}}
-                <input class="form-control" 
+                <input class="form-control"
+                  [ngClass]="!checkValidDate(newObject.Deadline) && selectionType === 'one' ? 'form-control-danger' : ''"
                   placeholder="{{newObject.Deadline}}" 
                   name="deadlineDate" 
                   [(ngModel)]="newObject.Deadline" 
                   [disabled]="disabledDeadline()"
-                  ngbDatepicker 
+                  ngbDatepicker
+                  (keyup)="selectionType === 'one' ? displayValidDate(newObject.Deadline, 'deadline') : displayValidDate(deadline.value, 'deadline')"
+                  #deadline="ngModel"
                   #deadlineDate="ngbDatepicker">
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary" (click)="deadlineDate.toggle()" type="button">
@@ -47,10 +54,11 @@
                   </button>
                 </div>
               </div>
+              <div *ngIf="!checkValidDate(newObject.Deadline) && selectionType === 'one'" class="col-form-label invalid-form">La Deadline n'est pas valide</div>
         </div>
         <div class="form-group row">
           <label class="user clo-lg-4 col-form-label">
-            User :</label>
+            Suivi par :</label>
           <select name="select" class="form-control col-lg-8">
             <option [value]="newObject.SuiviPar">{{newObject.SuiviPar}}</option>
           </select>
@@ -239,6 +247,7 @@
               {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisodes de ' + ficheAchatDetail.duree+'min' : '/'}}
             </span>
           </p>
+          <p>N° œuvre : {{ficheAchatDetail.numprogram ? ficheAchatDetail.numprogram : '/'}}</p>
           <!-- <p>Format œuvre :
             
             <span>ooooooooooo</span>
@@ -458,9 +467,14 @@
             </label>
             <div class="input-group col-lg-5" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
               <input class="form-control" 
+                [ngClass]="!checkValidDate(newObject.DateLivraison) && selectionType === 'one' ? 'form-control-danger' : ''"
                 placeholder="{{newObject.DateLivraison}}" 
-                name="livDate" [(ngModel)]="newObject.DateLivraison" 
-                ngbDatepicker #livDate="ngbDatepicker">
+                name="livDate" 
+                [(ngModel)]="newObject.DateLivraison" 
+                ngbDatepicker 
+                (keyup)="displayValidDate(newObject.DateLivraison, 'livraison')"
+                #livraison="ngModel"
+                #livDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="livDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -468,11 +482,17 @@
               </div>
             </div>
             <div class="col-lg-2 history-delivery-date">
-              <history-delivery-date-modal *ngIf="selectionType === 'one'" [myFicheMateriel]="newObject"></history-delivery-date-modal>
+              <history-delivery-date-modal 
+                *ngIf="selectionType === 'one'" 
+                [myFicheMateriel]="newObject"
+                [reload]="reloadHistoryStepStatus">
+              </history-delivery-date-modal>
             </div>
           </div>
+          <div *ngIf="!checkValidDate(newObject.DateLivraison) && selectionType === 'one'" class="col-form-label invalid-form">La date de livraison n'est pas valide</div>
           <delivery-date-comment-modal 
             [deliveryDate]="newObject.DateLivraison"
+            [livraisonIsValid]= "livraisonIsValid"
             (newComment)="displayDeliveryDateModelComment($event)"
             ></delivery-date-comment-modal>
           <p *ngIf="selectionType === 'one'">Délai de vérif :
@@ -488,8 +508,16 @@
               </label>
             </div>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{newObject.DateAcceptation}}" name="acceptDate"
-                [(ngModel)]="newObject.DateAcceptation" ngbDatepicker #acceptDate="ngbDatepicker" disabled="{{!checkAcceptationSelectionRadio()}}">
+              <input class="form-control"
+                [ngClass]="!checkValidDate(newObject.DateAcceptation) && selectionType === 'one' ? 'form-control-danger' : ''"
+                placeholder="{{newObject.DateAcceptation}}" 
+                name="acceptDate"
+                [(ngModel)]="newObject.DateAcceptation" 
+                ngbDatepicker 
+                (keyup)="displayValidDate(newObject.DateAcceptation, 'acceptation')"
+                #acceptation="ngModel"
+                #acceptDate="ngbDatepicker" 
+                disabled="{{!checkAcceptationSelectionRadio()}}">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="acceptDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -497,6 +525,7 @@
               </div>
             </div>
           </div>
+          <div *ngIf="!checkValidDate(newObject.DateAcceptation) && selectionType === 'one'" class="col-form-label invalid-form">La date d'acceptation n'est pas valide</div>
           <div class="form-group row renouvellement">
             <div class="form-check col-lg-12">
               <label class=" radio">
@@ -511,8 +540,16 @@
               Date de première diff :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{newObject.DatePremiereDiff}}" name="diffDate"
-                [(ngModel)]="newObject.DatePremiereDiff" ngbDatepicker #diffDate="ngbDatepicker">
+              <input 
+                [ngClass]="!checkValidDate(newObject.DatePremiereDiff) && selectionType === 'one' ? 'form-control-danger' : ''"
+                class="form-control" 
+                placeholder="{{newObject.DatePremiereDiff}}" 
+                name="diffDate"
+                [(ngModel)]="newObject.DatePremiereDiff" 
+                ngbDatepicker 
+                (keyup)="displayValidDate(newObject.DatePremiereDiff, 'diff')"
+                #diff="ngModel"
+                #diffDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="diffDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -520,6 +557,7 @@
               </div>
             </div>
           </div>
+          <div *ngIf="!checkValidDate(newObject.DatePremiereDiff) && selectionType === 'one'" class="col-form-label invalid-form">La date de première diff n'est pas valide</div>
         </div>
         <div class="sections acces-vf">
           <i class="icofont icofont-unlock section-icon"></i>
@@ -680,8 +718,16 @@
               Réception accès labo :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{newObject.ReceptionAccesLabo}}" name="accLaboDate"
-                [(ngModel)]="newObject.ReceptionAccesLabo" ngbDatepicker #accLaboDate="ngbDatepicker">
+              <input 
+                [ngClass]="!checkValidDate(newObject.ReceptionAccesLabo) && selectionType === 'one' ? 'form-control-danger' : ''"
+                class="form-control" 
+                placeholder="{{newObject.ReceptionAccesLabo}}" 
+                name="accLaboDate"
+                [(ngModel)]="newObject.ReceptionAccesLabo" 
+                ngbDatepicker 
+                (keyup)="displayValidDate(newObject.ReceptionAccesLabo, 'labo')"
+                #accesLabo="ngModel"
+                #accLaboDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="accLaboDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -689,6 +735,7 @@
               </div>
             </div>
           </div>
+          <div *ngIf="!checkValidDate(newObject.ReceptionAccesLabo) && selectionType === 'one'" class="col-form-label invalid-form">La date d'accès Labo n'est pas valide</div>
           <div class="row form-group form-labo">
             <label class="col-form-label col-lg-4">Nom du labo :</label>
             <input 
@@ -795,6 +842,11 @@
       [versionFicheMateriel]="versionFicheMateriel"
       [annexElementsFicheMateriel]="annexElementsFicheMateriel"
       [user]="user"
+      [deadlineIsValid]="deadlineIsValid"
+      [livraisonIsValid]="livraisonIsValid"
+      [acceptationIsValid]="acceptationIsValid"
+      [premiereDiff]="premiereDiff"
+      [accesLabo]="accesLabo"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
   </form>

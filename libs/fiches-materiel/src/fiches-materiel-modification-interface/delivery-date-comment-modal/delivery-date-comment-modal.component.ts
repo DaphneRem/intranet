@@ -21,6 +21,7 @@ import swal from 'sweetalert2';
 })
 export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
   @Input() deliveryDate;
+  @Input() livraisonIsValid;
   @Output() newComment = new EventEmitter<string>();
 
   @ViewChild('commentDeliveryDate') modalTemplate;
@@ -38,14 +39,20 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
     console.log(changeDeliveryDate);
     console.log(changes);
     console.log(typeof changeDeliveryDate.currentValue);
-    if (changeDeliveryDate) {
-      if ((this.init > 0) && (typeof changeDeliveryDate.currentValue === 'string') && (typeof changeDeliveryDate.previousValue === 'object')) {
-        this.init = -1;
-      } else if (this.init && (typeof changeDeliveryDate.currentValue !== 'string')) {
-        this.openSwal();
+    console.log('this.livraisonIsValid => ', this.livraisonIsValid);
+    setTimeout(() => {
+      if (this.livraisonIsValid) {
+        if (changeDeliveryDate) {
+          if ((this.init > 0) && (typeof changeDeliveryDate.currentValue === 'string') && (typeof changeDeliveryDate.previousValue === 'object')) {
+            this.init = -1;
+          } else if (this.init && (typeof changeDeliveryDate.currentValue !== 'string')) {
+            this.openSwal();
+          }
+          this.init++;
+        }
       }
-      this.init++;
-    }
+    }, 1000);
+
   }
 
   onCommentChange(comment: string) {

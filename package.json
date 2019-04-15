@@ -19,8 +19,9 @@
     "ingest-build-test": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083",
     "ingest-build-release": "ng build --prod --app=suivi-ingests --baseHref http://vm-angular-rc:8085",
     "materiel-test": "ng build --app=fiches-materiel --baseHref  http://vm-angular-rc:9084",
-    "k-planner-test": "ng build --app=k-planner --baseHref  http://planner.karinatest.app.groupe-ab.fr",
+    "k-planner-test": "ng build --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr",
     "k-planner-prod": "ng build --prod --app=k-planner --baseHref  http://planner.karinatest.app.groupe-ab.fr",
+    "k-planner-optimizer": "ng build --prod --aot=false --build-optimizer --app=k-planner --baseHref  http://planner.karinatest.app.groupe-ab.fr",
     "sbuild": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083/SuiviIngest"
   },
   "private": true,

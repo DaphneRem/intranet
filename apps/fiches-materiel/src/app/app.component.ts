@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import { AuthAdalService } from './auth-adal.service';
-import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
+// import { AuthAdalService } from './auth-adal.service';
+// import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
+import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 import { App, User } from './+state/app.interfaces';
@@ -17,20 +18,22 @@ import { config } from './../../../../.privates-url';
   styleUrls: ['./app.component.scss'],
   providers : [
     Store,
-    AuthAdalService
+    AuthService
+    // AuthAdalService
   ]
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     private store: Store<Navbar>,
     private appStore: Store<App>,
-    private authAdalService: AuthAdalService,
-    private adal5Service: Adal5Service,
+    private authService: AuthService,
+    // private authAdalService: AuthAdalService,
+    // private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
-    this.adal5Service.init(config);
+    // this.adal5Service.init(config);
   }
 
   public globalStore;
@@ -48,61 +51,88 @@ export class AppComponent implements OnInit {
   public user;
   public userNameSplit;
   public shortUserName;
+  public firstName: string;
+  public lastName: string;
+  public myUser;
+  public userIsReady = false;
 
   ngOnInit() {
     // check navbar.open state from store
+    if (!this.authService.authenticated) {
+      this.signIn();
+    }
     console.log(this.store);
     console.log(this.appStore);
     this.store.subscribe(data => (this.globalStore = data));
     this.navbarState = this.globalStore.navbar.open;
     this.checkHeader(this.navbarState);
+  }
 
-        // Handle callback if this is a redirect from Azure
-    this.adal5Service.handleWindowCallback();
-
-    // Check if the user is authenticated. If not, call the login() method
-    if (!this.adal5Service.userInfo.authenticated) {
-      this.adal5Service.login();
-      console.log('adalDervicde login()');
+  ngAfterViewInit() {
+    console.log(this.authService);
+    if (this.authService) {
+        console.log(this.authService);
+      if (this.authService.user !== null && this.authService.user !== undefined) {
+         this.displayUser();
+      } else {
+        setTimeout(() => {
+           this.displayUser();
+        }, 4000);
+      }
     }
+  }
 
-    // Log the user information to the console
-    console.log('username ' + this.adal5Service.userInfo.username);
-    console.log('authenticated: ' + this.adal5Service.userInfo.authenticated);
-    console.log('name: ' + this.adal5Service.userInfo.profile.name);
-    console.log('token: ' + this.adal5Service.userInfo.token);
-    console.log(this.adal5Service.userInfo);
+  signIn() {
+      this.authService.signIn();
+      console.log(this.authService);
+      // this.addUser(this.authService.user);
+  }
 
-    this.userName = this.adal5Service.userInfo.username;
-    this.name = this.adal5Service.userInfo.profile.name;
-    this.userNameSplit = this.userName.split('@');
-    this.shortUserName = this.userNameSplit[0];
-    console.log(this.shortUserName);
+    displayUser() {
+    console.log(this.authService);
+    console.log(this.authService.user);
+    this.userName = this.authService.user.email; // prenom.nom@mediawan.com
+    this.name = this.authService.user['displayName']; // NOM Prénom
+
+    let arrName = this.name.split(' ');
+    this.firstName = arrName[1]; // Prénom
+    this.lastName = arrName[0]; // Nom
+    this.shortUserName = this.authService.user['samaccountname'];
+    // console.log(this.adal5Service);
+    // console.log(this.authAdalService);
+    // console.log(this.adal5Service.userInfo);
+
+    // Handle callback if this is a redirect from Azure
+    // this.adal5Service.handleWindowCallback(); // ajouter condition
+    // check navbar.open state from store
+
+    console.log(this.store);
+    console.log(this.appStore);
     this.user = {
       name: this.name,
       userName: this.userName,
       shortUserName: this.shortUserName
     };
-
-    this.store.dispatch({
-      type: 'ADD_USER',
-      payload: {
-        user : {
-          username: this.userName,
-          name: this.name,
-          shortUserName: this.shortUserName
+    this.appStore.dispatch({
+        type: 'ADD_USER',
+        payload: {
+          user : {
+            username: this.userName,
+            name: this.name,
+            shortUserName: this.shortUserName,
+          }
         }
-      }
     });
-    console.log(this.globalStore.app);
+    this.userIsReady = true;
+    // this.getAllCoordinateurs();
   }
-
-  public logout(event) {
+  logout(event) {
     if (event) {
       this.store.dispatch({
         type: 'DELETE_USER'
       });
-      this.adal5Service.logOut();
+      this.authService.signOut();
+      // this.adal5Service.logOut();
     }
   }
 

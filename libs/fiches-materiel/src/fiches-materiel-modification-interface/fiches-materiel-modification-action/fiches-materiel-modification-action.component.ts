@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
+import swal from 'sweetalert2';
 
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 import { FicheMateriel } from '../../models/fiche-materiel';
@@ -37,6 +38,11 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() versionFicheMateriel;
   @Input() allAnnexElementsFicheMateriel;
   @Input() user;
+  @Input() deadlineIsValid;
+  @Input() livraisonIsValid;
+  @Input() acceptationIsValid;
+  @Input() premiereDiff;
+  @Input() accesLabo;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
 
@@ -62,13 +68,64 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     console.log(this.newObject);
   }
 
+  checkAllValidDates(): boolean {
+    if (
+      this.deadlineIsValid
+      && this.livraisonIsValid
+      && this.acceptationIsValid
+      && this.premiereDiff
+      && this.accesLabo
+    ) {
+      console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
+      return true;
+    } else {
+      console.log('ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt');
+      return false;
+    }
+  }
+
   modifFichesMateriel(closeAction) {
     if (closeAction === 'close') {
       this.closeInterface = true;
     } else {
       this.closeInterface = false;
     }
-    this.checkNewObjectModif();
+    if (this.checkAllValidDates()) {
+      this.checkNewObjectModif();
+    } else {
+      let invalidDate = [];
+      if (!this.deadlineIsValid) {
+        invalidDate.push('Deadline');
+      }
+      if (!this.livraisonIsValid) {
+        invalidDate.push('date de livraison');
+      }
+      if (!this.acceptationIsValid) {
+        invalidDate.push('date d\'acceptation');
+      }
+      if (!this.premiereDiff) {
+        invalidDate.push('date de première diff');
+      }
+      if (!this.accesLabo) {
+        invalidDate.push('date d\'Accès labo');
+      }
+      if (invalidDate.length > 1) {
+        swal({
+          title: 'Plusieurs dates ne sont pas valides',
+          showCancelButton: false,
+          confirmButtonText: 'Retour',
+          confirmButtonColor: '#aaaaaa',
+        });
+      } else {
+        swal({
+          title: `La ${invalidDate[0]} n'est pas valide`,
+          showCancelButton: false,
+          confirmButtonText: 'Retour',
+          confirmButtonColor: '#aaaaaa',
+          // cancelButtonText: 'Retour',
+        });
+      }
+    }
   }
 
   goBack() {
@@ -137,7 +194,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     console.log(newObject.Deadline);
     if (
       newObject.Deadline !== null &&
-      newObject.Deadline !== this.valueNotToChangeLibelle
+      newObject.Deadline !== this.valueNotToChangeLibelle &&
+      newObject.Deadline !== 'dd-mm-yyyy'
     ) {
       this.checkDeadline(newObject);
     } else if (newObject.Deadline === null) {
@@ -145,7 +203,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
     if (
       newObject.DateLivraison !== null &&
-      newObject.DateLivraison !== this.valueNotToChangeLibelle
+      newObject.DateLivraison !== this.valueNotToChangeLibelle &&
+      newObject.DateLivraison !== 'dd-mm-yyyy'
     ) {
       newObject.DateLivraison = `${newObject.DateLivraison.year}-${
         newObject.DateLivraison.month
@@ -153,7 +212,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
     if (
       newObject.DatePremiereDiff !== null &&
-      newObject.DatePremiereDiff !== this.valueNotToChangeLibelle
+      newObject.DatePremiereDiff !== this.valueNotToChangeLibelle &&
+      newObject.DatePremiereDiff !== 'dd-mm-yyyy'
     ) {
       newObject.DatePremiereDiff = `${newObject.DatePremiereDiff.year}-${
         newObject.DatePremiereDiff.month
@@ -161,7 +221,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
     if (
       newObject.DateAcceptation !== null &&
-      newObject.DateAcceptation !== this.valueNotToChangeLibelle
+      newObject.DateAcceptation !== this.valueNotToChangeLibelle &&
+      newObject.DateAcceptation !== 'dd-mm-yyyy'
     ) {
       newObject.DateAcceptation = `${newObject.DateAcceptation.year}-${
         newObject.DateAcceptation.month
@@ -169,7 +230,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
     if (
       newObject.ReceptionAccesLabo !== null &&
-      newObject.ReceptionAccesLabo !== this.valueNotToChangeLibelle
+      newObject.ReceptionAccesLabo !== this.valueNotToChangeLibelle &&
+      newObject.ReceptionAccesLabo !== 'dd-mm-yyyy'
     ) {
       newObject.ReceptionAccesLabo = `${newObject.ReceptionAccesLabo.year}-${
         newObject.ReceptionAccesLabo.month
@@ -178,7 +240,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
     if (
       newObject.DateRetourOri !== null &&
-      newObject.DateRetourOri !== this.valueNotToChangeLibelle
+      newObject.DateRetourOri !== this.valueNotToChangeLibelle &&
+      newObject.DateRetourOri !== 'dd-mm-yyyy'
     ) {
       newObject.DateRetourOri = `${newObject.DateRetourOri.year}-${
         newObject.DateRetourOri.month
@@ -186,7 +249,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     }
     if (
       newObject.RetourOriDernierDelai !== null &&
-      newObject.RetourOriDernierDelai !== this.valueNotToChangeLibelle
+      newObject.RetourOriDernierDelai !== this.valueNotToChangeLibelle &&
+      newObject.RetourOriDernierDelai !== 'dd-mm-yyyy'
     ) {
       newObject.RetourOriDernierDelai = `${
         newObject.RetourOriDernierDelai.year
@@ -334,7 +398,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
         console.log('this.newObject[key] (value) => ', this.newObject[key]);
       }
     }
-    if (this.newObject.Deadline === null) {
+    if ((this.newObject.Deadline === null) && this.multiFichesAchat) {
       let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
       console.log('nullDate => --------------------------------------- ', nullDate);
       console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
@@ -343,7 +407,6 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     } else {
       console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
       this.changedValues['isarchived'] = 0;
-      alert('remplir une deadline');
       this.changedValues['Deadline'] = this.newObject.Deadline;
 
     }

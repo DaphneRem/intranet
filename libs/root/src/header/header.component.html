@@ -77,7 +77,7 @@
             <li class="header-notification">
               <a href="javascript:" class="user">
                 <i class="icofont icofont-user-alt-7"></i>
-                <span *ngIf="afterViewInit" class="user-name">{{user.name}}</span>
+                <span *ngIf="afterViewInit && user.name" class="user-name">{{user.name}}</span>
               </a>
             </li>
           </ul>
