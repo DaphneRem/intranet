@@ -28,7 +28,7 @@
               
               
                 <select class="form-control form-control-info m-0 select-plannings float-right mt-1 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)">
-                    <option value="Mon planning">Mon planning</option>
+                    <option value="Mo">Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
                 </select>
                 <table class="table-light table-sm" id="property" title="Properties" >

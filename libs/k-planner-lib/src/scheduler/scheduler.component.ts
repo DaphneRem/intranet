@@ -1,10 +1,21 @@
-import { Component,  ViewChild, OnInit, OnChanges, SimpleChanges, Input, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  OnInit,
+  SimpleChanges,
+  Input,
+  AfterViewInit,
+  OnDestroy
+} from "@angular/core";
 import {NgForm} from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfaces';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 // Syncfusion Imports
 // Synfucion Bases
@@ -103,7 +114,7 @@ loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
     ]
 })
 
-export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
+export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
@@ -131,6 +142,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public ejStartTimePicker: TimePickerComponent;
     @ViewChild('ejEndTimePicker')
     public ejEndTimePicker: TimePickerComponent;
+
+    private onDestroy$: Subject<any> = new Subject();
 
     public dataRegieReady = false;
     public activeViewTimelineDay: ScheduleComponent;
@@ -436,10 +449,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         this.departmentDataSource = this.departmentGroupDataSource;
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        console.log('==============================================================================on change');
-        console.log(changes.user);
-        console.log(changes);
+    ngOnDestroy() {
+        this.onDestroy$.next();
     }
 
     public disabledrefresh : boolean
@@ -506,6 +517,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         let startofDay = moment().toDate()
         let endofDay = moment().add(1, 'd').toDate();
         this.coordinateurService.getAllCoordinateurs()
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(data => {
                 console.log('all coordinateurs : ', data);
                 data.forEach(item => {
@@ -524,11 +536,13 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     storeAppSubscription() {
-        this.store.subscribe(data => {
-            console.log(data);
-            this.user = data["app"].user;
-            console.log(this.user);
-        });
+        this.store
+            .pipe(takeUntil(this.onDestroy$))
+            .subscribe(data => {
+                console.log(data);
+                this.user = data["app"].user;
+                console.log(this.user);
+            });
         this.getAllCoordinateurs();
     }
 
@@ -554,6 +568,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log(this.departmentGroupDataSource);
         this.salleService
             .getGroupSalle(idGroup)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 this.dataRegieReady = true;
                 this.salleDataSource = donnees;
@@ -597,6 +612,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         this.toggleBtn.iconCss = 'e-play-icon';
         this.salleService
         .getSalle()
+        .pipe(takeUntil(this.onDestroy$))
         .subscribe(donnees => {
             this.timelineResourceDataOut = [];
             this.salleDataSource = donnees;
@@ -637,6 +653,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         let monteurDataSource;
         this.monteursService
             .getMonteur()
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 monteurDataSource = donnees;
                 monteurDataSource.map(item => {
@@ -651,6 +668,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     getMonteursByGroup(idGroup) {
         this.monteursService
             .getGroupMonteur(idGroup)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 console.log('monteurs : ', donnees);
                 this.monteurDataSource = donnees;
@@ -667,6 +685,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     getAllContainer() {
         this.containersService
             .getAllContainers()
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 this.containersPlanning = donnees;
                 console.log('container', this.containersPlanning);
@@ -676,6 +695,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     getContainersByRessource(coderessource) {
         this.containersService
             .getContainersByRessource(coderessource)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(data => {
                 console.log('container by ressource : ', data);
             });
@@ -695,6 +715,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         // console.log('coderessource salle => ', coderessource);
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 this.dataContainersByRessourceStartDateEndDate = res;
                 // console.log('container present in regie : ',  this.dataContainersByRessourceStartDateEndDate);
@@ -754,7 +775,6 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
     public allDataWorkorders = [];
     getWorkorderByContainerId(id, codeSalle, index, containerArrayLength, indexSalle) {
-        
         // console.log('--------------------------------------------------indexSalle => ', indexSalle);
         // console.log('id container to check workorder => ', id)
         // console.log('codeSalle => ', codeSalle);
@@ -763,6 +783,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         // console.log('this.salleDataSource.length => ', this.salleDataSource.length)
         this.workorderService
             .getWorkOrderByContainerId(id)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 // console.log('response workorder for container : ', res);
                 this.WorkorderByContainerId = res;
@@ -908,6 +929,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log("++++++++++++++++++++++",this.workOrderData);
         this.workorderService
         .getWorkOrderByidGroup(idGroup)
+        .pipe(takeUntil(this.onDestroy$))
         .subscribe(donnees => {
             this.WorkOrderByidgroup = donnees;
             console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
@@ -966,10 +988,11 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
 
-    getLibGroupe(id){
+    getLibGroupe(id) {
         let libGroupe
         this.libGroupeService
         .getLibGroupe(id)
+        .pipe(takeUntil(this.onDestroy$))
         .subscribe(donnees => {
             libGroupe = donnees
             libGroupe.map(donnees =>{
@@ -987,6 +1010,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public deleteContainerAction = false;
     deleteContainer(id, event) {
         this.containersService.deleteContainer(id)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('delete container with success : ', res);
                 this.allDataContainers = this.allDataContainers.filter(container => container.Id_Planning_Container !== id);
@@ -1022,6 +1046,7 @@ public createJustContainerAction = false;
 
     postContainer(containerToCreate, event) {
         this.containersService.postContainer(containerToCreate)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('succes post new container. RES : ', res);
                 if (res) {
@@ -1210,6 +1235,7 @@ public isBackToBacklog: boolean = false;
 
     putContainer(id, container, event) { // call in resize, deplacement and Editor (call in updateContainer() function)
         this.containersService.updateContainer(id, container)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
                 console.log(this.allDataContainers,'allDataContainers')
@@ -1311,6 +1337,7 @@ public isBackToBacklog: boolean = false;
 
     putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject) { // RESIZE AND EDITOR
         this.containersService.updateContainer(id, container)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
                 this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
@@ -1388,6 +1415,7 @@ public isBackToBacklog: boolean = false;
         console.log("newWorkorder => ", newWorkorder);
         this.workorderService
             .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
@@ -1476,6 +1504,7 @@ public isBackToBacklog: boolean = false;
     putWorkorder(id, workorder, event) {
         this.workorderService
             .updateWorkOrder(id, workorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
@@ -1592,6 +1621,7 @@ public isBackToBacklog: boolean = false;
     putWorkorderWithCalcul(newWorkorder, eventWorkorder, containerParent, timelineDataOut, pushEvent) {
         this.workorderService
             .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
@@ -1710,6 +1740,7 @@ public isBackToBacklog: boolean = false;
             }).then((result) => {
                 if (result.value) {
                     this.containersService.deleteContainer(containerPere.Id)
+                        .pipe(takeUntil(this.onDestroy$))
                         .subscribe(res => {
                             console.log('delete container with success : ', res);
                             this.allDataContainers = this.allDataContainers.filter(container => container.Id_Planning_Container !== containerPere.Id);
@@ -1801,6 +1832,7 @@ public isBackToBacklog: boolean = false;
         console.log(newWorkorder);
         this.workorderService
             .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 this.allDataWorkorders.filter(item => item.Id_Planning_Events !== newWorkorder.Id_Planning_Events);
@@ -1970,6 +2002,7 @@ updateWorkOrder(args) {
 putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     this.workorderService
     .updateWorkOrder(id, workorder)
+    .pipe(takeUntil(this.onDestroy$))
     .subscribe(res => {
             console.log('succes update workorder. RES : ', res);
             let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
@@ -3696,21 +3729,19 @@ public CellClick : boolean = true;
         let endofDay = moment().add(1, 'd').toDate();
   
         this.coordinateurService.getAllCoordinateurs()
-          .subscribe(data => {
-              console.log('all coordinateurs : ', data);
-              data.forEach(item => {
-                  if (item.Username === this.user.shortUserName) {
-                   
+            .pipe(takeUntil(this.onDestroy$))
+            .subscribe(data => {
+                console.log('all coordinateurs : ', data);
+                data.forEach(item => {
+                    if (item.Username === this.user.shortUserName) {
                         console.log('COORDINATEUR => ', item);
                         this.getSalleByGroup(item.Groupe, startofDay, endofDay);
                         this.getMonteursByGroup(item.Groupe);
                         this.getWorkOrderByidGroup(item.Groupe);
                         this.getAllMonteurs(item.Groupe);
                         this.currentCoordinateur = item;
-                        
-                   
-                }
-              });
+                    }
+                });
         });
         this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
         this.scheduleObj.refresh();
@@ -3728,7 +3759,8 @@ public CellClick : boolean = true;
         let endofDay = moment().add(1, 'd').toDate();
   
         this.coordinateurService.getAllCoordinateurs()
-          .subscribe(data => {
+            .pipe(takeUntil(this.onDestroy$))
+            .subscribe(data => {
               console.log('all coordinateurs : ', data);
               data.forEach(item => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
                   if (item.Username === this.user.shortUserName) {

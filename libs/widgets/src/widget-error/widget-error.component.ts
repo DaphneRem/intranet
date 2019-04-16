@@ -7,7 +7,7 @@ import { errorThemeColor } from '@ab/shared';
   styleUrls: ['./widget-error.component.scss']
 })
 export class WidgetErrorComponent implements OnInit {
-  @Input() error: string;
+  @Input() error;
   public errorColor = errorThemeColor;
 
   constructor() { }
