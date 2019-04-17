@@ -1,152 +1,175 @@
 /**
  * Schedule datasource
  */
-import { HospitalData } from './models/hospital-data';
 
 export let scheduleData: Object[] = [
     {
         Id: 1,
         Subject: 'Explosion of Betelgeuse Star',
-        StartTime: new Date(2018, 1, 11, 9, 30),
-        EndTime: new Date(2018, 1, 11, 11, 0),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 6, 9, 30),
+        EndTime: new Date(2019, 0, 6, 11, 0),
         CategoryColor: '#1aaa55'
     }, {
         Id: 2,
         Subject: 'Thule Air Crash Report',
-        StartTime: new Date(2018, 1, 12, 12, 0),
-        EndTime: new Date(2018, 1, 12, 14, 0),
+        Location: 'Newyork City',
+        StartTime: new Date(2019, 0, 7, 12, 0),
+        EndTime: new Date(2019, 0, 7, 14, 0),
         CategoryColor: '#357cd2'
     }, {
         Id: 3,
         Subject: 'Blue Moon Eclipse',
-        StartTime: new Date(2018, 1, 13, 9, 30),
-        EndTime: new Date(2018, 1, 13, 11, 0),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 8, 9, 30),
+        EndTime: new Date(2019, 0, 8, 11, 0),
         CategoryColor: '#7fa900'
     }, {
         Id: 4,
         Subject: 'Meteor Showers in 2018',
-        StartTime: new Date(2018, 1, 14, 13, 0),
-        EndTime: new Date(2018, 1, 14, 14, 30),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 9, 13, 0),
+        EndTime: new Date(2019, 0, 9, 14, 30),
         CategoryColor: '#ea7a57'
     }, {
         Id: 5,
         Subject: 'Milky Way as Melting pot',
-        StartTime: new Date(2018, 1, 15, 12, 0),
-        EndTime: new Date(2018, 1, 15, 14, 0),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 10, 12, 0),
+        EndTime: new Date(2019, 0, 10, 14, 0),
         CategoryColor: '#00bdae'
     }, {
         Id: 6,
         Subject: 'Mysteries of Bermuda Triangle',
-        StartTime: new Date(2018, 1, 15, 9, 30),
-        EndTime: new Date(2018, 1, 15, 11, 0),
+        Location: 'Bermuda',
+        StartTime: new Date(2019, 0, 10, 9, 30),
+        EndTime: new Date(2019, 0, 10, 11, 0),
         CategoryColor: '#f57f17'
     }, {
         Id: 7,
         Subject: 'Glaciers and Snowflakes',
-        StartTime: new Date(2018, 1, 16, 11, 0),
-        EndTime: new Date(2018, 1, 16, 12, 30),
+        Location: 'Himalayas',
+        StartTime: new Date(2019, 0, 11, 11, 0),
+        EndTime: new Date(2019, 0, 11, 12, 30),
         CategoryColor: '#1aaa55'
     }, {
         Id: 8,
         Subject: 'Life on Mars',
-        StartTime: new Date(2018, 1, 17, 9, 0),
-        EndTime: new Date(2018, 1, 17, 10, 0),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 12, 9, 0),
+        EndTime: new Date(2019, 0, 12, 10, 0),
         CategoryColor: '#357cd2'
     }, {
         Id: 9,
         Subject: 'Alien Civilization',
-        StartTime: new Date(2018, 1, 19, 11, 0),
-        EndTime: new Date(2018, 1, 19, 13, 0),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 14, 11, 0),
+        EndTime: new Date(2019, 0, 14, 13, 0),
         CategoryColor: '#7fa900'
     }, {
         Id: 10,
         Subject: 'Wildlife Galleries',
-        StartTime: new Date(2018, 1, 21, 11, 0),
-        EndTime: new Date(2018, 1, 21, 13, 0),
+        Location: 'Africa',
+        StartTime: new Date(2019, 0, 16, 11, 0),
+        EndTime: new Date(2019, 0, 16, 13, 0),
         CategoryColor: '#ea7a57'
     }, {
         Id: 11,
         Subject: 'Best Photography 2018',
-        StartTime: new Date(2018, 1, 22, 9, 30),
-        EndTime: new Date(2018, 1, 22, 11, 0),
+        Location: 'London',
+        StartTime: new Date(2019, 0, 17, 9, 30),
+        EndTime: new Date(2019, 0, 17, 11, 0),
         CategoryColor: '#00bdae'
     }, {
         Id: 12,
         Subject: 'Smarter Puppies',
-        StartTime: new Date(2018, 1, 9, 10, 0),
-        EndTime: new Date(2018, 1, 9, 11, 30),
+        Location: 'Sweden',
+        StartTime: new Date(2019, 0, 4, 10, 0),
+        EndTime: new Date(2019, 0, 4, 11, 30),
         CategoryColor: '#f57f17'
     }, {
         Id: 13,
         Subject: 'Myths of Andromeda Galaxy',
-        StartTime: new Date(2018, 1, 7, 10, 30),
-        EndTime: new Date(2018, 1, 7, 12, 30),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 2, 10, 30),
+        EndTime: new Date(2019, 0, 2, 12, 30),
         CategoryColor: '#1aaa55'
     }, {
         Id: 14,
         Subject: 'Aliens vs Humans',
-        StartTime: new Date(2018, 1, 5, 10, 0),
-        EndTime: new Date(2018, 1, 5, 11, 30),
+        Location: 'Research Centre of USA',
+        StartTime: new Date(2019, 0, 1, 10, 0),
+        EndTime: new Date(2019, 0, 1, 11, 30),
         CategoryColor: '#357cd2'
     }, {
         Id: 15,
         Subject: 'Facts of Humming Birds',
-        StartTime: new Date(2018, 1, 20, 9, 30),
-        EndTime: new Date(2018, 1, 20, 11, 0),
+        Location: 'California',
+        StartTime: new Date(2019, 0, 15, 9, 30),
+        EndTime: new Date(2019, 0, 15, 11, 0),
         CategoryColor: '#7fa900'
     }, {
         Id: 16,
         Subject: 'Sky Gazers',
-        StartTime: new Date(2018, 1, 23, 11, 0),
-        EndTime: new Date(2018, 1, 23, 13, 0),
+        Location: 'Alaska',
+        StartTime: new Date(2019, 0, 18, 11, 0),
+        EndTime: new Date(2019, 0, 18, 13, 0),
         CategoryColor: '#ea7a57'
     }, {
         Id: 17,
         Subject: 'The Cycle of Seasons',
-        StartTime: new Date(2018, 1, 12, 5, 30),
-        EndTime: new Date(2018, 1, 12, 7, 30),
+        Location: 'Research Centre of USA',
+        StartTime: new Date(2019, 0, 7, 5, 30),
+        EndTime: new Date(2019, 0, 7, 7, 30),
         CategoryColor: '#00bdae'
     }, {
         Id: 18,
         Subject: 'Space Galaxies and Planets',
-        StartTime: new Date(2018, 1, 12, 17, 0),
-        EndTime: new Date(2018, 1, 12, 18, 30),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 7, 17, 0),
+        EndTime: new Date(2019, 0, 7, 18, 30),
         CategoryColor: '#f57f17'
     }, {
         Id: 19,
         Subject: 'Lifecycle of Bumblebee',
-        StartTime: new Date(2018, 1, 15, 6, 0),
-        EndTime: new Date(2018, 1, 15, 7, 30),
+        Location: 'San Fransisco',
+        StartTime: new Date(2019, 0, 10, 6, 0),
+        EndTime: new Date(2019, 0, 10, 7, 30),
         CategoryColor: '#7fa900'
     }, {
         Id: 20,
         Subject: 'Alien Civilization',
-        StartTime: new Date(2018, 1, 15, 16, 0),
-        EndTime: new Date(2018, 1, 15, 18, 0),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 10, 16, 0),
+        EndTime: new Date(2019, 0, 10, 18, 0),
         CategoryColor: '#ea7a57'
     }, {
         Id: 21,
         Subject: 'Alien Civilization',
-        StartTime: new Date(2018, 1, 11, 14, 0),
-        EndTime: new Date(2018, 1, 11, 16, 0),
+        Location: 'Space Centre USA',
+        StartTime: new Date(2019, 0, 6, 14, 0),
+        EndTime: new Date(2019, 0, 6, 16, 0),
         CategoryColor: '#ea7a57'
     }, {
         Id: 22,
         Subject: 'The Cycle of Seasons',
-        StartTime: new Date(2018, 1, 13, 14, 30),
-        EndTime: new Date(2018, 1, 13, 16, 0),
+        Location: 'Research Centre of USA',
+        StartTime: new Date(2019, 0, 8, 14, 30),
+        EndTime: new Date(2019, 0, 8, 16, 0),
         CategoryColor: '#00bdae'
     }, {
         Id: 23,
         Subject: 'Sky Gazers',
-        StartTime: new Date(2018, 1, 16, 14, 30),
-        EndTime: new Date(2018, 1, 16, 16, 0),
+        Location: 'Greenland',
+        StartTime: new Date(2019, 0, 11, 14, 30),
+        EndTime: new Date(2019, 0, 11, 16, 0),
         CategoryColor: '#ea7a57'
     }, {
         Id: 24,
         Subject: 'Facts of Humming Birds',
-        StartTime: new Date(2018, 1, 17, 12, 30),
-        EndTime: new Date(2018, 1, 17, 14, 30),
+        Location: 'California',
+        StartTime: new Date(2019, 0, 12, 12, 30),
+        EndTime: new Date(2019, 0, 12, 14, 30),
         CategoryColor: '#7fa900'
     }
 ];
@@ -1381,8 +1404,8 @@ export let timelineResourceData: Object[] = [
     }, {
         Id: 62,
         Subject: 'Bug Automation',
-        StartTime: new Date(2018, 3, 4, 13, 30),
-        EndTime: new Date(2018, 3, 4, 16, 30),
+        StartTime: new Date(2018, 3, 4, 16, 0),
+        EndTime: new Date(2018, 3, 4, 20, 0),
         IsAllDay: false,
         ProjectId: 2,
         TaskId: 1
@@ -1398,10 +1421,10 @@ export let timelineResourceData: Object[] = [
         Id: 64,
         Subject: 'Resolution-based testing',
         StartTime: new Date(2018, 3, 4, 12),
-        EndTime: new Date(2018, 3, 4, 13),
+        EndTime: new Date(2018, 3, 4, 15, 0),
         IsAllDay: false,
-        ProjectId: 1,
-        TaskId: 1
+        ProjectId: 2,
+        TaskId: 4
     }, {
         Id: 65,
         Subject: 'Test report Validation',
@@ -1416,32 +1439,32 @@ export let timelineResourceData: Object[] = [
         StartTime: new Date(2018, 3, 4, 14),
         EndTime: new Date(2018, 3, 4, 16),
         IsAllDay: false,
-        ProjectId: 1,
-        TaskId: 2
+        ProjectId: 3,
+        TaskId: 6
     }, {
         Id: 67,
         Subject: 'Bug fixing',
         StartTime: new Date(2018, 3, 4, 14, 30),
         EndTime: new Date(2018, 3, 4, 18, 30),
         IsAllDay: false,
-        ProjectId: 2,
-        TaskId: 2
+        ProjectId: 3,
+        TaskId: 5
     }, {
         Id: 68,
         Subject: 'Run test cases',
         StartTime: new Date(2018, 3, 4, 17, 30),
         EndTime: new Date(2018, 3, 4, 19, 30),
         IsAllDay: false,
-        ProjectId: 1,
-        TaskId: 2
+        ProjectId: 2,
+        TaskId: 4
     }, {
         Id: 70,
         Subject: 'Bug Automation',
-        StartTime: new Date(2018, 3, 4, 18, 30),
-        EndTime: new Date(2018, 3, 4, 20),
+        StartTime: new Date(2018, 3, 4, 16, 0),
+        EndTime: new Date(2018, 3, 4, 20, 0),
         IsAllDay: false,
         ProjectId: 2,
-        TaskId: 1
+        TaskId: 3
     }
 ];
 
@@ -2851,7 +2874,7 @@ export let doctorData: Object[] = [
         Id: 12,
         Subject: 'Coronary angiogram',
         StartTime: new Date(2018, 3, 6, 8),
-        EndTime: new Date(2018, 3, 6, 8, 30),
+        EndTime: new Date(2018, 3, 6, 9, 30),
         IsAllDay: false,
         DoctorId: 1
     }, {
@@ -3717,84 +3740,93 @@ export let readonlyEventsData: Object[] = [
         Subject: 'Project Workflow Analysis',
         StartTime: new Date(currentTime + msPerDay * -2 + msPerHour * 2),
         EndTime: new Date(currentTime + msPerDay * -2 + msPerHour * 4),
+        IsReadonly: true
     }, {
         Id: 2,
         Subject: 'Project Requirement Planning',
         StartTime: new Date(currentTime + msPerDay * -1 + msPerHour * 2),
         EndTime: new Date(currentTime + msPerDay * -1 + msPerHour * 4),
+        IsReadonly: true
     }, {
         Id: 3,
         Subject: 'Meeting with Developers',
         StartTime: new Date(currentTime + msPerDay * -1 + msPerHour * -3),
         EndTime: new Date(currentTime + msPerDay * -1 + msPerHour * -1),
+        IsReadonly: true
     }, {
         Id: 4,
         Subject: 'Team Fun Activities',
         StartTime: new Date(currentTime + msPerHour * -4),
-        EndTime: new Date(currentTime + msPerHour * -2)
+        EndTime: new Date(currentTime + msPerHour * -2),
+        IsReadonly: true
     }, {
         Id: 5,
         Subject: 'Quality Analysis',
         StartTime: new Date(currentTime + msPerHour * 1),
         EndTime: new Date(currentTime + msPerHour * 3),
-        ReadOnly: true
+        IsReadonly: true
     }, {
         Id: 6,
         Subject: 'Customer meeting – John Mackenzie',
         StartTime: new Date(currentTime + msPerHour * 5),
-        EndTime: new Date(currentTime + msPerHour * 6)
+        EndTime: new Date(currentTime + msPerHour * 6),
+        IsReadonly: false
     }, {
         Id: 7,
         Subject: 'Meeting with Core team',
         StartTime: new Date(currentTime + msPerHour * 9),
-        EndTime: new Date(currentTime + msPerHour * 10)
+        EndTime: new Date(currentTime + msPerHour * 10),
+        IsReadonly: false
     }, {
         Id: 8,
         Subject: 'Project Review',
         StartTime: new Date(currentTime + msPerDay * 1 + msPerHour * 3),
         EndTime: new Date(currentTime + msPerDay * 1 + msPerHour * 5),
+        IsReadonly: false
     }, {
         Id: 9,
         Subject: 'Project demo meeting with Andrew',
         StartTime: new Date(currentTime + msPerDay * 1 + msPerHour * -4),
         EndTime: new Date(currentTime + msPerDay * 1 + msPerHour * -3),
+        IsReadonly: false
     }, {
         Id: 10,
         Subject: 'Online Hosting of Project',
         StartTime: new Date(currentTime + msPerDay * 2 + msPerHour * 4),
         EndTime: new Date(currentTime + msPerDay * 2 + msPerHour * 6),
+        IsReadonly: false
     }
 ];
 
-export function generateObject(start: number = new Date(2017, 6, 1).getTime(), end: number = new Date(2018, 6, 31).getTime()): Object[] {
-    let data: Object[] = [];
-    let names: string[] = [
-        'Story Time for Kids', 'Camping with Turtles', 'Wildlife Warriors', 'Parrot Talk', 'Birds of Prey', 'Croco World',
-        'Venomous Snake Hunt', 'Face Painting & Drawing events', 'Pony Rides', 'Feed the Giants', 'Jungle Treasure Hunt',
-        'Endangered Species Program', 'Black Cockatoos Playtime', 'Walk with Jungle King', 'Trained Climbers', 'Playtime with Chimpanzees',
-        'Meet a small Mammal', 'Amazon Fish Feeding', 'Elephant Ride'
-    ];
-    let dayCount: number = 1000 * 60 * 60;
-    for (let a: number = start, id: number = 1; a < end; a += (dayCount * 24) * 2) {
-        let count: number = Math.floor((Math.random() * 9) + 1);
-        for (let b: number = 0; b < count; b++) {
-            let hour: number = Math.floor(Math.random() * 100) % 24;
-            let minutes: number = Math.round((Math.floor(Math.random() * 100) % 60) / 5) * 5;
-            let nCount: number = Math.floor(Math.random() * names.length);
-            // let startDate: Date = new Date(new Date(a).setHours(hour, minutes));
-            // let endDate: Date = new Date(startDate.getTime() + (dayCount * 2.5));
-            // data.push({
-            //     Id: id,
-            //     Subject: names[nCount],
-            //     StartTime: startDate,
-            //     EndTime: endDate,
-            //     IsAllDay: (id % 10) ? false : true
-            // });
-            id++;
-        }
-    }
-    return data;
-}
+// export function generateObject(start: number = new Date(2017, 6, 1).getTime(), end: number = new Date(2018, 6, 31).getTime()): Object[] {
+//     let data: Object[] = [];
+//     let names: string[] = [
+//         'Story Time for Kids', 'Camping with Turtles', 'Wildlife Warriors', 'Parrot Talk', 'Birds of Prey', 'Croco World',
+//         'Venomous Snake Hunt', 'Face Painting & Drawing events', 'Pony Rides', 'Feed the Giants', 'Jungle Treasure Hunt',
+//         'Endangered Species Program', 'Black Cockatoos Playtime', 'Walk with Jungle King', 'Trained Climbers', 'Playtime with Chimpanzees',
+//         'Meet a small Mammal', 'Amazon Fish Feeding', 'Elephant Ride'
+//     ];
+//     let dayCount: number = 1000 * 60 * 60;
+//     for (let a: number = start, id: number = 1; a < end; a += (dayCount * 24) * 2) {
+//         let count: number = Math.floor((Math.random() * 9) + 1);
+//         for (let b: number = 0; b < count; b++) {
+//             let hour: number = Math.floor(Math.random() * 100) % 24;
+//             let minutes: number = Math.round((Math.floor(Math.random() * 100) % 60) / 5) * 5;
+//             let nCount: number = Math.floor(Math.random() * names.length);
+//             let startDate: Date = new Date(new Date(a).setHours(hour, minutes));
+//             let endDate: Date = new Date(startDate.getTime() + (dayCount * 2.5));
+//             data.push({
+//                 Id: id,
+//                 Subject: names[nCount],
+//                 StartTime: startDate,
+//                 EndTime: endDate,
+//                 IsAllDay: (id % 10) ? false : true
+//             });
+//             id++;
+//         }
+//     }
+//     return data;
+// }
 
 export let roomData: Object[] = [
     {
@@ -4228,6 +4260,96 @@ export let roomData: Object[] = [
         StartTime: new Date(2018, 7, 1, 11, 0),
         EndTime: new Date(2018, 7, 1, 12, 30),
         RoomId: 10
+    },
+    {
+        Id: 56,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 1
+    },
+    {
+        Id: 57,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 2
+    },
+    {
+        Id: 58,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 3
+    },
+    {
+        Id: 59,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 4
+    },
+    {
+        Id: 60,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 5
+    },
+    {
+        Id: 61,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 6
+    },
+    {
+        Id: 62,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 7
+    },
+    {
+        Id: 63,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 8
+    },
+    {
+        Id: 64,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 9
+    },
+    {
+        Id: 65,
+        Subject: 'Lunch Break',
+        StartTime: new Date(2017, 7, 1, 13, 0),
+        EndTime: new Date(2017, 7, 1, 14, 0),
+        RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;',
+        IsBlock: true,
+        RoomId: 10
     }
 ];
 
@@ -4431,259 +4553,384 @@ export let headerRowData: Object[] = [
     }
 ];
 
-export let hospitalData: HospitalData[] = [
+export let hospitalData: Object[] = [
     {
         Id: 10,
-        Name: 'Fabrication Volume DVD',
+        Name: 'David',
         StartTime: new Date(2018, 7, 1, 9, 0),
         EndTime: new Date(2018, 7, 1, 10, 0),
-        Description: 'Traduction + Traduire les synthés + Traduction des mots apparaissant dans le générique  ',
+        Description: 'Health Checkup',
         DepartmentID: 1,
         ConsultantID: 1,
-        DepartmentName: 'CAUCHEMAR EN CUISINE SAISON 5 ',
-        AzaIsPere: true,
-        className: 'event1',
-        AzaNumGroupe:100,
-        coordinateurCreate: 'AZ',
-        IconUrl: 'https://www.diabetesatschool.ca/uploads/img/icon-awareness.png',
-        Operateur: ''
-
+        DepartmentName: 'GENERAL'
     }, {
         Id: 11,
-        Name: 'Rectification et Vérification',
-        StartTime: new Date(2018, 7, 1, 14, 30),
-        EndTime: new Date(2018, 7, 1, 15, 30),
-        Description: 'Traduction + Traduire les synthés + Traduction des mots apparaissant dans le générique',
-        DepartmentID: 1,
+        Name: 'John',
+        StartTime: new Date(2018, 7, 1, 10, 30),
+        EndTime: new Date(2018, 7, 1, 11, 30),
+        Description: 'Tooth Erosion',
+        DepartmentID: 2,
         ConsultantID: 2,
-        DepartmentName: 'CAUCHEMAR EN CUISINE SAISON 5',
-        AzaIsPere: false,
-        AzaNumGroupe:100,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
+        DepartmentName: 'DENTAL'
     }, {
         Id: 12,
-        Name: 'Duplication',
+        Name: 'Peter',
         StartTime: new Date(2018, 7, 1, 12, 0),
         EndTime: new Date(2018, 7, 1, 13, 0),
-        Description: 'Pivot HD original. Le master a été fait sur num. Au final il me faudrait un fichier HD pour cet épisode UFC UNLEASHED eps 2. Merci.',
+        Description: 'Eye and Spectacles Checkup',
         DepartmentID: 1,
-        ConsultantID: 2,
-        DepartmentName: 'UFC UNLEASHED Saison 8 - Eps 2',
-        AzaIsPere: false,
-        AzaNumGroupe:100,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
+        ConsultantID: 3,
+        DepartmentName: 'GENERAL'
     }, {
         Id: 13,
-        Name: 'Mise aux normes sonores',
-        StartTime: new Date(2018, 7, 1, 11, 0),
-        EndTime: new Date(2018, 7, 1, 12, 0),
-        Description: 'Masterisation VF (le distrib n\'avait pas de VO)',
-        DepartmentID: 1,
-        ConsultantID: 2,
-        DepartmentName: 'Masterisation - Action',
-        AzaIsPere: false,
-        AzaNumGroupe:100,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
+        Name: 'Starc',
+        StartTime: new Date(2018, 7, 1, 14, 0),
+        EndTime: new Date(2018, 7, 1, 15, 0),
+        Description: 'Toothaches',
+        DepartmentID: 2,
+        ConsultantID: 4,
+        DepartmentName: 'DENTAL'
     }, {
         Id: 14,
-        Name: 'Réservation régies AB Prod',
+        Name: 'James',
         StartTime: new Date(2018, 7, 1, 10, 0),
         EndTime: new Date(2018, 7, 1, 11, 0),
-        Description: 'PADI VFVI POUR ANIMAUX A FAB SUR HD CAM',
+        Description: 'Surgery Appointment',
         DepartmentID: 1,
-        ConsultantID: 2,
-        DepartmentName: 'masterisation VF/VI ',
-        AzaIsPere: false,
-        AzaNumGroupe:100,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
-
+        ConsultantID: 5,
+        DepartmentName: 'GENERAL'
     }, {
         Id: 15,
-        Name: 'Fabrication PADISTRIB',
-        StartTime: new Date(2018, 7, 1, 13, 30),
-        EndTime: new Date(2018, 7, 1, 14, 30),
-        Description: 'Bande à visionner en urgence.',
-        DepartmentID: 1,
-        ConsultantID: 2,
-        DepartmentName: 'Demande de vision',
-        AzaIsPere: false,
-        AzaNumGroupe:100,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
+        Name: 'Jercy',
+        StartTime: new Date(2018, 7, 1, 9, 30),
+        EndTime: new Date(2018, 7, 1, 10, 30),
+        Description: 'Tooth Sensitivity',
+        DepartmentID: 2,
+        ConsultantID: 6,
+        DepartmentName: 'DENTAL'
     }, {
         Id: 16,
-        Name: 'PADI / VISION (MULTIPLE)',
-        StartTime: new Date(2019, 0, 29, 9, 30),
-        EndTime: new Date(2019, 0, 29, 14, 15),
-        Description: 'RTL9 ACTION  Fab HD VF/VO à partir d\'un fichier pivot déjà présent en stock (mais qui n\'avait jamais été vérifié)',
-        DepartmentID: 17,
-        ConsultantID: 3,
-        DepartmentName: 'Fichier HD à masteriser (RTL9 + Action)',
-        AzaIsPere: true,
-        AzaNumGroupe:101,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
+        Name: 'Albert',
+        StartTime: new Date(2018, 7, 2, 10, 0),
+        EndTime: new Date(2018, 7, 2, 11, 30),
+        Description: 'Skin care treatment',
+        DepartmentID: 1,
+        ConsultantID: 7,
+        DepartmentName: 'GENERAL'
     }, {
         Id: 17,
-        Name: 'Fabrication d\'habillage',
-        StartTime: new Date(2019, 0, 29, 9, 30),
-        EndTime: new Date(2019, 0, 29, 14, 15),
-        Description: 'Demande générée automatiquement Commentaire Demande :   Informations spécifiques : Fabrication PADI pour  AB DROITS AUDIOVISUELS  Titre :  PAD HD VF/VI à faire pour Animaux  Durée du prog : 00:52:00  Date de diffusion :   Distributeur :   Langue :   Fiche technique : ',
-        DepartmentID: 17,
-        ConsultantID: 3,
-        DepartmentName: 'Demande générée pour  PAD HD VF/VI à faire pour Animaux',
-        AzaIsPere: false,
-        AzaNumGroupe:101,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
+        Name: 'Louis',
+        StartTime: new Date(2018, 7, 2, 12, 30),
+        EndTime: new Date(2018, 7, 2, 13, 45),
+        Description: 'General Checkup',
+        DepartmentID: 1,
+        ConsultantID: 9,
+        DepartmentName: 'GENERAL'
     }, {
         Id: 18,
-        Name: 'Trucage',
-        StartTime: new Date(2019, 0, 29, 9, 30),
-        EndTime: new Date(2019, 0, 29, 14, 15),
-        Description: 'Mixage des bandes-démo AB3  5 éléments à mixer :   -une version 2’  -trois versions 10’’  -une version 40’’    Normalement le support sera sur HDCAM.',
-        DepartmentID: 17,
-        ConsultantID: 1,
-        DepartmentName: 'Demande de masterisation',
-        AzaIsPere: false,
-        AzaNumGroupe:101,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-
+        Name: 'Williams',
+        StartTime: new Date(2018, 7, 2, 12, 0),
+        EndTime: new Date(2018, 7, 2, 14, 0),
+        Description: 'Mouth Sores',
+        DepartmentID: 2,
+        ConsultantID: 10,
+        DepartmentName: 'DENTAL'
     },
     {
         Id: 19,
-        Name: 'Graphisme',
-        StartTime: new Date(2019, 0, 29, 9, 30),
-        EndTime: new Date(2019, 0, 29, 14, 15),
-        Description: 'diff hd native animaux pad hd vf/vi',
-        DepartmentID: 17,
+        Name: 'David',
+        StartTime: new Date(2018, 7, 2, 16, 30),
+        EndTime: new Date(2018, 7, 2, 18, 15),
+        Description: 'Eye checkup and Treatment',
+        DepartmentID: 1,
         ConsultantID: 1,
-        DepartmentName: '20 chefs d\'oeuvres de la nature pad hd vf/vi',
-        AzaIsPere: false,
-        AzaNumGroupe:101,
-        coordinateurCreate: 'AZ',
-        Operateur: ''
-    }, 
-    // {
-    //     Id: 20,
-    //     Name: 'John',
-    //     StartTime: new Date(2018, 7, 2, 19, 30),0
-    //     EndTime: new Date(2018, 7, 2, 21, 45),
-    //     Description: 'Toothaches',
-    //     DepartmentID: 2,
-    //     ConsultantID: 2,
-    //     DepartmentName: 'DENTAL'
-    // }, {
-    //     Id: 21,
-    //     Name: 'Peter',
-    //     StartTime: new Date(2018, 7, 3, 17, 30),
-    //     EndTime: new Date(2018, 7, 3, 19, 30),
-    //     Description: 'Surgery Treatment',
-    //     DepartmentID: 1,
-    //     ConsultantID: 3,
-    //     DepartmentName: 'GENERAL'
-    // }, {
-    //     Id: 22,
-    //     Name: 'Starc',
-    //     StartTime: new Date(2018, 7, 4, 18, 30),
-    //     EndTime: new Date(2018, 7, 4, 21, 30),
-    //     Description: 'Tooth Decay',
-    //     DepartmentID: 2,
-    //     ConsultantID: 4,
-    //     DepartmentName: 'DENTAL'
-    // }, {
-    //     Id: 23,
-    //     Name: 'James',
-    //     StartTime: new Date(2018, 7, 3, 19, 0),
-    //     EndTime: new Date(2018, 7, 3, 21, 0),
-    //     Description: 'General Checkup',
-    //     DepartmentID: 1,
-    //     ConsultantID: 5,
-    //     DepartmentName: 'GENERAL'
-    // }, {
-    //     Id: 24,
-    //     Name: 'Jercy',
-    //     StartTime: new Date(2018, 7, 4, 20, 0),
-    //     EndTime: new Date(2018, 7, 4, 22, 0),
-    //     Description: 'Tooth Erosion',
-    //     DepartmentID: 2,
-    //     ConsultantID: 6,
-    //     DepartmentName: 'DENTAL'
-    // }
-    ];
+        DepartmentName: 'GENERAL'
+    }, {
+        Id: 20,
+        Name: 'John',
+        StartTime: new Date(2018, 7, 2, 19, 30),
+        EndTime: new Date(2018, 7, 2, 21, 45),
+        Description: 'Toothaches',
+        DepartmentID: 2,
+        ConsultantID: 2,
+        DepartmentName: 'DENTAL'
+    }, {
+        Id: 21,
+        Name: 'Peter',
+        StartTime: new Date(2018, 7, 3, 17, 30),
+        EndTime: new Date(2018, 7, 3, 19, 30),
+        Description: 'Surgery Treatment',
+        DepartmentID: 1,
+        ConsultantID: 3,
+        DepartmentName: 'GENERAL'
+    }, {
+        Id: 22,
+        Name: 'Starc',
+        StartTime: new Date(2018, 7, 4, 18, 30),
+        EndTime: new Date(2018, 7, 4, 21, 30),
+        Description: 'Tooth Decay',
+        DepartmentID: 2,
+        ConsultantID: 4,
+        DepartmentName: 'DENTAL'
+    }, {
+        Id: 23,
+        Name: 'James',
+        StartTime: new Date(2018, 7, 3, 19, 0),
+        EndTime: new Date(2018, 7, 3, 21, 0),
+        Description: 'General Checkup',
+        DepartmentID: 1,
+        ConsultantID: 5,
+        DepartmentName: 'GENERAL'
+    }, {
+        Id: 24,
+        Name: 'Jercy',
+        StartTime: new Date(2018, 7, 4, 20, 0),
+        EndTime: new Date(2018, 7, 4, 22, 0),
+        Description: 'Tooth Erosion',
+        DepartmentID: 2,
+        ConsultantID: 6,
+        DepartmentName: 'DENTAL'
+    }];
 
 export let waitingList: { [key: string]: Object }[] = [
     {
-        Id: 25,
-        Name: 'Fabrication de BA',
-        StartTime: new Date(2018, 8, 1, 16, 30),
-        EndTime: new Date(2018, 8, 1, 17, 30),
-        Description: 'RECTIF PADI     MERCI DE FAIRE UN GENE ACCELERE ET LE REFERENCER DS KARINA ',
-        DepartmentName: 'PADI NASCAR TEXAS 2014',
-        AzaIsPere: true,
-        AzaNumGroupe:103
+        Id: 1,
+        Name: 'Steven',
+        StartTime: new Date(2018, 8, 3, 7, 30),
+        EndTime: new Date(2018, 8, 3, 9, 30),
+        Description: 'Consulting',
+        DepartmentName: 'GENERAL'
     },
     {
-        Id: 26,
-        Name: 'Fabrication de Padisat',
-        StartTime: new Date(2018, 8, 1, 8, 30),
-        EndTime: new Date(2018, 8, 1, 10, 30),
-        Description: 'Fichiers HD VO en cours de traitement au BO. La chaîne en a besoin rapidement pour le doublage (voir avec elle pour sa deadline).    SORTIE MASTER VOVOVOVO POUR GOLF CHANNEL  CF DD ANAKIN   ATTENTION PTETRE TRANSCO A FAIRE / CHECK AVANT ET LANCE LES TRANSCO SI BESOIN ',
-        DepartmentName: 'Demande de travaux Films Mai14',
-        AzaIsPere: true,
-        AzaNumGroupe:104
+        Id: 2,
+        Name: 'Milan',
+        StartTime: new Date(2018, 8, 4, 8, 30),
+        EndTime: new Date(2018, 8, 4, 10, 30),
+        Description: 'Bad Breath',
+        DepartmentName: 'DENTAL'
     },
     {
-        Id: 27,
-        Name: 'Doublage',
-        StartTime: new Date(2018, 8, 1, 9, 30),
-        EndTime: new Date(2018, 8, 1, 10, 30),
-        Description: 'FAB PADI SAT VFVFVIVI AUX NORMES AB SAT    Insérer habillage Reporters sur bande élément (générique début + générique fin: fond noir avec musique générique). + Poser titre épisode en haut à gauche de l\'écran tout au long du reportage     ME RENDRE LA BANDE ELEMENT !!  ',
-        DepartmentName: 'cauchemar en cuisine saison 5 ',
-        AzaIsPere: true,
-        AzaNumGroupe:105
+        Id: 3,
+        Name: 'Laura',
+        StartTime: new Date(2018, 8, 4, 9, 30),
+        EndTime: new Date(2018, 8, 4, 10, 30),
+        Description: 'Eye Checkup',
+        DepartmentName: 'GENERAL'
     },
     {
-        Id: 28,
-        Name: 'Adaptation',
-        StartTime: new Date(2018, 8, 1, 11, 0),
-        EndTime: new Date(2018, 8, 1, 12, 30),
-        Description: 'Livraison en BETA NUM  couper blacks pubs faire master pour speak turc et padi pour speak vf. VO/VI /VO/VI  Ajouter Générique géné fin habituel.  ',
-        DepartmentName: 'Catch Raw diff RTL9 du 8/4/14',
-        AzaIsPere: true,
-        AzaNumGroupe:106
+        Id: 4,
+        Name: 'Janet',
+        StartTime: new Date(2018, 8, 3, 11, 0),
+        EndTime: new Date(2018, 8, 3, 12, 30),
+        Description: 'Gum Disease',
+        DepartmentName: 'DENTAL'
     },
     {
-        Id: 29,
-        Name: 'Masterisation',
-        StartTime: new Date(2018, 8, 1, 11, 0),
-        EndTime: new Date(2018, 8, 1, 12, 30),
-        Description: 'Bonjour,  Est-ce que tu peux faire les PADI, mais il faut attendre que ce soit doubler francais et en Turc  Merci',
-        DepartmentName: 'nature\'s power revealed #1',
-        AzaIsPere: true,
-        AzaNumGroupe:107
+        Id: 5,
+        Name: 'Adams',
+        StartTime: new Date(2018, 8, 3, 11, 0),
+        EndTime: new Date(2018, 8, 3, 12, 30),
+        Description: 'Observation',
+        DepartmentName: 'GENERAL'
     },
     {
-        Id: 30,
-        Name: 'LayBack',
-        StartTime: new Date(2018, 8, 1, 11, 0),
-        EndTime: new Date(2018, 8, 1, 12, 30),
-        Description: 'Bonjour,    Pouvez-vous doubler en Français et en Turc le documentaire/ les synthés etc  Merci,    Guillaume',
-        DepartmentName: 'Nature\'s power revealed',
-        AzaIsPere: true,
-        AzaNumGroupe:108
+        Id: 6,
+        Name: 'John',
+        StartTime: new Date(2018, 8, 3, 11, 0),
+        EndTime: new Date(2018, 8, 3, 12, 30),
+        Description: 'Mouth Sores',
+        DepartmentName: 'DENTAL'
     }
 ];
 
+export let blockData: Object[] = [
+    {
+        Id: 1,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 1, 10, 0),
+        EndTime: new Date(2018, 7, 1, 12, 0),
+        IsAllDay: false,
+        IsBlock: true,
+        EmployeeId: 1
+    }, {
+        Id: 2,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 1, 16, 0),
+        EndTime: new Date(2018, 7, 1, 20, 0),
+        IsAllDay: false,
+        IsBlock: true,
+        EmployeeId: 2
+    }, {
+        Id: 3,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 1, 12, 0),
+        EndTime: new Date(2018, 7, 1, 14, 0),
+        IsAllDay: false,
+        IsBlock: true,
+        EmployeeId: 3
+    }, {
+        Id: 4,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 4, 11, 0),
+        EndTime: new Date(2018, 7, 5, 10, 0),
+        IsAllDay: true,
+        IsBlock: true,
+        EmployeeId: 4
+    }, {
+        Id: 5,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 10, 11, 0),
+        EndTime: new Date(2018, 7, 12, 10, 0),
+        IsAllDay: false,
+        IsBlock: true,
+        EmployeeId: 5
+    }, {
+        Id: 6,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 8),
+        EndTime: new Date(2018, 7, 11),
+        IsAllDay: false,
+        IsBlock: true,
+        EmployeeId: 6
+    }, {
+        Id: 9,
+        Subject: 'Client Meeting',
+        StartTime: new Date(2018, 7, 3, 8, 0),
+        EndTime: new Date(2018, 7, 3, 10, 30),
+        IsAllDay: false,
+        EmployeeId: 3
+    }, {
+        Id: 10,
+        Subject: 'Conference',
+        StartTime: new Date(2018, 7, 2, 13, 30),
+        EndTime: new Date(2018, 7, 2, 15, 0),
+        IsAllDay: false,
+        EmployeeId: 4
+    }, {
+        Id: 11,
+        Subject: 'Employee Recruitment',
+        StartTime: new Date(2018, 7, 1, 10, 0),
+        EndTime: new Date(2018, 7, 1, 13, 0),
+        IsAllDay: false,
+        EmployeeId: 5
+    }, {
+        Id: 12,
+        Subject: 'Data Analyzing',
+        StartTime: new Date(2018, 7, 1, 15, 0),
+        EndTime: new Date(2018, 7, 1, 17, 0),
+        IsAllDay: false,
+        EmployeeId: 6
+    }, {
+        Id: 13,
+        Subject: 'Content Writting',
+        StartTime: new Date(2018, 7, 2, 14, 0),
+        EndTime: new Date(2018, 7, 2, 16, 0),
+        IsAllDay: false,
+        EmployeeId: 1
+    }, {
+        Id: 14,
+        Subject: 'Meeting',
+        StartTime: new Date(2018, 7, 1, 9, 0),
+        EndTime: new Date(2018, 7, 1, 11, 0),
+        IsAllDay: false,
+        EmployeeId: 4
+    }, {
+        Id: 15,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 29, 11, 0),
+        EndTime: new Date(2018, 7, 31, 10, 0),
+        IsAllDay: false,
+        IsBlock: true,
+        EmployeeId: 4
+    }, {
+        Id: 16,
+        Subject: 'Not Available',
+        StartTime: new Date(2018, 7, 12),
+        EndTime: new Date(2018, 7, 15),
+        IsAllDay: false,
+        IsBlock: true,
+        EmployeeId: 3
+    }
+];
+
+export let resourceSampleData: Object[] = [
+    {
+        Id: 1,
+        Subject: 'Burning Man',
+        StartTime: new Date(2018, 5, 1, 15, 0),
+        EndTime: new Date(2018, 5, 1, 17, 30),
+        OwnerId: 1
+    }, {
+        Id: 2,
+        Subject: 'Marketing Forum',
+        StartTime: new Date(2018, 5, 3, 10, 0),
+        EndTime: new Date(2018, 5, 3, 11, 30),
+        OwnerId: 2
+    }, {
+        Id: 3,
+        Subject: 'Business Factory',
+        StartTime: new Date(2018, 5, 3, 13, 30),
+        EndTime: new Date(2018, 5, 3, 15, 0),
+        OwnerId: 3
+    }, {
+        Id: 4,
+        Subject: 'Burning Man',
+        StartTime: new Date(2018, 5, 4, 11, 30),
+        EndTime: new Date(2018, 5, 4, 13, 0),
+        OwnerId: 1
+    }, {
+        Id: 5,
+        Subject: 'Funnel Hacking',
+        StartTime: new Date(2018, 5, 5, 9, 30),
+        EndTime: new Date(2018, 5, 5, 11, 0),
+        OwnerId: 3
+    }, {
+        Id: 6,
+        Subject: 'The human gathering"',
+        StartTime: new Date(2018, 5, 5, 13, 0),
+        EndTime: new Date(2018, 5, 5, 14, 30),
+        OwnerId: 2
+    }, {
+        Id: 7,
+        Subject: 'Techweek',
+        StartTime: new Date(2018, 5, 6, 11, 0),
+        EndTime: new Date(2018, 5, 6, 12, 30),
+        OwnerId: 2
+    }, {
+        Id: 8,
+        Subject: 'Grow Conference',
+        StartTime: new Date(2018, 5, 7, 10, 0),
+        EndTime: new Date(2018, 5, 7, 11, 30),
+        OwnerId: 1
+    }, {
+        Id: 9,
+        Subject: 'Data Science Conference',
+        StartTime: new Date(2018, 5, 7, 13, 30),
+        EndTime: new Date(2018, 5, 7, 15, 0),
+        OwnerId: 1
+    }, {
+        Id: 10,
+        Subject: 'Blogcademy',
+        StartTime: new Date(2018, 5, 8, 12, 0),
+        EndTime: new Date(2018, 5, 8, 13, 30),
+        OwnerId: 3
+    }, {
+        Id: 11,
+        Subject: 'World Domination Summit',
+        StartTime: new Date(2018, 5, 9, 9, 30),
+        EndTime: new Date(2018, 5, 9, 11, 0),
+        OwnerId: 2
+    }, {
+        Id: 12,
+        Subject: 'Content Marketing',
+        StartTime: new Date(2018, 5, 9, 13, 0),
+        EndTime: new Date(2018, 5, 9, 14, 30),
+        OwnerId: 1
+    }, {
+        Id: 13,
+        Subject: 'Mobile World Conference',
+        StartTime: new Date(2018, 5, 15, 18, 0),
+        EndTime: new Date(2018, 5, 15, 20, 0),
+        OwnerId: 1
+    }
+];

@@ -28,35 +28,42 @@
               
               
                 <select class="form-control form-control-info m-0 select-plannings float-right mt-1 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)">
-                    <option value="Mon planning">Mon planning</option>
-                    <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
+                    <option value={{this.idCoordinateur}}>Mon planning</option>
+                    <option *ngFor="let libelle of libGroupe" value={{libelle.Code}}>{{libelle.Libelle}} </option>
                 </select>
                 <table class="table-light table-sm" id="property" title="Properties" >
                     <tbody>
-                        <tr style="height: 40px"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
-                            <td style="width: 5%">
+                        <tr style="height: 40px"  >
+                            <!-- <td  >
+                                <div class="property-panel-content">
+                                    <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
+                                </div>
+                                    </td> -->
+                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
                             </td>
-                            <td>
+                            <td *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
-                        </tr>
-                        <tr *ngIf="scheduleObj.currentView =='TimelineDay'  "  style="height: 40px">
-                            <td style="width: 5%">
+                        <!-- </tr>
+                        <tr *ngIf="scheduleObj.currentView =='TimelineDay'  "  style="height: 40px"> -->
+                            <!-- <td  >
+                                <div class="property-panel-content">
+                                    <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
+                                </div>
+                                    </td> -->
+                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
                             </td>
-                            <td>
+                            <td *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
-                        <!-- <td style="width: 10%" >
-                                <div style="text-align:center" > Heur Début
-                                </div>
-                            </td>
-                            <td style="width: 10%;" >
+                       
+                             <!-- <td style="width: 10%;" >
                                 <div>
                                     <ejs-timepicker #ejStartTimePicker id="startTime"  format='HH:mm' [strictMode]='isStrictMode' ></ejs-timepicker>
                                 </div>
@@ -106,9 +113,11 @@
                 [currentView]="currentView"
                 (change)="onChange($event)"
                 [firstDayOfWeek]="1"
-                [ngStyle]="{'height': this.filtreRegie === true ? '100px':'810px' }"
+                 [rowAutoHeight]="rowAutoHeight" 
+                 
                 
                 >
+              
                 <!-- (renderCell)="onRenderCell($event)" -->
                 <e-resources>
                     <e-resource 
@@ -121,7 +130,7 @@
                         colorField='Color' 
                         groupIDField="Id" 
                         [allowMultiple]='allowMultiple'
-                   
+                       
                         >
                     </e-resource>
                 </e-resources>                
@@ -152,8 +161,8 @@
                                     <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                      
                                         <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
-                                        <span *ngIf="nameService === 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
-                                        <span *ngIf="nameService != 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                        <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                        <span *ngIf="nameService != '1'" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                     </div>
                                 </div>
                             </div>
@@ -201,8 +210,8 @@
                                 </div>
                             </ng-template>
                 </e-view> -->
-                    <e-view option='TimelineMonth' >
-                            <ng-template #eventTemplate let-data  class="event">
+                    <e-view option='TimelineMonth'   >
+                            <ng-template #eventTemplate let-data  class="event" >
                                 <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                     <div>
                                         <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
@@ -232,8 +241,10 @@
                 </e-views>
                 
             </ejs-schedule>
+            <div id="grid" class="ml-3 mt-2"></div>
         </div>
         </div>
+        
    <!--************************************** tabItem ***********************************************************************-->
    <div class="sidebar"  *ngIf="!isnotMyGroup " [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
   <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target'    >
@@ -337,7 +348,7 @@
 
         
     </ejs-sidebar>  
-   <div id="head"   >
+   <div id="head"  >
             <button ejs-button 
             id="toggle" #togglebtnslide 
             isToggle="true" 

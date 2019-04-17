@@ -254,19 +254,21 @@ table {
     width: 25%;
 }
 /deep/ .e-schedule .e-timeline-view .e-work-cells{
-    height:100px
+    max-height:160px;
+
 }
 /deep/ .e-schedule .e-timeline-view .e-resource-cells{
-    height:100px
-
+    max-height:160px;
+  
 }
 
+
 /deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
-    height:115px
+  height:160px
 
 }
 /deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
-    height:115px;
+    height:160px;
  
 }
 

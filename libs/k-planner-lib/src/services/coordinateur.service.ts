@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Coordinateur } from '../models/coordinateur';
 
-import { urlKPlanner, urlCoordinateurLib } from '.privates-url';
+import { urlKPlanner, urlCoordinateurLib, urlCoordinateurLibUsername } from '.privates-url';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 
@@ -25,6 +25,20 @@ export class CoordinateurService {
         return res as Coordinateur[];
       })
       .catch(this.handleError);
+  }
+
+  getCoordinateurByUsername(username:string){
+    return this.http
+    .get(urlKPlanner + urlCoordinateurLibUsername + username)
+    .map((res: any) => {
+      if (!res) {
+        res = 0;
+        return res;
+      }
+       console.log(res);
+      return res as Coordinateur[];
+    })
+    .catch(this.handleError);
   }
 
 
