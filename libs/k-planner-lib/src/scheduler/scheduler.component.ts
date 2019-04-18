@@ -45,6 +45,8 @@ import {
     TimeScaleModel,
     dataBinding,
     MonthAgendaService,
+    Schedule,
+    ResizeEventArgs,
 } from '@syncfusion/ej2-angular-schedule';
 
 // Locale Data Imports
@@ -319,7 +321,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     // public resizeContainerAction: boolean = false;
     // public addWorkorderToContainerAction: boolean = false;
     // public changeOperateurToContainerAction: boolean = false;
-
+public scrollto
     constructor(
         public dialog: MatDialog,
         private coordinateurService: CoordinateurService,
@@ -348,15 +350,21 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 this.refreshWorkordersBacklog()
             }
 
+                     console.log(eKey)
+                     console.log(this.scheduleObj ,scheduleElement )
             // if (this.filtre) {
-            //     if (this.zoom === true) {
+            //  refreshEvents   if (this.zoom === true)  overflowY{
+              
                     if (eKey.keyCode === 109 && scheduleElement) {
+                     
                         if (this.value < this.valueMax) {
+                            scheduleElement[0]["style"].overflowY= 'hidden'
                             this.value = this.value + this.valueAdd
                             this.scheduleObj.timeScale.interval = this.value;
-                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval);
+                          
+                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval,this.workHours);
+                    
                             
-                           
 
                             if (this.valueMax === 60) {
                                 this.intervalValueDay = this.value.toLocaleString()
@@ -368,13 +376,19 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
 
                         }
+                        this.scheduleObj.resizeModule.scrollEdges.left = true
+                        this.scheduleObj.resizeModule.scrollEdges.right = true
                     } else {
                         if (eKey.keyCode === 107 && scheduleElement) {
+                    
                             if (this.value > this.valueAdd) {
+                                this.scrollto = true
                                 this.value = this.value - this.valueAdd
                                 this.scheduleObj.timeScale.interval = this.value
+                         
                                 // this.intervalValue = this.value.toLocaleString()
                                 // this.intervalValueDay = this.value.toLocaleString()
+                               
                                 if (this.valueMax === 60) {
                                     this.intervalValueDay = this.value.toLocaleString()
                                     console.log(this.intervalValueDay, "value day ")
@@ -382,13 +396,14 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                                     this.intervalValue = this.value.toLocaleString()
                                     console.log(this.intervalValue)
                                 }
-                              
-                                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval);
+             
+                                console.log ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval,this.workHours );
                             }
                         }
+               
                     }
 
-
+                  
                 // } else {
                 //     if (eKey.keyCode === 109 && scheduleElement) {
                 //         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.zoom)
@@ -411,7 +426,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         });
 
 
-
+      
 
 
 
@@ -435,7 +450,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         //  this.getWorkOrderByidGroup(1)
         // this.getWorkOrderByidGroup(3);
         //  this.getSalleByGroup(10);
-        console.log(this.scheduleObj)
+      
 
 
     }
@@ -836,7 +851,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             IsAllDay: false,
                             libchaine: data.libchaine,
                             typetravail: data.typetravail,
-                            titreoeuvre: data.titreoeuvre,
+                            titreoeuvre: (data.titreoeuvre === null || typeof (data.titreoeuvre) === 'undefined') ? '' : data.titreoeuvre,
                             numepisode: data.numepisode,
                             dureecommerciale: data.dureecommerciale,
                             libtypeWO: data.libtypeWO,
@@ -960,7 +975,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             dateFin = EndTime
                         this.workOrderData.push({
                             Id: workOrder.Id_Planning_Events,
-                            Name: workOrder.titreoeuvre + workOrder.numepisode,
+                            Name: workOrder.titreoeuvre ,
                             StartTime: dateDebut,
                             EndTime: dateFin,
                             CodeRessourceSalle: workOrder.CodeRessourceSalle,
@@ -978,7 +993,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             IsAllDay: false,
                             libchaine: workOrder.libchaine,
                             typetravail: workOrder.typetravail,
-                            titreoeuvre: workOrder.titreoeuvre,
+                            titreoeuvre: (workOrder.titreoeuvre === null || typeof (workOrder.titreoeuvre) === 'undefined') ? '' : workOrder.titreoeuvre,
                             numepisode: workOrder.numepisode,
                             dureecommerciale: workOrder.dureecommerciale,
                             libtypeWO: workOrder.libtypeWO,
@@ -1092,7 +1107,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                                 Operateur: event.Operateur,
                                 Statut: item.Statut,
                                 typetravail: item.typetravail,
-                                titreoeuvre: item.titreoeuvre,
+                                titreoeuvre:(item.titreoeuvre === null || typeof (item.titreoeuvre) === 'undefined') ? '' : item.titreoeuvre,
                                 numepisode: item.numepisode,
                                 dureecommerciale: item.dureecommerciale,
                                 libchaine: item.libchaine,
@@ -1414,7 +1429,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             isbacklog: 0,
             libchaine: workorderSelected.libchaine,
             typetravail: workorderSelected.typetravail,
-            titreoeuvre: workorderSelected.titreoeuvre,
+            titreoeuvre: (workorderSelected.titreoeuvre === null || typeof (workorderSelected.titreoeuvre) === 'undefined') ? '' : workorderSelected.titreoeuvre,
             numepisode: workorderSelected.numepisode,
             dureecommerciale: workorderSelected.dureecommerciale,
             libtypeWO: workorderSelected.libtypeWO,
@@ -1497,7 +1512,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             isbacklog: 0,
             libchaine: workorderSelected.libchaine,
             typetravail: workorderSelected.typetravail,
-            titreoeuvre: workorderSelected.titreoeuvre,
+            titreoeuvre: (workorderSelected.titreoeuvre === null || typeof (workorderSelected.titreoeuvre) === 'undefined') ? '' : workorderSelected.titreoeuvre,
             numepisode: workorderSelected.numepisode,
             dureecommerciale: workorderSelected.dureecommerciale,
             libtypeWO: workorderSelected.libtypeWO,
@@ -1613,7 +1628,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 isbacklog: 0,
                 libchaine: workorderSelected.libchaine,
                 typetravail: workorderSelected.typetravail,
-                titreoeuvre: workorderSelected.titreoeuvre,
+                titreoeuvre: (workorderSelected.titreoeuvre === null || typeof (workorderSelected.titreoeuvre) === 'undefined') ? '' : workorderSelected.titreoeuvre,
                 numepisode: workorderSelected.numepisode,
                 dureecommerciale: workorderSelected.dureecommerciale,
                 libtypeWO: workorderSelected.libtypeWO,
@@ -1713,7 +1728,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             isbacklog: 0,
             libchaine: workorder.libchaine,
             typetravail: workorder.typetravail,
-            titreoeuvre: workorder.titreoeuvre,
+            titreoeuvre: (workorder.titreoeuvre === null || typeof (workorder.titreoeuvre) === 'undefined') ? '' : workorder.titreoeuvre,
             numepisode: workorder.numepisode,
             dureecommerciale: workorder.dureecommerciale,
             libtypeWO: workorder.libtypeWO,
@@ -1827,7 +1842,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             isbacklog: 1,
             libchaine: workorderSelected.libchaine,
             typetravail: workorderSelected.typetravail,
-            titreoeuvre: workorderSelected.titreoeuvre,
+            titreoeuvre:(workorderSelected.titreoeuvre === null || typeof (workorderSelected.titreoeuvre) === 'undefined') ? '' : workorderSelected.titreoeuvre,
             numepisode: workorderSelected.numepisode,
             libtypeWO: workorderSelected.libtypeWO,
             dureecommerciale: workorderSelected.dureecommerciale,
@@ -1890,7 +1905,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log('item back to backlog : ', selectedItem);
         let newWorkorderForList = {
             Id: selectedItem.Id,
-            Name: selectedItem.titreoeuvre + selectedItem.numepisode,
+            Name: selectedItem.titreoeuvre ,
             StartTime: selectedItem.StartTime,
             EndTime: selectedItem.EndTime,
             Statut: selectedItem.Statut,
@@ -1908,7 +1923,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             numGroup: null,
             libchaine: selectedItem.libchaine,
             typetravail: selectedItem.typetravail,
-            titreoeuvre: selectedItem.titreoeuvre,
+            titreoeuvre: (selectedItem.titreoeuvre === null || typeof (selectedItem.titreoeuvre) === 'undefined') ? '' : selectedItem.titreoeuvre,
             numepisode: selectedItem.numepisode,
             dureecommerciale: selectedItem.dureecommerciale,
             libtypeWO: selectedItem.libtypeWO,
@@ -1991,7 +2006,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             isbacklog: 0,
             libchaine: workorder.libchaine,
             typetravail: workorder.typetravail,
-            titreoeuvre: workorder.titreoeuvre,
+            titreoeuvre: (workorder.titreoeuvre === null || typeof (workorder.titreoeuvre) === 'undefined') ? '' : workorder.titreoeuvre,
             numepisode: workorder.numepisode,
             dureecommerciale: workorder.dureecommerciale,
             libtypeWO: workorder.libtypeWO,
@@ -2033,7 +2048,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         item.Operateur = event.Operateur;
                         item.libchaine = event.libchaine;
                         item.typetravail = event.typetravail;
-                        item.titreoeuvre = event.titreoeuvre;
+                        item.titreoeuvre = (event.titreoeuvre === null || typeof (event.titreoeuvre) === 'undefined') ? '' : event.titreoeuvre,
                         item.numepisode = event.numepisode;
                         item.dureecommerciale = event.dureecommerciale;
                         item.libtypeWO = event.libtypeWO;
@@ -2458,6 +2473,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
 
     public zoom: boolean = true;
     public CellClick: boolean = true;
+    public hourContainer
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         // this.filtre = true
@@ -2478,7 +2494,11 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         //     }
         // }
 
+     
 
+
+        this.hourContainer =  moment(args.data['StartTime']).add(1,"hour").format('HH:mm')
+     
         if (args.type === 'QuickInfo') {
 
             this.colorStatut.map(statut => {
@@ -2496,9 +2516,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         if (this.cancelObjectModal) {
             args.cancel = true;
         }
+        
         if ((args.type === 'QuickInfo') && (args.name === 'popupOpen')) {
+          
             args.cancel = true;
-
             let title = document.getElementsByClassName('e-subject-container');
             let subTitle = document.getElementsByClassName('e-location-container');
             let Debut = document.getElementsByClassName('e-start-container');
@@ -2513,8 +2534,15 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             Debut[0]['style'].display = 'block';
             fin[0]['style'].display = 'block';
             regie[0]['style'].display = 'block';
-        }
 
+            if ((args.target.className === "e-appointment e-lib e-draggable e-appointment-border")) {
+                args.cancel = false;
+            
+            }
+        }
+ 
+
+      
 
         if ((args.type === 'Editor') && (args.target.className === "e-header-cells e-current-day")) {
             args.cancel = true;
@@ -2740,6 +2768,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     fin[0]['style'].display = 'block';
                     regie[0]['style'].display = 'block';
                     console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
+
+                   
+
                 } else { // dblclick workorder
                     containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
                     console.log("edit click")
@@ -2765,7 +2796,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     }
                 }
             } else {
-                if (args.name === 'popupOpen') {
+                if (args.name === 'popupOpen' && args.type === 'Editor' ) {
                     let title = document.getElementsByClassName('e-subject-container');
                     let subTitle = document.getElementsByClassName('e-location-container');
                     let Debut = document.getElementsByClassName('e-start-container');
@@ -2783,6 +2814,26 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     isAllDay[0]['style'].display = 'none';
                     console.log('repeat', repeat[0]);
                     repeat[0]['style'].display = 'none';
+
+                    if(args.target === undefined){
+                    let title = document.getElementsByClassName('e-subject-container');
+                    let subTitle = document.getElementsByClassName('e-location-container');
+                    let Debut = document.getElementsByClassName('e-start-container');
+                    let fin = document.getElementsByClassName('e-end-container');
+                    let regie = document.getElementsByClassName('e-resources');
+                    let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
+                    let repeat = document.getElementsByClassName('e-editor');
+                    title[0]['style'].display = 'block';
+                    subTitle[0]['style'].display = 'none';
+                    Debut[0]['style'].display = 'block';
+                    fin[0]['style'].display = 'block';
+                    regie[0]['style'].display = 'block';
+                    console.log('title', title[0]);
+                    console.log('subtitle', subTitle[0]);
+                    isAllDay[0]['style'].display = 'none';
+                    console.log('repeat', repeat[0]);
+                    repeat[0]['style'].display = 'none';
+                    }
 
                 }
 
@@ -2804,6 +2855,9 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             args.cancel = true
             console.log(args, "-----------------------------------")
         }
+
+
+       
     }
 
     checkIfContainerAlreadyExists(args): boolean {
@@ -2908,6 +2962,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     /******* DRAG AND DROP WORKORDERS *******/
 
     onTreeDragStop(event: DragAndDropEventArgs): void {
+
+        console.log(event)
         this.creationArray = [];
         this.newData = [];
         let treeElement = closest(event.target, '.e-treeview');
@@ -2956,7 +3012,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                         Statut: filteredData[0].Statut,
                         libchaine: filteredData[0].libchaine,
                         typetravail: filteredData[0].typetravail,
-                        titreoeuvre: filteredData[0].titreoeuvre,
+                        titreoeuvre: (filteredData[0].titreoeuvre === null || typeof (filteredData[0].titreoeuvre) === 'undefined') ? '' : filteredData[0].titreoeuvre,
                         numepisode: filteredData[0].numepisode,
                         dureecommerciale: filteredData[0].dureecommerciale,
                         Commentaire_Planning: filteredData[0].Commentaire_Planning,
@@ -3004,7 +3060,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                             Statut: filteredDataW[0].Statut,
                             libchaine: filteredDataW[0].libchaine,
                             typetravail: filteredDataW[0].typetravail,
-                            titreoeuvre: filteredDataW[0].titreoeuvre,
+                            titreoeuvre: (filteredDataW[0].titreoeuvre === null || typeof (filteredDataW[0].titreoeuvre) === 'undefined') ? '' : filteredDataW[0].titreoeuvre,
                             numepisode: filteredDataW[0].numepisode,
                             dureecommerciale: filteredDataW[0].dureecommerciale,
                             libtypeWO: filteredDataW[0].libtypeWO,
@@ -3138,7 +3194,7 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         console.log(event);
         console.log(this.scheduleObj.currentView)
         console.log(this.isTreeItemDropped);
-
+        this.scheduleObj.element.style["overflow"] = 'hidden'
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
@@ -3934,17 +3990,17 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 } else {
                     this.field['dataSource'] = this.wOrderBackToBacklog;
                 }
-                this.workOrderData = [];
+                 this.workOrderData = [];
                 this.field['dataSource'] = this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe)
                 console.log('   this.field[dataSource]  quand le champs est vide', this.field['dataSource'])
             }
 
             if (!this.isAddedToBacklog) {
                 if (!this.isDragged) {
-
+                       console.log(this.workOrderData,"WORKORDERDATA")
                     this.data = this.workOrderData.filter(WorkOrder => {
-                        return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
+                        //  WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
+                           return WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase())
@@ -3952,8 +4008,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                     });
                 } else {
                     this.data = this.newField.filter(WorkOrder => {
-                        return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
+                        // return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
+                            return WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())
                             || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase())
@@ -3964,8 +4020,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
             } else {
                 console.log('wOrderBackToBacklog', this.wOrderBackToBacklog);
                 this.data = this.wOrderBackToBacklog.filter(WorkOrder => {
-                    return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
+                    // return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
+                        return WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())
                         || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase())
@@ -4196,6 +4252,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
         // this.scheduleObj.dataBind();
         console.log(e)
+
+       
         this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
         this.intervalValue = e.value as string
         this.value = parseInt(e.value as string, 10);
@@ -4204,15 +4262,16 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
         this.scheduleObj.dataBind();
     }
 
-    changeIntervalDay(e: DropDownChangeArgs) {
+    changeIntervalDay(e: DropDownChangeArgs ) {
         this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
         this.intervalValueDay = e.value as string
         this.value = parseInt(e.value as string, 10);
-
+     
         console.log(this.intervalValueDay)
         this.scheduleObj.dataBind();
+    
     }
-
+   
     /*************************************************************************************** */
 
 
@@ -4243,7 +4302,10 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
                 target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
             }
         }
-
+        // if(args.element.classList.contains('e-resource-cells')  ) {
+        //     // args.element['style'].height = '160px' || args.element.classList.contains('e-work-cells ')
+        //        console.log(args.element['style'].height)
+        // }
 
     }
 
@@ -4296,9 +4358,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     //     }
     //   }
 
-    // onChange(args: ChangeEventArgs) {
-    //     this.scheduleObj.rowAutoHeight = args.checked;
+    onResizing(args:ResizeEventArgs){
 
-    //   }
+    }
 
 }
