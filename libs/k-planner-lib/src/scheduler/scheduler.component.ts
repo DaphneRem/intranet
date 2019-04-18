@@ -2869,6 +2869,8 @@ public CellClick : boolean = true;
 /********************** DRAG AND DROP M1ANAGEMENT ***********************/
 
     onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
+        event.interval = 0;
+        console.log('ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo', event)
         this.tabInstance.select(tabIndex);
         if (document.body.style.cursor === 'not-allowed') {
             document.body.style.cursor = '';
@@ -2881,6 +2883,10 @@ public CellClick : boolean = true;
             }
         }
 
+    }
+
+    coco(event) {
+        console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', event)
     }
 
     selectTabWitoutSwip (e: SelectEventArgs) {
@@ -2896,7 +2902,8 @@ public CellClick : boolean = true;
         this.newData = [];
         let treeElement = closest(event.target, '.e-treeview');
         if (!treeElement) {
-            event.cancel = true;
+            console.log(event)
+            // event.cancel = true;
             let scheduleElement: Element = <Element>closest(event.target, '.e-content-wrap');
             if (scheduleElement) { // IF EMPLACEMENT EST VIDE
                 let treeviewData: { [key: string]: Object }[] =

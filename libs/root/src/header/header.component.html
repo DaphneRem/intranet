@@ -75,7 +75,7 @@
           <!-- <ul *ngIf="authentication && user.name" [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right"> -->
           <ul [@mobileHeaderNavRight]="navRight" [ngClass]="navRight" class="nav-right">
             <li class="header-notification">
-              <a href="javascript:" class="user">
+              <a href="javascript:" class="user" *ngIf="user">
                 <i class="icofont icofont-user-alt-7"></i>
                 <span *ngIf="afterViewInit && user.name" class="user-name">{{user.name}}</span>
               </a>
