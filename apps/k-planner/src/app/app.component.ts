@@ -1,10 +1,12 @@
-import { Component, OnInit, Compiler, NgZone, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Compiler, NgZone, AfterViewInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
-import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
+// import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
 import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
@@ -28,7 +30,7 @@ import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur
   ]
 })
 
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
@@ -44,6 +46,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.navbarStoreOpen = this.store;
     // this.adal5Service.init(config);
   }
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public globalStore;
   public navbarStoreOpen;
@@ -64,6 +68,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public userNameSplit: string[];
   public shortUserName: string;
   public numGroup: number;
+  public userIsReady = false;
 
   public currentCoordinateur: Coordinateur;
 
@@ -71,7 +76,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (!this.authService.authenticated) {
       this.signIn();
     }
-  
     // console.log(this.adal5Service);
     // console.log(this.authAdalService);
     // console.log(this.adal5Service.userInfo);
@@ -136,6 +140,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ngOnDestroy() {
+      this.onDestroy$.next();
+  }
+
   // async signIn(): Promise<void> {
   //   await this.authService.signIn();
   //   console.log(this.authService);
@@ -175,22 +183,24 @@ export class AppComponent implements OnInit, AfterViewInit {
       shortUserName: this.shortUserName
     };
     this.appStore.dispatch({
-                    type: 'ADD_USER',
-                    payload: {
-                      user : {
-                        username: this.userName,
-                        name: this.name,
-                        initials: this.initials,
-                        shortUserName: this.shortUserName,
-                        numGroup: ''
-                      }
-                    }
-                  });
+      type: 'ADD_USER',
+      payload: {
+        user : {
+          username: this.userName,
+          name: this.name,
+          initials: this.initials,
+          shortUserName: this.shortUserName,
+          numGroup: ''
+        }
+      }
+    });
+    this.userIsReady = true;
     // this.getAllCoordinateurs();
   }
 
   getAllCoordinateurs() {
     this.coordinateurService.getAllCoordinateurs()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
           data.map(item => {
               if (item.Username === this.user.shortUserName) {

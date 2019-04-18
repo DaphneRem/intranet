@@ -5,8 +5,9 @@ import { NgModule, LOCALE_ID, } from '@angular/core';
 import { NxModule } from '@nrwl/nx';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-
-import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
+import { MsalModule } from '@azure/msal-angular';
+import { OAuthSettings } from './../../../../.privates-url';
+// import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
 
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -37,6 +38,9 @@ registerLocaleData(localeFr, 'fr');
   declarations: [AppComponent],
   imports: [
     AppRoutingModule,
+    MsalModule.forRoot({
+      clientID: OAuthSettings.appId
+    }),
     BrowserModule,
     EffectsModule.forRoot([]),
     ErrorPagesModule,
@@ -52,14 +56,21 @@ registerLocaleData(localeFr, 'fr');
       maxAge: 25 // Retains last 25 states
     }),
     RouterStateModule.forRoot(),
-    StoreModule.forRoot({app: appReducer}, {initialState: {app: appInitialState}}),
+    StoreModule.forRoot(
+      { app: appReducer },
+      { initialState: { app: appInitialState } }
+    ),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreRouterConnectingModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
-    Adal5Service,
-    { provide: Adal5HTTPService, useFactory: Adal5HTTPService.factory, deps: [HttpClient, Adal5Service] }
+    // Adal5Service,
+    // {
+    //   provide: Adal5HTTPService,
+    //   useFactory: Adal5HTTPService.factory,
+    //   deps: [HttpClient, Adal5Service]
+    // }
   ],
   bootstrap: [AppComponent]
 })

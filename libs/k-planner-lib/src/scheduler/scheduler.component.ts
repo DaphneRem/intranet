@@ -1,10 +1,21 @@
-import { Component, ViewChild, OnInit, OnChanges, SimpleChanges, Input, AfterViewInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import {
+  Component,
+  ViewChild,
+  OnInit,
+  SimpleChanges,
+  Input,
+  AfterViewInit,
+  OnDestroy
+} from "@angular/core";
+import {NgForm} from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfaces';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 // Syncfusion Imports
 // Synfucion Bases
@@ -107,7 +118,7 @@ L10n.load(localeFrenchData);
     ]
 })
 
-export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
+export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('scheduleObj')
     public scheduleObj: ScheduleComponent;
@@ -135,6 +146,8 @@ export class SchedulerComponent implements OnInit, OnChanges, AfterViewInit {
     public ejStartTimePicker: TimePickerComponent;
     @ViewChild('ejEndTimePicker')
     public ejEndTimePicker: TimePickerComponent;
+
+    private onDestroy$: Subject<any> = new Subject();
 
     public dataRegieReady = false;
     public activeViewTimelineDay: ScheduleComponent;
@@ -459,10 +472,8 @@ public scrollto
         this.departmentDataSource = this.departmentGroupDataSource;
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        console.log('==============================================================================on change');
-        console.log(changes.user);
-        console.log(changes);
+    ngOnDestroy() {
+        this.onDestroy$.next();
     }
 
     public disabledrefresh: boolean
@@ -573,14 +584,15 @@ public scrollto
 
 
     storeAppSubscription() {
-        setTimeout(() => {
-            this.store.subscribe(data => {
+        this.store
+            .pipe(takeUntil(this.onDestroy$))
+            .subscribe(data => {
                 console.log(data);
                 this.user = data["app"].user;
                 console.log(this.user);
             });
             this.getCoordinateurByUsername(this.user.shortUserName);
-        }, 11000);
+      
 
     }
 
@@ -606,6 +618,7 @@ public scrollto
         console.log(this.departmentGroupDataSource);
         this.salleService
             .getGroupSalle(idGroup)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 this.dataRegieReady = true;
                 this.salleDataSource = donnees;
@@ -649,39 +662,35 @@ public scrollto
     getSalleAll(currentGroup, start, end) {
         this.toggleBtn.iconCss = 'e-play-icon';
         this.salleService
-            .getSalle()
-            .subscribe(donnees => {
-                this.timelineResourceDataOut = [];
-                this.salleDataSource = donnees;
-                console.log('all regies = ', this.salleDataSource);
-                this.salleDataSource.map(item => {
-                    if (item.codegroupe != currentGroup) {
-                        this.departmentDataSourceAll.push({
-                            Text: item.NomSalle,
-                            Id: item.CodeSalle,
-                            Color: '#95b9',
-                            codeSalle: item.CodeSalle,
-                            codeRessource: item.CodeRessource
-                        });
-                    }
-                });
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    console.log('--------------------------------------------------indexSalle => ', indexSalle);
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        start,
-                        end,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                });
-                console.log(' this.departmentDataSourceAll', this.departmentDataSourceAll);
-                this.allRegies = this.departmentGroupDataSource.concat(this.departmentDataSourceAll);
-                console.log(' this.allRegies', this.allRegies);
-                this.departmentDataSource = this.allRegies;
-                console.log(' this.departmentDataSource', this.departmentDataSource);
+        .getSalle()
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(donnees => {
+            this.timelineResourceDataOut = [];
+            this.salleDataSource = donnees;
+            console.log('all regies = ', this.salleDataSource);
+            this.salleDataSource.map(item => {
+                if (item.codegroupe != currentGroup) {
+                    this.departmentDataSourceAll.push({
+                        Text: item.NomSalle,
+                        Id: item.CodeSalle,
+                        Color: '#AC4BC6',
+                        codeSalle: item.CodeSalle,
+                        codeRessource: item.CodeRessource
+                    });
+                }
             });
+            this.salleDataSource.forEach(salle => {
+                let indexSalle = this.salleDataSource.indexOf(salle);
+                console.log('--------------------------------------------------indexSalle => ', indexSalle);
+                this.getContainersByRessourceStartDateEndDate(
+                    salle.CodeRessource,
+                    start,
+                    end,
+                    salle.CodeSalle,
+                    indexSalle
+                );
+            });
+        });
     }
 
 
@@ -690,6 +699,7 @@ public scrollto
         let monteurDataSource;
         this.monteursService
             .getMonteur()
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 monteurDataSource = donnees;
                 monteurDataSource.map(item => {
@@ -704,6 +714,7 @@ public scrollto
     getMonteursByGroup(idGroup) {
         this.monteursService
             .getGroupMonteur(idGroup)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 console.log('monteurs : ', donnees);
                 this.monteurDataSource = donnees;
@@ -721,6 +732,7 @@ public scrollto
     getAllContainer() {
         this.containersService
             .getAllContainers()
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(donnees => {
                 this.containersPlanning = donnees;
                 console.log('container', this.containersPlanning);
@@ -730,6 +742,7 @@ public scrollto
     getContainersByRessource(coderessource) {
         this.containersService
             .getContainersByRessource(coderessource)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(data => {
                 console.log('container by ressource : ', data);
             });
@@ -749,6 +762,7 @@ public scrollto
         // console.log('coderessource salle => ', coderessource);
         this.containersService
             .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 this.dataContainersByRessourceStartDateEndDate = res;
                 // console.log('container present in regie : ',  this.dataContainersByRessourceStartDateEndDate);
@@ -817,6 +831,7 @@ public scrollto
         // console.log('this.salleDataSource.length => ', this.salleDataSource.length)
         this.workorderService
             .getWorkOrderByContainerId(id)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 // console.log('response workorder for container : ', res);
                 this.WorkorderByContainerId = res;
@@ -961,57 +976,58 @@ public scrollto
     getWorkOrderByidGroup(idGroup) {
         console.log("++++++++++++++++++++++", this.workOrderData);
         this.workorderService
-            .getWorkOrderByidGroup(idGroup)
-            .subscribe(donnees => {
-                this.WorkOrderByidgroup = donnees;
-                console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
-                if (this.WorkOrderByidgroup != []) {
-                    let testUser = 'VITIPON-C';
-                    this.WorkOrderByidgroup.map(workOrder => {
-                        console.log('workorder to map : ', workOrder)
-                        let StartTime = moment(workOrder.DateDebutTheo, moment.defaultFormat).toDate(),
-                            EndTime = moment(workOrder.DateFinTheo, moment.defaultFormat).toDate();
-                        let dateDebut = StartTime,
-                            dateFin = EndTime
-                        this.workOrderData.push({
-                            Id: workOrder.Id_Planning_Events,
-                            Name: workOrder.titreoeuvre ,
-                            StartTime: dateDebut,
-                            EndTime: dateFin,
-                            CodeRessourceSalle: workOrder.CodeRessourceSalle,
-                            Container: false,
-                            numGroup: workOrder.Id_Planning_Events,
-                            Description: workOrder.Commentaire,
-                            Operateur: workOrder.LibelleRessourceOperateur,
-                            coordinateurCreate: workOrder.UserEnvoi,
-                            Statut: workOrder.Statut,
-                            AzaIsPere: false,
-                            AzaNumGroupe: workOrder.Id_Planning_Events,
-                            DepartmentID: workOrder.CodeRessourceSalle,
-                            ConsultantID: 2,
-                            DepartmentName: '',
-                            IsAllDay: false,
-                            libchaine: workOrder.libchaine,
-                            typetravail: workOrder.typetravail,
-                            titreoeuvre: (workOrder.titreoeuvre === null || typeof (workOrder.titreoeuvre) === 'undefined') ? '' : workOrder.titreoeuvre,
-                            numepisode: workOrder.numepisode,
-                            dureecommerciale: workOrder.dureecommerciale,
-                            libtypeWO: workOrder.libtypeWO,
-                            Commentaire_Planning: workOrder.Commentaire_Planning,
-                            IdGenerationWO: workOrder.IdGenerationWO,
+        .getWorkOrderByidGroup(idGroup)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(donnees => {
+            this.WorkOrderByidgroup = donnees;
+            console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
+            if (this.WorkOrderByidgroup != []) {
+                let testUser = 'VITIPON-C';
+                this.WorkOrderByidgroup.map(workOrder => {
+                    console.log('workorder to map : ', workOrder)
+                    let StartTime = moment(workOrder.DateDebutTheo, moment.defaultFormat).toDate(),
+                      EndTime = moment(workOrder.DateFinTheo, moment.defaultFormat).toDate();
+                    let dateDebut =  StartTime,
+                        dateFin= EndTime
+                this.workOrderData.push({
+                    Id: workOrder.Id_Planning_Events,
+                    Name: workOrder.titreoeuvre  + workOrder.numepisode,
+                    StartTime: dateDebut ,
+                    EndTime:  dateFin,
+                    CodeRessourceSalle: workOrder.CodeRessourceSalle,
+                    Container: false,
+                    numGroup:workOrder.Id_Planning_Events,
+                    Description:workOrder.Commentaire,
+                    Operateur:workOrder.LibelleRessourceOperateur,
+                    coordinateurCreate:workOrder.UserEnvoi,
+                    Statut:workOrder.Statut,
+                    AzaIsPere: false,
+                    AzaNumGroupe:  workOrder.Id_Planning_Events,
+                    DepartmentID: workOrder.CodeRessourceSalle,
+                    ConsultantID: 2,
+                    DepartmentName: '',
+                    IsAllDay: false,
+                    libchaine: workOrder.libchaine,
+                    typetravail:workOrder.typetravail,
+                    titreoeuvre:workOrder.titreoeuvre,
+                    numepisode:workOrder.numepisode,
+                    dureecommerciale:workOrder.dureecommerciale,
+                    libtypeWO:workOrder.libtypeWO,
+                    Commentaire_Planning: workOrder.Commentaire_Planning,
+                    IdGenerationWO:workOrder.IdGenerationWO,
+                    
+                });
+            }),
+            this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                enableTooltip: true, tooltipTemplate: this.temp
+            };
+            this.field = {
+                dataSource:  this.workOrderData,
+                id: 'Id',
+                text: 'Name',
+                description: 'Commentaire_Planning'
 
-                        });
-                    }),
-                        this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                            enableTooltip: true, tooltipTemplate: this.temp
-                        };
-                    this.field = {
-                        dataSource: this.workOrderData,
-                        id: 'Id',
-                        text: 'Name',
-                        description: 'Commentaire_Planning'
-
-                    };
+            };
                     // this.treeObj.refresh();
                     console.log('WorkOrderByidgroup', this.workOrderData);
                     console.log('this.fieldArray', this.field);
@@ -1021,18 +1037,18 @@ public scrollto
 
 
     getLibGroupe(id) {
-        this.idCoordinateur = id
         let libGroupe
         this.libGroupeService
-            .getLibGroupe(id)
-            .subscribe(donnees => {
-                libGroupe = donnees
-                libGroupe.map(donnees => {
-                    this.libGroupe.push({
-                        Libelle: donnees.Libelle,
-                        Code: donnees.Code
-                    })
+        .getLibGroupe(id)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(donnees => {
+            libGroupe = donnees
+            libGroupe.map(donnees =>{
+                this.libGroupe.push({
+                    Libelle: donnees.Libelle,
+                    Code: donnees.Code
                 })
+            })
             })
         console.log('............................', this.libGroupe)
         console.log(this.idCoordinateur, '################################ ID')
@@ -1043,6 +1059,7 @@ public scrollto
     public deleteContainerAction = false;
     deleteContainer(id, event) {
         this.containersService.deleteContainer(id)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('delete container with success : ', res);
                 this.allDataContainers = this.allDataContainers.filter(container => container.Id_Planning_Container !== id);
@@ -1078,6 +1095,7 @@ public scrollto
 
     postContainer(containerToCreate, event) {
         this.containersService.postContainer(containerToCreate)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('succes post new container. RES : ', res);
                 if (res) {
@@ -1266,6 +1284,7 @@ public scrollto
 
     putContainer(id, container, event) { // call in resize, deplacement and Editor (call in updateContainer() function)
         this.containersService.updateContainer(id, container)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
                 console.log(this.allDataContainers, 'allDataContainers')
@@ -1367,6 +1386,7 @@ public scrollto
 
     putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject) { // RESIZE AND EDITOR
         this.containersService.updateContainer(id, container)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
                 this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
@@ -1444,6 +1464,7 @@ public scrollto
         console.log("newWorkorder => ", newWorkorder);
         this.workorderService
             .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
@@ -1532,6 +1553,7 @@ public scrollto
     putWorkorder(id, workorder, event) {
         this.workorderService
             .updateWorkOrder(id, workorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
@@ -1648,6 +1670,7 @@ public scrollto
     putWorkorderWithCalcul(newWorkorder, eventWorkorder, containerParent, timelineDataOut, pushEvent) {
         this.workorderService
             .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
@@ -1766,6 +1789,7 @@ public scrollto
             }).then((result) => {
                 if (result.value) {
                     this.containersService.deleteContainer(containerPere.Id)
+                        .pipe(takeUntil(this.onDestroy$))
                         .subscribe(res => {
                             console.log('delete container with success : ', res);
                             this.allDataContainers = this.allDataContainers.filter(container => container.Id_Planning_Container !== containerPere.Id);
@@ -1857,6 +1881,7 @@ public scrollto
         console.log(newWorkorder);
         this.workorderService
             .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 this.allDataWorkorders.filter(item => item.Id_Planning_Events !== newWorkorder.Id_Planning_Events);
@@ -2023,54 +2048,56 @@ public scrollto
 
 
     }
-    putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
-        this.workorderService
-            .updateWorkOrder(id, workorder)
-            .subscribe(res => {
-                console.log('succes update workorder. RES : ', res);
-                let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-                let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-                this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
-                let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === workorder.Id_Planning_Container);
-                let containerPere = containerEvent[0];
-                console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
-                this.timelineResourceDataOut.map(item => {
-                    if (item.Id === event.Id) {
-                        item.Name = event.Name;
-                        item.StartTime = event.StartTime;
-                        item.EndTime = event.EndTime;
-                        item.IsAllDay = event.IsAllDay;
-                        item.DepartmentID = event.DepartmentID;
-                        item.ConsultantID = event.ConsultantID;
-                        item.AzaIsPere = false;
-                        item.AzaNumGroupe = event.AzaNumGroupe;
-                        item.coordinateurCreate = event.coordinateurCreate;
-                        item.Operateur = event.Operateur;
-                        item.libchaine = event.libchaine;
-                        item.typetravail = event.typetravail;
-                        item.titreoeuvre = (event.titreoeuvre === null || typeof (event.titreoeuvre) === 'undefined') ? '' : event.titreoeuvre,
-                        item.numepisode = event.numepisode;
-                        item.dureecommerciale = event.dureecommerciale;
-                        item.libtypeWO = event.libtypeWO;
-                        item.Commentaire_Planning = event.Commentaire_Planning;
-                        item.Id_Planning_Container = event.Id_Planning_Container;
-                        item.IdGenerationWO = event.IdGenerationWO,
-                            item.Commentaire = event.Commentaire,
-                            console.log(item);
-                    }
-                });
-                this.eventSettings = {
-                    dataSource: <Object[]>extend(
-                        [],
-                        this.calculDateGroup(
-                            this.timelineResourceDataOut,
-                            event.AzaNumGroupe,
-                            true,
-                            containerPere,
-                            startDifferent,
-                            endDifferent
-                        ),
-                        null, true
+
+putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
+    this.workorderService
+    .updateWorkOrder(id, workorder)
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(res => {
+            console.log('succes update workorder. RES : ', res);
+            let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+            let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+            this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+            let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === workorder.Id_Planning_Container);
+            let containerPere = containerEvent[0];
+            console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
+            this.timelineResourceDataOut.map(item => {
+                if (item.Id === event.Id) {
+                    item.Name = event.Name;
+                    item.StartTime = event.StartTime;
+                    item.EndTime = event.EndTime;
+                    item.IsAllDay = event.IsAllDay;
+                    item.DepartmentID = event.DepartmentID;
+                    item.ConsultantID = event.ConsultantID;
+                    item.AzaIsPere = false;
+                    item.AzaNumGroupe = event.AzaNumGroupe;
+                    item.coordinateurCreate = event.coordinateurCreate;
+                    item.Operateur = event.Operateur;
+                    item.libchaine= event.libchaine;
+                    item.typetravail= event.typetravail;
+                    item.titreoeuvre= event.titreoeuvre;
+                    item.numepisode = event.numepisode;
+                    item.dureecommerciale=  event.dureecommerciale;
+                    item.libtypeWO= event.libtypeWO;
+                    item.Commentaire_Planning= event.Commentaire_Planning;
+                    item.Id_Planning_Container = event.Id_Planning_Container;
+                    item.IdGenerationWO = event.IdGenerationWO,
+                    item.Commentaire = event.Commentaire,
+                    console.log(item);
+                }
+            });
+            this.eventSettings = {
+                dataSource: <Object[]>extend(
+                    [],
+                    this.calculDateGroup(
+                        this.timelineResourceDataOut,
+                        event.AzaNumGroupe,
+                        true,
+                        containerPere,
+                        startDifferent,
+                        endDifferent
+                    ),
+                    null, true
                     ),
                     enableTooltip: true, tooltipTemplate: this.temp
                 };
@@ -2939,6 +2966,8 @@ public scrollto
     /********************** DRAG AND DROP M1ANAGEMENT ***********************/
 
     onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
+        event.interval = 0;
+        console.log('ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo', event)
         this.tabInstance.select(tabIndex);
         if (document.body.style.cursor === 'not-allowed') {
             document.body.style.cursor = '';
@@ -2953,10 +2982,15 @@ public scrollto
 
     }
 
-    selectTabWitoutSwip(e: SelectEventArgs) {
-        if (e.isSwiped) {
-            e.cancel = true;
-        }
+  
+    coco(event) {
+        console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', event)
+    }
+
+    selectTabWitoutSwip (e: SelectEventArgs) {
+      if (e.isSwiped) {
+        e.cancel = true;
+      }
     }
 
     /******* DRAG AND DROP WORKORDERS *******/
@@ -2968,7 +3002,8 @@ public scrollto
         this.newData = [];
         let treeElement = closest(event.target, '.e-treeview');
         if (!treeElement) {
-            event.cancel = true;
+            console.log(event)
+            // event.cancel = true;
             let scheduleElement: Element = <Element>closest(event.target, '.e-content-wrap');
             if (scheduleElement) { // IF EMPLACEMENT EST VIDE
                 let treeviewData: { [key: string]: Object }[] =

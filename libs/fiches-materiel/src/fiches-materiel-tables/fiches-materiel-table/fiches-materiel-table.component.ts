@@ -540,6 +540,16 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
         title : 'type FA',
         data : 'typefiche' // data manquante
       },
+      {
+        title : 'n° oeuvre',
+        data : function ( data, type, row, meta ) {
+          if (data.NumProgram !== null && data.NumProgram !== undefined && data.NumProgram !== '') {
+            return data.NumProgram;
+          } else {
+            return '/';
+          }
+        }
+      },
     ];
     console.log('display columns ok');
     this.dataReady = true;

@@ -50,7 +50,9 @@ $modificationColor: #FFB64D;
                                 color : $creationBtnColor;
                             }
                         }
-
+                    }
+                    .invalid-form {
+                        color: $importantColor;
                     }
                     &.deadline-hidden {
                         min-height: 80px;
@@ -222,6 +224,9 @@ $modificationColor: #FFB64D;
                                 margin-left: -20px;
                             }
                         }
+                        .invalid-form {
+                            color: $importantColor;
+                        }
                         p {
                             margin-top: 10px;
                             margin-bottom: 20px;
@@ -372,6 +377,9 @@ $modificationColor: #FFB64D;
                         .form-labo {
                             margin-top: 20px;
                             margin-bottom: 35px;
+                        }
+                        .invalid-form {
+                            color: $importantColor;
                         }
                     }
                     &.ori {

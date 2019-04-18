@@ -6,6 +6,7 @@ import { Adal5Service, Adal5HTTPService } from 'adal-angular5';
 import { MsalModule } from '@azure/msal-angular';
 import { OAuthSettings } from './../../../../.privates-url';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AuthService } from './auth/auth.service';
 
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { appReducer } from './+state/app.reducer';
@@ -29,35 +30,43 @@ registerLocaleData(localeFr, 'fr');
 
 @NgModule({
   imports: [
-  BrowserModule,
-  KPlannerLibModule,
-  AppRoutingModule,
-  MsalModule.forRoot({
-    clientID: OAuthSettings.appId
-  }),
-  RootModule,
-  ErrorPagesModule,
-  StoreModule.forRoot({
-    navbar: navbarReducer,
-  }),
-  StoreDevtoolsModule.instrument({
-    maxAge: 25 // Retains last 25 states
-  }),
-  SubHeaderModule,
-  RouterStateModule.forRoot(),
-  EffectsModule.forRoot([]),
-  HttpClientModule,
-  CustomDatatablesModule,
-  NxModule.forRoot(),
-  StoreRouterConnectingModule,
-  StoreModule.forRoot({app: appReducer}, {initialState: {app: appInitialState}}),
+    BrowserModule,
+    KPlannerLibModule,
+    AppRoutingModule,
+    MsalModule.forRoot({
+      clientID: OAuthSettings.appId,
+      authority: OAuthSettings.authority
+    }),
+    RootModule,
+    ErrorPagesModule,
+    StoreModule.forRoot({
+      navbar: navbarReducer
+    }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25 // Retains last 25 states
+    }),
+    SubHeaderModule,
+    RouterStateModule.forRoot(),
+    EffectsModule.forRoot([]),
+    HttpClientModule,
+    CustomDatatablesModule,
+    NxModule.forRoot(),
+    StoreRouterConnectingModule,
+    StoreModule.forRoot(
+      { app: appReducer },
+      { initialState: { app: appInitialState } }
+    )
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
     Adal5Service,
-    { provide: Adal5HTTPService, useFactory: Adal5HTTPService.factory, deps: [HttpClient, Adal5Service] }
+    {
+      provide: Adal5HTTPService,
+      useFactory: Adal5HTTPService.factory,
+      deps: [HttpClient, Adal5Service]
+    }
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

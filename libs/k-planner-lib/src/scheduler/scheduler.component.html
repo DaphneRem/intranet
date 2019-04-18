@@ -273,16 +273,14 @@
                                 cssClass='treeview-external-drag'
                                 [allowDragAndDrop]='allowDragAndDrop'
                                 (nodeDragStop)="onTreeDragStop($event)" 
-                                (nodeDragging)="onItemDrag($event, 0)"
-                               >
-                                <ng-template #nodeTemplate="" let-dataWorkOrder=""
-                                >
+                                (nodeDragging)="onItemDrag($event, 0)">
+                                <ng-template #nodeTemplate="" let-dataWorkOrder="">
                                     <div id="waiting">
                                         <div id="waitdetails" >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} ep {{dataWorkOrder.numepisode}} </div>
                                             <div id="waitcategory">   {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}}
-                                        </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </ng-template>

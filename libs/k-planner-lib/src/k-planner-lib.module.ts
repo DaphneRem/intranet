@@ -6,7 +6,7 @@ import { AppRoutingModule } from 'apps/k-planner/src/app/app-routing.module';
 import { ScheduleAllModule, RecurrenceEditorAllModule } from '@syncfusion/ej2-angular-schedule';
 import { DatePickerAllModule, TimePickerAllModule, DateTimePickerAllModule } from '@syncfusion/ej2-angular-calendars';
 import { NumericTextBoxAllModule } from '@syncfusion/ej2-angular-inputs';
-import { CheckBoxAllModule, ButtonComponent } from '@syncfusion/ej2-angular-buttons';
+import { CheckBoxAllModule, ButtonModule } from '@syncfusion/ej2-angular-buttons';
 import { ToolbarAllModule, SidebarModule } from '@syncfusion/ej2-angular-navigations';
 import { MaskedTextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule, MultiSelectAllModule} from '@syncfusion/ej2-angular-dropdowns';
@@ -16,10 +16,10 @@ import {
   BeforeOpenCloseMenuEventArgs,
   MenuEventArgs,
   MenuItemModel,
-  ContextMenuComponent
+  ContextMenuModule
 } from '@syncfusion/ej2-angular-navigations';
 import { ListViewModule } from '@syncfusion/ej2-angular-lists';
-import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
+import { TooltipModule, Position } from '@syncfusion/ej2-angular-popups';
 
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -64,17 +64,17 @@ import { LoadersModule } from '@ab/loaders';
     HttpModule,
     SidebarModule,
     NgbTooltipModule,
-    LoadersModule
+    LoadersModule,
+    TooltipModule,
+    ButtonModule,
+    ContextMenuModule
   ],
   declarations: [
     SchedulerComponent,
     MonPlanningComponent,
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
-    ContextMenuComponent,
-    FilterPipe,
-    ButtonComponent,
-    TooltipComponent
+    FilterPipe
   ],
   entryComponents: [
     MonPlanningComponent,

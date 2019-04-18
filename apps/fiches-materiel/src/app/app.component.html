@@ -15,7 +15,7 @@
     (window:resize)="onResize($event)">
     <div class="pcoded-content">
       <div class="pcoded-wrapper">
-        <div class="main-body">
+        <div class="main-body" *ngIf="userIsReady">
           <router-outlet></router-outlet>
           <root-footer></root-footer>
         </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewEncapsulation } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { HistoryDeliveryDateService } from '../../services/history-delivery-date.service';
@@ -15,11 +15,12 @@ import { HistoryDeliveryDate } from '../../models/history-delivery-date';
     HistoryDeliveryDateService
   ]
 })
-export class HistoryDeliveryDateModalComponent implements OnInit {
+export class HistoryDeliveryDateModalComponent implements OnInit, OnChanges {
   @Input() myFicheMateriel;
+  @Input() reload?;
 
-  closeResult: string;
-
+  public closeResult: string;
+  public count: number;
   public historyDeliveryDate: HistoryDeliveryDate[];
 
   constructor(
@@ -31,6 +32,18 @@ export class HistoryDeliveryDateModalComponent implements OnInit {
     console.log(this.myFicheMateriel);
     this.getHistoryDeliveryDate(this.myFicheMateriel.IdFicheMateriel);
   }
+
+  ngOnChanges(reload) {
+    console.log('onChange reaload history delivery date ===================> ', reload);
+    if (this.count === 0) {
+      this.count++;
+    } else {
+      this.getHistoryDeliveryDate(this.myFicheMateriel.IdFicheMateriel);
+      console.log(reload);
+    }
+    console.log('------------------------------------------------------------------> ', this.count);
+  }
+
 
   openLg(deliveryDateContent) {
     this.modalService.open(deliveryDateContent, { size: 'lg' , centered: true});

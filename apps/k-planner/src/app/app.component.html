@@ -16,7 +16,7 @@
     (window:resize)="onResize($event)">
     <div class="pcoded-content">
       <div class="pcoded-wrapper">
-        <div class="main-body">
+        <div class="main-body" *ngIf="userIsReady">
           <!-- <div *ngIf="authService.authenticated && authService.user !== null; then welcomeUser else signInPrompt"></div>
           <ng-template #welcomeUser>
             <h4>Welcome {{ authService.user.displayName }}!</h4>

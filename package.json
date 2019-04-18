@@ -18,10 +18,12 @@
     "ingest-build-local": "ng build --app=suivi-ingests --baseHref http://127.0.0.1:8080/edsa-ingest/ --watch",
     "ingest-build-test": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083",
     "ingest-build-release": "ng build --prod --app=suivi-ingests --baseHref http://vm-angular-rc:8085",
-    "materiel-test": "ng build --app=fiches-materiel --baseHref  http://vm-angular-rc:9084",
-    "k-planner-test": "ng build --app=k-planner --baseHref  http://planner.karinatest.app.groupe-ab.fr",
-    "k-planner-prod": "ng build --prod --app=k-planner --baseHref  http://planner.karinatest.app.groupe-ab.fr",
-    "sbuild": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083/SuiviIngest"
+    "sbuild": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083/SuiviIngest",
+    "materiel-test": "ng build --app=fiches-materiel --baseHref  https://fichemateriel.karinatest.app.groupe-ab.fr",
+    "k-planner-release": "ng build --app=k-planner --prod --aot --baseHref  https://planner.karinarc.app.groupe-ab.fr",
+    "k-planner-test": "ng build --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr",
+    "k-planner-prod": "ng build --prod --aot --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr",
+    "k-planner-optimizer": "ng build --prod --aot --build-optimizer --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr"
   },
   "private": true,
   "dependencies": {

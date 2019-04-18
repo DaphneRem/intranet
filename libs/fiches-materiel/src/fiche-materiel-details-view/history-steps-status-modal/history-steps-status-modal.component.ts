@@ -37,12 +37,15 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(reload) {
+    console.log('onChange reaload ===================> ', reload);
     if (this.count === 0) {
       this.count++;
     } else {
+      this.getHistoryStepsStatus(this.myFicheMateriel.IdFicheMateriel);
       console.log(reload);
     }
-  }  
+    console.log('------------------------------------------------------------------> ', this.count);
+  }
 
   openLg(content) {
     this.modalService.open(content, { size: 'lg' , centered: true});
@@ -56,7 +59,7 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
         if (data === null || data === []) {
           this.historyStepsStatus = [];
           this.historyStepsStatusReady = true;
-        } else if (data.length === 0 ){
+        } else if (data.length === 0 ) {
           this.historyStepsStatus = data;
           this.historyStepsStatusReady = true;
           this.addStepStatusLibelleToHistory();
