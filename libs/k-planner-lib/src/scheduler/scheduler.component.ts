@@ -496,7 +496,7 @@ public scrollto
         console.log('args =======> ', args);
         // args.navigation = { enable: true, timeDelay: 1000 };
         args.navigation = { enable: true, timeDelay: 2000 };
-        args.scroll.enable = false;
+        // args.scroll.enable = false;
     }
 
     public disabledrefresh: boolean
