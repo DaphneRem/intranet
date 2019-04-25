@@ -23,8 +23,8 @@
             </div>
             <div style="display: flex;">
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
-                <button class="btn btn-info regie refresh-btn ml-3" (click)="refreshScheduler()" [disabled]="disabledrefresh"   ><i class="icofont icofont-refresh"></i>Rafraichir</button>
-                <input type="text" class="form-control form-control-info col-2 recherche" placeholder="Rechercher une régie..." #search (keyup)="onFilterRegie(search.value)" (mousedown)="Filter()" value="" >
+                <button  class="btn btn-info regie refresh-btn ml-3  btn-refresh" (click)="refreshScheduler()" [disabled]="disabledrefresh"   ><i class="icofont icofont-refresh"></i>Rafraichir</button>
+                <input type="text" class="form-control form-control-info col-2 recherche" placeholder="Rechercher une régie..." #search (keyup)="onFilterRegie(search.value,$event )" (mousedown)="Filter()" value="" >
               
               
                 <select class="form-control form-control-info m-0 select-plannings float-right mt-1 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)">
@@ -113,11 +113,11 @@
                 [currentView]="currentView"
                 (change)="onChange($event)"
                 [firstDayOfWeek]="1"
-                 [rowAutoHeight]="rowAutoHeight" 
-                 
+                
+          
                 
                 >
-              
+                <!-- [rowAutoHeight]="rowAutoHeight"  -->
                 <!-- (renderCell)="onRenderCell($event)" -->
                 <e-resources>
                     <e-resource 
@@ -152,9 +152,9 @@
                                 <div>
                                     <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                         <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div>
-                                        <u id="{{data.Id}}">{{data.Name }} </u> 
+                                        <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} </u> 
                                         <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                        <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
+                                        <div *ngIf="data.Operateur" class="float-right mt-1 operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Operateur}}</div>
                                         <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                             class="float-right  fixed mr-1"> -->
                                     </div>
@@ -178,9 +178,9 @@
                                         <div>
                                             <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                                 <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
-                                                <u id="{{data.Id}}">{{data.Name }} </u> 
+                                                <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} </u> 
                                                 <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                                <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
+                                                <div *ngIf="data.Operateur" class="float-right mt-1 operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Operateur}}</div>
                                                 <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                     class="float-right  fixed mr-1"> -->
                                             </div>
@@ -212,13 +212,13 @@
                 </e-view> -->
                     <e-view option='TimelineMonth'   >
                             <ng-template #eventTemplate let-data  class="event" >
-                                <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
+                                <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
                                     <div>
-                                        <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                            <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
-                                            <u id="{{data.Id}}">{{data.Name }} </u> 
-                                            <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                            <div *ngIf="data.Operateur" class="float-right mt-1 operateur">{{data.Operateur}}</div>
+                                        <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
+                                            <!-- <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div> -->
+                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} </u> <br> 
+                                          
+                                            <div *ngIf="data.Operateur" class="operateur mt-1 " [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
@@ -241,7 +241,7 @@
                 </e-views>
                 
             </ejs-schedule>
-            <div id="grid" class="ml-3 mt-2"></div>
+        
         </div>
         </div>
         
@@ -256,13 +256,13 @@
                     <ng-template #content>
                         <div class="treeview-container">
                             <div class="title-container">
-                                <button (click)="refreshWorkordersBacklog()" class="btn btn-info regie refresh-btn-workorder">
+                                <button (click)="refreshWorkordersBacklog()" class="btn btn-info regie refresh-btn-workorder btn-refresh" [disabled]="disabledrefreshBacklog" >
                                     <i class="icofont icofont-refresh"></i>
                                     Rafraichir
                                 </button>
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control recherche" placeholder="Rechercher..." #search (keyup)="onFilter(search.value,0)" (mousedown)="Filter()" >
+                                <input type="text" id="searchwo" class="form-control recherche" placeholder="Rechercher..." #search (keyup)="onFilter(search.value,0,$event)" (mousedown)="Filter()" value="{{this.searchString}}" >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
 
@@ -274,7 +274,8 @@
                                 [allowDragAndDrop]='allowDragAndDrop'
                                 (nodeDragStop)="onTreeDragStop($event)" 
                                 (nodeDragging)="onItemDrag($event, 0)">
-                                <ng-template #nodeTemplate="" let-dataWorkOrder="">
+                                <ng-template #nodeTemplate="" let-dataWorkOrder=""
+                                >
                                     <div id="waiting">
                                         <div id="waitdetails" >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} ep {{dataWorkOrder.numepisode}} </div>
@@ -286,7 +287,7 @@
                                 </ng-template>
                              
                             </ejs-treeview>
-
+                            <div id="grid"></div>
 
 
 
@@ -299,7 +300,7 @@
                             <div class="title-container">
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control recherche" placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1)" (mousedown)="Filter()" >
+                                <input type="text" id="searchoperateur" class="form-control recherche" placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1,$event)" (mousedown)="Filter()" >
                                 <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span>
                             </div>
                             <select class="form-control form-control-info" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">

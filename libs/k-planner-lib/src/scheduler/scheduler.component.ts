@@ -5,7 +5,8 @@ import {
   SimpleChanges,
   Input,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
+  ElementRef
 } from "@angular/core";
 import {NgForm} from '@angular/forms';
 import { MatDialog } from '@angular/material';
@@ -88,6 +89,7 @@ import { LibGroupeService } from '../services/libGroupe.service';
 import { LibelleGroupe } from '../models/libelle-groupe';
 import { DataManager, Query, ReturnOption } from '@syncfusion/ej2-data';
 import { Grid } from '@syncfusion/ej2-angular-grids';
+import { SpinSettingsModel } from "@syncfusion/ej2-splitbuttons";
 
 const localeFrenchData = require('./scheduler-fr.json');
 const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
@@ -358,9 +360,22 @@ public scrollto
         document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
 
             let scheduleElement = document.getElementsByClassName('schedule');
-            if (eKey.keyCode === 115 && scheduleElement) {
-                this.refreshScheduler()
-                this.refreshWorkordersBacklog()
+            let btnrefresh = document.getElementsByClassName('btn-refresh');
+            if (eKey.keyCode === 115) {
+                    // this.workOrderData = [];
+                  
+                    // this.timelineResourceDataOut = []
+                    // this.allDataWorkorders = []
+                    // this.departmentDataSource = [];
+                    // this.departmentDataSourceAll = [];
+                    // this.departmentGroupDataSource = [];
+                    // this.allDataContainers = [];
+                 
+                    this.refreshScheduler()
+                    this.refreshWorkordersBacklog()
+           
+                 
+            
             }
 
                      console.log(eKey)
@@ -523,8 +538,10 @@ public scrollto
 
 
     }
+    public disabledrefreshBacklog
 
     refreshWorkordersBacklog() {
+        this.disabledrefreshBacklog = true
         console.log('refresh workorders backlog click');
         this.workOrderData = [];
         this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
@@ -574,6 +591,7 @@ public scrollto
                 this.getMonteursByGroup(item.Groupe);
                 this.getWorkOrderByidGroup(item.Groupe);
                 this.getAllMonteurs(item.Groupe);
+                
                 this.currentCoordinateur = item;
                 this.getLibGroupe(item.Groupe)
 
@@ -959,13 +977,15 @@ public scrollto
                 numepisode = this.timelineResourceDataOut[i].numepisode,
                 dureecommerciale = this.timelineResourceDataOut[i].dureecommerciale,
                 AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere,
-                libchaine = this.timelineResourceDataOut[i].libchaine
+                libchaine = this.timelineResourceDataOut[i].libchaine,
+                coordinateurCreate = this.timelineResourceDataOut[i].coordinateurCreate
 
 
             this.temp = '<div class="tooltip-wrap">' +
                 '<div class="tooltip-wrap">' +
-                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${typetravail} <br> Libellé chaine : &nbsp; ${libchaine}  <br> ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </>  </div> ${/if}' +
+                '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" >   Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${typetravail} <br> Libellé chaine : &nbsp; ${libchaine}  <br> ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </>  </div> ${/if}' +
                 '${if(  Commentaire_Planning !== null && Commentaire_Planning !== undefined )}<div> Description : &nbsp; ${Commentaire_Planning} </>  </div> ${/if}' +
+                '${if (AzaIsPere  ) }<div class="time">Coordinateur: &nbsp; ${coordinateurCreate} </div> ${/if}' +
                 '${if (AzaIsPere && Operateur !== null && Operateur !== "" ) }<div class="time">Operateur:&nbsp;${Operateur} </div> ${/if}' +
                 '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
                 '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
@@ -1033,6 +1053,7 @@ public scrollto
                     console.log('this.fieldArray', this.field);
                 }
             });
+            this.disabledrefreshBacklog = false
     }
 
 
@@ -2497,7 +2518,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     }
 
     public couleur;
-
+   public cancel
     public zoom: boolean = true;
     public CellClick: boolean = true;
     public hourContainer
@@ -2571,9 +2592,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
       
 
-        if ((args.type === 'Editor') && (args.target.className === "e-header-cells e-current-day")) {
-            args.cancel = true;
-        }
+     
 
 
         if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
@@ -2761,6 +2780,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             let annuler = document.getElementsByClassName("e-event-cancel")
             console.log(annuler);
             annuler[0].addEventListener('click', () => {
+                this.cancel = true
                 this.zoom = true
                 this.filtre = false
                 console.log('click annuler ', this.zoom, this.filtre)
@@ -2910,7 +2930,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             return false;
         }
     }
-
+public valueOperateur
     createDrowDownOperteurInput(args, container, inputEle) {
         let row: HTMLElement = createElement('div', { className: 'custom-field-row' });
         let formElement: HTMLElement = <HTMLElement>args.element.querySelector('.e-schedule-form');
@@ -2924,14 +2944,17 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         // this.drowDownMonteurs = this.monteurDataSource.map(item => {
         //     return { text: item.Username, value: item.CodeRessource };
         // });
+   
         this.drowDownMonteurs = this.fieldMonteur['dataSource'].map(item => {
             return { text: item.Username, value: item.CodeRessource };
         });
+    
         this.drowDownMonteurs.unshift({ text: 'Aucun Opérateur', value: 0 });
+   
         this.drowDownOperateurList = new DropDownList({
             dataSource: this.drowDownMonteurs,
             fields: { text: 'text', value: 'text' },
-            value: args.data.Operateur,
+            value:  this.valueOperateur,
             floatLabelType: 'Always', placeholder: 'Opérateur'
         });
         this.drowDownOperateurList.appendTo(inputEle);
@@ -2979,7 +3002,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 dragElementIcon[i].style.display = 'none';
             }
         }
-
+   
     }
 
   
@@ -2996,7 +3019,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     /******* DRAG AND DROP WORKORDERS *******/
 
     onTreeDragStop(event: DragAndDropEventArgs): void {
-
+    
         console.log(event)
         this.creationArray = [];
         this.newData = [];
@@ -3123,6 +3146,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 }
             }
         }
+      
+     
     }
 
 
@@ -3526,6 +3551,16 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         this.isBackToBacklog = false;
         this.navigateTimelineDay = false;
         this.eventClick = false;
+
+     
+        if( this.searchwo.value != "" && !this.cancel){
+     this.searchString = this.searchwo.value
+     this.onFilter(this.searchString , 0, this.argsKeyboardEvent)
+            console.log(  this.searchwo.value)
+            console.log( typeof this.searchwo.value)
+        }else{
+
+        }
     }
 
     /************************ DELETE ********************/
@@ -3747,7 +3782,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
     /********** Add Monteur  *********/
 
-
+public searchoperateur
 
     onSelect(value) {
         let monteurListArray;
@@ -3761,10 +3796,13 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
                 this.monteurDataSource.unshift(this.monteurListe[i])
                 console.log('monteurDataSource', this.monteurDataSource);
+                console.log('fieldMonteur', fieldMonteur);
 
                 for (let i = 0; i < this.monteurDataSource.length; i++) {
                     if (this.monteurDataSource[i] === this.monteurDataSource[i + 1]) {
-                        delete this.monteurDataSource[i]
+                        console.log('monteurDataSource', this.monteurDataSource);
+                       this.monteurDataSource.splice(i,1)
+                       console.log('monteurDataSource aprés delete', this.monteurDataSource);
 
                     }
 
@@ -3785,12 +3823,23 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 this.addMonteur = true;
 
 
-                this.fieldMonteur['dataSource'] = monteurListArray
+             
                 this.fieldMonteur = { dataSource: fieldMonteur, text: 'Username' };
                 this.countAdd = this.countAdd + 1
-
+              
             }
+          
         }
+        
+     
+        if( this.searchoperateur.value != "" && !this.cancel){
+            this.searchStringM = this.searchoperateur.value
+            this.onFilter(this.searchStringM , 1, this.argsKeyboardEvent)
+                   console.log(  this.searchoperateur.value)
+                   console.log( typeof this.searchoperateur.value)
+               }else{
+       
+               }
 
     }
 
@@ -3903,14 +3952,56 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
 
     /************************************************************ Filter Monteur et régies ***********************************************************************************/
+ 
+    onFilterRegie(search, args: KeyboardEvent) {
+        this.filtreRegie = true
+        if (search.length >= 0) {
+            this.zoom = false
+            this.filtre = false
+            console.log(this.zoom, search.length, '*******************************************')
+        } else {
+            if (search.length == 0) {
+                this.filtreRegie = false
+            }
+        }
 
-    onFilter(searchText: string, tabIndex) {
+        // this.filtre = true
+        console.log(search.length)
+        // this.dataRegie = this.departmentGroupDataSource.filter(regie => {
+        //     return regie['Text'].toLowerCase().includes(search.toLowerCase())
+        // })
+        // this.departmentDataSource = this.dataRegie
+
+        // console.log(this.dataRegie)
+        let searchString = (args.target as HTMLInputElement).value;
+        if (searchString !== "" ) {
+            new DataManager(this.departmentGroupDataSource).executeQuery(new Query().
+              search(searchString, ['Text'], null, true,true)).then((e: ReturnOption) => {
+                  console.log(e.result)
+                  if ((e.result as any).length > 0) {
+                   console.log(e.result)
+                   this.departmentDataSource =  e.result as any
+                
+                    } else{
+                        this.departmentDataSource = this.departmentGroupDataSource
+                    }
+                  });
+              }else{
+                this.departmentDataSource = this.departmentGroupDataSource
+              }
+
+    }
 
 
 
-
-
-        if (searchText.length >= 0) {
+public searchwo
+public searchString : string
+public searchStringM : string
+public argsKeyboardEvent
+    onFilter(searchText: string, tabIndex,args: KeyboardEvent) {
+///************************************************************** FILTRE DES MONTEURS ********************************************************************* */
+      this.argsKeyboardEvent = args
+if (searchText.length >= 0) {
             this.zoom = false
             this.filtre = false
             console.log(this.zoom, searchText.length, '*******************************************')
@@ -3920,156 +4011,77 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
 
         if (tabIndex == 1) {
-
-            if (!searchText) {
-
-                console.log('searchText', typeof searchText, searchText);
-
-                this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource'];
-                console.log("!!!!!!!!!!!!!!!!!!!!searchText", this.treeObjMonteur.fields['dataSource'])
-                if (this.isDelete) {
-
-                    for (let i = 0; i < this.monteurListArray.length; i++) {
-                        if (this.monteurListArray[i] === this.elementDelete) {
-                            delete this.monteurListArray[i]
-
-                        }
-                        this.filtermonteurListeArray = this.monteurListArray
-
-
-                    }
-
-                }
-
-                if (this.dataMonteur.length == 0) {
-
-                    this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
-                        return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                            || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
-                        // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
-
+          this.searchStringM = (args.target as HTMLInputElement).value;
+           this.searchoperateur = document.getElementById("searchoperateur")
+            console.log(this.searchStringM,'.......')
+            console.log(this.treeObjMonteur.getTreeData())
+            let fieldMonteur = this.fieldMonteur['dataSource']
+            if (this.searchStringM !== "" ) {
+               
+              new DataManager(fieldMonteur).executeQuery(new Query().
+                search(this.searchStringM, ['Username','libelletype','libellecategorie'], null, true, true)).then((e: ReturnOption) => {
+                 
+                    if ((e.result as any).length > 0) {
+                     console.log(e.result,this.treeObjMonteur.fields['dataSource'] )
+                     console.log(this.treeObjMonteur.getTreeData())
+            
+                     this.treeObjMonteur.fields.dataSource = e.result as any
+                     console.log("this.fieldMonteur['dataSource']",this.fieldMonteur)
+                   
+                      }  else {
+                       
+                        this.treeObjMonteur.fields['dataSource'] = []
+                      }
                     });
-                    console.log(this.dataMonteur)
+                } else {
+                    console.log("this.fieldMonteur['dataSource']",this.fieldMonteur['dataSource'])
+                     
+                            this.treeObjMonteur.fields.dataSource = fieldMonteur 
+                            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa", fieldMonteur ) 
+                           
+                            if(this.isDelete){
+                                this.treeObjMonteur.fields.dataSource = this.fieldMonteur['dataSource'] 
+                                console.log("ISDelete", this.fieldMonteur['dataSource'] )   
+                             }
                 }
-            }
-
-
-
-
-
-
-
-            if (!this.isDelete) {
-                if (!this.addMonteur) {
-                    this.dataMonteur = this.monteurDataSource.filter(monteurs => {
-                        return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                            || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
-                        // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());
-                    });
-                }
-                else {
-                    this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
-                        return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                            || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
-                        // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
-
-                    });
-
-
-                    console.log('this.dataMonteur', this.dataMonteur);
-                    console.log('dataMonteur', this.fieldArrayMonteur);
-
-                }
-
-            } else {
-
-                this.dataMonteur = this.filtermonteurListeArray.filter(monteurs => {
-                    return monteurs.Username.toLowerCase().includes(searchText.toLowerCase())
-                        || monteurs.libelletype.toLowerCase().includes(searchText.toLowerCase())
-                    // || monteurs.libellecategorie.toLowerCase().includes(searchText.toLowerCase());;
-
-
-
-                });
-
-                console.log('dataMonteur', this.dataMonteur);
-            }
-            console.log('monteurListArray', this.monteurListArray);
-            this.fieldMonteur['dataSource'] = this.dataMonteur;
-            this.treeObjMonteur.fields['dataSource'] = this.fieldMonteur['dataSource']
-            console.log('monteur datasource', this.monteurDataSource)
-            console.log('filteredData', this.fieldMonteur);
-            console.log('filteredData', this.dataMonteur);
-            console.log(tabIndex);
-
-
+               
         }
 
-
+///************************************************************** FILTRE DES WORKORDERS ********************************************************************* */
         if (tabIndex == 0) {
 
-
-            if (!searchText) {
-
-                console.log('searchText', typeof searchText, searchText)
-                if (!this.isAddedToBacklog) {
-                    if (!this.isDragged) {
-                        this.field['dataSource'] = this.fieldArray;
-                    } else {
-                        this.workOrderData = [];
-                        this.newField = this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
-                        // this.data =this.fieldArray['dataSource'];
-                        console.log(this.newField)
-                    }
-
-                } else {
-                    this.field['dataSource'] = this.wOrderBackToBacklog;
-                }
-                 this.workOrderData = [];
-                this.field['dataSource'] = this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe)
-                console.log('   this.field[dataSource]  quand le champs est vide', this.field['dataSource'])
-            }
-
-            if (!this.isAddedToBacklog) {
-                if (!this.isDragged) {
-                       console.log(this.workOrderData,"WORKORDERDATA")
-                    this.data = this.workOrderData.filter(WorkOrder => {
-                        //  WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                           return WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.coordinateurCreate.toLowerCase().includes(searchText.toLowerCase());
+            this.searchString = (args.target as HTMLInputElement).value;
+            this.searchwo = document.getElementById("searchwo")
+             console.log(this.searchwo.value)
+            console.log(this.searchString,'.......')
+            console.log(this.treeObj.getTreeData())
+            if (this.searchString !== "" ) {
+              new DataManager(this.field['dataSource']).executeQuery(new Query().
+                search(this.searchString, ['typetravail', 'titreoeuvre', 'numepisode', 'libtypeWO','libchaine','coordinateurCreate'], null, true,true)).then((e: ReturnOption) => {
+                    console.log(e.result)
+                    if ((e.result as any).length > 0) {
+                     console.log(e.result,this.treeObj.fields['dataSource'] )
+                     
+                   
+                     this.treeObj.fields['dataSource'] =  e.result as any
+                     console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa >0",this.treeObj.getTreeData(), this.treeObj)
+                
+                   
+                
+                      }
                     });
                 } else {
-                    this.data = this.newField.filter(WorkOrder => {
-                        // return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                            return WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase())
-                            || WorkOrder.coordinateurCreate.toLowerCase().includes(searchText.toLowerCase());
-                    });
-
+                this.treeObj.fields['dataSource'] = this.field['dataSource']
+                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa",this.treeObj.getTreeData(), this.treeObj)
+                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa",this.treeObj["treeData"])
+              
                 }
-            } else {
-                console.log('wOrderBackToBacklog', this.wOrderBackToBacklog);
-                this.data = this.wOrderBackToBacklog.filter(WorkOrder => {
-                    // return WorkOrder.Name.toLowerCase().includes(searchText.toLowerCase())
-                        return WorkOrder.libchaine.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.typetravail.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.titreoeuvre.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.libtypeWO.toLowerCase().includes(searchText.toLowerCase())
-                        || WorkOrder.coordinateurCreate.toLowerCase().includes(searchText.toLowerCase());
-                });
-            }
-            this.field['dataSource'] = this.data;
-            this.treeObj.fields['dataSource'] = this.field['dataSource'];
-            console.log('fieldArray', this.fieldArray);
-            console.log('field', this.field['dataSource']);
-            console.log('Data', this.data);
+         
         }
     }
+
+
+   
 
     Filter() {
         let schedule = document.getElementsByClassName('recherche');
@@ -4089,28 +4101,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
     public filtreRegie
 
-    onFilterRegie(search) {
-        this.filtreRegie = true
-        if (search.length >= 0) {
-            this.zoom = false
-            this.filtre = false
-            console.log(this.zoom, search.length, '*******************************************')
-        } else {
-            if (search.length == 0) {
-                this.filtreRegie = false
-            }
-        }
-
-        // this.filtre = true
-        console.log(search.length)
-        this.dataRegie = this.departmentGroupDataSource.filter(regie => {
-            return regie['Text'].toLowerCase().includes(search.toLowerCase())
-        })
-        this.departmentDataSource = this.dataRegie
-
-        console.log(this.dataRegie)
-
-    }
+  
 
     /**************************************************** Add Regies ************************************************************ *********/
 
@@ -4169,7 +4160,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         console.log('slidebar', this.sidebar)
         console.log('button', this.togglebtnslide)
         console.log('scheduler element', this.scheduleObj)
-
+        console.log(this.treeObj,'11111111111111111111111')
     }
 
     /********************************** Remove Monteur *************************************/
@@ -4187,7 +4178,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             }
             this.monteurListe.map(itemliste => {
                 if (targetNodeId == itemliste.CodeRessource.toString()) {
-                    if (itemliste.codegroupe != 10) {
+                    if (itemliste.codegroupe != this.currentCoordinateur.Groupe) {
                         args.cancel = false;
                     }
                 }
@@ -4215,20 +4206,23 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 }
                 console.log(this.treeObjMonteur);
             }
-        }
-        this.fieldArrayMonteur = this.treeObjMonteur['groupedData'];
-        this.fieldMonteur['dataSource'] = this.fieldArrayMonteur[0];
-        this.fieldMonteurDSource = this.fieldMonteur['dataSource']
-        if (this.isDelete) {
-
-            this.filtermonteurListeArray = this.fieldArrayMonteur[0];
-
-
+            this.fieldArrayMonteur = this.treeObjMonteur['groupedData'];
+        
+            this.fieldMonteurDSource = this.fieldMonteur['dataSource']
+            
         }
         console.log('field Array Monteur', this.fieldArrayMonteur);
         console.log('field Array Monteur DS', this.filtermonteurListeArray);
+        if (this.isDelete) {
+            console.log('field Array Monteur is delete', this.filtermonteurListeArray);
+            this.filtermonteurListeArray = this.fieldArrayMonteur[0];
+          
+            this.fieldMonteur['dataSource'].splice(this.fieldMonteur['dataSource'].lastIndexOf(this.elementDelete),1)
+            console.log('field Array Monteur is delete',     this.fieldMonteur['dataSource']);
+        }
+      
+      
     }
-
     /************************************************************************ ADD Color **********************************************************************************/
 
 
@@ -4308,17 +4302,6 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     }
    
     /*************************************************************************************** */
-
-
-    // onSubmit() {
-    //     let temps = (this.ejEndTimePicker.value.getHours()) - (this.ejStartTimePicker.value.getHours())
-    //     console.log('date picker ', temps);
-    //     if (temps >= 12) {
-    //         this.scheduleObj.startHour = this.instance.formatDate(this.ejStartTimePicker.value, { skeleton: 'Hm' });
-    //         this.scheduleObj.endHour = this.instance.formatDate(this.ejEndTimePicker.value, { skeleton: 'Hm' });
-    //     }
-
-    // }
 
     onRenderCell(args: RenderCellEventArgs): void {
 

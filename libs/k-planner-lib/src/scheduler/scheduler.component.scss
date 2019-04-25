@@ -253,24 +253,24 @@ table {
 /deep/  .e-schedule .e-vertical-view .e-date-header-wrap table tbody td{
     width: 25%;
 }
-// /deep/ .e-schedule .e-timeline-view .e-work-cells{
-//     max-height:160px;
+/deep/ .e-schedule .e-timeline-view .e-work-cells{
+    height:100px;
 
-// }
-// /deep/ .e-schedule .e-timeline-view .e-resource-cells{
-//     max-height:160px;
+}
+/deep/ .e-schedule .e-timeline-view .e-resource-cells{
+    height:100px;
   
-// }
+}
 
 
-// /deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
-//   height:160px
+/deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
+  height:160px
 
-// }
-// /deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
-//     height:160px;
+}
+/deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
+    height:160px;
  
-// }
+}
 
 /deep/ .e-schedule .e-schedule-table > tbody > tr > td{
     // overflow: visible;
@@ -425,16 +425,17 @@ table {
         background-color: #3d4750;
         margin: 3px;
         p {
-            font-size: 12px;
+            font-size: 10px;
             text-align: center;
             margin-top: 5px;
         }
     }
     .operateur {
-        background-color: $operatorColor;
-        margin-right: 5px;
-        padding: 3px;
-        border: 1px solid #ffffff;
+        // background-color: $operatorColor;
+        // margin-right: 5px;
+        // padding: 3px;
+        // border: 1px solid #ffffff;
+        font-size: 10px
     }
 }
 .icofont-search{
