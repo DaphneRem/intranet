@@ -5,6 +5,7 @@ import swal from 'sweetalert2';
 
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 import { FicheMateriel } from '../../models/fiche-materiel';
+import { AnnexElementCommentsFicheMAteriel } from '../../models/annex-elements-comments';
 
 import { QualiteService } from '../../services/qualite.service';
 import { VersionService } from '../../services/version.service';
@@ -42,6 +43,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() livraisonIsValid;
   @Input() acceptationIsValid;
   @Input() premiereDiff;
+  @Input() comments: AnnexElementCommentsFicheMAteriel[];
   @Input() accesLabo;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
@@ -66,6 +68,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.newObject);
+    console.log(this.comments);
   }
 
   checkAllValidDates(): boolean {
@@ -85,6 +88,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   }
 
   modifFichesMateriel(closeAction) {
+    console.log('COMMENTS ================> ', this.comments);
     if (closeAction === 'close') {
       this.closeInterface = true;
     } else {
@@ -316,6 +320,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
           });
         this.putQualiteFicheMateriel(this.qualiteFM);
         this.putVersionFicheMateriel(this.versionFicheMateriel);
+        // ICI
+        this.updateCommentaireAnnexElementsFicheMateriel();
       } else {
         console.log('error PUT fiche materiel');
         console.log(data);
@@ -510,4 +516,45 @@ export class FichesMaterielModificationActionComponent implements OnInit {
         }
       });
   }
+
+  /** Elements Annexes Comments **/
+
+  updateCommentaireAnnexElementsFicheMateriel() {
+    let commentsToUpdate = [];
+    let commentToCreate = [];
+    this.comments.map(item => {
+      if (item.IdCategorieElementsAnnexesCommentaire === 0 && item.Commentaire !== '') {
+        commentToCreate.push(item);
+      } else if (item.IdCategorieElementsAnnexesCommentaire !== 0) {
+        commentsToUpdate.push(item);
+      }
+    });
+    console.log('commentsToUpdate ==> ', commentsToUpdate);
+    console.log('commentToCreate ==> ', commentToCreate);
+    if (commentToCreate.length > 0) {
+      this.postCommentaireAnnexElementsFicheMateriel(commentToCreate);
+    }
+    if (commentsToUpdate.length > 0) {
+      this.putCommentaireAnnexElementsFicheMateriel(commentsToUpdate);
+    }
+  }
+
+  postCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) {
+    this.annexElementsService.postCommentaireAnnexElementsFicheMateriel(comments)
+      .subscribe(data => {
+        console.log('POST elements annexes comments with succes ! ', data);
+      }, error => {
+        console.error('ERROR POST elements annexes comments !', error);
+      });
+  }
+
+  putCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) {
+    this.annexElementsService.putCommentaireAnnexElementsFicheMateriel(comments)
+      .subscribe(data => {
+        console.log('PUT elements annexes comments with succes ! ', data);
+      }, error => {
+        console.error('ERROR PUT elements annexes comments !', error);
+      });
+  }
+
 }

@@ -41,7 +41,7 @@ import {
     TreeViewComponent,
     MenuItemModel,
     ContextMenuComponent,
-    SidebarComponent
+    SidebarComponent,
 } from '@syncfusion/ej2-angular-navigations';
 import {
     EventSettingsModel,
@@ -59,6 +59,7 @@ import {
     MonthAgendaService,
     Schedule,
     ResizeEventArgs,
+    DragEventArgs
 } from '@syncfusion/ej2-angular-schedule';
 
 // Locale Data Imports
@@ -159,7 +160,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public allCoordinateurs: Coordinateur[];
 
     /******** SCHEDULER INIT *******/
-    public rowAutoHeight: Boolean = true;
+    public rowAutoHeight: Boolean = false;
     public dataContainersByRessourceStartDateEndDate;
     public containerData: EventModel[] = [];
     public workOrderData: EventModel[] = [];
@@ -489,6 +490,13 @@ public scrollto
 
     ngOnDestroy() {
         this.onDestroy$.next();
+    }
+
+    onDragStart(args: DragEventArgs): void {
+        console.log('args =======> ', args);
+        // args.navigation = { enable: true, timeDelay: 1000 };
+        args.navigation = { enable: true, timeDelay: 2000 };
+        args.scroll.enable = false;
     }
 
     public disabledrefresh: boolean
@@ -2991,15 +2999,18 @@ public valueOperateur
     onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
         event.interval = 0;
         console.log('ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo', event)
-        this.tabInstance.select(tabIndex);
-        if (document.body.style.cursor === 'not-allowed') {
-            document.body.style.cursor = '';
-        }
-        if (event.name === 'nodeDragging') {
-            let dragElementIcon: NodeListOf<HTMLElement> =
-                document.querySelectorAll('.e-drag-item.treeview-external-drag .e-icon-expandable') as NodeListOf<HTMLElement>;
-            for (let i: number = 0; i < dragElementIcon.length; i++) {
-                dragElementIcon[i].style.display = 'none';
+        if(event.name === 'nodeDragging') {
+            console.log('nodeDragging event => ', event)
+            this.tabInstance.select(tabIndex);
+            if (document.body.style.cursor === 'not-allowed') {
+                document.body.style.cursor = '';
+            }
+            if (event.name === 'nodeDragging') {
+                let dragElementIcon: NodeListOf<HTMLElement> =
+                    document.querySelectorAll('.e-drag-item.treeview-external-drag .e-icon-expandable') as NodeListOf<HTMLElement>;
+                for (let i: number = 0; i < dragElementIcon.length; i++) {
+                    dragElementIcon[i].style.display = 'none';
+                }
             }
         }
    

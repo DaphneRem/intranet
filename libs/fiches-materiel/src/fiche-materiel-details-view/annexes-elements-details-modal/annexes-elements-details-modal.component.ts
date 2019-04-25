@@ -8,6 +8,7 @@ import {
   AnnexElementSubCategory,
   AnnexElementFicheMAteriel
 } from '../../models/annex-element';
+import { AnnexElementCommentsFicheMAteriel } from '../../models/annex-elements-comments';
 
 @Component({
   selector: 'annexes-elements-details-modal',
@@ -24,6 +25,7 @@ export class AnnexesElementsDetailsModalComponent implements OnInit {
   public annexElementsCategories;
   public annexElementsAllSubCategories;
   public annexesElementsFicheMateriel;
+  public comments: AnnexElementCommentsFicheMAteriel[];
 
   constructor(
     private modalService: NgbModal,
@@ -34,6 +36,7 @@ export class AnnexesElementsDetailsModalComponent implements OnInit {
     this.getAnnexElementsCategories(); // with comments
     this.getAnnexElementsAllSubCategories();
     this.getAnnexElementsFicheMateriel(this.IdFicheMateriel);
+    this.getCommentaireAnnexElementsFicheMateriel(this.IdFicheMateriel);
   }
 
   openLg(annexesElements) {
@@ -60,7 +63,7 @@ export class AnnexesElementsDetailsModalComponent implements OnInit {
 
 /******************************** GET ANNEXES ELEMENTS *******************************/
 
-  getAnnexElementsFicheMateriel(IdFicheMateriel) {
+  getAnnexElementsFicheMateriel(IdFicheMateriel: number) {
     this.annexElementsService
       .getAnnexElementsFicheMateriel(IdFicheMateriel)
       .subscribe(data => {
@@ -88,6 +91,17 @@ export class AnnexesElementsDetailsModalComponent implements OnInit {
       .subscribe(data => {
         console.log(data);
         this.annexElementsAllSubCategories = data;
+      });
+  }
+
+/*************** Comments *****************/
+
+  getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel: number) {
+    console.log('IdFicheMateriel => ', IdFicheMateriel);
+    this.annexElementsService.getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel)
+      .subscribe(data => {
+        console.log('Commentaire Elements Annexes Fiches Matériel ============================================>', data);
+        this.comments = data;
       });
   }
 

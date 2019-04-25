@@ -26,12 +26,25 @@
                             </label>
                         </div>
                     </div>
-                    <label>Commentaires :</label>
-                    <textarea 
-                        class="form-control md-textarea col-lg-11"
-                        id="{{category.IdLibCategorieElementsAnnexes}}" 
-                        name="{{category.IdLibCategorieElementsAnnexes}}" 
-                        type="text"></textarea>
+                    <label>Commentaire :</label>
+                    <div *ngFor="let comment of comments">
+                        <textarea 
+                            *ngIf="comment.idLibCategorieElementsAnnexes === category.IdLibCategorieElementsAnnexes"
+                            [(ngModel)]="comment.Commentaire"
+                            class="form-control md-textarea col-lg-11"
+                            id="{{category.IdLibCategorieElementsAnnexes}}" 
+                            name="{{category.IdLibCategorieElementsAnnexes}}" 
+                            type="text">
+                        </textarea>
+                        <!-- <textarea 
+                            *ngIf="!checkCommentExistInModel(comment)"
+                            [(ngModel)]="newComment"
+                            class="form-control md-textarea col-lg-11"
+                            id="{{category.IdLibCategorieElementsAnnexes}}" 
+                            name="{{category.IdLibCategorieElementsAnnexes}}" 
+                            type="text">
+                        </textarea> -->
+                    </div>
                     <label *ngIf="category.Libelle === 'Presse'">Commentaires Presse :</label>
                     <textarea 
                         *ngIf="category.Libelle === 'Presse'"

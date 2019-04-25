@@ -55,11 +55,19 @@ button {
                 }
             }
             .items-sub-category {
-                margin-left: 25px;
+                // margin-left: 25px;
                 font-weight: bold;
             }
-            .comment-sub-category {
-                margin-left: 30px;
+            .comment {
+                // border: 1px #e4e2e2 solid;
+                .comment-sub-category {
+                    border-radius: 2px;
+                    padding: 10px;
+                    max-height: 80px;
+                    min-height: 50px;
+                    overflow-y: auto;
+                    margin-bottom: 10px;
+                }
             }
         }
     }

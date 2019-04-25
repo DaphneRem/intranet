@@ -23,11 +23,15 @@
                           </p>
                       </div>
                   </div>
-                  <label class="items-sub-category">Commentaires :</label>
-                  <p class="comment-sub-category">Commentaire provisoire</p>
+                    <div *ngFor="let comment of comments" class="comment">
+                        <div *ngIf="comment.idLibCategorieElementsAnnexes === category.IdLibCategorieElementsAnnexes">
+                            <label class="items-sub-category">Commentaire :</label>
+                            <p class="comment-sub-category">{{comment.Commentaire !== '' ? comment.Commentaire : '/'}}</p>
+                        </div>
+                    </div>
                     <!-- <p class="comment-sub-category">{{category.Fiche_Mat_CategorieElementsAnnexesCommentaire | json}}</p> -->
-                  <label *ngIf="category.Libelle === 'Presse'" class="items-sub-category">Commentaires Presse:</label>
-                  <p *ngIf="category.Libelle === 'Presse'" class="comment-sub-category">Commentaire provisoire</p>
+                  <label *ngIf="category.Libelle === 'Presse'" class="items-sub-category">Commentaire Presse:</label>
+                  <p *ngIf="category.Libelle === 'Presse'" class="comment-sub-category">/</p>
                 </div>
             </div>
         </div>

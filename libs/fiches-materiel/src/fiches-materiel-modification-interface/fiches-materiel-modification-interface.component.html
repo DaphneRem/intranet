@@ -29,6 +29,7 @@
       [acceptationIsValid]="acceptationIsValid"
       [premiereDiff]="premiereDiff"
       [accesLabo]="accesLabo"
+      [comments]="comments"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
     <!-- {{annexElementsFicheMateriel | json}} -->
@@ -610,8 +611,11 @@
             <annexes-elements-modification-modal 
               [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
               (newStateElementsAnnexNgModel)="displayStateElementsAnnexNgModel($event)"
+              (newComments)="displaynewEAComments($event)"
               [selectionType]="selectionType"
               [annexElementsNgModel]="annexElementsNgModel"
+              [comments]="comments"
+              [refreshEACommentModel]="refreshEACommentModel"
               [annexElementsFicheMateriel]="annexElementsFicheMateriel">
             </annexes-elements-modification-modal>
           </div>
@@ -847,6 +851,7 @@
       [acceptationIsValid]="acceptationIsValid"
       [premiereDiff]="premiereDiff"
       [accesLabo]="accesLabo"
+      [comments]="comments"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
   </form>

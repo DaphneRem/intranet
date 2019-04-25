@@ -253,23 +253,27 @@ table {
 /deep/  .e-schedule .e-vertical-view .e-date-header-wrap table tbody td{
     width: 25%;
 }
+
 /deep/ .e-schedule .e-timeline-view .e-work-cells{
-    height:100px;
-
+    max-height:100px;
+    height: 100px;
+    min-height: 100px,
 }
+
 /deep/ .e-schedule .e-timeline-view .e-resource-cells{
-    height:100px;
-  
+    max-height:100px;
+    height: 100px;
+    min-height: 100px,
 }
-
 
 /deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
-  height:160px
+    height: 100px;
+    min-height: 100px,
 
 }
 /deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
-    height:160px;
- 
+    height: 100px;
+    min-height: 100px,
 }
 
 /deep/ .e-schedule .e-schedule-table > tbody > tr > td{
@@ -505,9 +509,9 @@ overflow: scroll
     background : black;
     z-index:9999;
 }
-// /deep/ .e-schedule .e-schedule-toolbar .e-active-view .e-tbar-btn-text {
-//     color: #e3165b
-// }
+/deep/ .e-schedule .e-schedule-toolbar .e-active-view .e-tbar-btn-text {
+    color: #e3165b
+}
 
 /deep/ .e-tab .e-tab-header .e-toolbar-items {
     background: #fafafa;

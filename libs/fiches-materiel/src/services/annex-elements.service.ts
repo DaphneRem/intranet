@@ -12,8 +12,9 @@ import {
   AnnexElementStatus,
   AnnexElementCategory,
   AnnexElementSubCategory,
-  AnnexElementFicheMAteriel
+  AnnexElementFicheMAteriel,
 } from '../models/annex-element';
+import { AnnexElementCommentsFicheMAteriel } from '../models/annex-elements-comments';
 
 // temporary imports :
 import {
@@ -24,7 +25,8 @@ import {
   urlCategoryAnnexElements,
   urlAllSubCategoryAnnexElements,
   urlSubCategoryByCategoryAnnexElements,
-  urlCategoryCommentAnnexElements
+  urlCategoryCommentAnnexElements,
+  urlElementsAnnexesFMComments
 } from '../../../../.privates-url';
 
 const httpOptions = {
@@ -101,18 +103,27 @@ export class AnnexElementsService {
 
 
   /* COMMENTAIRES CATEGORY EA */
-  putCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementFicheMAteriel[]> {
+  getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel): Observable<AnnexElementCommentsFicheMAteriel[]> {
     return this.http
-      .put<AnnexElementFicheMAteriel[]>(
+      .get(urlFicheMateriel + urlElementsAnnexesFMComments + IdFicheMateriel)
+      .map((res: any) => {
+        console.log(res);
+        return res as AnnexElementCommentsFicheMAteriel[];
+      });
+  }
+
+  putCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementCommentsFicheMAteriel[]> {
+    return this.http
+      .put<AnnexElementCommentsFicheMAteriel[]>(
         urlFicheMateriel + urlCategoryCommentAnnexElements,
         annexesElements
       )
       .pipe(catchError(this.handleError));
   }
 
-  postCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementFicheMAteriel[]> {
+  postCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementCommentsFicheMAteriel[]> {
     return this.http
-      .post<AnnexElementFicheMAteriel[]>(
+      .post<AnnexElementCommentsFicheMAteriel[]>(
         urlFicheMateriel + urlCategoryCommentAnnexElements,
         annexesElements
       )

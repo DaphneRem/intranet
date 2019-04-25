@@ -93,12 +93,12 @@
 
 
             <ejs-schedule #scheduleObj 
+                (dragStart) = "onDragStart($event)"
                 locale="fr-CH"
                 (eventClick)="onEventClick()"
                 (popupOpen)="onPopupOpen($event)" 
                 cssClass='schedule-drag-drop' 
                 width='100%'
-                
                 [group]="group" 
                 [currentView]="currentView" 
                 [selectedDate]="selectedDate" 
@@ -113,11 +113,8 @@
                 [currentView]="currentView"
                 (change)="onChange($event)"
                 [firstDayOfWeek]="1"
-                
-          
-                
-                >
-                <!-- [rowAutoHeight]="rowAutoHeight"  -->
+                [rowAutoHeight]="rowAutoHeight">
+              
                 <!-- (renderCell)="onRenderCell($event)" -->
                 <e-resources>
                     <e-resource 

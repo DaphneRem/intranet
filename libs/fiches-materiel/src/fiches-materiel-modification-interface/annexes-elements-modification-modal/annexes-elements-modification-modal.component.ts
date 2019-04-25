@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AnnexElementsService } from '../../services/annex-elements.service';
@@ -9,6 +9,8 @@ import {
   AnnexElementFicheMAteriel
 } from '../../models/annex-element';
 
+import { AnnexElementCommentsFicheMAteriel } from '../../models/annex-elements-comments';
+
 @Component({
   selector: 'annexes-elements-modification-modal',
   templateUrl: './annexes-elements-modification-modal.component.html',
@@ -18,17 +20,22 @@ import {
   ],
   providers: [AnnexElementsService]
 })
-export class AnnexesElementsModificationModalComponent implements OnInit {
+export class AnnexesElementsModificationModalComponent implements OnInit, OnChanges {
   @Input() allIdSelectedFichesMateriel;
   @Input() annexElementsFicheMateriel;
   @Input() selectionType;
   @Input() annexElementsNgModel;
+  @Input() comments: AnnexElementCommentsFicheMAteriel[];
+  @Input() refreshEACommentModel;
 
   @Output() newStateElementsAnnexNgModel = new EventEmitter();
+  @Output() newComments: EventEmitter<AnnexElementCommentsFicheMAteriel[]> = new EventEmitter();
 
   // LIB variables
   public annexElementsCategories;
   public annexElementsAllSubCategories;
+  public newEAComments: AnnexElementCommentsFicheMAteriel[] = [];
+
 
   constructor(
     private modalService: NgbModal,
@@ -43,6 +50,26 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
     console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    const refreshEACommentModel = changes.refreshEACommentModel;
+    console.log('------------------------> refreshEACommentModel ', refreshEACommentModel);
+    if (!refreshEACommentModel.firstChange) {
+      console.log('NOT FIRST CHANGE !!!!!!!!');
+      const com: SimpleChange = changes.comments;
+      this.comments = com.currentValue;
+      this.displayNewObjectEAComments(this.annexElementsCategories);
+    }
+
+    // console.log('comment before change format other time ==> ', this.comments);
+    // console.log(this.init);
+    // this.comments.filter((a, b) => this.comments.indexOf(a) === b);
+    // if (this.init > 0) {
+    //   this.displayNewObjectEAComments(this.annexElementsCategories);
+    //   console.log('====> displayNewObjectEAComments');
+    // }
+    // this.init++;
+  }
+
   openLg(annexesElementsToModif) {
     this.modalService.open(annexesElementsToModif, { size: 'lg' });
   }
@@ -52,7 +79,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
 /*****************************************************************************************/
   displayCheckedElements(id) {
     let checked = [];
-    console.log(this.annexElementsFicheMateriel);
+    // console.log(this.annexElementsFicheMateriel);
     this.annexElementsFicheMateriel.map(item => {
       if (item.IdPackageAttendu === id && item.IsValid) {
         console.log(item);
@@ -62,7 +89,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
     if (checked.length > 0) {
       return true;
     } else {
-      console.log('non non non non');
+      // console.log('non non non non');
       return false;
     }
   }
@@ -145,6 +172,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
       .subscribe(data => {
         this.annexElementsCategories = data;
         console.log(data);
+        this.displayNewObjectEAComments(this.annexElementsCategories);
       });
   }
 
@@ -165,7 +193,119 @@ export class AnnexesElementsModificationModalComponent implements OnInit {
       });
   }
 
-/*****************************************************************************************/
+/**************************** Elements annexes comments ******************************/
+
+  displayNewObjectEAComments(annexElementsCategories) {
+    this.newEAComments = [];
+    console.log('this.comments ==> ', this.comments);
+    console.log('annexElementsCategories ==> ', annexElementsCategories);
+    console.log('annexElementsCategories ==> ', this.newEAComments);
+    let categories = [];
+    this.annexElementsCategories.map(item => {
+      if (this.comments.length > 0) {
+        this.comments.map(comment => {
+          console.log(comment);
+          if (comment.idLibCategorieElementsAnnexes === item.IdLibCategorieElementsAnnexes) {
+            console.log('comment idcategory same => ', comment);
+            this.newEAComments.push(comment);
+            categories.push(item.IdLibCategorieElementsAnnexes);
+            console.log('categories ===> ', categories);
+          } else {
+            console.log(this.comments.includes(comment));
+            if (!this.comments.includes(comment)) {
+              this.newEAComments.push({
+                IdCategorieElementsAnnexesCommentaire: 0,
+                idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+                IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
+                Commentaire: ''
+              });
+              console.log('comment idcategory different => ', comment);
+            }
+          }
+      });
+    } else {
+      this.newEAComments.push({
+        IdCategorieElementsAnnexesCommentaire: 0,
+        idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+        IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
+        Commentaire: ''
+      });
+      console.log('category without comment => ', item);
+
+    }
+    console.log('COMMENT ALL AFTER change model ===============================================================> ', this.newEAComments);
+    });
+    this.annexElementsCategories.map(item => {
+      if (!categories.includes(item.IdLibCategorieElementsAnnexes)) {
+        this.newEAComments.push({
+          IdCategorieElementsAnnexesCommentaire: 0,
+          idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+          IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
+          Commentaire: ''
+        });
+      }
+     });
+    this.comments = this.newEAComments;
+    this.newComments.emit(this.newEAComments);
+
+
+
+
+
+
+    // this.newEAComments = [];
+    // console.log('this.comments ==> ', this.comments);
+    // console.log('annexElementsCategories ==> ', annexElementsCategories);
+    // console.log('annexElementsCategories ==> ', this.newEAComments);
+    // let categories = annexElementsCategories;
+    // categories.map(item => {
+    //   if (this.comments.length > 0) {
+    //     this.comments.map(comment => {
+    //       if (comment.idLibCategorieElementsAnnexes === item.IdLibCategorieElementsAnnexes) {
+    //         console.log('comment idcategory same => ', comment);
+    //         this.newEAComments.push(comment);
+    //       } else {
+    //         console.log(this.comments.includes(comment));
+    //         if (!this.comments.includes(comment)) {
+    //           this.newEAComments.push({
+    //             IdCategorieElementsAnnexesCommentaire: 0,
+    //             idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+    //             IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
+    //             Commentaire: ''
+    //           });
+    //           console.log('comment idcategory different => ', comment);
+    //         }
+    //       }
+    //   });
+    // } else {
+    //   this.newEAComments.push({
+    //     IdCategorieElementsAnnexesCommentaire: 0,
+    //     idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+    //     IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
+    //     Commentaire: ''
+    //   });
+    //   console.log('category without comment => ', item);
+
+    // }
+    // console.log('COMMENT ALL AFTER change model ===============================================================> ', this.newEAComments);
+    // });
+    // this.comments = this.newEAComments;
+    // this.newComments.emit(this.newEAComments);
+  }
+
+  checkCommentExistInModel(comment): boolean {
+    let commentExist = [];
+    this.comments.map(item => {
+      if (item.idLibCategorieElementsAnnexes === comment.idLibCategorieElementsAnnexes) {
+        commentExist.push(item);
+      }
+    });
+    if (commentExist.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
 /************************** Buttons 'Elements annexes' *****************************/
 
