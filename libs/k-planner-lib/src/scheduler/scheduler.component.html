@@ -39,14 +39,14 @@
                                     <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
                                 </div>
                                     </td> -->
-                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                            <!-- <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
                             </td>
                             <td *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
-                            </td>
+                            </td> -->
                         <!-- </tr>
                         <tr *ngIf="scheduleObj.currentView =='TimelineDay'  "  style="height: 40px"> -->
                             <!-- <td  >
@@ -54,14 +54,14 @@
                                     <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
                                 </div>
                                     </td> -->
-                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineDay'" >
+                            <!-- <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
                             </td>
                             <td *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
-                            </td>
+                            </td> -->
                        
                              <!-- <td style="width: 10%;" >
                                 <div>
@@ -275,7 +275,7 @@
                                 >
                                     <div id="waiting">
                                         <div id="waitdetails" >
-                                            <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} ep {{dataWorkOrder.numepisode}} </div>
+                                            <div id="waitlist">  {{dataWorkOrder.titreoeuvre}}  {{dataWorkOrder.numepisode}} </div>
                                             <div id="waitcategory">   {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}}
                                             </div>
