@@ -379,8 +379,7 @@ public scrollto
             
             }
 
-                     console.log(eKey)
-                     console.log(this.scheduleObj ,scheduleElement )
+            
             // if (this.filtre) {
             //  refreshEvents   if (this.zoom === true)  overflowY{
               
@@ -544,6 +543,14 @@ public scrollto
         this.scheduleObj.refresh();
         this.openEditorCount = 0;
 
+        if ( this.searchString != undefined) {
+            console.log("clic bouton refresh ")
+            this.searchwo.value = ""
+             this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
+        } else {
+               }
+  
+
 
     }
     public disabledrefreshBacklog
@@ -553,17 +560,25 @@ public scrollto
         console.log('refresh workorders backlog click');
         this.workOrderData = [];
         this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
-         if(!this.navigation){
-        if(this.searchString != undefined  ){
-      this.searchwo.value =""    
+
+        if (!this.navigation && (this.searchwo.value != undefined  )) {
+            console.log("clic bouton refresh ", this.argsKeyboardEvent)
+            this.searchwo.value = ""
+             this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
+        }
+
+  setTimeout(() => {
+    if (this.navigation && (this.searchwo.value != undefined  )) {
+    
+        this.searchwo.value = this.argsKeyboardEvent.key
+         this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
+         this.fieldMonteur['dataSource'] =     this.treeObj.getTreeData()
+         console.log("clic bouton navigation", this.fieldMonteur['dataSource'])
            }
-         }else{
-    if(this.searchString != undefined  ){
-        this.searchwo.value = this.searchString    
-             }
-}  
-this.navigation = false
-             
+    this.navigation = false
+  }, 100);
+      
+   
     }
 
     // getAllCoordinateurs() {
@@ -1018,7 +1033,7 @@ this.navigation = false
 
     getWorkOrderByidGroup(idGroup) {
         console.log("++++++++++++++++++++++", this.workOrderData);
-        
+        this.workOrderData = [];
         this.workorderService
         .getWorkOrderByidGroup(idGroup)
         .pipe(takeUntil(this.onDestroy$))
@@ -2214,9 +2229,10 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     public navigateTimelineDay;
     public navigation
     onNavigating(args) {
-this.navigation = true
+  
    /***** refresh backlog********* */
-this.refreshWorkordersBacklog()
+   this.navigation = true
+   this.refreshWorkordersBacklog()
 
         console.log(this.scheduleObj, '=========================================================================');
 
@@ -2224,7 +2240,8 @@ this.refreshWorkordersBacklog()
       
         console.log(' ============================> NEW NAVIGATION ====================> ', args);
         console.log(this.field);
-        // this.timelineResourceDataOut = [];
+        
+  
         console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
 
      
@@ -2232,8 +2249,8 @@ this.refreshWorkordersBacklog()
          
         console.log(this.departmentDataSource);
         // console.log('this.timelineResourceDataOut vide => ', this.timelineResourceDataOut)
-        this.startofDay = moment(this.scheduleObj.activeView.renderDates[0]).toDate()
-        this.endofDay = moment(this.scheduleObj.activeView.renderDates[0]).add(1, 'd').toDate()
+        this.startofDay = moment(args.currentDate).toDate()
+        this.endofDay =  moment(args.currentDate).add(1, 'd').toDate()
 
         this.startofWeek = moment().startOf('week').toDate(),
             this.endofWeek = moment().endOf('week').add(1, 'd').toDate(),
@@ -2264,7 +2281,7 @@ this.refreshWorkordersBacklog()
         }
 
 
-        if (this.scheduleObj.currentView === 'TimelineDay' && args.currentView === 'TimelineDay') {
+        if ( args.currentView === 'TimelineDay') {
            
             console.log('TIMELINEDAY !!!!')
             console.log(this.open, "-------------")
@@ -2280,8 +2297,8 @@ this.refreshWorkordersBacklog()
                     let indexSalle = this.salleDataSource.indexOf(salle);
                     this.getContainersByRessourceStartDateEndDate(
                         salle.CodeRessource,
-                        startofDay,
-                        endofDay,
+                        this.startofDay,
+                        this.endofDay,
                         salle.CodeSalle,
                         indexSalle
                     );
@@ -2289,6 +2306,7 @@ this.refreshWorkordersBacklog()
             }
             if (args.action === 'view') {
                 console.log('TIMELINEDAY !!!! => view contition');
+          
                 this.timelineResourceDataOut = []
                 console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
                 this.salleDataSource.forEach(salle => {
@@ -2304,7 +2322,9 @@ this.refreshWorkordersBacklog()
                         salle.CodeSalle,
                         indexSalle
                     );
+                  
                 });
+                
                 console.log("currentView date ", this.startofDay, this.endofDay)
                 console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
 
@@ -2559,22 +2579,63 @@ this.refreshWorkordersBacklog()
         if (this.filtre == true) {
             this.filtre = true
         }
-        if( this.searchString != undefined && !this.cancel){
- 
-            this.searchString = this.searchwo.value
-            this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
-           console.log(  this.searchwo.value , this.searchString )
-           console.log( typeof this.searchwo.value)
-       }else{
+    
 
-}
     }
 
+    onEventRendered(args: EventRenderedArgs): void {
+
+        let couleur
+
+
+        if (args.data.AzaIsPere) {
+            return;
+
+        } else {
+
+            this.colorStatut.forEach(statut => {
+                if (args.data.Statut === statut['Id']) {
+                    couleur = statut['Color']
+                }
+            })
+            this.workOrderColor = couleur
+
+
+
+
+            if (this.scheduleObj.currentView === 'MonthAgenda') {
+                (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
+                (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
+                args.element.style.borderLeftColor = this.workOrderColor;
+                console.log('statut', args)
+
+            } else {
+                if (this.scheduleObj.currentView === 'Agenda') {
+                    (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
+                    (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
+                    // args.element.style.borderLeftColor =  this.workOrderColor;
+
+                } else {
+                    (args.element.firstChild as HTMLElement).style.backgroundColor = this.workOrderColor;
+                    args.element.style.backgroundColor = this.workOrderColor;
+                }
+            }
+        }
+
+
+
+
+    }
+
+
+
+
     public couleur;
-   public cancel
+    public cancel
     public zoom: boolean = true;
     public CellClick: boolean = true;
-    public hourContainer
+    public hourContainer;
+    public elementRow
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         // this.filtre = true
@@ -2673,15 +2734,17 @@ this.refreshWorkordersBacklog()
                     });
 
 
-                    console.log(this.couleur, '**********************************couleur*************************************')
+                    console.log(this.couleur, this.workOrderColor, '**********************************couleur*************************************')
 
                     row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
 
 
-                    let element = document.getElementById('id' + i)
-
+                   let element = document.getElementById('id' + i)
+                if(this.workOrderColor != undefined){
                     element.style.backgroundColor = this.workOrderColor
-
+                }else{
+                    element.style.backgroundColor = '#95b9'
+                }
                 }
                 for (let e = 0; e < workOrders.length; e++) {
                     let child = document.getElementById(`id${e}`);
@@ -2848,9 +2911,17 @@ this.refreshWorkordersBacklog()
                     if (containerOperateur.length === 0) {
                         console.log('containerOperateur.length = 0', containerOperateur);
                         this.createDrowDownOperteurInput(args, container, inputEle);
+                     console.log("==>>",this.drowDownOperateurList)   
                         this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
+                       
+
+                        console.log("==>>",this.drowDownOperateurList)
                         console.log(args.data.Operateur);
                     }
+                    this.drowDownOperateurList.dataSource = this.fieldMonteur['dataSource'].map(item => {
+                        return { text: item.Username, value: item.CodeRessource };
+                    });
+                    this.drowDownOperateurList.dataSource.unshift({ text: 'Aucun Opérateur', value: 0 });
                     let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
                     let repeat = document.getElementsByClassName('e-editor');
                     let title = document.getElementsByClassName('e-subject-container');
@@ -2997,6 +3068,7 @@ public valueOperateur
         // this.drowDownMonteurs = this.monteurDataSource.map(item => {
         //     return { text: item.Username, value: item.CodeRessource };
         // });
+ 
    
         this.drowDownMonteurs = this.fieldMonteur['dataSource'].map(item => {
             return { text: item.Username, value: item.CodeRessource };
@@ -3434,22 +3506,8 @@ public valueOperateur
         }
         // console.log('customActionBegin()');
         // this.customActionBegin(event);
-        if(event.requestType === "viewNavigate" ){
-            if( this.searchString != undefined && !this.cancel){
-     
-                 this.searchString = this.searchwo.value
-                 this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
-                console.log(  this.searchwo.value , this.searchString )
-                console.log( typeof this.searchwo.value)
-            }else{ 
-            
+        
     
-            }} else {
-                if(event.requestType === "dateNavigate"){
-                    this.searchString = this.searchwo.value
-                 this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
-                }
-            }
 
     }
 
@@ -3479,8 +3537,7 @@ public valueOperateur
                 this.open = false;
 
             }
-            this.searchString = this.searchwo.value
-            this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
+           
             console.log(this.open, '----------------------------------------------')
         } else if ((args.requestType !== 'toolbarItemRendering') && (args.data.AzaIsPere)) { // RESIZE CONTAINER
             console.log('CALL CUSTOM ACTION BEGIN');
@@ -3523,11 +3580,18 @@ public valueOperateur
             //     )
             // };
         }
-        if(args.requestType === "dateNavigate"){
-            this.searchString = this.searchwo.value
-         this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
-        }
-
+    //     if(args.requestType === "dateNavigate"){
+    //         this.searchString = this.searchwo.value
+    //      this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
+    //     }
+    //     if( this.searchString != undefined && !this.cancel){
+ 
+    //         this.searchString = this.searchwo.value
+    //         this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
+    //        console.log(  this.searchwo.value , this.searchString )
+    //        console.log( typeof this.searchwo.value)
+       
+    //    }
 
     }
 
@@ -3612,8 +3676,9 @@ public valueOperateur
             // };
         } else if (this.deleteContainerAction) {
             console.log('delete container without call calcul function');
+            if(this.searchString != undefined){
             this.searchwo.value =""
-          
+        }
             // this.onFilter( this.searchwo.value , 0, this.argsKeyboardEvent)
         } else {
             this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -3633,23 +3698,7 @@ public valueOperateur
         this.navigateTimelineDay = false;
         this.eventClick = false;
 
-     if(e.requestType === "viewNavigate" ){
-        if( this.searchString != undefined && !this.cancel){
- 
-             this.searchString = this.searchwo.value
-             this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
-            console.log(  this.searchwo.value , this.searchString )
-            console.log( typeof this.searchwo.value)
-        }else{ 
-            
-
-        }} else {
-            if(e.requestType === "dateNavigate"){
-                this.searchString = this.searchwo.value
-             this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
-             
-            }
-        }
+  
     }
 
     /************************ DELETE ********************/
@@ -3921,7 +3970,7 @@ public searchoperateur
         }
         
      
-        if( this.searchoperateur.value != "" && !this.cancel){
+        if( this.searchStringM  != undefined && !this.cancel){
             this.searchStringM = this.searchoperateur.value
             this.onFilter(this.searchStringM , 1, this.argsKeyboardEvent)
                    console.log(  this.searchoperateur.value)
@@ -3984,7 +4033,7 @@ public searchoperateur
             // this.scheduleObj.refresh();
         }
 
-
+    
 
         console.log(this.timelineResourceDataOut, "...................")
     }
@@ -4148,7 +4197,7 @@ if (searchText.length >= 0) {
            
              console.log(this.searchwo.value)
              console.log(typeof this.searchwo.value)
-            console.log(this.searchString,'.......', this.searchValue)
+            console.log(this.searchString,'.......', )
             console.log(this.treeObj.getTreeData())
             if (this.searchString !== "" ) {
               new DataManager(this.field['dataSource']).executeQuery(new Query().
@@ -4323,51 +4372,7 @@ if (searchText.length >= 0) {
     /************************************************************************ ADD Color **********************************************************************************/
 
 
-    onEventRendered(args: EventRenderedArgs): void {
-
-        let couleur
-
-
-        if (args.data.AzaIsPere) {
-            return;
-
-        } else {
-
-            this.colorStatut.forEach(statut => {
-                if (args.data.Statut === statut['Id']) {
-                    couleur = statut['Color']
-                }
-            })
-            this.workOrderColor = couleur
-
-
-
-
-            if (this.scheduleObj.currentView === 'MonthAgenda') {
-                (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
-                (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
-                args.element.style.borderLeftColor = this.workOrderColor;
-                console.log('statut', args)
-
-            } else {
-                if (this.scheduleObj.currentView === 'Agenda') {
-                    (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
-                    (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
-                    // args.element.style.borderLeftColor =  this.workOrderColor;
-
-                } else {
-                    (args.element.firstChild as HTMLElement).style.backgroundColor = this.workOrderColor;
-                    args.element.style.backgroundColor = this.workOrderColor;
-                }
-            }
-        }
-
-
-
-
-    }
-
-
+   
 
 
 
@@ -4424,54 +4429,7 @@ if (searchText.length >= 0) {
 
     }
 
-    // public show = false
-    // globalSearch(args: KeyboardEvent): void {
-    //     let searchString: string = (args.target as HTMLInputElement).value;
-    //     if (searchString !== '') {
-    //       new DataManager(this.scheduleObj.getEvents()).executeQuery(new Query().
-    //         search(searchString, ['Name', 'description', 'Operateur','typetravail'], null, true, true)).then((e: ReturnOption) => {
-    //             console.log(e.result,"..........................")
-    //           if ((e.result as any).length > 0) {
-    //             this.showSearchEvents('show', e.result);
-    //             this.show = true
-    //           } else {
-    //             this.show = false
-    //             this.showSearchEvents('hide');
-    //           }
-    //         });
-    //     } else {
-    //       this.showSearchEvents('hide');
-    //     }
-    //   }
-    //   private showSearchEvents(type: string, data?: Object): void {
-    //     if (type === 'show') {
-    //       if (document.getElementById('grid').classList.contains('e-grid')) {
-    //         let gridObj: Grid = (document.querySelector('#grid') as EJ2Instance).ej2_instances[0] as Grid;
-    //         gridObj.dataSource = data;
-    //         gridObj.dataBind();
-    //       } else {
-    //         let gridObj: Grid = new Grid({
-    //           dataSource: data,
-    //           columns: [
-    //             { field: 'Name', headerText: 'Name', width: 180 },
-    //             { field: 'description', headerText: 'Description', width: 120 },
-    //             { field: 'Operateur', headerText: 'Operateur', width: 120 },
-    //             { field: 'typetravail', headerText: 'Type de travail', width: 180 },
-    //             { field: 'StartTime', headerText: 'StartTime', width: 120, format: { type: 'dateTime', format: 'M/d/y hh:mm a' } },
-    //             { field: 'EndTime', headerText: 'EndTime', width: 120, format: { type: 'dateTime', format: 'M/d/y hh:mm a' } },
-    //           ]
-    //         });
-    //         gridObj.appendTo(document.querySelector('#grid') as HTMLElement);
-    //         this.scheduleObj.element.style.display = 'none';
-    //       }
-    //     } else {
-    //       let gridObj: Object[] = (document.querySelector('#grid') as EJ2Instance).ej2_instances;
-    //       if (gridObj && gridObj.length > 0 && !(gridObj[0] as Grid).isDestroyed) {
-    //         (gridObj[0] as Grid).destroy();
-    //       }
-    //       this.scheduleObj.element.style.display = 'block';
-    //     }
-    //   }
+  
 
     onResizing(args:ResizeEventArgs){
 

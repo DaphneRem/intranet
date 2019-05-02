@@ -276,10 +276,10 @@ table {
     min-height: 100px,
 }
 
-/deep/ .e-schedule .e-schedule-table > tbody > tr > td{
-    // overflow: visible;
+// /deep/ .e-schedule .e-schedule-table > tbody > tr > td{
+//     // overflow: visible;
    
-}
+// }
 
 /deep/  .e-sidebar.e-right{
     // height: 795px;
@@ -432,7 +432,7 @@ table {
             font-size: 10px;
             text-align: center;
             margin-top: 5px;
-        }
+        } 
     }
     .operateur {
         // background-color: $operatorColor;
