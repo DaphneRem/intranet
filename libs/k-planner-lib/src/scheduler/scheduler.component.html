@@ -23,7 +23,7 @@
             </div>
             <div style="display: flex;">
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
-                <button  class="btn btn-info regie refresh-btn ml-3  btn-refresh" (click)="refreshScheduler()" [disabled]="disabledrefresh"   ><i class="icofont icofont-refresh"></i>Rafraichir</button>
+                <button  class="btn btn-info regie refresh-btn ml-3  " (click)="refreshScheduler()" [disabled]="disabledrefresh" id="btn-refresh"   ><i class="icofont icofont-refresh"></i>Rafraichir</button>
                 <input type="text" class="form-control form-control-info col-2 recherche" placeholder="Rechercher une régie..." #search (keyup)="onFilterRegie(search.value,$event )" (mousedown)="Filter()" value="" >
               
               
@@ -88,7 +88,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="schedule"   >
+            <div class="schedule" id="schedule" style="max-width: 100%">
 
 
 
@@ -210,11 +210,11 @@
                     <e-view option='TimelineMonth'   >
                             <ng-template #eventTemplate let-data  class="event" >
                                 <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
-                                    <div>
+                                    <div >
                                         <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
                                             <!-- <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div> -->
                                             <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} </u> <br> 
-                                          
+                                      
                                             <div *ngIf="data.Operateur" class="operateur mt-1 " [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
@@ -236,7 +236,7 @@
                    
                     </e-view> -->
                 </e-views>
-                
+            
             </ejs-schedule>
         
         </div>
@@ -253,13 +253,13 @@
                     <ng-template #content>
                         <div class="treeview-container">
                             <div class="title-container">
-                                <button (click)="refreshWorkordersBacklog()" class="btn btn-info regie refresh-btn-workorder btn-refresh" [disabled]="disabledrefreshBacklog" >
+                                <button id="btn-refreshWo" (click)="refreshWorkordersBacklog()" class="btn btn-info regie refresh-btn-workorder " [disabled]="disabledrefreshBacklog"   >
                                     <i class="icofont icofont-refresh"></i>
                                     Rafraichir
                                 </button>
                             </div>
                             <div class="input-group">
-                                <input type="text" id="searchwo" class="form-control recherche" placeholder="Rechercher..." #search (keyup)="onFilter(search.value,0,$event)" (mousedown)="Filter()" value="{{this.searchString}}" >
+                                <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search (keyup)="onFilter(search.value,0,$event)" (mousedown)="Filter()" value="{{this.searchString}}" >
                                 <!-- <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span> -->
                             </div>
 

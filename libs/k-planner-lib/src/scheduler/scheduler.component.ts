@@ -127,8 +127,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public scheduleObj: ScheduleComponent;
     @ViewChild('tooltip')
     public control: TooltipComponent;
-    @ViewChild('scheduleObjDay')
-    public scheduleObjDay: ScheduleComponent;
+  
     @ViewChild('treeObj')
     public treeObj: TreeViewComponent;
     @ViewChild('treeObjMonteur')
@@ -328,7 +327,8 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public valueMax: number = 60
     public value: number
     public valueAdd: number = 10
-
+    public refreshF4 : boolean
+    public navigation: boolean = false
     // public fistCallAction: boolean = false;
     // public deleteWorkorderAction: boolean = false;
     // public deleteContainerAction: boolean = false;
@@ -355,42 +355,71 @@ public scrollto
         console.log('*******constructor*******');
         // public departmentDataSource: Object[] = [];
 
+        document.body.addEventListener('keyup', (eKey: KeyboardEvent) => {
+            let btnrefresh = document.getElementById('btn-refresh');
+            let btnrefreshWo = document.getElementById('btn-refreshWo');
+            
+            if (eKey.keyCode === 115) {
+                console.log('press keyup ===>>')
+               
+             
+                // console.log(this.refreshF4,"=========>>>")
 
+              
+                // this.refreshScheduler()
+                // this.refreshWorkordersBacklog()
+
+           
+                
+                
+
+                if(  this.disabledrefresh || this.disabledrefreshBacklog ){
+                 btnrefresh[0].prop('disabled', true)
+                 btnrefreshWo[0].prop('disabled', true)
+
+                }else{
+                  
+                 btnrefresh.click()
+                 btnrefreshWo.click() 
+                }
+
+               
+            
+         
+            eKey.preventDefault()
+          console.log(btnrefresh,btnrefreshWo)
+      
+        }
+        })
+        
         this.value = 60
 
         document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
 
             let scheduleElement = document.getElementsByClassName('schedule');
-            let btnrefresh = document.getElementsByClassName('btn-refresh');
-            if (eKey.keyCode === 115) {
-                    // this.workOrderData = [];
-                  
-                    // this.timelineResourceDataOut = []
-                    // this.allDataWorkorders = []
-                    // this.departmentDataSource = [];
-                    // this.departmentDataSourceAll = [];
-                    // this.departmentGroupDataSource = [];
-                    // this.allDataContainers = [];
-                 
-                    this.refreshScheduler()
-                    this.refreshWorkordersBacklog()
-           
-                 
+          
+            let id = document.getElementById('schedule')
             
-            }
-
-            
+                 
             // if (this.filtre) {
             //  refreshEvents   if (this.zoom === true)  overflowY{
               
+                if (eKey.keyCode === 115) {
+         
+                 eKey.preventDefault()
+                 console.log('press keydown ===>>')
+            }
+
+
                     if (eKey.keyCode === 109 && scheduleElement) {
-                     
+                       
                         if (this.value < this.valueMax) {
-                            scheduleElement[0]["style"].overflowY= 'hidden'
+                            
+                          
                             this.value = this.value + this.valueAdd
                             this.scheduleObj.timeScale.interval = this.value;
-                          
-                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval,this.workHours);
+                   
+                            console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval);
                     
                             
 
@@ -404,16 +433,18 @@ public scrollto
 
 
                         }
-                        this.scheduleObj.resizeModule.scrollEdges.left = true
-                        this.scheduleObj.resizeModule.scrollEdges.right = true
+                     
+                     
+                        
                     } else {
+                
                         if (eKey.keyCode === 107 && scheduleElement) {
-                    
+               
                             if (this.value > this.valueAdd) {
                                 this.scrollto = true
                                 this.value = this.value - this.valueAdd
                                 this.scheduleObj.timeScale.interval = this.value
-                         
+                                
                                 // this.intervalValue = this.value.toLocaleString()
                                 // this.intervalValueDay = this.value.toLocaleString()
                                
@@ -425,10 +456,10 @@ public scrollto
                                     console.log(this.intervalValue)
                                 }
              
-                                console.log ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval,this.workHours );
+                                console.log ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.scheduleObj.timeScale.interval );
                             }
                         }
-               
+                     
                     }
 
                   
@@ -504,17 +535,18 @@ public scrollto
         this.disabledrefresh = true
         console.log('refresh scheduler click', this.disabledrefresh);
         this.timelineResourceDataOut = []
+        this.allDataWorkorders = []
+        this.departmentDataSource = [];
+        this.departmentDataSourceAll = [];
+        this.departmentGroupDataSource = [];
+        this.allDataContainers = [];
         this.openEditorCount = 0;
         console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.log('refresh scheduler click');
         console.log('isClicked : ', this.isClicked);
         console.log('this.refreshDateStart => ', this.refreshDateStart);
         console.log('this.refreshDateEnd => ', this.refreshDateEnd);
-        this.allDataWorkorders = []
-        this.departmentDataSource = [];
-        this.departmentDataSourceAll = [];
-        this.departmentGroupDataSource = [];
-        this.allDataContainers = [];
+        
 
         // this.departmentGroupDataSource = [];
         console.log('this.refreshDateStart : ', this.refreshDateStart);
@@ -560,24 +592,37 @@ public scrollto
         console.log('refresh workorders backlog click');
         this.workOrderData = [];
         this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
+        console.log("clic bouton refresh ", this.argsKeyboardEvent, this.navigation)
 
-        if (!this.navigation && (this.searchwo.value != undefined  )) {
-            console.log("clic bouton refresh ", this.argsKeyboardEvent)
+        if (!this.navigation || (this.searchString != undefined  )) {
+            let valueSearch = document.getElementsByClassName('recherche-wo');
+            console.log("clic bouton refresh ", valueSearch, this.argsKeyboardEvent)
             this.searchwo.value = ""
-             this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
-        }
+           
+            //  this.onFilter(a,0,this.argsKeyboardEvent)
 
-  setTimeout(() => {
-    if (this.navigation && (this.searchwo.value != undefined  )) {
-    
-        this.searchwo.value = this.argsKeyboardEvent.key
-         this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
-         this.fieldMonteur['dataSource'] =     this.treeObj.getTreeData()
-         console.log("clic bouton navigation", this.fieldMonteur['dataSource'])
-           }
-    this.navigation = false
-  }, 100);
-      
+           
+        }
+        if (this.navigation === true && (this.searchString != undefined  )) {   
+         
+            setTimeout(() => {
+                if(this.argsKeyboardEvent.keyCode !== undefined){
+                if(this.argsKeyboardEvent.keyCode === 8 ){
+              
+                }else{
+                 
+                    this.searchwo.value =  this.searchString
+                    this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
+                    this.fieldMonteur['dataSource'] = this.treeObj.getTreeData()
+                    console.log("clic bouton navigation", this.fieldMonteur['dataSource'])  
+                }
+         
+            }
+                         
+   
+            }, 50);
+        }
+                 this.navigation = false
    
     }
 
@@ -665,7 +710,8 @@ public scrollto
 
     getSalleByGroup(idGroup, start, end) {
         // this.toggleBtn.content = 'Voir autres Régies';
-
+        
+    
         console.log(this.departmentDataSource);
         console.log(this.departmentGroupDataSource);
         this.salleService
@@ -712,6 +758,7 @@ public scrollto
     }
 
     getSalleAll(currentGroup, start, end) {
+        this.departmentDataSourceAll = [];
         this.toggleBtn.iconCss = 'e-play-icon';
         this.salleService
         .getSalle()
@@ -802,6 +849,9 @@ public scrollto
 
     public lastSalleCall = false;
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
+        this.timelineResourceDataOut = []
+        this.allDataWorkorders = []
+       this.allDataContainers = [];
 
         let debut = moment(datedebut).format('YYYY-MM-DD').toString();
         let fin = moment(datefin).format('YYYY-MM-DD').toString();
@@ -856,6 +906,7 @@ public scrollto
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
                         // console.log('--------------------------------------------------indexSalle => ', indexSalle);
                         this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length, indexSalle);
+             
                     });
                     // console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
                     // timelineResourceDataOut
@@ -864,9 +915,9 @@ public scrollto
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
                     // console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
                     this.disabledrefresh = false
-                    console.log('refresh scheduler click', this.disabledrefresh);
-                 
                 
+                    this.refreshF4 = false
+               
                 } else {
                     // console.log('container not present for regie : ', coderessource, res);
                
@@ -1090,9 +1141,10 @@ public scrollto
                     // this.treeObj.refresh();
                     console.log('WorkOrderByidgroup', this.workOrderData);
                     console.log('this.fieldArray', this.field);
+                    this.disabledrefreshBacklog = false
                 }
             });
-            this.disabledrefreshBacklog = false
+          
     }
 
 
@@ -1170,7 +1222,7 @@ public scrollto
                     console.log('event after post and update id')
                     containerToCreate.Id_Planning_Container = res.Id_Planning_Container;
                     let workorderEventToUpdate = this.creationArray.filter(item => !item.AzaIsPere);
-                    console.log(workorderEventToUpdate);
+                    console.log('workorderEventToUpdate=> ',workorderEventToUpdate);
                     console.log('this.creationArray => ', this.creationArray);
                     if (workorderEventToUpdate.length > 0) {
                         this.createJustContainerAction = false;
@@ -2227,7 +2279,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     public agendaLastDate;
     public calcule;
     public navigateTimelineDay;
-    public navigation
+   
     onNavigating(args) {
   
    /***** refresh backlog********* */
@@ -2641,6 +2693,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         // this.filtre = true
         // this.zoom = true
         console.log(args);
+      
         // if (args.type === 'EventContainer') {
         //     args.data.element.innerText = `Plus`;
         //     // args.data.event = args.data.event[0]
@@ -3027,7 +3080,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             console.log(args, "-----------------------------------")
         }
 
-
+   
        
     }
 
@@ -3386,7 +3439,8 @@ public valueOperateur
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
-      
+        
+     
         if (event.requestType === 'eventChange') {
             this.zoom = true
 
@@ -3401,10 +3455,12 @@ public valueOperateur
                 this.sidebar.position = 'Right';
                 this.sidebar.animate = false;
             }
+          
         }
         if (event.requestType === 'eventCreate') {
             console.log('eventCreate');
             console.log(event.requestType);
+         
         }
         if (((event.requestType === 'eventCreate') || (event.requestType === 'eventCreated')) && !this.isTreeItemDropped) {
             // CREATE CONTAINER ON CELL WITHOUT EVENT CLICK
@@ -3636,7 +3692,8 @@ public valueOperateur
                     this.updateWorkOrder(e)
                 }
             }
-
+         
+         
 
             if (this.open == true) {
                 this.open = true;
@@ -3721,6 +3778,7 @@ public valueOperateur
             let newGroup = [];
             let selectedItem;
             let pere;
+             this.creationArray = [];
             this.timelineResourceDataOut.forEach(item => {
                 if (+item.Id === +data.Id && item.Name === data.Name) {
                     selectedItem = item;
@@ -4090,13 +4148,15 @@ public searchoperateur
 
 
     /************************************************************ Filter Monteur et régies ***********************************************************************************/
- 
+ public listeRegies
     onFilterRegie(search, args: KeyboardEvent) {
         this.filtreRegie = true
+        this.listeRegies = this.departmentGroupDataSource
+        console.log(this.listeRegies, '*******************************************')
         if (search.length >= 0) {
             this.zoom = false
             this.filtre = false
-            console.log(this.zoom, search.length, '*******************************************')
+           
         } else {
             if (search.length == 0) {
                 this.filtreRegie = false
@@ -4121,12 +4181,14 @@ public searchoperateur
                    this.departmentDataSource =  e.result as any
                 
                     } else{
-                        this.departmentDataSource = this.departmentGroupDataSource
+                        this.departmentDataSource = []
                     }
                   });
               }else{
                 this.departmentDataSource = this.departmentGroupDataSource
               }
+
+              
 
     }
 
@@ -4199,9 +4261,9 @@ if (searchText.length >= 0) {
              console.log(typeof this.searchwo.value)
             console.log(this.searchString,'.......', )
             console.log(this.treeObj.getTreeData())
-            if (this.searchString !== "" ) {
+            if (searchText !== "" ) {
               new DataManager(this.field['dataSource']).executeQuery(new Query().
-                search(this.searchString, ['typetravail', 'titreoeuvre', 'numepisode', 'libtypeWO','libchaine','coordinateurCreate'], null, true,true)).then((e: ReturnOption) => {
+                search(searchText, ['typetravail', 'titreoeuvre', 'numepisode', 'libtypeWO','libchaine','coordinateurCreate'], null, true,true)).then((e: ReturnOption) => {
                     console.log(e.result)
                     if ((e.result as any).length > 0) {
                      console.log(e.result,this.treeObj.fields['dataSource'] )
@@ -4428,8 +4490,7 @@ if (searchText.length >= 0) {
         // }
 
     }
-
-  
+    
 
     onResizing(args:ResizeEventArgs){
 
