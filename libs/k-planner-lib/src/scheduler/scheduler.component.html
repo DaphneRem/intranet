@@ -2,47 +2,55 @@
 
 
 
-    <!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
- 
+<!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
 <loader-animation *ngIf="!dataRegieReady"></loader-animation>
-
-<div *ngIf="dataRegieReady" class="control-section card" style="margin-bottom: 0;">
-        <!-- <div class="autre-planinngs">
-
-                <select class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)"
-                    style="width: 25%">
-                    <option value="Mon planning">Mon planning</option>
-                    <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
-                </select>  
-            </div>  -->
+<div *ngIf="dataRegieReady" class="control-section card">
+    <!-- <div class="autre-planinngs">
+        <select class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)"
+            style="width: 25%">
+            <option value="Mon planning">Mon planning</option>
+            <option *ngFor="let libelle of libGroupe" id="{{libelle.Code}}">{{libelle.Libelle}} </option>
+        </select>  
+    </div>  -->
     <div class="drag-sample-wrapper">
-
         <div class="schedule-container">
             <div class="title-container">
-                             
             </div>
-            <div style="display: flex;">
+            <div class="schedule-header">
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
-                <button  class="btn btn-info regie refresh-btn ml-3  " (click)="refreshScheduler()" [disabled]="disabledrefresh" id="btn-refresh"   ><i class="icofont icofont-refresh"></i>Rafraichir</button>
-                <input type="text" class="form-control form-control-info col-2 recherche" placeholder="Rechercher une régie..." #search (keyup)="onFilterRegie(search.value,$event )" (mousedown)="Filter()" value="" >
-              
-              
-                <select class="form-control form-control-info m-0 select-plannings float-right mt-1 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)">
+                <button  
+                    class="btn btn-info regie refresh-btn ml-3 btn-refresh" 
+                    (click)="refreshScheduler()" 
+                    [disabled]="disabledrefresh" 
+                    id="btn-refresh">
+                    <i class="icofont icofont-refresh"></i>Rafraichir
+                </button>
+                <input type="text" 
+                    class="form-control form-control-info col-2 recherche" 
+                    placeholder="Rechercher une régie..." 
+                    #search 
+                    (keyup)="onFilterRegie(search.value,$event )" 
+                    (mousedown)="Filter()" 
+                    value="" >
+                <select class="form-control form-control-info m-0 select-plannings float-right mt-1 " 
+                    placeholder="Autres plannings" 
+                    #selectplan 
+                    (change)="onSelectPlannig(selectplan.value)">
                     <option value={{this.idCoordinateur}}>Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" value={{libelle.Code}}>{{libelle.Libelle}} </option>
                 </select>
                 <table class="table-light table-sm" id="property" title="Properties" >
                     <tbody>
-                        <tr style="height: 40px"  >
+                        <tr>
                             <!-- <td  >
                                 <div class="property-panel-content">
                                     <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
                                 </div>
                                     </td> -->
-                            <!-- <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                            <!-- <td class="interval-label" *ngIf="scheduleObj.currentView =='TimelineWeek'">
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
-                            </td>
-                            <td *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                            </td> -->
+                            <!-- <td class="interval" *ngIf="scheduleObj.currentView =='TimelineWeek'">
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
@@ -53,16 +61,15 @@
                                 <div class="property-panel-content">
                                     <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
                                 </div>
-                                    </td> -->
-                            <!-- <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineDay'" >
+                            </td> -->
+                            <!-- <td class="interval-label" *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
                             </td>
                             <td *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
-                            </td> -->
-                       
+                            </td> -->                 
                              <!-- <td style="width: 10%;" >
                                 <div>
                                     <ejs-timepicker #ejStartTimePicker id="startTime"  format='HH:mm' [strictMode]='isStrictMode' ></ejs-timepicker>
@@ -77,8 +84,7 @@
                                 <div>
                                     <ejs-timepicker #ejEndTimePicker id="endTime" format='HH:mm' [strictMode]='isStrictMode'></ejs-timepicker>
                                 </div>
-                            </td>
-                    
+                            </td>             
                             <td>
                                 <div>
                                     <button ejs-button id='submit' class="ml-3" style="text-align:center" (click)="onSubmit()">Valider</button>
@@ -88,86 +94,79 @@
                     </tbody>
                 </table>
             </div>
-            <div class="schedule" id="schedule" style="max-width: 100%">
-
-
-
-            <ejs-schedule #scheduleObj 
-                (dragStart) = "onDragStart($event)"
-                locale="fr-CH"
-                (eventClick)="onEventClick()"
-                (popupOpen)="onPopupOpen($event)" 
-                cssClass='schedule-drag-drop' 
-                width='100%'
-                [group]="group" 
-                [currentView]="currentView" 
-                [selectedDate]="selectedDate" 
-                [workHours]="workHours"
-                [eventSettings]="eventSettings" 
-                (actionBegin)="onActionBegin($event)" 
-                (actionComplete)="onActionComplete($event)"
-                (drag)="onItemDrag($event)"
-                (eventRendered)="onEventRendered($event)"
-                (renderCell)="onRenderCell($event)"
-                (navigating)="onNavigating($event)"
-                [currentView]="currentView"
-                (change)="onChange($event)"
-                [firstDayOfWeek]="1"
-                [rowAutoHeight]="rowAutoHeight">
-              
-                <!-- (renderCell)="onRenderCell($event)" -->
-                <e-resources>
-                    <e-resource 
-                        field='DepartmentID' 
-                        title='Regie'
-                        name='Departments' 
-                        [dataSource]='departmentDataSource'
-                        textField='Text' 
-                        idField='Id' 
-                        colorField='Color' 
-                        groupIDField="Id" 
-                        [allowMultiple]='allowMultiple'
-                       
-                        >
-                    </e-resource>
-                </e-resources>                
-                <!-- <ng-template #resourceHeaderTemplate let-data>
-                            <div class="template-wrap">
-                                <div class="specialist-category">
-                                    <div *ngIf="getConsultantStatus(data)">
-                                        <img src="https://ej2.syncfusion.com/angular/demos/src/schedule/images/{{getConsultantImageName(data)}}.png" class="specialist-image" />
-                                    </div>
-                                    <div class="specialist-name">{{getConsultantName(data)}}</div>
-                                </div>
-                            </div>
-                        </ng-template > -->
-                       
-                <e-views>
-                    <e-view option='TimelineDay'  #scheduleObjDay  >
-                        <ng-template #eventTemplate let-data  class="event">
-                            <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
-                                <div>
-                                    <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                        <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div>
-                                        <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} </u> 
-                                        <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                        <div *ngIf="data.Operateur" class="float-right mt-1 operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Operateur}}</div>
-                                        <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
-                                            class="float-right  fixed mr-1"> -->
-                                    </div>
-                                    <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
-                                     
-                                        <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
-                                        <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
-                                        <span *ngIf="nameService != '1'" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+            <div class="schedule" id="schedule">
+                <ejs-schedule #scheduleObj 
+                    (dragStart) = "onDragStart($event)"
+                    locale="fr-CH"
+                    (eventClick)="onEventClick()"
+                    (popupOpen)="onPopupOpen($event)" 
+                    cssClass='schedule-drag-drop' 
+                    width='100%'
+                    [group]="group" 
+                    [currentView]="currentView" 
+                    [selectedDate]="selectedDate" 
+                    [workHours]="workHours"
+                    [eventSettings]="eventSettings" 
+                    (actionBegin)="onActionBegin($event)" 
+                    (actionComplete)="onActionComplete($event)"
+                    (drag)="onItemDrag($event)"
+                    (eventRendered)="onEventRendered($event)"
+                    (renderCell)="onRenderCell($event)"
+                    (navigating)="onNavigating($event)"
+                    [currentView]="currentView"
+                    [firstDayOfWeek]="1"
+                    [rowAutoHeight]="rowAutoHeight">
+                    <!-- (change)="onChange($event)" -->
+                    <!-- (renderCell)="onRenderCell($event)" -->
+                    <e-resources>
+                        <e-resource 
+                            field='DepartmentID' 
+                            title='Regie'
+                            name='Departments' 
+                            [dataSource]='departmentDataSource'
+                            textField='Text' 
+                            idField='Id' 
+                            colorField='Color' 
+                            groupIDField="Id" 
+                            [allowMultiple]='allowMultiple'>
+                        </e-resource>
+                    </e-resources>                
+                    <!-- <ng-template #resourceHeaderTemplate let-data>
+                                <div class="template-wrap">
+                                    <div class="specialist-category">
+                                        <div *ngIf="getConsultantStatus(data)">
+                                            <img src="https://ej2.syncfusion.com/angular/demos/src/schedule/images/{{getConsultantImageName(data)}}.png" class="specialist-image" />
+                                        </div>
+                                        <div class="specialist-name">{{getConsultantName(data)}}</div>
                                     </div>
                                 </div>
-                            </div>
-                        </ng-template>
-                        <!-- <ng-template #tipContent  > <div *ngFor="let data of timelineResourceDataOut"> 
-                             {{data.typetravail }} {{data.dureecommerciale }} 
-                        </div></ng-template> -->
-                    </e-view>
+                            </ng-template > -->              
+                    <e-views>
+                        <e-view option='TimelineDay'  #scheduleObjDay >
+                            <ng-template #eventTemplate let-data  class="event">
+                                <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
+                                    <div>
+                                        <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                            <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div>
+                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} </u> 
+                                            <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
+                                            <div *ngIf="data.Operateur" class="float-right mt-1 operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Operateur}}</div>
+                                            <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
+                                                class="float-right  fixed mr-1"> -->
+                                        </div>
+                                        <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
+                                        
+                                            <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
+                                            <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                            <span *ngIf="nameService != '1'" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <!-- <ng-template #tipContent  > <div *ngFor="let data of timelineResourceDataOut"> 
+                                {{data.typetravail }} {{data.dureecommerciale }} 
+                            </div></ng-template> -->
+                        </e-view>
                  
                     <e-view option="TimelineWeek" class="e-icons e-search"    >
                             <ng-template #eventTemplate let-data  class="event">
@@ -268,8 +267,13 @@
                                 #treeObj 
                                 [fields]='field' 
                                 cssClass='treeview-external-drag'
-                                [allowDragAndDrop]='allowDragAndDrop'
-                                (nodeDragStop)="onTreeDragStop($event)" 
+                                [allowMultiSelection]='false'
+                                [allowDragAndDrop]='true'
+                                (nodeDragStart)="onTreeDragStart($event)"
+                                (nodeDragStop)="onTreeDragStop($event)"
+                                (nodeSelecting)="onTreeSelecting($event)" 
+                                (nodeSelecting)="onTreeSelected($event)"
+                                (nodeExpanding)="onTreeExpanding($event)"
                                 (nodeDragging)="onItemDrag($event, 0)">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""
                                 >
@@ -310,7 +314,7 @@
                                     #treeObjMonteur 
                                     [fields]='fieldMonteur' 
                                     cssClass='treeview-external-drag'
-                                    [allowDragAndDrop]='allowDragAndDrop'  
+                                    [allowDragAndDrop]='true'  
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
                                     (nodeDragging)="onItemDrag($event, 1)">
                                     <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon="" >

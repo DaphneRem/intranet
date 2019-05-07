@@ -1,5 +1,8 @@
 {
     "fr-CH": {
+        "calendar": {
+            "today": "Aujourd'hui"
+        },
         "recurrenceeditor" : {
             "repeat": "Répéter",
             "never": "Jamais",

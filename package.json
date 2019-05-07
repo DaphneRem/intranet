@@ -19,14 +19,14 @@
     "ingest-build-test": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083",
     "ingest-build-release": "ng build --prod --app=suivi-ingests --baseHref http://vm-angular-rc:8085",
     "sbuild": "ng build --app=suivi-ingests --baseHref http://vm-angular-rc:8083/SuiviIngest",
-    "materiel-test": "ng build --app=fiches-materiel --baseHref  https://fichemateriel.karinatest.app.groupe-ab.fr",
-    "k-planner-release": "ng build --app=k-planner --prod --aot --baseHref  https://planner.karinarc.app.groupe-ab.fr",
-    "k-planner-test": "ng build --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr",
+    "materiel-test": "ng build --app=fiches-materiel --prod --aot=false --baseHref https://fichemateriel.karinatest.app.groupe-ab.fr",
+    "k-planner-release": "ng build --app=k-planner --prod --aot=false --baseHref  https://planner.karinarc.app.groupe-ab.fr",
+    "k-planner-test": "ng build --app=k-planner --prod --aot=false --baseHref  https://planner.karinatest.app.groupe-ab.fr",
     "k-planner-prod": "ng build --prod --aot --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr",
     "k-planner-optimizer": "ng build --prod --aot --build-optimizer --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr"
   },
   "private": true,
-  "dependencies": {
+  "dependencies": {  
     "@angular-devkit/core": "^0.4.0",
     "@angular/animations": "^5.1.0",
     "@angular/cdk": "^5.2.5",

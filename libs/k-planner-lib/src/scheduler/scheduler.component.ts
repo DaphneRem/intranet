@@ -6,7 +6,8 @@ import {
   Input,
   AfterViewInit,
   OnDestroy,
-  ElementRef
+  ElementRef,
+  HostListener
 } from "@angular/core";
 import {NgForm} from '@angular/forms';
 import { MatDialog } from '@angular/material';
@@ -244,7 +245,6 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     };
     public fieldMonteur: Object;
     public isClicked: boolean = false;
-    public allowDragAndDrop: boolean = true;
     public isnotMyGroup: boolean = false;
     public draggedItemId: string = '';
 
@@ -348,11 +348,10 @@ public scrollto
         private libGroupeService: LibGroupeService,
         private store: Store<App>
     ) {
+        console.log('******* constructor start *******');
         this.isnotMyGroup = false;
-        console.log('*******constructor*******');
         this.storeAppSubscription();
         // this.getAllCoordinateurs();
-        console.log('*******constructor*******');
         // public departmentDataSource: Object[] = [];
 
         document.body.addEventListener('keyup', (eKey: KeyboardEvent) => {
@@ -393,9 +392,7 @@ public scrollto
         })
         
         this.value = 60
-
         document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
-
             let scheduleElement = document.getElementsByClassName('schedule');
           
             let id = document.getElementById('schedule')
@@ -461,39 +458,24 @@ public scrollto
                         }
                      
                     }
-
-                  
-                // } else {
-                //     if (eKey.keyCode === 109 && scheduleElement) {
-                //         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.zoom)
-                //     } else {
-                //         if (eKey.keyCode === 107 && scheduleElement) {
-                //             console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.zoom)
-                //         }
-                //     }
-                // }
-            // } else {
-
-            //     if (eKey.keyCode === 109 && !scheduleElement) {
-            //         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.zoom)
-            //     } else {
-            //         if (eKey.keyCode === 107 && !scheduleElement) {
-            //             console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.zoom)
-            //         }
-            //     }
-            // }
-        });
-
-
-      
-
-
-
+        // } else {
+        //     if (eKey.keyCode === 109 && !scheduleElement) {
+        //         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.zoom)
+        //     } else {
+        //         if (eKey.keyCode === 107 && !scheduleElement) {
+        //             console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++', this.zoom)
+        //         }
+        //     }
+        // }
+        }, true );
+        console.log('******* constructor end *******');
     }
 
     ngOnInit() {
 
-
+        this.scheduleObj.enablePersistence = false;
+        this.scheduleObj.allowKeyboardInteraction = true;
+        this.treeObj.enablePersistence = false;
         // this.toggleBtn.content = 'Voir toutes les Régies';
         this.activeViewTimelineDay = this.scheduleObj;
         // console.log(hospitalData);
@@ -509,9 +491,20 @@ public scrollto
         //  this.getWorkOrderByidGroup(1)
         // this.getWorkOrderByidGroup(3);
         //  this.getSalleByGroup(10);
-      
+    }
 
+  @HostListener('mouseenter') onMouseEnter() {
+    // alert("Don't touch my bacon!");
+  }
 
+    onTreeSelecting(event) {
+        console.log('ON TREE SELECTING ====> ', event);
+    }
+    onTreeSelected(event) {
+        console.log('ON TREE SELECTED ====> ', event);
+    }
+    onTreeExpanding(event) {
+        console.log('ON TREE EXPANDING ====> ', event);
     }
 
     ngAfterViewInit() {
@@ -524,8 +517,7 @@ public scrollto
 
     onDragStart(args: DragEventArgs): void {
         console.log('args =======> ', args);
-        // args.navigation = { enable: true, timeDelay: 1000 };
-        args.navigation = { enable: true, timeDelay: 2000 };
+        // args.navigation = { enable: true, timeDelay: 2000 };
         // args.scroll.enable = false;
     }
 
@@ -533,7 +525,7 @@ public scrollto
     refreshScheduler() {
         console.log(this.scheduleObj);
         this.disabledrefresh = true
-        console.log('refresh scheduler click', this.disabledrefresh);
+        console.log('refresh scheduler click in refreshScheduler() => ', this.disabledrefresh);
         this.timelineResourceDataOut = []
         this.allDataWorkorders = []
         this.departmentDataSource = [];
@@ -542,7 +534,7 @@ public scrollto
         this.allDataContainers = [];
         this.openEditorCount = 0;
         console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('refresh scheduler click');
+        console.log('refresh scheduler click in refreshScheduler() => ');
         console.log('isClicked : ', this.isClicked);
         console.log('this.refreshDateStart => ', this.refreshDateStart);
         console.log('this.refreshDateEnd => ', this.refreshDateEnd);
@@ -852,6 +844,7 @@ public scrollto
         this.timelineResourceDataOut = []
         this.allDataWorkorders = []
        this.allDataContainers = [];
+        console.log('CALL getContainersByRessourceStartDateEndDate() with codeRegie : ', coderessource, ' / dateDebut : ', datedebut, ' / dateFin : ', datefin);
 
         let debut = moment(datedebut).format('YYYY-MM-DD').toString();
         let fin = moment(datefin).format('YYYY-MM-DD').toString();
@@ -917,7 +910,7 @@ public scrollto
                     this.disabledrefresh = false
                 
                     this.refreshF4 = false
-               
+                    console.log('refresh scheduler click in getContainersByRessourceStartDateEndDate() => ', this.disabledrefresh);
                 } else {
                     // console.log('container not present for regie : ', coderessource, res);
                
@@ -928,7 +921,7 @@ public scrollto
     }
     public allDataWorkorders = [];
     getWorkorderByContainerId(id, codeSalle, index, containerArrayLength, indexSalle) {
-
+        console.log('CALL getWorkorderByContainerId() with idContainer : ', id);
         // console.log('--------------------------------------------------indexSalle => ', indexSalle);
         // console.log('id container to check workorder => ', id)
         // console.log('codeSalle => ', codeSalle);
@@ -1016,12 +1009,12 @@ public scrollto
                     if (indexSalle === this.salleDataSource.length - 1) {
                         // console.log('*********** end to initial request for all regies container and workorders ***********');
                         this.updateEventSetting(this.timelineResourceDataOut);
-                        this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                            dataSource: <Object[]>extend(
-                                [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
-                            ),
-                            enableTooltip: true, tooltipTemplate: this.temp
-                        };
+                        // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                        //     dataSource: <Object[]>extend(
+                        //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                        //     ),
+                        //     enableTooltip: true, tooltipTemplate: this.temp
+                        // };
                     }
                 } else {
                     // console.log('indexSalle => ', indexSalle);
@@ -1029,12 +1022,12 @@ public scrollto
                     if (indexSalle === (this.salleDataSource.length - 1)) {
                         this.updateEventSetting(this.timelineResourceDataOut);
                         // console.log('*********** end to initial request for all regies container and workorders ***********');
-                        this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                            dataSource: <Object[]>extend(
-                                [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
-                            ),
-                            enableTooltip: true, tooltipTemplate: this.temp
-                        };
+                        // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                        //     dataSource: <Object[]>extend(
+                        //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
+                        //     ),
+                        //     enableTooltip: true, tooltipTemplate: this.temp
+                        // };
                     }
                 }
                 if (index === (containerArrayLength - 1)) {
@@ -1443,7 +1436,7 @@ public scrollto
                         item.Commentaire_Planning = res['Commentaire_Planning']
                         item.DateDebut = res['DateDebut']
                         item.DateDebutTheo = res['DateDebutTheo']
-                        item.DateEnvoi = res['DateDebutTheo']
+                        item.DateEnvoi = res["DateEnvoi"];
                         item.DateFin = res['DateFin']
                         item.DateFinTheo = res['DateFinTheo']
                         item.DateMaj = res['DateMaj']
@@ -1452,7 +1445,9 @@ public scrollto
                         item.Titre = res['Titre']
                         item.UserEnvoi = res['UserEnvoi']
                         item.UserMaj = res['UserMaj']
-
+                        item.LibelleRessourceOperateur = res['LibelleRessourceOperateur']
+                        item.LibelleRessourceCoordinateur = res['LibelleRessourceCoordinateur']
+                        item.LibelleRessourceSalle = res['LibelleRessourceSalle']
                     }
                 })
                 console.log(this.allDataContainers, 'allDataContainers')
@@ -2270,7 +2265,9 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     }
 
     /*************************************************************************/
-    /*************************** MODALS M1ANAGEMENT **************************/
+    /************************* NAVIGATION MANAGEMENT *************************/
+    /*************************************************************************/
+
     public navigateFirstOfMouth
     public navigateLastOfMouth
     public activeView = 'TimelineDay';
@@ -2279,26 +2276,38 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     public agendaLastDate;
     public calcule;
     public navigateTimelineDay;
-   
-    onNavigating(args) {
-  
+
    /***** refresh backlog********* */
-   this.navigation = true
-   this.refreshWorkordersBacklog()
 
+    onNavigating(args) {
+        this.navigation = true
+        this.refreshWorkordersBacklog()
+
+        // this.newTreeObj = this.treeObj;
+        // this.treeObj.destroy();
+        // this.treeObj = this.newTreeObj;
+        // this.treeObj['fields'] = this.field;
+        console.log(this.treeObj);
+        // this.treeObj['ngEle'].nativeElement = ejs-treeview.e-control.e-treeview.e-lib.treeview-external-drag.e-fullrow-wrap.e-draggable.e-droppable.e-touch.e-keyboard;
+                                // [fields]='field' 
+                                // cssClass='treeview-external-drag'
+                                // [allowMultiSelection]='false'
+                                // [allowDragAndDrop]='true'
+                                // (nodeDragStart)="onTreeDragStart($event)"
+                                // (nodeDragStop)="onTreeDragStop($event)"
+                                // (nodeSelecting)="onTreeSelecting($event)" 
+                                // (nodeSelecting)="onTreeSelected($event)"
+                                // (nodeExpanding)="onTreeExpanding($event)"
+                                // (nodeDragging)="onItemDrag($event, 0)"
         console.log(this.scheduleObj, '=========================================================================');
-
+        console.log(this.treeObj);
         console.log(args.currentView)
       
         console.log(' ============================> NEW NAVIGATION ====================> ', args);
         console.log(this.field);
-        
-  
+        // this.timelineResourceDataOut = [];
         console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
 
-     
-      
-         
         console.log(this.departmentDataSource);
         // console.log('this.timelineResourceDataOut vide => ', this.timelineResourceDataOut)
         this.startofDay = moment(args.currentDate).toDate()
@@ -2631,30 +2640,20 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         if (this.filtre == true) {
             this.filtre = true
         }
-    
 
     }
 
     onEventRendered(args: EventRenderedArgs): void {
-
         let couleur
-
-
         if (args.data.AzaIsPere) {
             return;
-
         } else {
-
             this.colorStatut.forEach(statut => {
                 if (args.data.Statut === statut['Id']) {
                     couleur = statut['Color']
                 }
             })
             this.workOrderColor = couleur
-
-
-
-
             if (this.scheduleObj.currentView === 'MonthAgenda') {
                 (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
                 (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
@@ -2673,14 +2672,11 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 }
             }
         }
-
-
-
-
     }
 
-
-
+    /*************************************************************************/
+    /*************************** MODALS M1ANAGEMENT **************************/
+    /*************************************************************************/
 
     public couleur;
     public cancel
@@ -2688,12 +2684,13 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     public CellClick: boolean = true;
     public hourContainer;
     public elementRow
+    public hourContainer
+
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         // this.filtre = true
         // this.zoom = true
         console.log(args);
-      
         // if (args.type === 'EventContainer') {
         //     args.data.element.innerText = `Plus`;
         //     // args.data.event = args.data.event[0]
@@ -2708,20 +2705,13 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         //         console.log(this.scheduleObj);
         //     }
         // }
-
-     
-
-
         this.hourContainer =  moment(args.data['StartTime']).add(1,"hour").format('HH:mm')
-     
         if (args.type === 'QuickInfo') {
-
             this.colorStatut.map(statut => {
                 if (args.data.Statut == statut['Id']) {
                     this.couleur = statut['Color']
                 }
             })
-
         }
         let colorRow = this.couleur
         args.element.hidden = false;
@@ -2731,9 +2721,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         if (this.cancelObjectModal) {
             args.cancel = true;
         }
-        
         if ((args.type === 'QuickInfo') && (args.name === 'popupOpen')) {
-          
             args.cancel = true;
             let title = document.getElementsByClassName('e-subject-container');
             let subTitle = document.getElementsByClassName('e-location-container');
@@ -2752,16 +2740,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
             if ((args.target.className === "e-appointment e-lib e-draggable e-appointment-border")) {
                 args.cancel = false;
-            
             }
         }
- 
-
-      
-
-     
-
-
         if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
             if (args.data.AzaIsPere) {
                 this.timelineResourceDataOut.map(item => {
@@ -2785,13 +2765,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                             colorRegie = item['Color'];
                         }
                     });
-
-
                     console.log(this.couleur, this.workOrderColor, '**********************************couleur*************************************')
-
                     row.innerHTML += `<div id='id${i}' style="color : black">${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode}</div>`;
-
-
                    let element = document.getElementById('id' + i)
                 if(this.workOrderColor != undefined){
                     element.style.backgroundColor = this.workOrderColor
@@ -2806,7 +2781,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                         args.element.hidden = true;
                         this.openDialog(args, args.data, workOrders[e], this.departmentDataSource);
                         console.log(child)
-                    });
+                    }, true);
                 }
 
             } else {
@@ -2861,19 +2836,11 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             console.log(this.isTreeItemDropped);
             this.creationArray = [];
             this.isTreeItemDropped = false;
-
         }
-
         if (this.filtre == false && this.CellClick == true) {
             this.filtre = true
             this.zoom = true
-
         }
-
-
-
-
-
         if (((args.type === 'Editor') && this.eventClick) || ((args.type === 'Editor') && this.checkIfContainerAlreadyExists(args) === false)) {
             console.log('this.checkIfContainerAlreadyExists(args); => ', this.checkIfContainerAlreadyExists(args));
             this.filtre = false
@@ -2905,9 +2872,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                     isAllDay[0]['style'].display = 'none';
                     repeat[0]['style'].display = 'none';
                 }
-
             }
-
             if (!args.data.AzaIsPere) {
                 let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
                 let repeat = document.getElementsByClassName('e-editor');
@@ -2953,21 +2918,16 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 this.zoom = true
                 this.filtre = false
                 console.log('click annuler ', this.zoom, this.filtre)
-            });
-
-
+            }, true);
             if (args.data.hasOwnProperty('AzaIsPere')) {
-
                 console.log('open Editor', args);
                 console.log(this.drowDownOperateurList);
                 if (args.data.AzaIsPere) { // dblclick container
                     if (containerOperateur.length === 0) {
                         console.log('containerOperateur.length = 0', containerOperateur);
                         this.createDrowDownOperteurInput(args, container, inputEle);
-                     console.log("==>>",this.drowDownOperateurList)   
+                        console.log("==>>",this.drowDownOperateurList); 
                         this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
-                       
-
                         console.log("==>>",this.drowDownOperateurList)
                         console.log(args.data.Operateur);
                     }
@@ -2992,9 +2952,6 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                     fin[0]['style'].display = 'block';
                     regie[0]['style'].display = 'block';
                     console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
-
-                   
-
                 } else { // dblclick workorder
                     containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
                     console.log("edit click")
@@ -3072,16 +3029,11 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             console.log('this.checkIfContainerAlreadyExists(args); => ', this.checkIfContainerAlreadyExists(args));
             args.cancel = true;
         }
-
-
         if (args.target != undefined && (args.target.classList.value === "e-header-cells e-current-day" || args.target.classList.value === "e-header-cells")) {
-            args.data.cancel = true
-            args.cancel = true
+            args.data.cancel = true;
+            args.cancel = true;
             console.log(args, "-----------------------------------")
         }
-
-   
-       
     }
 
     checkIfContainerAlreadyExists(args): boolean {
@@ -3107,7 +3059,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             return false;
         }
     }
-public valueOperateur
+
+    public valueOperateur
     createDrowDownOperteurInput(args, container, inputEle) {
         let row: HTMLElement = createElement('div', { className: 'custom-field-row' });
         let formElement: HTMLElement = <HTMLElement>args.element.querySelector('.e-schedule-form');
@@ -3121,14 +3074,10 @@ public valueOperateur
         // this.drowDownMonteurs = this.monteurDataSource.map(item => {
         //     return { text: item.Username, value: item.CodeRessource };
         // });
- 
-   
         this.drowDownMonteurs = this.fieldMonteur['dataSource'].map(item => {
             return { text: item.Username, value: item.CodeRessource };
         });
-    
         this.drowDownMonteurs.unshift({ text: 'Aucun Opérateur', value: 0 });
-   
         this.drowDownOperateurList = new DropDownList({
             dataSource: this.drowDownMonteurs,
             fields: { text: 'text', value: 'text' },
@@ -3183,12 +3132,14 @@ public valueOperateur
                 }
             }
         }
-   
     }
 
-  
-    coco(event) {
-        console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh', event)
+    public onTreeDragStartCountDevTool = 0;
+    onTreeDragStart(event) {
+        console.log(this.onTreeDragStartCountDevTool);
+        this.onTreeDragStartCountDevTool++;
+        console.log('call onTreeDragStart() / event => ', event);
+        console.log(this.treeObj);
     }
 
     selectTabWitoutSwip (e: SelectEventArgs) {
@@ -3200,7 +3151,6 @@ public valueOperateur
     /******* DRAG AND DROP WORKORDERS *******/
 
     onTreeDragStop(event: DragAndDropEventArgs): void {
-    
         console.log(event)
         this.creationArray = [];
         this.newData = [];
@@ -3439,8 +3389,6 @@ public valueOperateur
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
-        
-     
         if (event.requestType === 'eventChange') {
             this.zoom = true
 
@@ -3455,12 +3403,10 @@ public valueOperateur
                 this.sidebar.position = 'Right';
                 this.sidebar.animate = false;
             }
-          
         }
         if (event.requestType === 'eventCreate') {
             console.log('eventCreate');
             console.log(event.requestType);
-         
         }
         if (((event.requestType === 'eventCreate') || (event.requestType === 'eventCreated')) && !this.isTreeItemDropped) {
             // CREATE CONTAINER ON CELL WITHOUT EVENT CLICK
@@ -3562,9 +3508,6 @@ public valueOperateur
         }
         // console.log('customActionBegin()');
         // this.customActionBegin(event);
-        
-    
-
     }
 
     customActionBegin(args: any) { // CUSTOM ACTION BEGIN
@@ -3641,14 +3584,11 @@ public valueOperateur
     //      this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
     //     }
     //     if( this.searchString != undefined && !this.cancel){
- 
     //         this.searchString = this.searchwo.value
     //         this.onFilter( this.searchString  , 0, this.argsKeyboardEvent)
     //        console.log(  this.searchwo.value , this.searchString )
     //        console.log( typeof this.searchwo.value)
-       
     //    }
-
     }
 
     checkDiffExistByGroupe(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute) { }
@@ -3685,16 +3625,12 @@ public valueOperateur
             if (e.data.AzaIsPere || (!e.data.AzaIsPere && this.isTreeItemDropped)) {
                 console.log("************************************************* onaction complete : update container");
                 this.updateContainer(e);
-            }
-            else {
+            } else {
                 if (!e.data.AzaIsPere) {
                     console.log("************************************************* onaction complete : update WorkOrder");
                     this.updateWorkOrder(e)
                 }
             }
-         
-         
-
             if (this.open == true) {
                 this.open = true;
                 this.sidebar.show();
@@ -3724,7 +3660,6 @@ public valueOperateur
         ) {
             console.log('=======> args : ', e);
             console.log(this.createJustContainerAction);
-
             // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
             //     dataSource: <Object[]>extend(
             //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
@@ -3754,8 +3689,15 @@ public valueOperateur
         this.isBackToBacklog = false;
         this.navigateTimelineDay = false;
         this.eventClick = false;
-
-  
+        // console.log(this.searchwo);
+        // if (this.searchwo != undefined) {
+        //     if( this.searchwo.value != '' && !this.cancel) {
+        //         this.searchString = this.searchwo.value
+        //         this.onFilter(this.searchString , 0, this.argsKeyboardEvent)
+        //         console.log(  this.searchwo.value)
+        //         console.log( typeof this.searchwo.value)
+        //     }
+        // }
     }
 
     /************************ DELETE ********************/
@@ -3985,11 +3927,8 @@ public searchoperateur
         let fieldMonteur
         for (let i = 0; i < this.monteurListe.length; i++) {
             if (value === this.monteurListe[i].Username) {
-
                 fieldMonteur = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift(this.monteurListe[i])) //pour l'affichage dans le treeview
                 fieldMonteur.pop()
-
-
                 this.monteurDataSource.unshift(this.monteurListe[i])
                 console.log('monteurDataSource', this.monteurDataSource);
                 console.log('fieldMonteur', fieldMonteur);
@@ -3999,11 +3938,7 @@ public searchoperateur
                         console.log('monteurDataSource', this.monteurDataSource);
                        this.monteurDataSource.splice(i,1)
                        console.log('monteurDataSource aprés delete', this.monteurDataSource);
-
                     }
-
-
-
                 }
                 monteurListArray = this.monteurDataSource
 
@@ -4017,26 +3952,17 @@ public searchoperateur
                 console.log('filtermonteurListeArray', this.filtermonteurListeArray);
                 console.log(this.fieldMonteur);
                 this.addMonteur = true;
-
-
-             
                 this.fieldMonteur = { dataSource: fieldMonteur, text: 'Username' };
                 this.countAdd = this.countAdd + 1
-              
             }
-          
         }
-        
-     
         if( this.searchStringM  != undefined && !this.cancel){
             this.searchStringM = this.searchoperateur.value
             this.onFilter(this.searchStringM , 1, this.argsKeyboardEvent)
                    console.log(  this.searchoperateur.value)
                    console.log( typeof this.searchoperateur.value)
-               }else{
-       
+               }else{    
                }
-
     }
 
 
@@ -4298,12 +4224,12 @@ if (searchText.length >= 0) {
             this.zoom = false
             this.filtre = false
 
-        })
+        }, true)
         schedule[1].addEventListener('mousedown', (eKey: KeyboardEvent) => {
             this.zoom = false
             this.filtre = false
-          
-        })
+
+        }, true)
     }
 
 

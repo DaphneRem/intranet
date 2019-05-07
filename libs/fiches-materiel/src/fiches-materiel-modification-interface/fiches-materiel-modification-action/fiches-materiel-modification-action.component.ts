@@ -45,6 +45,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() premiereDiff;
   @Input() comments: AnnexElementCommentsFicheMAteriel[];
   @Input() accesLabo;
+  @Input() allEACommentsMultiSelect;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
 
@@ -404,7 +405,8 @@ export class FichesMaterielModificationActionComponent implements OnInit {
         console.log('this.newObject[key] (value) => ', this.newObject[key]);
       }
     }
-    if ((this.newObject.Deadline === null) && this.multiFichesAchat) {
+    console.log(this.selectionType);
+    if ((this.newObject.Deadline === null) && this.selectionType === 'multi') {
       let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
       console.log('nullDate => --------------------------------------- ', nullDate);
       console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
@@ -445,6 +447,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       .subscribe(data => {
         if (data) {
           this.changeValueToAnnexElementsInFM();
+          this.checkChangeValueToEAComment();
           // fichesMateriel.map(item => {
           //   console.log(item);
           //   this.addIdFicheMaterielToElementAnnexReset(item);
@@ -454,6 +457,31 @@ export class FichesMaterielModificationActionComponent implements OnInit {
             console.log('error patch FM');
           }
       });
+  }
+public commentsToPut = [];
+  checkChangeValueToEAComment() {
+   console.log('this.allEACommentsMultiSelect in action component => ', this.allEACommentsMultiSelect);
+   console.log('this.comments in action component => ', this.comments);
+   this.comments.map(item => {
+     if (item.Commentaire !== 'valeur d\'origine') {
+        console.log('commentaire modifié ===> ', item);
+        this.allEACommentsMultiSelect.map(com => {
+          if (com.idLibCategorieElementsAnnexes === item.idLibCategorieElementsAnnexes) {
+            let newItem = {
+              IdCategorieElementsAnnexesCommentaire: com.IdCategorieElementsAnnexesCommentaire,
+              idLibCategorieElementsAnnexes: com.idLibCategorieElementsAnnexes,
+              IdFicheMateriel: com.IdFicheMateriel,
+              Commentaire: item.Commentaire
+            };
+            com.Commentaire = item.Commentaire;
+            this.commentsToPut.push(newItem);
+          }
+                         console.log('this.commentsToPut ==> ', this.commentsToPut);
+   console.log(this.allEACommentsMultiSelect);
+        });
+     }
+   });
+
   }
 
   changeValueToAnnexElementsInFM() {

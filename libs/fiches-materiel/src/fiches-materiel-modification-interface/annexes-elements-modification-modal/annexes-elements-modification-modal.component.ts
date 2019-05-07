@@ -27,6 +27,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   @Input() annexElementsNgModel;
   @Input() comments: AnnexElementCommentsFicheMAteriel[];
   @Input() refreshEACommentModel;
+  @Input() reload;
 
   @Output() newStateElementsAnnexNgModel = new EventEmitter();
   @Output() newComments: EventEmitter<AnnexElementCommentsFicheMAteriel[]> = new EventEmitter();
@@ -35,7 +36,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   public annexElementsCategories;
   public annexElementsAllSubCategories;
   public newEAComments: AnnexElementCommentsFicheMAteriel[] = [];
-
+  public originValuesEAComments;
 
   constructor(
     private modalService: NgbModal,
@@ -51,12 +52,16 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const refreshEACommentModel = changes.refreshEACommentModel;
-    console.log('------------------------> refreshEACommentModel ', refreshEACommentModel);
-    if (!refreshEACommentModel.firstChange) {
+    // const refreshEACommentModel = changes.refreshEACommentModel;
+    // const reload = changes.reload;
+    const com = changes.comments;
+    console.log(changes);
+    console.log('CHANGEMENT DE COMMENTAIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', changes.comments);
+    if (!com.firstChange && this.selectionType !== 'multi') {
       console.log('NOT FIRST CHANGE !!!!!!!!');
-      const com: SimpleChange = changes.comments;
-      this.comments = com.currentValue;
+      // const com: SimpleChange = changes.comments;
+      // this.comments = com.currentValue;
+      console.log(this.comments);
       this.displayNewObjectEAComments(this.annexElementsCategories);
     }
 
@@ -172,7 +177,12 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       .subscribe(data => {
         this.annexElementsCategories = data;
         console.log(data);
-        this.displayNewObjectEAComments(this.annexElementsCategories);
+        if (this.selectionType !== 'multi') {
+          this.displayNewObjectEAComments(this.annexElementsCategories);
+        } else {
+          this.displayOriginValuesEAComments(this.annexElementsCategories);
+          console.log('oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
+        }
       });
   }
 
@@ -199,7 +209,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     this.newEAComments = [];
     console.log('this.comments ==> ', this.comments);
     console.log('annexElementsCategories ==> ', annexElementsCategories);
-    console.log('annexElementsCategories ==> ', this.newEAComments);
+    console.log('this.newEAComments ==> ', this.newEAComments);
     let categories = [];
     this.annexElementsCategories.map(item => {
       if (this.comments.length > 0) {
@@ -224,13 +234,13 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
           }
       });
     } else {
-      this.newEAComments.push({
-        IdCategorieElementsAnnexesCommentaire: 0,
-        idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
-        IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
-        Commentaire: ''
-      });
-      console.log('category without comment => ', item);
+      // this.newEAComments.push({
+      //   IdCategorieElementsAnnexesCommentaire: 0,
+      //   idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+      //   IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
+      //   Commentaire: ''
+      // });
+      // console.log('category without comment => ', item);
 
     }
     console.log('COMMENT ALL AFTER change model ===============================================================> ', this.newEAComments);
@@ -291,6 +301,23 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     // });
     // this.comments = this.newEAComments;
     // this.newComments.emit(this.newEAComments);
+  }
+
+  displayOriginValuesEAComments(annexElementsCategories) {
+    this.originValuesEAComments = [];
+    console.log('this.comments ==> ', this.comments);
+    console.log('annexElementsCategories ==> ', annexElementsCategories);
+    console.log('this.newEAComments ==> ', this.newEAComments);
+    this.annexElementsCategories.map(item => {
+      this.originValuesEAComments.push({
+        IdCategorieElementsAnnexesCommentaire: 'same',
+        idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+        IdFicheMateriel: 'same',
+        Commentaire: 'valeur d\'origine'
+      });
+    });
+    this.comments = this.originValuesEAComments;
+    this.newComments.emit(this.originValuesEAComments);
   }
 
   checkCommentExistInModel(comment): boolean {

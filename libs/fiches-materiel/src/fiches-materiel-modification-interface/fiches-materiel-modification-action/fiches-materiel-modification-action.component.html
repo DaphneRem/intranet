@@ -1,5 +1,7 @@
 <div class="row creation">
-  {{comments | json}}
+  <div>{{comments | json}}</div>
+  //
+  <div>{{allEACommentsMultiSelect | json}}</div>
   <div class="col-lg-2 affected-eps">
     <affected-episodes-modal *ngIf="(allFichesMateriel.length > 1) && showAffectedEps" [allFichesMateriel]="allFichesMateriel"></affected-episodes-modal>
   </div>

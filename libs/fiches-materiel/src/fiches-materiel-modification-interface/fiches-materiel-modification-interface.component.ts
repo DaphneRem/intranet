@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
+import { browserRefresh } from '../../../../apps/fiches-materiel/src/app/app.component';
 import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
 
 import { FichesAchatService } from '@ab/fiches-achat';
@@ -66,15 +68,17 @@ import { identifierModuleUrl } from '@angular/compiler';
     { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter }
   ]
 })
-export class FichesMaterielModificationInterfaceComponent
-  implements OnInit, OnDestroy {
+export class FichesMaterielModificationInterfaceComponent implements OnInit, OnDestroy {
+  public browserRefresh: boolean;
 
+  public refreshEACommentModel = -1;
   public comments: AnnexElementCommentsFicheMAteriel[];
+  public allEACommentsMultiSelect = [];
 
   public user;
   public initialFichesMateriel = [];
 
-  public reloadHistoryStepStatus = false;
+  public reload = false;
 
   public modificationMessage: string = 'Modifications';
   public disabledDateAcceptation = false;
@@ -214,10 +218,15 @@ export class FichesMaterielModificationInterfaceComponent
     private stepsLibService: StepsLibService,
     private qualiteService: QualiteService,
     private versionService: VersionService,
+    private router: Router,
     private store: Store<FicheMaterielModification>
   ) {}
 
   ngOnInit() {
+    this.browserRefresh = browserRefresh;
+    if (browserRefresh) {
+      this.router.navigate(['/material-sheets/my-material-sheets/0/asc']);
+    }
     this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     this.user = this.globalStore.app.user.shortUserName;
@@ -314,14 +323,14 @@ export class FichesMaterielModificationInterfaceComponent
       this.annexElementsNgModel
     );
   }
-  public refreshEACommentModel = 0;
   displayModificationMessage(event) {
     this.modificationMessage = event;
     this.allAnnexElementsFicheMateriel = [];
+    this.allEACommentsMultiSelect = [];
+    console.log(this.storeFichesToModif.selectedFichesMateriel);
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
-    this.reloadHistoryStepStatus = true;
+    this.reload = true;
     this.initValueSteps = true;
-    this.refreshEACommentModel++;
     // this.changeDateFormat(event);
     // this.ngOnInit();
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
@@ -329,7 +338,7 @@ export class FichesMaterielModificationInterfaceComponent
   }
 
   displaynewEAComments(event) {
-    console.log(event);
+    console.log('displaynewEAComments EVENT COMMENTS FROM ANNEXES ELEMENTS MODIF COMPONENT => ', event);
     this.comments = event;
   }
 
@@ -429,8 +438,14 @@ export class FichesMaterielModificationInterfaceComponent
       );
     });
     this.getStatusLib();
-    if (this.storeFichesToModif.selectionType !== 'multi') {
+    if (this.storeFichesToModif.modificationType !== 'multi') {
+      console.log('CALL GET COMMENTS FUNCTION AFTER GETallFICHESMATERIEL !!!!!!!');
         this.getCommentaireAnnexElementsFicheMateriel(this.storeFichesToModif.selectedFichesMateriel[0].idFicheMateriel);
+    } else {
+      console.log('tttt => ', this.storeFichesToModif);
+      this.storeFichesToModif.selectedFichesMateriel.map(item => {
+        this.getCommentaireAnnexElementsFicheMateriel(item.idFicheMateriel);
+      });
     }
   }
 
@@ -565,6 +580,7 @@ export class FichesMaterielModificationInterfaceComponent
   getFicheMateriel(id: number, index, length) {
     // console.log(index);
     // console.log(length);
+    this.allFichesMateriel = [];
     this.fichesMaterielService.getOneFicheMateriel(id).subscribe(data => {
       if (data) {
         this.allFichesMateriel.push(data[0]);
@@ -1078,10 +1094,25 @@ export class FichesMaterielModificationInterfaceComponent
 
   getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel: number) {
     console.log('IdFicheMateriel => ', IdFicheMateriel);
+    console.log('GET COMMENT elements annexes in fiche materiel component !!!!', this.comments);
     this.annexElementsService.getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel)
       .subscribe(data => {
-        console.log('Commentaire Elements Annexes Fiches Matériel ============================================>', data);
-        this.comments = data;
+        console.log('commentaire pour idFIcheMateriel n°', IdFicheMateriel, ' ==> ', data);
+        console.log(this.storeFichesToModif.modificationType);
+        if (this.storeFichesToModif.modificationType !== 'multi') {
+          console.log('Commentaire Elements Annexes Fiches Matériel ============================================>', data);
+          this.comments = data;
+          this.refreshEACommentModel = this.refreshEACommentModel++;
+        } else {
+          console.log('Comments in multi selection ==> ', data);
+          this.comments = data;
+          data.map(item => {
+            this.allEACommentsMultiSelect.push(item);
+            console.log('this.allEACommentsMultiSelect ===> ', this.allEACommentsMultiSelect);
+          });
+          this.allEACommentsMultiSelect = [...new Set(this.allEACommentsMultiSelect)]; // remove same value
+          console.log('this.allEACommentsMultiSelect2 ===> ', this.allEACommentsMultiSelect);
+        }
       });
   }
 

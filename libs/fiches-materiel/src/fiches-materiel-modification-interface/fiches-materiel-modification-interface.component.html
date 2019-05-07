@@ -30,6 +30,7 @@
       [premiereDiff]="premiereDiff"
       [accesLabo]="accesLabo"
       [comments]="comments"
+      [allEACommentsMultiSelect]="allEACommentsMultiSelect"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
     <!-- {{annexElementsFicheMateriel | json}} -->
@@ -137,7 +138,7 @@
           <history-steps-status-modal
             class="history-steps-status-modal-component"
             *ngIf="selectionType === 'one'" 
-            [reload]="reloadHistoryStepStatus"
+            [reload]="reload"
             [myFicheMateriel]="this.allFichesMateriel[0]" 
             [statusLib]="status"
             [stepLib]="allSteps">
@@ -248,7 +249,7 @@
               {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisodes de ' + ficheAchatDetail.duree+'min' : '/'}}
             </span>
           </p>
-          <p>N° œuvre : {{ficheAchatDetail.numprogram ? ficheAchatDetail.numprogram : '/'}}</p>
+          <p *ngIf="ficheAchatDetail">N° œuvre : {{ficheAchatDetail.numprogram != undefined ? ficheAchatDetail.numprogram : '/'}}</p>
           <!-- <p>Format œuvre :
             
             <span>ooooooooooo</span>
@@ -486,7 +487,7 @@
               <history-delivery-date-modal 
                 *ngIf="selectionType === 'one'" 
                 [myFicheMateriel]="newObject"
-                [reload]="reloadHistoryStepStatus">
+                [reload]="reload">
               </history-delivery-date-modal>
             </div>
           </div>
@@ -615,6 +616,7 @@
               [selectionType]="selectionType"
               [annexElementsNgModel]="annexElementsNgModel"
               [comments]="comments"
+              [reload]="reload"
               [refreshEACommentModel]="refreshEACommentModel"
               [annexElementsFicheMateriel]="annexElementsFicheMateriel">
             </annexes-elements-modification-modal>
@@ -852,6 +854,7 @@
       [premiereDiff]="premiereDiff"
       [accesLabo]="accesLabo"
       [comments]="comments"
+      [allEACommentsMultiSelect]="allEACommentsMultiSelect"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
   </form>

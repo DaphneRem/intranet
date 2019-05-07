@@ -1,6 +1,8 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { NavigationStart, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 // import { AuthAdalService } from './auth-adal.service';
 // import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
@@ -11,6 +13,7 @@ import { App, User } from './+state/app.interfaces';
 import { appInitialState } from './+state/app.init';
 import { config } from './../../../../.privates-url';
 
+export let browserRefresh = false;
 
 @Component({
   selector: 'app-root',
@@ -23,16 +26,24 @@ import { config } from './../../../../.privates-url';
   ]
 })
 
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
+
+subscription: Subscription;
 
   constructor(
     private store: Store<Navbar>,
     private appStore: Store<App>,
     private authService: AuthService,
+    private router: Router
     // private authAdalService: AuthAdalService,
     // private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
+    this.subscription = router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        browserRefresh = !router.navigated;
+      }
+    });
     // this.adal5Service.init(config);
   }
 
@@ -80,6 +91,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         }, 4000);
       }
     }
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   signIn() {
