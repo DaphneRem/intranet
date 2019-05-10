@@ -152,6 +152,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private onDestroy$: Subject<any> = new Subject();
 
+    public dataAllEventsReady = false;
     public dataRegieReady = false;
     public activeViewTimelineDay: ScheduleComponent;
     /******** STORE *******/
@@ -516,6 +517,7 @@ public scrollto
     }
 
     onDragStart(args: DragEventArgs): void {
+        args.interval = 5; // drag interval time is changed to 10 minutes
         console.log('args =======> ', args);
         // args.navigation = { enable: true, timeDelay: 2000 };
         // args.scroll.enable = false;
@@ -1542,8 +1544,8 @@ public scrollto
             CodeRessourceOperateur: container.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
             CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
             DateSoumission: workorderSelected.DateSoumission,
-            DateDebut: startTime,
-            DateFin: startTime,
+            DateDebut: workorderSelected.DateDebut, // changement pour Remy
+            DateFin: workorderSelected.DateFin, // changement pour Remy
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: container.CodeRessourceSalle,
@@ -1626,8 +1628,8 @@ public scrollto
             CodeRessourceOperateur: containerParent.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
             CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
             DateSoumission: workorderSelected.DateSoumission,
-            DateDebut: startTime,
-            DateFin: startTime,
+            DateDebut: workorderSelected.DateDebut, // changement pour remy
+            DateFin: workorderSelected.DateFin, // changement pour remy
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: containerParent.CodeRessourceSalle,
@@ -1743,8 +1745,8 @@ public scrollto
                 CodeRessourceOperateur: containerParent.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
                 CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
                 DateSoumission: workorderSelected.DateSoumission,
-                DateDebut: startTime,
-                DateFin: startTime,
+                DateDebut: workorderSelected.DateDebut, // changement pour remy
+                DateFin: workorderSelected.DateFin, // changement pour remy
                 DateDebutTheo: startTime,
                 DateFinTheo: endTime,
                 CodeRessourceSalle: containerParent.CodeRessourceSalle,
@@ -2125,8 +2127,8 @@ public scrollto
             CodeRessourceOperateur: workorder.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
             CodeRessourceCoordinateur: workorder.CodeRessourceCoordinateur,
             DateSoumission: null,
-            DateDebut: startTime,
-            DateFin: endTime,
+            DateDebut: workorder.DateDebut, // changement pour remy
+            DateFin: workorder.DateFin, // changement pour remy
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: event.CodeRessourceSalle,
@@ -2280,227 +2282,193 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
    /***** refresh backlog********* */
 
     onNavigating(args) {
+        console.log(' =========================== NEW NAVIGATION ==================== ');
+        console.log('onNavigating(args) function => args ==> ', args);
+        console.log('onNavigating(args) function => args.currentView ==> ', args.currentView);
+        console.log('this.timelineResourceDataOut before reset => ', this.timelineResourceDataOut);
+        this.timelineResourceDataOut = [];
+        console.log('this.timelineResourceDataOut after reset => ', this.timelineResourceDataOut);
+        this.scheduleObj.enablePersistence = false;
         this.navigation = true
         this.refreshWorkordersBacklog()
-
         // this.newTreeObj = this.treeObj;
         // this.treeObj.destroy();
         // this.treeObj = this.newTreeObj;
         // this.treeObj['fields'] = this.field;
         console.log(this.treeObj);
         // this.treeObj['ngEle'].nativeElement = ejs-treeview.e-control.e-treeview.e-lib.treeview-external-drag.e-fullrow-wrap.e-draggable.e-droppable.e-touch.e-keyboard;
-                                // [fields]='field' 
-                                // cssClass='treeview-external-drag'
-                                // [allowMultiSelection]='false'
-                                // [allowDragAndDrop]='true'
-                                // (nodeDragStart)="onTreeDragStart($event)"
-                                // (nodeDragStop)="onTreeDragStop($event)"
-                                // (nodeSelecting)="onTreeSelecting($event)" 
-                                // (nodeSelecting)="onTreeSelected($event)"
-                                // (nodeExpanding)="onTreeExpanding($event)"
-                                // (nodeDragging)="onItemDrag($event, 0)"
+        // [fields]='field'
+        // cssClass='treeview-external-drag'
+        // [allowMultiSelection]='false'
+        // [allowDragAndDrop]='true'
+        // (nodeDragStart)="onTreeDragStart($event)"
+        // (nodeDragStop)="onTreeDragStop($event)"
+        // (nodeSelecting)="onTreeSelecting($event)"
+        // (nodeSelecting)="onTreeSelected($event)"
+        // (nodeExpanding)="onTreeExpanding($event)"
+        // (nodeDragging)="onItemDrag($event, 0)"
         console.log(this.scheduleObj, '=========================================================================');
         console.log(this.treeObj);
-        console.log(args.currentView)
-      
-        console.log(' ============================> NEW NAVIGATION ====================> ', args);
         console.log(this.field);
-        // this.timelineResourceDataOut = [];
-        console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
-
         console.log(this.departmentDataSource);
-        // console.log('this.timelineResourceDataOut vide => ', this.timelineResourceDataOut)
-        this.startofDay = moment(args.currentDate).toDate()
-        this.endofDay =  moment(args.currentDate).add(1, 'd').toDate()
-
-        this.startofWeek = moment().startOf('week').toDate(),
-            this.endofWeek = moment().endOf('week').add(1, 'd').toDate(),
-
-            this.startofMonth = moment().startOf('month').toDate(),
-            this.endofMonth = moment().endOf('month').add(1, 'd').toDate()
-
-        this.agendaStartDate = moment().toDate()
-        this.agendaLastDate = moment().add(7, 'd').toDate()
-
-        if (args.currentView === "TimelineDay") {
-
-            this.valueMax = 60
-            this.value = parseInt(this.intervalValueDay as string, 10)
-            this.valueAdd = 10
-            this.intervalData = ['10', '20', '30', '40', '50', '60'];
-            this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValueDay as string, 10), slotCount: 2 }
+        console.log(args.currentDate);
+        console.log(this.scheduleObj.selectedDate);
+        if (args.currentDate == undefined) {
+            console.log('pas de currentDate');
+            let newStartOfDay = this.scheduleObj.selectedDate;
+            console.log('selected Date => ', newStartOfDay);
+            this.startofDay = moment(newStartOfDay).toDate();
+            this.endofDay =  moment(newStartOfDay).add(1, 'd').toDate();
         } else {
-            if (args.currentView === "TimelineWeek") {
-                this.value = parseInt(this.intervalValue as string, 10)
-                this.valueMax = 240
-                this.valueAdd = 60
-                this.intervalData = ['60', '120', '180', '240'];
-                this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValue as string, 10), slotCount: 1 }
+            this.startofDay = moment(args.currentDate).toDate();
+            this.endofDay =  moment(args.currentDate).add(1, 'd').toDate();
+        }
+        this.startofWeek = moment().startOf('week').toDate();
+        this.endofWeek = moment().endOf('week').add(1, 'd').toDate();
+        this.startofMonth = moment().startOf('month').toDate();
+        this.endofMonth = moment().endOf('month').add(1, 'd').toDate();
+        console.log('this.startofDay ==> ', this.startofDay);
+        console.log('this.endofDay ==> ', this.endofDay);
+        console.log('this.startofWeek ==> ', this.startofWeek);
+        console.log('this.endofWeek ==> ', this.endofWeek);
+        console.log('this.startofMonth ==> ', this.startofMonth);
+        console.log('this.endofMonth ==> ', this.endofMonth);
 
-            }
+        // this.agendaStartDate = moment().toDate()
+        // this.agendaLastDate = moment().add(7, 'd').toDate()
+        // console.log('this.agendaStartDate => ', this.agendaStartDate);
+        // console.log('this.agendaLastDate => ', this.agendaLastDate);
+        console.log('this.scheduleObj.currentView ==> ', this.scheduleObj.currentView);
+        console.log('args.currentView ==> ', args.currentView);
 
+        if (this.filtre == true) {
+            this.filtre = true
         }
 
+        /************** ARGS.CURRENTVIEW CONDITIONS ************/
 
-        if ( args.currentView === 'TimelineDay') {
-           
-            console.log('TIMELINEDAY !!!!')
-            console.log(this.open, "-------------")
-            if (args.action === 'date') {
-                console.log('TIMELINEDAY !!!! => date contition');
-                this.timelineResourceDataOut = []
-                let startofDay = moment(args.currentDate).toDate()
-                let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-                this.refreshDateStart = startofDay;
-                this.refreshDateEnd = endofDay;
-                console.log(startofDay, ' ++++++++++++++++++++++++ ', endofDay)
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        this.startofDay,
-                        this.endofDay,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                });
-            }
-            if (args.action === 'view') {
-                console.log('TIMELINEDAY !!!! => view contition');
-          
-                this.timelineResourceDataOut = []
-                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    let startofDay = moment(args.currentDate).toDate()
-                    let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-                    this.refreshDateStart = startofDay;
-                    this.refreshDateEnd = endofDay;
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        this.startofDay,
-                        this.endofDay,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                  
-                });
-                
-                console.log("currentView date ", this.startofDay, this.endofDay)
-                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
-
-
-
-            }
-     
-                 
-                 
-        }
-        if (args.currentView === "TimelineMonth" || args.currentView === "Agenda") {
-            this.scheduleObj.readonly = true
-            if (args.action === "date") {
-                this.scheduleObj.readonly = true
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', this.scheduleObj.readonly)
-            }
-
-        }
-        if ((args.currentView === "TimelineWeek") || (args.currentView === "TimelineDay") || (args.currentView === "MonthAgenda")) {
+        /** readonly management **/
+        if ((args.currentView === 'TimelineWeek') || (args.currentView === 'TimelineDay') || (args.currentView === 'MonthAgenda')) {
             this.scheduleObj.readonly = false
             if (this.isnotMyGroup == true) {
                 this.scheduleObj.readonly = true
             } else {
                 this.scheduleObj.readonly = false
             }
+        } else if (args.currentView === 'TimelineMonth' || args.currentView === 'Agenda') {
+            this.scheduleObj.readonly = true
+            if (args.action === 'date') {
+                this.scheduleObj.readonly = true
+                console.log('this.scheduleObj.readonly => ', this.scheduleObj.readonly)
+            }
         }
-        if (this.scheduleObj.currentView === "TimelineMonth") {
-            if (args.action === "date") {
-                this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-                this.navigateLastOfMouth = moment(args.currentDate).endOf('month').toDate()
-                console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth)
-                console.log("debut", this.startofWeek, "fin", this.endofWeek, "+++++++++", this.startofMonth, "++++++", this.endofMonth)
-                console.log(this.scheduleObj)
-                this.refreshDateStart = this.navigateFirstOfMouth;
-                this.refreshDateEnd = this.navigateLastOfMouth;
+
+        if (args.currentView === 'TimelineDay') {
+            console.log( 'TimelineDay first call condition width management value');
+            this.valueMax = 60
+            this.value = parseInt(this.intervalValueDay as string, 10)
+            this.valueAdd = 10
+            this.intervalData = ['10', '20', '30', '40', '50', '60'];
+            this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValueDay as string, 10), slotCount: 2 }
+            // TIMELINEDAY ACTION DATE
+            if (args.action === 'date') {
+                console.log('TIMELINEDAY !!!! => date contition');
+                this.refreshDateStart = this.startofDay;
+                this.refreshDateEnd = this.endofDay;
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.startofDay,
+                        this.endofDay,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+                this.scheduleObj.refreshEvents();
+            }
+            // TIMELINEDAY ACTION VIEW
+            if (args.action === 'view') {
+                console.log('TIMELINEDAY !!!! => view contition');
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    console.log('startofDay call in timelineday action view => ', this.startofDay);
+                    console.log('endofDay call in timelineday action view => ', this.endofDay);
+                    this.refreshDateStart = this.startofDay;
+                    this.refreshDateEnd = this.endofDay;
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.startofDay,
+                        this.endofDay,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+                this.scheduleObj.refreshEvents();
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
+            }
+        } else if (args.currentView === 'TimelineWeek') {
+            console.log( 'TimelineWEEK first call condition width management value');
+            this.value = parseInt(this.intervalValue as string, 10)
+            this.valueMax = 240
+            this.valueAdd = 60
+            this.intervalData = ['60', '120', '180', '240'];
+            this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValue as string, 10), slotCount: 1 }
+            // TIMELINEWEEK ACTION VIEW
+            if (args.action === 'view') {
                 this.timelineResourceDataOut = []
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
+                this.refreshDateStart = this.startofWeek;
+                this.refreshDateEnd = this.endofWeek;
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
                     this.getContainersByRessourceStartDateEndDate(
                         salle.CodeRessource,
-                        this.navigateFirstOfMouth,
-                        this.navigateLastOfMouth,
+                        this.startofWeek,
+                        this.endofWeek,
                         salle.CodeSalle,
                         indexSalle
                     );
                 });
+                this.scheduleObj.refreshEvents();
+                console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
             }
-        }
-        if (this.scheduleObj.currentView === "TimelineWeek") {
-
-
-            console.log('TIMELINEWEEK!!!!')
-            if (args.action === "date") {
-                let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
-                let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
-                console.log(navigateFirstOfWeek, "++++++++++++++++++++++++", navigateLastOfWeek)
-                this.timelineResourceDataOut = [];
-                this.refreshDateStart = navigateFirstOfWeek;
-                this.refreshDateEnd = navigateLastOfWeek;
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        navigateFirstOfWeek,
-                        navigateLastOfWeek,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                });
-            }
-        
-         
-        }
-        if (this.scheduleObj.currentView === "TimelineDay") {
-            if (args.action === "date") {
-                let startofDay = moment(args.currentDate).toDate()
-                let endofDay = moment(args.currentDate).add(1, 'd').toDate()
-                console.log(startofDay, "++++++++++++++++++++++++", endofDay)
-                this.timelineResourceDataOut = [];
-                this.refreshDateStart = startofDay;
-                this.refreshDateEnd = endofDay;
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        startofDay,
-                        endofDay,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                });
-            }
-        
-         
-        }
-        if (args.currentView === "TimelineMonth") {
-            //   if (args.action === "date"){
-            //             this.timelineResourceDataOut = []
-            //             this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
-            //             this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
-            //                 console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
-            //                 console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
-            //                 console.log(this.scheduleObj) 
-            //                  this.salleDataSource.forEach(salle => {
-            //                      let indexSalle = this.salleDataSource.indexOf(salle);
-            //                      this.getContainersByRessourceStartDateEndDate(
-            //                          salle.CodeRessource,
-            //                          this.navigateFirstOfMouth,
-            //                          this.navigateLastOfMouth ,
-            //                          salle.CodeSalle,
-            //                          indexSalle
-            //                      );
-            //                  });
-            //   }
-            if (args.action === "view") {
+            // if (args.action === 'date') {
+            //     this.timelineResourceDataOut = []
+            //     this.navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
+            //     this.navigateLastOfWeek = moment(args.currentDate).endOf('week').add(1,'d').toDate()
+            //     this.salleDataSource.forEach(salle => {
+            //         let indexSalle = this.salleDataSource.indexOf(salle);
+            //         this.getContainersByRessourceStartDateEndDate(
+            //             salle.CodeRessource,
+            //             this.navigateFirstOfWeek,
+            //             this.navigateLastOfWeek,
+            //             salle.CodeSalle,
+            //             indexSalle
+            //         );
+            //     });
+            // }
+        } else if (args.currentView === 'TimelineMonth') {
+            // if (args.action === 'date'){
+            //     this.timelineResourceDataOut = []
+            //     this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+            //     this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
+            //     console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth  )
+            //     console.log("debut", this.startofWeek , "fin", this.endofWeek,"+++++++++",this.startofMonth,"++++++",this.endofMonth)
+            //     console.log(this.scheduleObj) 
+            //     this.salleDataSource.forEach(salle => {
+            //         let indexSalle = this.salleDataSource.indexOf(salle);
+            //         this.getContainersByRessourceStartDateEndDate(
+            //             salle.CodeRessource,
+            //             this.navigateFirstOfMouth,
+            //             this.navigateLastOfMouth ,
+            //             salle.CodeSalle,
+            //             indexSalle
+            //         );
+            //     });
+            // }
+            // TIMELINEMONTH ACTION VIEW
+            if (args.action === 'view') {
                 this.timelineResourceDataOut = [];
                 console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
                 this.refreshDateStart = this.startofMonth;
@@ -2515,11 +2483,12 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                         indexSalle
                     );
                 });
+                this.scheduleObj.refreshEvents();
                 console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
             }
         }
-        // if (args.currentView === "MonthAgenda") {
-        //     // if (args.action === "date"){
+        // else if (args.currentView === 'MonthAgenda') { // MONTHAGENDAVIEW
+        //     // if (args.action === date){
         //     //     this.timelineResourceDataOut = []
         //     //   this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
         //     //   this.navigateLastOfMouth = moment(args.currentDate).endOf('month').add(1,'d').toDate()
@@ -2553,53 +2522,9 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         //             );
         //         });
         //         console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
-
         //     }
         // }
-        //   if(args.currentView ==="TimelineWeek"){
-        // if (args.action === "date"){
-        //     this.timelineResourceDataOut = []
-        //   this.navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
-        //     this.navigateLastOfWeek = moment(args.currentDate).endOf('week').add(1,'d').toDate()
-        //                  this.salleDataSource.forEach(salle => {
-        //                      let indexSalle = this.salleDataSource.indexOf(salle);
-        //                      this.getContainersByRessourceStartDateEndDate(
-        //                          salle.CodeRessource,
-        //                          this.navigateFirstOfWeek,
-        //                          this.navigateLastOfWeek,
-        //                          salle.CodeSalle,
-        //                          indexSalle
-        //                      );
-        //                  });
-        //   }
-        // }
-        if (args.currentView === "TimelineWeek") {
-         
-            if (args.action === "view") {
-                this.timelineResourceDataOut = []
-                console.log(this.timelineResourceDataOut, "timelineResourceDataOut");
-                this.refreshDateStart = this.startofWeek;
-                this.refreshDateEnd = this.endofWeek;
-                this.salleDataSource.forEach(salle => {
-                    let indexSalle = this.salleDataSource.indexOf(salle);
-                    this.getContainersByRessourceStartDateEndDate(
-                        salle.CodeRessource,
-                        this.startofWeek,
-                        this.endofWeek,
-                        salle.CodeSalle,
-                        indexSalle
-                    );
-                });
-                console.log(this.timelineResourceDataOut, "timelineResourceDataOut")
-               
-             
-            }
-    
-        }
-
-        // console.log("date agenda schedulerobj ......................................", this.scheduleObj)
-
-        // if (args.currentView === "Agenda") {
+        // else if (args.currentView === "Agenda") { // AGENDAVIEW
         //     if (args.action === "date") {
         //         let navigateFirstOfWeek = moment(args.currentDate).toDate(),
         //             navigateLastOfWeek = moment(args.currentDate).add(7, 'd').toDate()
@@ -2636,11 +2561,72 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         //     }
         // }
 
-
-        if (this.filtre == true) {
-            this.filtre = true
+        /************** THIS.SCHEDULEOBJ.CURRENTVIEW CONDITIONS ************/
+        if (this.scheduleObj.currentView === "TimelineMonth") {
+            console.log('this.scheduleObj.currentView = TimelineMonth / condition ')
+            if (args.action === 'date') {
+                this.navigateFirstOfMouth = moment(args.currentDate).startOf('month').toDate()
+                this.navigateLastOfMouth = moment(args.currentDate).endOf('month').toDate()
+                console.log(this.navigateFirstOfMouth, "++++++++++++++++++++++++", this.navigateLastOfMouth)
+                console.log("debut", this.startofWeek, "fin", this.endofWeek, "+++++++++", this.startofMonth, "++++++", this.endofMonth)
+                console.log(this.scheduleObj)
+                this.refreshDateStart = this.navigateFirstOfMouth;
+                this.refreshDateEnd = this.navigateLastOfMouth;
+                this.timelineResourceDataOut = []
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.navigateFirstOfMouth,
+                        this.navigateLastOfMouth,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            }
         }
-
+        if (this.scheduleObj.currentView === 'TimelineWeek') {
+            console.log('TIMELINEWEEK!!!!')
+            if (args.action === 'date') {
+                let navigateFirstOfWeek = moment(args.currentDate).startOf('week').toDate()
+                let navigateLastOfWeek = moment(args.currentDate).endOf('week').toDate()
+                console.log(navigateFirstOfWeek, "++++++++++++++++++++++++", navigateLastOfWeek)
+                this.timelineResourceDataOut = [];
+                this.refreshDateStart = navigateFirstOfWeek;
+                this.refreshDateEnd = navigateLastOfWeek;
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        navigateFirstOfWeek,
+                        navigateLastOfWeek,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            }
+        }
+        if (this.scheduleObj.currentView === 'TimelineDay') {
+            console.log( 'TimelineDay 3e call condition width call getContainerByRessourceStartDateEndDate()');
+            if (args.action === "date") {
+                let startofDay = moment(args.currentDate).toDate()
+                let endofDay = moment(args.currentDate).add(1, 'd').toDate()
+                console.log(startofDay, "++++++++++++++++++++++++", endofDay)
+                this.timelineResourceDataOut = [];
+                this.refreshDateStart = startofDay;
+                this.refreshDateEnd = endofDay;
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        startofDay,
+                        endofDay,
+                        salle.CodeSalle,
+                        indexSalle
+                    );
+                });
+            }
+        }
     }
 
     onEventRendered(args: EventRenderedArgs): void {
@@ -2684,7 +2670,6 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     public CellClick: boolean = true;
     public hourContainer;
     public elementRow
-    public hourContainer
 
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
@@ -3116,7 +3101,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     /********************** DRAG AND DROP M1ANAGEMENT ***********************/
 
     onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
-        event.interval = 0;
+        event.interval = 5;
         console.log('ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo', event)
         if(event.name === 'nodeDragging') {
             console.log('nodeDragging event => ', event)

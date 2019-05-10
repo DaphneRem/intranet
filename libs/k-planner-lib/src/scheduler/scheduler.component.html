@@ -4,6 +4,8 @@
 
 <!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
 <loader-animation *ngIf="!dataRegieReady"></loader-animation>
+<!-- <loader-animation *ngIf="!dataAllEventsReady" class="loader-all-data-ready"></loader-animation> -->
+
 <div *ngIf="dataRegieReady" class="control-section card">
     <!-- <div class="autre-planinngs">
         <select class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)"

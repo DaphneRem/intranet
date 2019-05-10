@@ -6,6 +6,13 @@ $InfoBtnHoverColor :  #2eced6;
 // $importantColor : #fd5f5f;
 // $iconColor : #7f7f7f;
 
+.loader-all-data-ready {
+    z-index: 9999 !important;
+    position: absolute;
+    left: 45%;
+    top: 40%;
+}
+
 .control-section {
     margin-bottom: 0;
     .refresh-btn {
