@@ -21,10 +21,12 @@
             <div class="schedule-header">
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
                 <button  
+                  #btnrefresh
                     class="btn btn-info regie refresh-btn ml-3 btn-refresh" 
                     (click)="refreshScheduler()" 
                     [disabled]="disabledrefresh" 
-                    id="btn-refresh">
+                    id="btn-refresh"
+                   >
                     <i class="icofont icofont-refresh"></i>Rafraichir
                 </button>
                 <input type="text" 

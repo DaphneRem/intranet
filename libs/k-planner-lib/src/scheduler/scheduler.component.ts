@@ -374,13 +374,15 @@ public scrollto
                 
 
                 if(  this.disabledrefresh || this.disabledrefreshBacklog ){
-                 btnrefresh[0].prop('disabled', true)
-                 btnrefreshWo[0].prop('disabled', true)
-
+              
+                 btnrefresh[0].disabled = true
+                 btnrefreshWo[0].disabled = true
                 }else{
-                  
+                  this.scheduleObj.refresh()
                  btnrefresh.click()
                  btnrefreshWo.click() 
+                // this.refreshScheduler()
+                // this.refreshWorkordersBacklog()
                 }
 
                
@@ -523,7 +525,7 @@ public scrollto
         // args.scroll.enable = false;
     }
 
-    public disabledrefresh: boolean
+    public disabledrefresh: boolean = true
     refreshScheduler() {
         console.log(this.scheduleObj);
         this.disabledrefresh = true
@@ -579,7 +581,7 @@ public scrollto
 
 
     }
-    public disabledrefreshBacklog
+    public disabledrefreshBacklog:boolean =true
 
     refreshWorkordersBacklog() {
         this.disabledrefreshBacklog = true
@@ -843,9 +845,9 @@ public scrollto
 
     public lastSalleCall = false;
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
-        this.timelineResourceDataOut = []
-        this.allDataWorkorders = []
-       this.allDataContainers = [];
+    //     this.timelineResourceDataOut = []
+    //     this.allDataWorkorders = []
+    //    this.allDataContainers = [];
         console.log('CALL getContainersByRessourceStartDateEndDate() with codeRegie : ', coderessource, ' / dateDebut : ', datedebut, ' / dateFin : ', datefin);
 
         let debut = moment(datedebut).format('YYYY-MM-DD').toString();
@@ -909,15 +911,15 @@ public scrollto
                     // this.departmentDataSource = this.departmentGroupDataSource;
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
                     // console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
-                    this.disabledrefresh = false
+                   
                 
-                    this.refreshF4 = false
+                 
                     console.log('refresh scheduler click in getContainersByRessourceStartDateEndDate() => ', this.disabledrefresh);
                 } else {
                     // console.log('container not present for regie : ', coderessource, res);
                
                 }
-
+                this.disabledrefresh = false
             });
 
     }
@@ -3248,6 +3250,11 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
         // }
+        // if (event.requestType === 'viewNavigate') {
+        //     console.log("NAVIGATE")
+        //     event.cancel = true
+        //  }
+        
         if (event.requestType === 'eventChange') {
             this.zoom = true
 
