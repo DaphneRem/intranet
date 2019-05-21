@@ -60,7 +60,9 @@ import {
     MonthAgendaService,
     Schedule,
     ResizeEventArgs,
-    DragEventArgs
+    DragEventArgs,
+    CellTemplateArgs,
+    getWeekNumber
 } from '@syncfusion/ej2-angular-schedule';
 
 // Locale Data Imports
@@ -92,6 +94,7 @@ import { LibelleGroupe } from '../models/libelle-groupe';
 import { DataManager, Query, ReturnOption } from '@syncfusion/ej2-data';
 import { Grid } from '@syncfusion/ej2-angular-grids';
 import { SpinSettingsModel } from "@syncfusion/ej2-splitbuttons";
+import { splitClasses } from "@angular/compiler";
 
 const localeFrenchData = require('./scheduler-fr.json');
 const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
@@ -198,6 +201,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public colorReadOnly
     public currentView: View = 'TimelineDay';
     public workHours: WorkHoursModel = { start: '07:00', end: '23:00', highlight: true };
+    public weekNumber = true
     public cssClass: string = 'custom';
     public readonly: boolean = true;
 
@@ -378,7 +382,7 @@ public scrollto
                  btnrefresh[0].disabled = true
                  btnrefreshWo[0].disabled = true
                 }else{
-                  this.scheduleObj.refresh()
+                 this.scheduleObj.refresh()
                  btnrefresh.click()
                  btnrefreshWo.click() 
                 // this.refreshScheduler()
@@ -475,14 +479,13 @@ public scrollto
     }
 
     ngOnInit() {
-
+      
         this.scheduleObj.enablePersistence = false;
         this.scheduleObj.allowKeyboardInteraction = true;
         this.treeObj.enablePersistence = false;
         // this.toggleBtn.content = 'Voir toutes les Régies';
         this.activeViewTimelineDay = this.scheduleObj;
-        // console.log(hospitalData);
-        // console.log(this.eventSettings);
+        // console.log(hospitalData); 
         // console.log(this.data);
         // this.storeAppSubscription();
         console.log(this.store);
@@ -523,6 +526,9 @@ public scrollto
         console.log('args =======> ', args);
         // args.navigation = { enable: true, timeDelay: 2000 };
         // args.scroll.enable = false;
+    //    if(!args.data['AzaIsPere']) {
+    //        args.cancel = true
+    //    }
     }
 
     public disabledrefresh: boolean = true
@@ -590,37 +596,39 @@ public scrollto
         this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
         console.log("clic bouton refresh ", this.argsKeyboardEvent, this.navigation)
 
-        if (!this.navigation || (this.searchString != undefined  )) {
-            let valueSearch = document.getElementsByClassName('recherche-wo');
-            console.log("clic bouton refresh ", valueSearch, this.argsKeyboardEvent)
-            this.searchwo.value = ""
+          if(this.searchString != undefined )
+          {
+            if (!this.navigation ) {
+                let valueSearch = document.getElementsByClassName('recherche-wo');
+                console.log("clic bouton refresh ", this.searchString, this.argsKeyboardEvent)
+                this.searchwo.value = ""
+               
+                console.log(this.searchString,valueSearch)
+                //  this.onFilter(a,0,this.argsKeyboardEvent)
+            } 
            
-            //  this.onFilter(a,0,this.argsKeyboardEvent)
-
-           
-        }
-        if (this.navigation === true && (this.searchString != undefined  )) {   
-         
-            setTimeout(() => {
-                if(this.argsKeyboardEvent.keyCode !== undefined){
-                if(this.argsKeyboardEvent.keyCode === 8 ){
-              
-                }else{
-                 
-                    this.searchwo.value =  this.searchString
-                    this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
-                    this.fieldMonteur['dataSource'] = this.treeObj.getTreeData()
-                    console.log("clic bouton navigation", this.fieldMonteur['dataSource'])  
-                }
-         
-            }
-                         
+        //   else   {
+        //         if(this.argsKeyboardEvent.keyCode != undefined){
+        //             if(this.argsKeyboardEvent.keyCode === 8 ){
+                  
+        //             }else{
+                       
+        // setTimeout(() => {
+        //     // console.log(this.searchwo.value)
+        //     this.searchwo.value =  this.searchString
+        //     // console.log(this.searchwo.value)
+        //    this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
+        //     this.treeObj.fields['dataSource'] = this.treeObj.getTreeData()
+            
+        //     console.log("clic bouton navigation",  this.treeObj.fields['dataSource'],this.treeObj.getTreeData() ) 
+        // }, 100);
+        //     } 
+        // }
+        //   }
+        //   console.log(this.navigation, "²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²")
+        this.navigation = false      
    
-            }, 50);
-        }
-                 this.navigation = false
-   
-    }
+    }}
 
     // getAllCoordinateurs() {
     //     console.log('this.user => ', this.user);
@@ -736,11 +744,12 @@ public scrollto
                 });
                 // let startofDay = moment().toDate()
                 // let endofDay = moment().add(1, 'd').toDate();
+                this.timelineResourceDataOut = []
                 this.salleDataSource.forEach(salle => {
                     let indexSalle = this.salleDataSource.indexOf(salle);
                     console.log('--------------------------------------------------indexSalle => ', indexSalle);
 
-                    this.timelineResourceDataOut = []
+                  
                     this.getContainersByRessourceStartDateEndDate(
                         salle.CodeRessource,
                         start,
@@ -844,6 +853,7 @@ public scrollto
     }
 
     public lastSalleCall = false;
+    public indexofContainer
     getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle) {
     //     this.timelineResourceDataOut = []
     //     this.allDataWorkorders = []
@@ -903,7 +913,7 @@ public scrollto
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
                         // console.log('--------------------------------------------------indexSalle => ', indexSalle);
                         this.getWorkorderByContainerId(data.Id_Planning_Container, codeSalle, index, length, indexSalle);
-             
+                      
                     });
                     // console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
                     // timelineResourceDataOut
@@ -911,7 +921,7 @@ public scrollto
                     // this.departmentDataSource = this.departmentGroupDataSource;
                     this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut;
                     // console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
-                   
+                  
                 
                  
                     console.log('refresh scheduler click in getContainersByRessourceStartDateEndDate() => ', this.disabledrefresh);
@@ -919,6 +929,8 @@ public scrollto
                     // console.log('container not present for regie : ', coderessource, res);
                
                 }
+              
+             
                 this.disabledrefresh = false
             });
 
@@ -940,7 +952,7 @@ public scrollto
                 this.WorkorderByContainerId = res;
                 this.allDataWorkorders = [...this.allDataWorkorders, ...res];
 
-                // console.log('all data workorder : ', this.allDataWorkorders);
+              
                 // console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
                 // console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
                 if (this.WorkorderByContainerId.length > 0) {
@@ -1352,6 +1364,7 @@ public scrollto
         let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
         console.log('old Event container :', oldEvent);
         let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
+        console.log("container result",containerResult[0])
         let container = containerResult[0];
         console.log(container, 'event container')
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
@@ -1370,7 +1383,8 @@ public scrollto
                 libelleRessourceSalle = item['Text'];
                 codeRessourceSalle = item['codeRessource'];
             }
-        });
+        }); 
+        if(typeof(container) != 'undefined'){
         let newContainer = {
             Id_Planning_Container: container.Id_Planning_Container,
             UserEnvoi: container.UserEnvoi,
@@ -1394,6 +1408,7 @@ public scrollto
             PlanningEventsList: null
         };
         this.putContainer(newContainer.Id_Planning_Container, newContainer, event);
+    }
     }
 
     putContainer(id, container, event) { // call in resize, deplacement and Editor (call in updateContainer() function)
@@ -2223,6 +2238,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 //     ),
                 //     enableTooltip: true, tooltipTemplate: this.temp
                 // };
+                this.updateWO = false;
+                console.log("UPDATE WORKORDERS", this.updateWO)
             }, error => {
                 console.error('error updateworkorder', error);
                 // alert('error updatecontainer');
@@ -2293,6 +2310,10 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         this.scheduleObj.enablePersistence = false;
         this.navigation = true
         this.refreshWorkordersBacklog()
+ setTimeout(() => {
+    this.onFilter(this.searchString,0,this.argsKeyboardEvent)   
+ }, 500);
+
         // this.newTreeObj = this.treeObj;
         // this.treeObj.destroy();
         // this.treeObj = this.newTreeObj;
@@ -2546,7 +2567,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     public CellClick: boolean = true;
     public hourContainer;
     public elementRow
-
+    public updateWO:boolean = false;
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         // this.filtre = true
@@ -2754,7 +2775,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                 console.log('repeat', repeat[0]);
                 repeat[0]['style'].display = 'none';
                 console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
-
+               this.updateWO = true
             } else {
                 let subTitle = document.getElementsByClassName('e-location-container');
                 let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
@@ -3071,9 +3092,31 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
 
                     };
                     this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
+                    let annuler = document.getElementsByClassName("e-event-cancel")
+                    let btnClose = document.getElementsByClassName("e-dlg-closeicon-btn")
+                    console.log(annuler);
+                   
+                    btnClose[0].addEventListener('click', () => {
+                        if(this.creationArray.length > 1){
+                        this.creationArray.pop() 
+                    }
+
+                   
+                    this.isTreeItemDropped = false
+                    console.log(this.creationArray);
+                    }, true);
+
+                    annuler[0].addEventListener('click', () => {
+                        if(this.creationArray.length > 1){
+                        this.creationArray.pop() 
+                    }
+                    this.isTreeItemDropped = false
+                    console.log(this.creationArray);
+                    }, true);
                     this.creationArray.push(containerData);
                     this.creationArray.push(eventData);
                     console.log(containerData);
+                    console.log(this.creationArray);
                     this.scheduleObj.openEditor(containerData, 'Add', true);
                     this.isTreeItemDropped = true;
                     this.draggedItemId = event.draggedNodeData.id as string;
@@ -3134,8 +3177,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                         this.treeObj.fields.dataSource = this.field['dataSource'];
                         this.onActionComplete('e');
                         this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
-                    }
-                }
+                    }         
+                }    
             }
         }
       
@@ -3249,8 +3292,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         this.scheduleObj.element.style["overflow"] = 'hidden'
         // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
         //     console.log('is not pere');
-        // }
-        // if (event.requestType === 'viewNavigate') {
+        // } 
+         // if ( event.requestType === 'viewNavigate') {
         //     console.log("NAVIGATE")
         //     event.cancel = true
         //  }
@@ -3373,7 +3416,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
             this.customActionBegin(event);
         }
         // console.log('customActionBegin()');
-        // this.customActionBegin(event);
+        // this.customActionBegin(event); 
+    
     }
 
     customActionBegin(args: any) { // CUSTOM ACTION BEGIN
@@ -3488,12 +3532,14 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         // }
         // this.scheduleObj.dataBind();
         if (e.requestType === 'eventChanged') {
+            console.log("UPDATE WORKORDER", this.updateWO)
             if (e.data.AzaIsPere || (!e.data.AzaIsPere && this.isTreeItemDropped)) {
                 console.log("************************************************* onaction complete : update container");
                 this.updateContainer(e);
             } else {
-                if (!e.data.AzaIsPere) {
+                if (!e.data.AzaIsPere && this.updateWO) {
                     console.log("************************************************* onaction complete : update WorkOrder");
+                   
                     this.updateWorkOrder(e)
                 }
             }
@@ -3555,15 +3601,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         this.isBackToBacklog = false;
         this.navigateTimelineDay = false;
         this.eventClick = false;
-        // console.log(this.searchwo);
-        // if (this.searchwo != undefined) {
-        //     if( this.searchwo.value != '' && !this.cancel) {
-        //         this.searchString = this.searchwo.value
-        //         this.onFilter(this.searchString , 0, this.argsKeyboardEvent)
-        //         console.log(  this.searchwo.value)
-        //         console.log( typeof this.searchwo.value)
-        //     }
-        // }
+
+      
     }
 
     /************************ DELETE ********************/
@@ -3990,7 +4029,7 @@ public searchwo
 public searchString : string
 public searchStringM : string
 public argsKeyboardEvent
-public searchValue
+public searchResult
     onFilter(searchText: string, tabIndex,args: KeyboardEvent) {
 ///************************************************************** FILTRE DES MONTEURS ********************************************************************* */
       this.argsKeyboardEvent = args
@@ -4048,7 +4087,9 @@ if (searchText.length >= 0) {
            
             this.searchString = (args.target as HTMLInputElement).value;
             this.searchwo = document.getElementById("searchwo")
-           
+            if(this.navigation){
+                this.searchwo.value = searchText
+            }
              console.log(this.searchwo.value)
              console.log(typeof this.searchwo.value)
             console.log(this.searchString,'.......', )
@@ -4063,8 +4104,8 @@ if (searchText.length >= 0) {
                    
                      this.treeObj.fields['dataSource'] =  e.result as any
                      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa >0",   this.treeObj.fields['dataSource'])
-                
-                   
+                this.searchResult =  e.result as any
+           
                 
                       }else{
                         this.treeObj.fields['dataSource']  = []
@@ -4267,6 +4308,9 @@ if (searchText.length >= 0) {
                 args.element['style'].background = '#E5FCFD';
             }
         }
+       
+        
+ 
 
         if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
             let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
@@ -4280,12 +4324,25 @@ if (searchText.length >= 0) {
         //     // args.element['style'].height = '160px' || args.element.classList.contains('e-work-cells ')
         //        console.log(args.element['style'].height)
         // }
-
+       
     }
     
 
     onResizing(args:ResizeEventArgs){
 
     }
+    // public valueCellTemplateArgs : CellTemplateArgs 
 
+    // getMonthDetails(value: CellTemplateArgs): string {
+    //     return this.instance.formatDate((value as CellTemplateArgs).date, { skeleton: 'yMMMM' });
+    // }
+    // getWeekDetails(value: CellTemplateArgs): string {
+
+    //     return 'semaine ' + getWeekNumber((value as CellTemplateArgs).date);
+        
+    // }
+
+    //  getDateHeaderText: Function = (value: Date) => {
+    //     return this.instance.formatDate(value, { skeleton: 'Ed' });
+    // };
 }

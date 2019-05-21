@@ -400,9 +400,11 @@ $InfoBtnHoverColor :  #2eced6;
     }
     .operateur {
         background-color: $operatorColor;
-        margin-right: 5px;
-        padding: 3px;
+        // margin-right: 5px;
+        padding: 1px;
         border: 1px solid #ffffff;
+        font-size: 10px;
+        width: 80px
     }
 }
 
