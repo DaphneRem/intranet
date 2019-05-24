@@ -44,59 +44,28 @@
                 </select>
                 <table class="table-light table-sm" id="property" title="Properties" >
                     <tbody>
-                        <tr>
-                            <!-- <td  >
-                                <div class="property-panel-content">
-                                    <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
-                                </div>
-                                    </td> -->
-                            <!-- <td class="interval-label" *ngIf="scheduleObj.currentView =='TimelineWeek'">
+                        <tr style="height: 40px">
+                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
-                            </td> -->
-                            <!-- <td class="interval" *ngIf="scheduleObj.currentView =='TimelineWeek'">
+                            </td>
+                            <td *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
-                            </td> -->
-                        <!-- </tr>
-                        <tr *ngIf="scheduleObj.currentView =='TimelineDay'  "  style="height: 40px"> -->
-                            <!-- <td  >
-                                <div class="property-panel-content">
-                                    <input type="text" class="e-input" id="events-search" placeholder="Rechercher un événement" (keyup)="globalSearch($event)" />
-                                </div>
-                            </td> -->
-                            <!-- <td class="interval-label" *ngIf="scheduleObj.currentView =='TimelineDay'" >
+                            </td>
+                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div style="text-align:center"> Intervalle  (Minutes)</div>          
                             </td>
                             <td *ngIf="scheduleObj.currentView =='TimelineDay'" >
                                 <div>
                                     <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
-                            </td> -->                 
-                             <!-- <td style="width: 10%;" >
-                                <div>
-                                    <ejs-timepicker #ejStartTimePicker id="startTime"  format='HH:mm' [strictMode]='isStrictMode' ></ejs-timepicker>
-                                </div>
                             </td>
-                    
-                            <td style="width: 10%" >
-                                <div style="text-align:center">Heur Fin
-                                </div>
-                            </td>
-                            <td style="width: 10%;">
-                                <div>
-                                    <ejs-timepicker #ejEndTimePicker id="endTime" format='HH:mm' [strictMode]='isStrictMode'></ejs-timepicker>
-                                </div>
-                            </td>             
-                            <td>
-                                <div>
-                                    <button ejs-button id='submit' class="ml-3" style="text-align:center" (click)="onSubmit()">Valider</button>
-                                </div>
-                            </td> -->
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <div id="panzoomDiv" #panzoomDiv>
             <div class="schedule" id="schedule">
                 <ejs-schedule #scheduleObj 
                     (dragStart) = "onDragStart($event)"
@@ -118,8 +87,10 @@
                     (navigating)="onNavigating($event)"
                     [currentView]="currentView"
                     [firstDayOfWeek]="1"
-                    [rowAutoHeight]="rowAutoHeight">
-                    <!-- (change)="onChange($event)" -->
+                    [rowAutoHeight]="rowAutoHeight"
+                    (change)="onChange($event)"
+                    >
+                  
                     <!-- (renderCell)="onRenderCell($event)" -->
                     <e-resources>
                         <e-resource 
@@ -149,7 +120,7 @@
                             <ng-template #eventTemplate let-data  class="event">
                                 <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                     <div>
-                                        <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                        <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                             <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div>
                                             <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} </u> <br>
                                             <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
@@ -160,8 +131,8 @@
                                         <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                         
                                             <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
-                                            <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
-                                            <span *ngIf="nameService != '1'" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                            <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                            <span *ngIf="nameService != '1'" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                         </div>
                                     </div>
                                 </div>
@@ -175,7 +146,7 @@
                             <ng-template #eventTemplate let-data  class="event">
                                     <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                         <div>
-                                            <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                            <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                                 <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div>
                                                 <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} </u> <br>
                                                 <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
@@ -184,8 +155,8 @@
                                                     class="float-right  fixed mr-1"> -->
                                             </div>
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
-                                                <span *ngIf="nameService === 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
-                                                <span *ngIf="nameService != 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                                <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                                <span *ngIf="nameService != '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                             </div>
                                         </div>
                                     </div>
@@ -209,11 +180,11 @@
                                 </div>
                             </ng-template>
                 </e-view> -->
-                    <e-view option='TimelineMonth'   >
+                    <e-view option='TimelineMonth'>
                             <ng-template #eventTemplate let-data  class="event" >
                                 <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
                                     <div >
-                                        <div class="subject" style="margin-top: 0px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
+                                        <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
                                             <!-- <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div> -->
                                             <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} </u> <br> 
                                       
@@ -222,29 +193,25 @@
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
                                         <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
-                                            <span *ngIf="nameService === 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
-                                            <span *ngIf="nameService != 'BANDES ANNONCES' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                            <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                            <span *ngIf="nameService != '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                         </div>
                                     </div>
                                 </div>
                                 </ng-template> 
-                            
-                                <!-- <ng-template #dateHeaderTemplate let-data *ngIf="scheduleObj.currentView =='TimelineMonth'" >
+                           
+                                  <!-- <ng-template #dateHeaderTemplate let-data  >
                                         <div class="date-text">{{getDateHeaderText(data.date)}}</div> 
-                                     </ng-template>  -->
+                                     </ng-template>   -->
+                            
                     </e-view>
                  
-                    <!-- <e-view option="Agenda"   >
-                       
-                    </e-view> -->
-                    <!-- <e-view option="MonthAgenda" [readonly]="false">
-                   
-                    </e-view> -->
                 </e-views>
                 
             </ejs-schedule>
         
         </div>
+    </div>
         </div>
         
    <!--************************************** tabItem ***********************************************************************-->
