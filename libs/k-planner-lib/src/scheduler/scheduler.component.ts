@@ -4250,7 +4250,7 @@ if (searchText.length >= 0) {
    
     /*************************************************************************************** */
     onRenderCell(args: RenderCellEventArgs): void {
-        this.scheduleObj.element.style["zoom"]= "90%"
+        this.scheduleObj.element.style["zoom"]= this.value.toString() +"%"
 
         if (this.scheduleObj.currentView == 'TimelineWeek') {
             if (args.element.classList.contains('e-work-cells') && ((args.date.getDate() % 2) === 0)) {
