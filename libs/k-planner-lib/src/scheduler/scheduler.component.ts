@@ -362,7 +362,7 @@ public scrollto
         console.log('******* constructor start *******');
         this.isnotMyGroup = false;
         this.storeAppSubscription();
-    
+     
         document.body.addEventListener('keyup', (eKey: KeyboardEvent) => {
             let btnrefresh = document.getElementById('btn-refresh');
             let btnrefreshWo = document.getElementById('btn-refreshWo');
@@ -441,7 +441,7 @@ public scrollto
         //  this.getWorkOrderByidGroup(1)
         // this.getWorkOrderByidGroup(3);
         //  this.getSalleByGroup(10);
-      
+   
     }
 
   @HostListener('mouseenter') onMouseEnter() {
@@ -4250,7 +4250,7 @@ if (searchText.length >= 0) {
    
     /*************************************************************************************** */
     onRenderCell(args: RenderCellEventArgs): void {
-
+        this.scheduleObj.element.style["zoom"]= "90%"
 
         if (this.scheduleObj.currentView == 'TimelineWeek') {
             if (args.element.classList.contains('e-work-cells') && ((args.date.getDate() % 2) === 0)) {
