@@ -4,6 +4,9 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
+
 // lib imports
 import { CustomDatatablesOptions } from '@ab/custom-datatables';
 
@@ -50,6 +53,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   @Input() headerTableLink?: string;
   @Input() tableTitle?: string;
   @Input() data;
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public globalStore;
   public storeFichesToModif;
@@ -153,7 +158,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.getStatusLib();
     this.checkLinks();
     this.displayAction();
-    this.store.subscribe(data => (this.globalStore = data));
+    this.store.pipe(takeUntil(this.onDestroy$)).subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     console.log(this.storeFichesToModif);
     this.displaySwalModalActions();
@@ -183,6 +188,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   getStepsLib() {
     this.stepsLibService.getStepsLib()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.stepLib = data;
         console.log(data);
@@ -194,6 +200,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   getStatusLib() {
     this.statusLibService
       .getStatusLib()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.statusLib = data;
         console.log(data);
@@ -205,6 +212,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   getElementsAnnexesStatusLib() {
     this.annexElementsService
       .getAnnexElementsStatus()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.elementsAnnexesStatusLib = data;
         this.elementsAnnexesStatusLibReady = true;
@@ -356,6 +364,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.displayColumns();
     // this.fichesMaterielService
     //   .getFichesMateriel()
+    //   .pipe(takeUntil(this.onDestroy$))
     //   .subscribe(data => {
     //     if (!data) {
     //       this.customdatatablesOptions.data = [];
@@ -375,6 +384,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.sub.unsubscribe();
+    this.onDestroy$.next();
   }
 
   displayColumns() {

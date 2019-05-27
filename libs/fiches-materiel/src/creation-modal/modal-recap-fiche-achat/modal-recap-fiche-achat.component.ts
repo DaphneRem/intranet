@@ -6,11 +6,15 @@ import {
   OnChanges,
   SimpleChanges,
   SimpleChange,
-  EventEmitter
+  EventEmitter,
+  OnDestroy
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { transition, trigger, style, animate } from '@angular/animations';
 import swal from 'sweetalert2';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 // lib import
 import { CustomIconBadge } from '@ab/custom-icons';
@@ -45,8 +49,10 @@ import { FichesAchatService } from '@ab/fiches-achat';
   ]
 })
 
-export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
+export class ModalRecapFicheAchatComponent implements OnInit, OnChanges, OnDestroy {
   @Input() ficheAchat;
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public myFicheAchat;
   public detailsFicheAchat;
@@ -76,9 +82,14 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges {
     this.init++;
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   getFicheAchatDetails(id) {
     this.fichesAchatService
       .getFichesAchatDetails(id)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe( data => {
         this.detailsFicheAchat = data;
         this.dataReady = true;

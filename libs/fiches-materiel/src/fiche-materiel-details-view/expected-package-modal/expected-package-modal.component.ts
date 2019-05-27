@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 // service import
 import { ExpectedPackageService, ExpectedPackage } from '@ab/fiches-achat';
@@ -15,10 +18,12 @@ import { ExpectedPackageService, ExpectedPackage } from '@ab/fiches-achat';
     ExpectedPackageService
   ]
 })
-export class ExpectedPackageModalComponent implements OnInit, OnChanges {
+export class ExpectedPackageModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() myFicheAchatDetails;
 
   closeResult: string;
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public expectedPackage: ExpectedPackage[] = [];
   public expectedPackageReady: Boolean = false;
@@ -41,6 +46,10 @@ export class ExpectedPackageModalComponent implements OnInit, OnChanges {
       // console.log(changeDataReady);
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   openLg(expectedPackage) {
     this.modalService.open(expectedPackage, { size: 'lg' , centered: true});
   }
@@ -48,6 +57,7 @@ export class ExpectedPackageModalComponent implements OnInit, OnChanges {
   getExpectedPackage(id) {
     this.expectedPackageService
       .getExpectedPackage(id)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         if (data === null) {

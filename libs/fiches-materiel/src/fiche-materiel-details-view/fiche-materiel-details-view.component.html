@@ -120,7 +120,7 @@
 
           <p>N° Episode Prod : {{myFicheMateriel.NumEpisodeProd ? myFicheMateriel.NumEpisodeProd : '/'}}</p>
           <p>N° Episode AB : {{myFicheMateriel.NumEpisodeAB ? myFicheMateriel.NumEpisodeAB : '/'}}</p>
-          <p>N° œuvre : {{myFicheAchatDetails.numprogram ? myFicheAchatDetails.numprogram : '/'}}</p>
+          <p>N° œuvre : {{myFicheMateriel.NumProgram ? myFicheMateriel.NumProgram : '/'}}</p>
           <p *ngIf="myFicheAchatDetailsExist">Format œuvre : 
             <span [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
               {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisodes de '+myFicheAchatDetails.duree+'min' : messageEmptyField}}

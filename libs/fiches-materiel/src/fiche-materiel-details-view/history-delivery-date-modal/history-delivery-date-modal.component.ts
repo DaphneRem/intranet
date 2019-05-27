@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, OnChanges, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 import { HistoryDeliveryDateService } from '../../services/history-delivery-date.service';
 import { HistoryDeliveryDate } from '../../models/history-delivery-date';
@@ -15,11 +18,13 @@ import { HistoryDeliveryDate } from '../../models/history-delivery-date';
     HistoryDeliveryDateService
   ]
 })
-export class HistoryDeliveryDateModalComponent implements OnInit, OnChanges {
+export class HistoryDeliveryDateModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() myFicheMateriel;
   @Input() reload?;
 
   public closeResult: string;
+  private onDestroy$: Subject<any> = new Subject();
+
   public count: number;
   public historyDeliveryDate: HistoryDeliveryDate[];
 
@@ -44,6 +49,9 @@ export class HistoryDeliveryDateModalComponent implements OnInit, OnChanges {
     console.log('------------------------------------------------------------------> ', this.count);
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
 
   openLg(deliveryDateContent) {
     this.modalService.open(deliveryDateContent, { size: 'lg' , centered: true});
@@ -52,6 +60,7 @@ export class HistoryDeliveryDateModalComponent implements OnInit, OnChanges {
   getHistoryDeliveryDate(idFicheMateriel) {
     this.historyDeliveryDateService
       .getHistoryDeliveryDate(idFicheMateriel)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe((data: HistoryDeliveryDate[]) => {
         console.log(data);
         this.historyDeliveryDate = data.reverse();

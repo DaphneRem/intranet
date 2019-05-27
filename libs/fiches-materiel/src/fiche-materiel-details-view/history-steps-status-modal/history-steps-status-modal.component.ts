@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, OnChanges, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 import { HistoryStepsStatusService } from '../../services/history-steps-status.service';
 import { HistoryStepsStatus } from '../../models/history-steps-status';
@@ -15,7 +18,7 @@ import { HistoryStepsStatus } from '../../models/history-steps-status';
     HistoryStepsStatusService
   ]
 })
-export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
+export class HistoryStepsStatusModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() myFicheMateriel;
   @Input() statusLib;
   @Input() stepLib;
@@ -23,6 +26,8 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
 
   closeResult: string;
   count = 0;
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public historyStepsStatus;
   public historyStepsStatusReady: Boolean = false;
@@ -47,6 +52,10 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
     console.log('------------------------------------------------------------------> ', this.count);
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   openLg(content) {
     this.modalService.open(content, { size: 'lg' , centered: true});
   }
@@ -54,12 +63,13 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges {
   getHistoryStepsStatus(idFicheMateriel) {
     this.historyStepsStatusService
       .getHistoryStepsStatus(idFicheMateriel)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         if (data === null || data === []) {
           this.historyStepsStatus = [];
           this.historyStepsStatusReady = true;
-        } else if (data.length === 0 ) {
+        } else if (data.length === 0) {
           this.historyStepsStatus = data;
           this.historyStepsStatusReady = true;
           this.addStepStatusLibelleToHistory();
