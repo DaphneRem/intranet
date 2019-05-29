@@ -158,7 +158,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.getStatusLib();
     this.checkLinks();
     this.displayAction();
-    this.store.pipe(takeUntil(this.onDestroy$)).subscribe(data => (this.globalStore = data));
+    this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     console.log(this.storeFichesToModif);
     this.displaySwalModalActions();

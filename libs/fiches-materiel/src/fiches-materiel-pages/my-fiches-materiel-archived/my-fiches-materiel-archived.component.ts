@@ -83,7 +83,7 @@ export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
   }
 
   storeAppSubscription() {
-    this.store.pipe(takeUntil(this.onDestroy$)).subscribe(data => {
+    this.store.subscribe(data => {
         this.user = data['app'].user.shortUserName;
         console.log(this.user);
     });

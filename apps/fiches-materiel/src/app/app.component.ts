@@ -13,7 +13,7 @@ import { App, User } from './+state/app.interfaces';
 import { appInitialState } from './+state/app.init';
 import { config } from './../../../../.privates-url';
 
-export let browserRefresh = false;
+// export let browserRefresh = false;
 
 @Component({
   selector: 'app-root',
@@ -39,11 +39,12 @@ subscription: Subscription;
     // private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
-    this.subscription = router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        browserRefresh = !router.navigated;
-      }
-    });
+    // this.subscription = router.events.subscribe(event => {
+    //   console.log(event);
+    //   if (event instanceof NavigationStart) {
+    //     browserRefresh = !router.navigated;
+    //   }
+    // });
     // this.adal5Service.init(config);
   }
 
@@ -88,7 +89,7 @@ subscription: Subscription;
       } else {
         setTimeout(() => {
            this.displayUser();
-        }, 4000);
+        }, 10000);
       }
     }
   }

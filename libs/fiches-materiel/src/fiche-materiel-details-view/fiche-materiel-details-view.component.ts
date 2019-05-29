@@ -184,7 +184,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
     this.getFicheAchatDetails(this.idParamsFicheAchatDetail);
     this.getFicheAchatGlobal(this.idParamsFicheAchat);
     this.getFicheMateriel(this.idParamsFicheMateriel);
-    this.store.pipe(takeUntil(this.onDestroy$)).subscribe(data => (this.globalStore = data));
+    this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     console.log(this.storeFichesToModif);
   }

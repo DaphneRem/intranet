@@ -51,6 +51,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   @Input() allEACommentsMultiSelect;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
+  @Output() propertiesChanged: EventEmitter<any> = new EventEmitter();
+  @Output() fmInRecording: EventEmitter<boolean> = new EventEmitter();
 
   private onDestroy$: Subject<any> = new Subject();
 
@@ -105,6 +107,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       this.closeInterface = false;
     }
     if (this.checkAllValidDates()) {
+      this.fmInRecording.emit(true);
       this.checkNewObjectModif();
     } else {
       let invalidDate = [];
@@ -147,14 +150,16 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   }
 
   actionAfterSave() {
-    console.log(this.newObject);
+    console.log('ACTION AFTER SAVE CALL !!!', this.newObject);
     if (this.closeInterface) {
       this.goBack();
     } else {
       let now = new Date();
       let hours = now.getHours();
       let minutes = now.getMinutes();
+      console.log('this.changedValues ===> ', this.changedValues);
       this.modificationMessage.emit(`Dernières modifications enregistrées à ${hours}:${minutes}`);
+      this.propertiesChanged.emit(this.changedValues);
     }
   }
 
@@ -325,6 +330,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           console.log(this.annexElementsFicheMateriel);
           this.annexElementsService
             .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+            .pipe(takeUntil(this.onDestroy$))
             .subscribe(annexesElements => {
               console.log(annexesElements);
               if (annexesElements) {

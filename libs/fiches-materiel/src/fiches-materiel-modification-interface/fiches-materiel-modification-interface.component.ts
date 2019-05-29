@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 
-import { browserRefresh } from '../../../../apps/fiches-materiel/src/app/app.component';
+// import { browserRefresh } from '../../../../apps/fiches-materiel/src/app/app.component';
 import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
 
 import { FichesAchatService } from '@ab/fiches-achat';
@@ -75,7 +75,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
 
   private onDestroy$: Subject<any> = new Subject();
 
-  public browserRefresh: boolean;
+  // public browserRefresh: boolean;
 
   public refreshEACommentModel = -1;
   public comments: AnnexElementCommentsFicheMAteriel[];
@@ -229,12 +229,15 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   ) {}
 
   ngOnInit() {
-    this.browserRefresh = browserRefresh;
-    if (browserRefresh) {
-      this.router.navigate(['/material-sheets/my-material-sheets/0/asc']);
-    }
-    this.store.pipe(takeUntil(this.onDestroy$)).subscribe(data => (this.globalStore = data));
+    // this.browserRefresh = browserRefresh;
+    // if (browserRefresh) {
+    //   this.router.navigate(['/material-sheets/my-material-sheets/0/asc']);
+    // }
+    this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
+    // if (this.storeFichesToModif.selectedFichesMateriel === []) {
+    //   this.router.navigate(['/']);
+    // }
     this.user = this.globalStore.app.user.shortUserName;
     this.checkAllIdSelected();
     this.getLibs();
@@ -335,6 +338,24 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     // this.ngOnInit();
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
     console.log(this.newObject);
+  }
+
+  resetPropertiesChanged(event) {
+    let propertiesToReset = event;
+    let datesInFM = ['DateAcceptation', 'DateLivraison', 'DatePremiereDiff', 'DateRetourOri', 'Deadline', 'ReceptionAccesLabo'];
+    console.log('Properties changed to RESET ====> ', event);
+    Object.keys(propertiesToReset).map(item => {
+      this.newObject[item] = this.valueNotToChangeLibelle;
+      // if (datesInFM.includes(item)) {
+      //   console.log('date item to change format ====>', item);
+      //   this.changeDateFormat(item);
+      // }
+    });
+  }
+  public fmInRecording = false;
+  checkCurrentRecord(event) {
+    console.log('FM in recording ====> ', event);
+    this.fmInRecording = event;
   }
 
   displaynewEAComments(event) {
@@ -600,6 +621,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
             this.getAnnexElementsFicheMateriel(id, index, length);
           }
           if (index === length - 1) {
+            console.log('call displayNewObject function !!!!!!!!!');
             this.displayNewObject(length, data[0]);
             this.dataIdFicheMaterielReady = true;
           } else {
@@ -620,8 +642,10 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       this.getFicheAchatDetail(ficheMateriel.IdFicheAchat);
       this.changeDateFormat('arg');
       // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
+      this.fmInRecording = false;
     } else {
       this.displayLibValueNotToChange();
+      this.fmInRecording = false;
     }
   }
 
