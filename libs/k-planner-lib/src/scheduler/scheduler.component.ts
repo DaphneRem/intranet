@@ -293,7 +293,6 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public fieldArray = this.field['dataSource'];
     public isDragged: boolean;
     public newField;
-    public wOrderBackToBacklog;
     public isAddedToBacklog: boolean;
     public count: number = 0;
     public groupeCharger: number;
@@ -477,19 +476,6 @@ public scrollto
         this.onDestroy$.next();
     }
 
-    onDragStart(args: DragEventArgs): void {
-        args.interval = 5; // drag interval time is changed to 10 minutes
-        console.log('args =======> ', args);
-        // args.navigation = { enable: true, timeDelay: 2000 };
-        // args.scroll.enable = false;
-       if(!args.data['AzaIsPere']) {
-           args.cancel = true
-       }
-       if(args.name === "dragStop"){
-        console.log('args =======> Stop', args);
-       }
-    }
-
 
     public disabledrefresh: boolean 
     public hiderefresh: boolean 
@@ -630,17 +616,13 @@ public scrollto
         let endofDay = moment().add(1, 'd').toDate();
         this.coordinateurService.getCoordinateurByUsername(Username)
             .subscribe(item => {
-
                 console.log('COORDINATEUR => ', item);
                 this.getSalleByGroup(item.Groupe, startofDay, endofDay);
-                // ID PROVISOIRE !!!
                 this.getMonteursByGroup(item.Groupe);
                 this.getWorkOrderByidGroup(item.Groupe);
                 this.getAllMonteurs(item.Groupe);
-                
                 this.currentCoordinateur = item;
                 this.getLibGroupe(item.Groupe)
-
             });
 
 
@@ -915,8 +897,6 @@ public scrollto
                 // console.log('response workorder for container : ', res);
                 this.WorkorderByContainerId = res;
                 this.allDataWorkorders = [...this.allDataWorkorders, ...res];
-                  
-       
                 // console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
                 // console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
                 if (this.WorkorderByContainerId.length > 0) {
@@ -1342,6 +1322,9 @@ public scrollto
     public isBackToBacklog: boolean = false;
 
     updateContainer(args) { // CALL IN RESIZE, DEPLACEMENTS AND EDITOR
+        console.log('this.allDataWorkorders ==> ', this.allDataWorkorders);
+        console.log('this.allDataContainers ==> ', this.allDataContainers);
+        console.log('update container args ==> ', args);
         this.updateContainerAction = true;
         console.log('update container function');
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
@@ -1367,6 +1350,7 @@ public scrollto
         console.log(this.departmentDataSource);
         this.departmentDataSource.map(item => {
             if (item['Id'] === event.DepartmentID) {
+                console.log('event libelle salle => ', item['Text']);
                 libelleRessourceSalle = item['Text'];
                 codeRessourceSalle = item['codeRessource'];
             }
@@ -1400,6 +1384,7 @@ public scrollto
     }
 
     putContainer(id, container, event) { // call in resize, deplacement and Editor (call in updateContainer() function)
+
         this.containersService.updateContainer(id, container)
             .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
@@ -1416,6 +1401,7 @@ public scrollto
                 console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
                 this.timelineResourceDataOut.map(item => {
                     if (item.Id === event.Id) {
+                        console.log('event container to update => ', item);
                         item.Name = event.Name;
                         item.StartTime = event.StartTime;
                         item.EndTime = event.EndTime;
@@ -1459,6 +1445,29 @@ public scrollto
                     }
                 })
                 console.log(this.allDataContainers, 'allDataContainers')
+                console.log('this.lastTimelineResourceDataOut => ', this.lastTimelineResourceDataOut);
+                this.lastTimelineResourceDataOut.map(item =>{
+                    if (item.Id === id) {
+                        item.DepartmentID = event.DepartmentID;
+                        console.log('old container to push in timelineResourceDataOut =>', item);
+                        this.timelineResourceDataOut.push(item);
+                        console.log('timelineResourceDataOut with new item => ', this.timelineResourceDataOut);
+                    }
+                })
+                let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere);
+                if (this.lastTimelineResourceDataOut.length > 0) {
+                    let workorderFromLastTime = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere);
+                    if (workorderFromLastTime.length > 0) {
+                        console.log('workorderFromLastTime ==> ', workorderFromLastTime);
+                        this.lastTimelineResourceDataOut = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe !== id);
+                        this.timelineResourceDataOut = [...this.timelineResourceDataOut, ...workorderFromLastTime];
+                        console.log('this.timelineResourceDataOut ==> ', this.timelineResourceDataOut);
+                    }
+                }
+                // let newAllDataContainers = [];
+                // let newAllDataWorkorders = [];
+                // this.timelineResourceDataOut.map(item => {
+                // })
                 this.calculDateGroup(this.timelineResourceDataOut, event.AzaNumGroupe, true, event, startDifferent, endDifferent);
                 this.eventSettings = {
                     dataSource: <Object[]>extend(
@@ -1467,6 +1476,7 @@ public scrollto
                     enableTooltip: true, tooltipTemplate: this.temp
                 };
                 this.updateWorkorderInContainerUpdate(id, container, event);
+
                 // this.eventSettings = {
                 //     dataSource: <Object[]>extend(
                 //         [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
@@ -1494,23 +1504,23 @@ public scrollto
 
         let indexContainerEvent = this.findIndexEventById(dragDropEvent.target.id);
         let containerId = this.timelineResourceDataOut[indexContainerEvent]['Id']
-
+        let containerEvent = this.timelineResourceDataOut[indexContainerEvent];
 
         let arrayContainerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === containerId);
         let containerResult = arrayContainerResult[0];
         containerResult.LibelleRessourceOperateur = operateurObject.Username;
         containerResult.CodeRessourceOperateur = operateurObject.CodeRessource;
         let id = containerResult.Id_Planning_Container;
-        this.putContainerFromDragDropOperateur(id, containerResult, indexContainerEvent, operateurObject);
+        this.putContainerFromDragDropOperateur(id, containerResult, indexContainerEvent, operateurObject, containerEvent);
     }
 
-    putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject) { // RESIZE AND EDITOR
+    putContainerFromDragDropOperateur(id, container, indexContainerEvent, operateurObject, containerEvent) { // RESIZE AND EDITOR
         this.containersService.updateContainer(id, container)
             .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
                 console.log('succes update container. RES : ', res);
                 this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
-
+                this.updateWorkorderInContainerUpdate(id, container, containerEvent);
                 this.onActionComplete('e');
             }, error => {
                 console.error('error updatecontainer', error);
@@ -1519,12 +1529,25 @@ public scrollto
             )
     }
 
+
+
     /*************************************************** WORKORDER ****************************************************/
 
     /*** PUT WORKORDER IN CONTAINER UPDATE ***/
 
     updateWorkorderInContainerUpdate(id, container, event) { // RESIZE AND EDITOR
+        console.log('update workorer ! ==> id ==> ', id);
+        console.log('update workorer ! ==> container ==> ', container);
+        console.log('update workorer ! ==> event ==> ', event);
+        // AJOUTER ICI UNE CONDITION SI DATE ACTIVE EST DIFFERENTE DE CELLE PRECEDENTE :
+        // FILTRER ALORS SUR ANCIEN TIMELINEDATAOUT
+        console.log('this.lastTimelineResourceDataOut ===> ', this.lastTimelineResourceDataOut);
+        console.log('this.startofDay ==> ', this.startofDay);
+        // this.startofDay = moment(newStartOfDay).toDate();
+        // if (this.scheduleObj['activeView'].renderDates[0] === container.st )
+        let timelineDataOut = this.timelineResourceDataOut;
         let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere);
+        let workorderFromLastTime = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere);
         console.log('workorderEventToUpdate => ', workorderEventToUpdate);
         let numberOfWorkorder = workorderEventToUpdate.length;
         if (workorderEventToUpdate.length > 0) {
@@ -1532,15 +1555,47 @@ public scrollto
             workorderEventToUpdate.map(item => {
                 this.putWorkorderFromUpdateContainer(id, container, event, item);
             });
-        };
-        this.disabledrefresh = false
-        console.log(  this.disabledrefresh ,"disabledrefresh")
+        // } else if (workorderFromLastTime.length > 0) {
+        //     workorderFromLastTime.map(item => {
+        //         console.log('!!!!!!!!!!!!!!! ========> item.StartTime before change ===> ', item.StartTime)
+        //         let containerStartDay = moment(container.DateDebutTheo).get('date');
+        //         let containerStartMonth = moment(container.DateDebutTheo).get('month');
+        //         let containerStartYear = moment(container.DateDebutTheo).get('year');
+        //         let containerEndDay = moment(container.DateFinTheo).get('date');
+        //         let containerEndMonth = moment(container.DateFinTheo).get('month');
+        //         let containerEndYear = moment(container.DateFinTheo).get('year');
+        //         let dateDebut = item.StartTime;
+        //         let dateFin = item.EndTime;
+        //         let objectDateDebut = moment(dateDebut).toObject();
+        //         let objectDateFin = moment(dateFin).toObject();
+        //         let newDateDebut = moment(
+        //             `${containerStartDay}.${containerStartMonth}.${containerStartYear} ${objectDateDebut.hours}:${objectDateDebut.minutes}`,
+        //             'DD.MM.YYYY HH:mm').toDate();
+        //         let newDateFin = moment(
+        //             `${containerEndDay}.${containerEndMonth}.${containerEndYear} ${objectDateFin.hours}:${objectDateFin.minutes}`,
+        //             'DD.MM.YYYY HH:mm').toDate();
+        //         console.log('newDateDebut => ', newDateDebut);
+        //         console.log('newDateFin => ', newDateFin);
+        //         // newDate.date = containerDay;
+        //         // newDate.months = containerMonth;
+        //         // newDate.years = containerYear;
+        //         // let startTime = moment(newDate).toString();
+        //         // console.log(newDate);
+        //         item.StartTime = newDateDebut;
+        //         console.log('nouvelle dateDebut avec bon format ==> ', newDateDebut);
+        //         item.EndTime = newDateFin;
+        //         console.log('nouvelle dateFin avec bon format ==> ', newDateFin);
+        //         console.log('!!!!!!!!!!!!!!! ========> item after change ===> ', item)
+        //         // this.putWorkorderFromUpdateContainer(id, container, event, item);
+        //     });
+        }
     }
 
     putWorkorderFromUpdateContainer(id, container, eventContainer, eventWorkorder) { // RESIZE AND EDITOR
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === eventWorkorder.Id);
         let workorderSelected = workorderResult[0];
+        console.log('workorderSelected => ', workorderSelected);
         let startTime = moment(eventWorkorder.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(eventWorkorder.EndTime).format('YYYY-MM-DDTHH:mm:ss');
         let newWorkorder = {
@@ -1550,7 +1605,9 @@ public scrollto
             UserEnvoi: workorderSelected.UserEnvoi,
             DateEnvoi: workorderSelected.DateEnvoi,
             CodeRessourceOperateur: container.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
+            LibelleRessourceOperateur: container.LibelleRessourceOperateur,
             CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
+            LibelleRessourceCoordinateur: workorderSelected.LibelleRessourceCoordinateur,
             DateSoumission: workorderSelected.DateSoumission,
             DateDebut: workorderSelected.DateDebut, // changement pour Remy
             DateFin: workorderSelected.DateFin, // changement pour Remy
@@ -1590,9 +1647,20 @@ public scrollto
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
+                // LUNDI ====> AJOUTER UN REFRESH DES EVENEMENTS !!!!!!!!!!
                 this.allDataWorkorders = this.allDataWorkorders.filter(item => item.Id !== newWorkorder.Id_Planning_Events);
                 this.allDataWorkorders.push(newWorkorder);
-                console.log(this.allDataWorkorders);          
+                console.log(this.allDataWorkorders);
+                console.log('this.scheduleObj.getEvents() ==> ', this.scheduleObj.getEvents());
+                this.scheduleObj.saveEvent(eventWorkorder);
+                this.eventSettings = {
+                    dataSource: <Object[]>extend(
+                        [], this.timelineResourceDataOut, null, true
+                    ),
+                    enableTooltip: true, tooltipTemplate: this.temp
+                };
+                this.scheduleObj.dataBind();
+                console.log(this.eventSettings.dataSource);
             }, error => {
                 alert('error update workorder');
                 console.error('error update workorder : ', error)
@@ -1680,6 +1748,7 @@ public scrollto
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
                 this.allDataWorkorders.push(workorder);
+                this.displayWorkorderInBacklogWorkorderData(event, 'delete')
                 this.timelineResourceDataOut.push(event);
                 this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                     dataSource: <Object[]>extend(
@@ -1695,6 +1764,21 @@ public scrollto
                 console.error('error update workorder : ', error)
             }
             );
+    }
+
+    displayWorkorderInBacklogWorkorderData(workoerderEvent, action: string) {
+        // supprime workorder de la donnée du backlog (workorderData)
+        if (action === 'delete') {
+            this.workOrderData = this.workOrderData.filter(item => item.Id !== workoerderEvent.Id);
+        } else if (action === 'add') {
+            console.log('add');
+        }
+        this.field = {
+            dataSource:  this.workOrderData,
+            id: 'Id',
+            text: 'Name',
+            description: 'Commentaire_Planning'
+        };
     }
 
     updateWorkorderInDragDropAddToContainer(event, containerParent) {
@@ -1798,6 +1882,7 @@ public scrollto
             .subscribe(res => {
                 console.log('update workorder with success : ', res);
                 console.log(this.allDataWorkorders); // all brut workorder data in backlog
+                this.displayWorkorderInBacklogWorkorderData(eventWorkorder, 'delete');
                 let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === containerParent.Id_Planning_Container && item.AzaIsPere);
                 let containerPere = containerEvent[0];
                 this.allDataWorkorders.push(newWorkorder);
@@ -1976,7 +2061,7 @@ public scrollto
             DateFin: workorderSelected.DateFin,
             DateDebutTheo: workorderSelected.DateDebutTheo,
             DateFinTheo: workorderSelected.DateFinTheo,
-            CodeRessourceSalle: event.CodeRessourceSalle,
+            CodeRessourceSalle: null,
             Commentaire: workorderSelected.Commentaire,
             Support1Cree: null,
             Support2Cree: null,
@@ -2052,6 +2137,7 @@ public scrollto
     }
 
     backToBacklog(selectedItem) {
+        console.log('this.workOrderData before add to backlog ==> ', this.workOrderData);
         console.log('item back to backlog : ', selectedItem);
         let newWorkorderForList = {
             Id: selectedItem.Id,
@@ -2087,7 +2173,10 @@ public scrollto
             idwoprec: selectedItem.idwoprec
 
         };
-        this.field['dataSource'].push(newWorkorderForList);
+        this.workOrderData.push(newWorkorderForList);
+        this.field['dataSource'] = this.workOrderData;
+        console.log('this.workOrderData after add to backlog ==> ', this.workOrderData);
+        console.log('this.field.datasource ==> ', this.field['dataSource']);
         this.isAddedToBacklog = true;
         let targetNodeId: string = this.treeObj.selectedNodes[0];
         let nodeId: string = 'tree_' + newWorkorderForList.Id;
@@ -2095,8 +2184,6 @@ public scrollto
             enableTooltip: true, tooltipTemplate: this.temp
         };
         this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
-        this.wOrderBackToBacklog = this.field['dataSource'];
-        console.log('wOrderBackToBacklog', this.wOrderBackToBacklog);
     }
     /************************************************ PUT Workorder *****************************************/
     updateWorkOrder(args) {
@@ -2292,14 +2379,23 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     public calcule;
     public navigateTimelineDay;
 
-   /***** refresh backlog********* */
+    public lastAllDataContainers;
+    public lastAllDataWorkorders;
 
+   /***** refresh backlog********* */
+public lastTimelineResourceDataOut = [];
     onNavigating(args) {
         console.log(' =========================== NEW NAVIGATION ==================== ');
         console.log('onNavigating(args) function => args ==> ', args);
         console.log('onNavigating(args) function => args.currentView ==> ', args.currentView);
         console.log('this.timelineResourceDataOut before reset => ', this.timelineResourceDataOut);
+        this.lastTimelineResourceDataOut = this.timelineResourceDataOut;
+        this.lastAllDataContainers = this.allDataContainers;
+        this.lastAllDataWorkorders = this.allDataWorkorders;
+        console.log('this.lastTimelineResourceDataOut ===> ', this.lastTimelineResourceDataOut);
         this.timelineResourceDataOut = [];
+        // this.allDataContainers = [];
+        // this.allDataWorkorders = [];
         console.log('this.timelineResourceDataOut after reset => ', this.timelineResourceDataOut);
         this.scheduleObj.enablePersistence = false;
         this.navigation = true
@@ -3016,10 +3112,20 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
     /*************************************************************************/
     /********************** DRAG AND DROP M1ANAGEMENT ***********************/
 
+    onDragStart(args: DragEventArgs): void {
+        args.interval = 5; // drag interval time is changed to 10 minutes
+        console.log('onDragStart args =======> ', args);
+        // args.navigation = { enable: true, timeDelay: 2000 };
+        // args.scroll.enable = false;
+       if(!args.data['AzaIsPere']) {
+           args.cancel = true
+       }
+    }
+
     onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
         event.interval = 5;
         this.disabledrefresh = true
-        console.log('ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo', event)
+        console.log('onItemDrag event ==> ', event)
         if(event.name === 'nodeDragging') {
             console.log('nodeDragging event => ', event)
             this.tabInstance.select(tabIndex);
@@ -3641,7 +3747,8 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
                     [], this.timelineResourceDataOut, null, true
                 ),
                 enableTooltip: true, tooltipTemplate: this.temp
-            };          
+            };
+            console.log('this.eventSettings ==> ', this.eventSettings);
         }
         this.treeObj.fields = this.field;
         this.isTreeItemDropped = false;
@@ -3652,8 +3759,7 @@ putWorkorderEditor(id, workorder, event) { // RESIZE AND EditoR
         this.isBackToBacklog = false;
         this.navigateTimelineDay = false;
         this.eventClick = false;
-
-      
+        console.log('onActionComplete() this.timelineResourceDataOut ==> ', this.timelineResourceDataOut);
     }
 
     /************************ DELETE ********************/
