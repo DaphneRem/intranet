@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 import { Store } from '@ngrx/store';
 
@@ -53,7 +56,9 @@ import { CustomIconBadge } from '@ab/custom-icons';
     Store
   ]
 })
-export class FicheMaterielDetailsViewComponent implements OnInit {
+export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public sub;
   public idParamsFicheMateriel;
@@ -166,7 +171,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
 
   ngOnInit() {
     this.icons = [this.fichesMaterielModification, this.back];
-    this.sub = this.route.params.subscribe(params => {
+    this.sub = this.route.params.pipe(takeUntil(this.onDestroy$)).subscribe(params => {
       this.idParamsFicheMateriel = +params['idFicheMateriel'];
       this.idParamsFicheAchat = +params['idFicheAchat'];
       this.idParamsFicheAchatDetail = +params['idFicheAchatDetail'];
@@ -182,6 +187,10 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     console.log(this.storeFichesToModif);
+  }
+
+  ngOnDestroy() {
+    this.onDestroy$.next();
   }
 
   openLg(content) {
@@ -202,6 +211,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     this.qualiteExist = [];
     this.qualiteService
       .getQualiteFicheMateriel(id)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.qualiteFM = data;
         console.log('qualité from FM :');
@@ -218,6 +228,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
     this.versionExist = [];
     this.versionService
       .getVersionFicheMateriel(id)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.versionFicheMateriel = data;
         this.versionFmReady = true;
@@ -235,6 +246,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   getAnnexStatus() {
     this.annexElementsService
       .getAnnexElementsStatus()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.annexElementsStatus = data;
         console.log(this.annexElementsStatus);
@@ -249,11 +261,13 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   }
 
   getRetourOriLib() {
-    this.retourOriLibService.getRetourOri().subscribe(data => {
-      this.retourOri = data;
-      console.log(data);
-      this.retourOriReady = true;
-    });
+    this.retourOriLibService.getRetourOri()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        this.retourOri = data;
+        console.log(data);
+        this.retourOriReady = true;
+      });
   }
 
   diplayRetourOri(IdRetourOri) {
@@ -266,6 +280,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   getQualiteLib() {
     this.qualiteService
       .getQualiteLib()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.qualiteLib = data;
         console.log(data);
@@ -275,6 +290,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   getVersionLib() {
     this.versionService
       .getVersionLib()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.versionLib = data;
         console.log(data);
@@ -284,6 +300,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   getStepLib() {
     this.stepsLibService
       .getStepsLib()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         this.stepLib = data;
@@ -294,6 +311,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   getStatusLib() {
     this.statusLibService
       .getStatusLib()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         this.statusLib = data;
@@ -323,6 +341,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   getFicheMateriel(id: number) {
     this.fichesMaterielService
       .getOneFicheMateriel(id)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         if (data) {
@@ -349,6 +368,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
   getFicheAchatDetails(id: number) {
     this.fichesAchatService
       .getFichesAchatDetailByIdDetail(id)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         if (data !== null) {
@@ -367,8 +387,9 @@ export class FicheMaterielDetailsViewComponent implements OnInit {
 
   getFicheAchatGlobal(id: number) {
     this.fichesAchatService
-    .getGlobalFIcheAchat(id)
-    .subscribe(data => {
+      .getGlobalFIcheAchat(id)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
         console.log(data);
         if (data !== null) {
           this.myFicheAchatGlobal = data;

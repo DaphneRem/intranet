@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CustomIconBadge } from '@ab/custom-icons';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
@@ -16,7 +19,9 @@ import { Store } from '@ngrx/store';
     Store
   ]
 })
-export class MyFichesMaterielArchivedComponent implements OnInit {
+export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public headerTableLinkExist: boolean = false;
   public tableTitle: string = 'Toutes mes fiches Matériel Archivées';
@@ -73,6 +78,10 @@ export class MyFichesMaterielArchivedComponent implements OnInit {
     this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   storeAppSubscription() {
     this.store.subscribe(data => {
         this.user = data['app'].user.shortUserName;
@@ -83,6 +92,7 @@ export class MyFichesMaterielArchivedComponent implements OnInit {
   getFichesMaterielByIntervalCreationSuiviParIsArchived(intervalModif: number, suiviPar: string, isArchived: number) {
     this.fichesMaterielService
       .getFichesMaterielByIntervalCreationSuiviParIsArchived(intervalModif, suiviPar, isArchived)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         if (!data) {
           this.data = [];

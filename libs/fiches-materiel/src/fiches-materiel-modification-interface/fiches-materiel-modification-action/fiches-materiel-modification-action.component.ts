@@ -1,7 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 import { FicheMateriel } from '../../models/fiche-materiel';
@@ -22,7 +25,7 @@ import { AnnexElementFicheMAteriel } from '../../models/annex-element';
   ],
   providers: [FichesMaterielService]
 })
-export class FichesMaterielModificationActionComponent implements OnInit {
+export class FichesMaterielModificationActionComponent implements OnInit, OnDestroy {
 
   @Input() showAffectedEps;
   @Input() annexElementsNgModel;
@@ -48,6 +51,10 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   @Input() allEACommentsMultiSelect;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
+  @Output() propertiesChanged: EventEmitter<any> = new EventEmitter();
+  @Output() fmInRecording: EventEmitter<boolean> = new EventEmitter();
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public myFicheMateriel;
   public changedValues = {};
@@ -70,6 +77,10 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   ngOnInit() {
     console.log(this.newObject);
     console.log(this.comments);
+  }
+
+  ngOnDestroy() {
+    this.onDestroy$.next();
   }
 
   checkAllValidDates(): boolean {
@@ -96,6 +107,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
       this.closeInterface = false;
     }
     if (this.checkAllValidDates()) {
+      this.fmInRecording.emit(true);
       this.checkNewObjectModif();
     } else {
       let invalidDate = [];
@@ -138,41 +150,47 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   }
 
   actionAfterSave() {
-    console.log(this.newObject);
+    console.log('ACTION AFTER SAVE CALL !!!', this.newObject);
     if (this.closeInterface) {
       this.goBack();
     } else {
       let now = new Date();
       let hours = now.getHours();
       let minutes = now.getMinutes();
+      console.log('this.changedValues ===> ', this.changedValues);
       this.modificationMessage.emit(`Dernières modifications enregistrées à ${hours}:${minutes}`);
+      this.propertiesChanged.emit(this.changedValues);
     }
   }
 
   putQualiteFicheMateriel(qualiteFM) {
-    this.qualiteService.putQualite(qualiteFM).subscribe(qualite => {
-      console.log(qualite);
-      if (qualite) {
-        console.log('PUT qualite with succes');
+    this.qualiteService.putQualite(qualiteFM)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(qualite => {
         console.log(qualite);
-      } else {
-        console.log('ERROR PUT qualite');
-        console.log(qualite);
-      }
-    });
+        if (qualite) {
+          console.log('PUT qualite with succes');
+          console.log(qualite);
+        } else {
+          console.log('ERROR PUT qualite');
+          console.log(qualite);
+        }
+      });
   }
 
   putVersionFicheMateriel(versionFM) {
-    this.versionService.putVersion(versionFM).subscribe(version => {
-      console.log(version);
-      if (version) {
-        console.log('PUT version with succes');
+    this.versionService.putVersion(versionFM)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(version => {
         console.log(version);
-      } else {
-        console.log('ERROR PUT version');
-        console.log(version);
-      }
-    });
+        if (version) {
+          console.log('PUT version with succes');
+          console.log(version);
+        } else {
+          console.log('ERROR PUT version');
+          console.log(version);
+        }
+      });
   }
 
   checkDeadline(newObject) {
@@ -266,29 +284,31 @@ export class FichesMaterielModificationActionComponent implements OnInit {
   }
 
   getFicheMaterielOriginal(id) {
-    this.fichesMaterielService.getOneFicheMateriel(id).subscribe(data => {
-      console.log(data);
-      this.myFicheMateriel = data[0];
-      if (
-        JSON.stringify(this.newObject) === JSON.stringify(this.myFicheMateriel)
-      ) {
-        console.log(this.newObject[0]);
-        console.log('true');
-        console.log(this.newObject === this.myFicheMateriel);
-        console.log(this.myFicheMateriel);
-      } else {
-        console.log('false');
-        console.log(this.newObject);
-        // if (this.newObject.IdLibEtape !== this.newObject.IdLibEtape) {
-        //   this.newObject.Fiche_Mat_LibEtape = null;
-        // }
-        // if (this.newObject.Fiche_Mat_Libstatut.IdLibstatut !== this.newObject.IdLibstatut) {
-        //   this.newObject.Fiche_Mat_Libstatut = null;
-        // }
-        this.resetDateFormat(this.newObject);
-        this.updatePutFicheMateriel(this.newObject);
-      }
-    });
+    this.fichesMaterielService.getOneFicheMateriel(id)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        console.log(data);
+        this.myFicheMateriel = data[0];
+        if (
+          JSON.stringify(this.newObject) === JSON.stringify(this.myFicheMateriel)
+        ) {
+          console.log(this.newObject[0]);
+          console.log('true');
+          console.log(this.newObject === this.myFicheMateriel);
+          console.log(this.myFicheMateriel);
+        } else {
+          console.log('false');
+          console.log(this.newObject);
+          // if (this.newObject.IdLibEtape !== this.newObject.IdLibEtape) {
+          //   this.newObject.Fiche_Mat_LibEtape = null;
+          // }
+          // if (this.newObject.Fiche_Mat_Libstatut.IdLibstatut !== this.newObject.IdLibstatut) {
+          //   this.newObject.Fiche_Mat_Libstatut = null;
+          // }
+          this.resetDateFormat(this.newObject);
+          this.updatePutFicheMateriel(this.newObject);
+        }
+      });
   }
 
   updatePutFicheMateriel(e) {
@@ -300,36 +320,38 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     e.UserModification = this.user;
     e.DateModification = now;
     // delete e.Fiche_Mat_ElementsAnnexes;
-    this.fichesMaterielService.updateFicheMateriel([e]).subscribe(data => {
-      if (data) {
-        console.log('succes PUT fiche materiel');
-        console.log('data to PUT : ', this.annexElementsFicheMateriel);
-        console.log(data);
-        console.log(this.annexElementsFicheMateriel);
-        this.annexElementsService
-          .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
-          .subscribe(annexesElements => {
-            console.log(annexesElements);
-            if (annexesElements) {
-              console.log('succes PUT annexesElements');
+    this.fichesMaterielService.updateFicheMateriel([e])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        if (data) {
+          console.log('succes PUT fiche materiel');
+          console.log('data to PUT : ', this.annexElementsFicheMateriel);
+          console.log(data);
+          console.log(this.annexElementsFicheMateriel);
+          this.annexElementsService
+            .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+            .pipe(takeUntil(this.onDestroy$))
+            .subscribe(annexesElements => {
               console.log(annexesElements);
-              this.actionAfterSave();
-            } else {
-              console.log('error PUT annexesElements');
-              console.log(annexesElements);
-            }
-          });
-        this.putQualiteFicheMateriel(this.qualiteFM);
-        this.putVersionFicheMateriel(this.versionFicheMateriel);
-        // ICI
-        this.updateCommentaireAnnexElementsFicheMateriel();
-      } else {
-        console.log('error PUT fiche materiel');
+              if (annexesElements) {
+                console.log('succes PUT annexesElements');
+                console.log(annexesElements);
+                this.actionAfterSave();
+              } else {
+                console.log('error PUT annexesElements');
+                console.log(annexesElements);
+              }
+            });
+          this.putQualiteFicheMateriel(this.qualiteFM);
+          this.putVersionFicheMateriel(this.versionFicheMateriel);
+          // ICI
+          this.updateCommentaireAnnexElementsFicheMateriel();
+        } else {
+          console.log('error PUT fiche materiel');
+          console.log(data);
+        }
         console.log(data);
-      }
-      console.log(data);
-    });
-
+      });
     // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
   }
 
@@ -339,6 +361,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     console.log(this.allFichesMateriel);
     // this.annexElementsService
     //   .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+    //   .pipe(takeUntil(this.onDestroy$))
     //   .subscribe(annexesElements => {
     //     console.log(annexesElements);
     //     if (annexesElements) {
@@ -444,6 +467,7 @@ export class FichesMaterielModificationActionComponent implements OnInit {
     console.log('patch FM function => this.annexElementsNgModel : ', this.annexElementsNgModel);
     this.fichesMaterielService
       .patchFicheMateriel(fichesMateriel)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         if (data) {
           this.changeValueToAnnexElementsInFM();
@@ -458,30 +482,52 @@ export class FichesMaterielModificationActionComponent implements OnInit {
           }
       });
   }
-public commentsToPut = [];
+
   checkChangeValueToEAComment() {
+  let commentsToPut = [];
+  let commentsToPost = [];
    console.log('this.allEACommentsMultiSelect in action component => ', this.allEACommentsMultiSelect);
    console.log('this.comments in action component => ', this.comments);
-   this.comments.map(item => {
-     if (item.Commentaire !== 'valeur d\'origine') {
-        console.log('commentaire modifié ===> ', item);
-        this.allEACommentsMultiSelect.map(com => {
-          if (com.idLibCategorieElementsAnnexes === item.idLibCategorieElementsAnnexes) {
+   this.allFichesMateriel.map(fm => {
+     let category = [];
+     this.comments.map(item => {
+       if (item.Commentaire !== 'valeur d\'origine') {
+         this.allEACommentsMultiSelect.map(com => {
+           if ((com.IdFicheMateriel === fm.IdFicheMateriel) && (com.idLibCategorieElementsAnnexes === item.idLibCategorieElementsAnnexes)) {
+              let newItem = {
+                IdCategorieElementsAnnexesCommentaire: com.IdCategorieElementsAnnexesCommentaire,
+                idLibCategorieElementsAnnexes: com.idLibCategorieElementsAnnexes,
+                IdFicheMateriel: com.IdFicheMateriel,
+                Commentaire: item.Commentaire,
+                Fiche_Mat_LibCategorieElementsAnnexes: null,
+                Fiche_Mat_Fichemateriel: null
+              };
+              commentsToPut.push(newItem);
+              category.push(newItem.idLibCategorieElementsAnnexes);
+           }
+         });
+          if (!category.includes(item.idLibCategorieElementsAnnexes)) {
             let newItem = {
-              IdCategorieElementsAnnexesCommentaire: com.IdCategorieElementsAnnexesCommentaire,
-              idLibCategorieElementsAnnexes: com.idLibCategorieElementsAnnexes,
-              IdFicheMateriel: com.IdFicheMateriel,
-              Commentaire: item.Commentaire
-            };
-            com.Commentaire = item.Commentaire;
-            this.commentsToPut.push(newItem);
+                IdCategorieElementsAnnexesCommentaire: 0,
+                idLibCategorieElementsAnnexes: item.idLibCategorieElementsAnnexes,
+                IdFicheMateriel: fm.IdFicheMateriel,
+                Commentaire: item.Commentaire,
+                Fiche_Mat_LibCategorieElementsAnnexes: null,
+                Fiche_Mat_Fichemateriel: null
+              };
+              commentsToPost.push(newItem);
           }
-                         console.log('this.commentsToPut ==> ', this.commentsToPut);
-   console.log(this.allEACommentsMultiSelect);
-        });
-     }
+       }
+     });
    });
-
+    console.log('this.commentsToPut ================================================= ==> ', commentsToPut);
+    if (commentsToPut.length > 0) {
+      this.putCommentaireAnnexElementsFicheMateriel(commentsToPut);
+    }
+    console.log('this.commentsToPost ================================================= ==> ', commentsToPost);
+    if (commentsToPost.length > 0) {
+      this.postCommentaireAnnexElementsFicheMateriel(commentsToPost);
+    }
   }
 
   changeValueToAnnexElementsInFM() {
@@ -529,6 +575,7 @@ public commentsToPut = [];
     console.log(elementAnnexOfFM);
     this.annexElementsService
       .putAnnexElementsFicheMateriel(elementAnnexOfFM)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         if (data) {
@@ -569,6 +616,7 @@ public commentsToPut = [];
 
   postCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) {
     this.annexElementsService.postCommentaireAnnexElementsFicheMateriel(comments)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log('POST elements annexes comments with succes ! ', data);
       }, error => {
@@ -578,6 +626,7 @@ public commentsToPut = [];
 
   putCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) {
     this.annexElementsService.putCommentaireAnnexElementsFicheMateriel(comments)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log('PUT elements annexes comments with succes ! ', data);
       }, error => {

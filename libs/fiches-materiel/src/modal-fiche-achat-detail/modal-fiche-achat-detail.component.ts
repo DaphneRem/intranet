@@ -4,8 +4,12 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
-  SimpleChange
+  SimpleChange,
+  OnDestroy
 } from '@angular/core';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 // service & model import
 import { FicheAchatDetails } from '@ab/fiches-achat';
@@ -25,9 +29,11 @@ import swal from 'sweetalert2';
     FichesAchatService
   ]
 })
-export class ModalFicheAchatDetailComponent implements OnInit, OnChanges {
+export class ModalFicheAchatDetailComponent implements OnInit, OnChanges, OnDestroy {
   @Input() ficheAchat;
   @Input() dataReloadReady;
+
+  private onDestroy$: Subject<any> = new Subject();
 
   public detailsFicheAchat;
   public dataReady;
@@ -51,10 +57,15 @@ export class ModalFicheAchatDetailComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   getFicheAchatDetails(id) {
     this.fichesAchatService
       .getFichesAchatDetails(id)
-      .subscribe( data => {
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
         console.log(data);
         data.map(e => {
           this.debutDesDroitsDate = new Date(e.debut_des_droits);

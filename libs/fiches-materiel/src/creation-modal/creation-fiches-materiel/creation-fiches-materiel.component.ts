@@ -1,6 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 // import { App } from '../../../../../apps/fiches-materiel/src/app/+state/app.interfaces';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 // service import
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
@@ -21,13 +24,16 @@ import { FicheAchat } from '@ab/fiches-achat/src/models/fiche-achat';
     Store
 ]
 })
-export class CreationFichesMaterielComponent implements OnInit {
+export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   @Input() detailsFicheAchat;
   @Input() oeuvreWithGaps;
   @Input() step;
   @Input() myFicheAchat;
 
   @Output() confirmCreation = new EventEmitter();
+
+  private onDestroy$: Subject<any> = new Subject();
+
 
   public fichesMaterielCreated: FicheMaterielCreation[] = [];
   public fichesMateriel: any;
@@ -53,8 +59,12 @@ export class CreationFichesMaterielComponent implements OnInit {
     console.log(this.myFicheAchat);
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   storeAppSubscription() {
-    this.store.subscribe(data => {
+    this.store.pipe(takeUntil(this.onDestroy$)).subscribe(data => {
         this.user = data['app'].user.shortUserName;
         console.log(this.user);
     });
@@ -62,19 +72,22 @@ export class CreationFichesMaterielComponent implements OnInit {
 
   /** POST FICHES MATERIEL **/
   createFichesMateriel(newFicheMateriel) {
-    this.fichesMaterielService.postFicheMateriel(newFicheMateriel).subscribe(
-      res => {
-        console.log(res);
-        this.creationState = true;
-        this.create(this.creationState);
-        this.disabled = false;
-      },
-      error => {
-        this.creationState = false;
-        console.log(' could not be created');
-        this.create(this.creationState);
-      }
-    );
+    this.fichesMaterielService
+      .postFicheMateriel(newFicheMateriel)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(
+        res => {
+          console.log(res);
+          this.creationState = true;
+          this.create(this.creationState);
+          this.disabled = false;
+        },
+        error => {
+          this.creationState = false;
+          console.log(' could not be created');
+          this.create(this.creationState);
+        }
+      );
   }
 
   /** DELETE FICHES MATERIEL **/
@@ -96,6 +109,7 @@ export class CreationFichesMaterielComponent implements OnInit {
     });
     this.fichesMaterielService
       .deleteFicheMaterielByFicheAchatDetail(idFicheAchatDetail)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(
         res => {
           this.createFichesMateriel(newFicheMateriel);
@@ -128,6 +142,7 @@ export class CreationFichesMaterielComponent implements OnInit {
     console.log(detailsFicheAchat.id_fiche_det);
     // this.fichesAchatService
     //   .patchMaterielImportFicheAchatDetail(idFicheAchatDetail, 1)
+    //   .pipe(takeUntil(this.onDestroy$))
     //   .subscribe(
     //     data => {
     //       console.log(data);
@@ -138,6 +153,7 @@ export class CreationFichesMaterielComponent implements OnInit {
     // );
     this.fichesAchatService
       .putFicheAchatDetail(detailsFicheAchat.id_fiche_det, detailsFicheAchat)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
       }, error => {
@@ -154,6 +170,7 @@ export class CreationFichesMaterielComponent implements OnInit {
     console.log(this.myFicheAchat);
     this.fichesAchatService
       .putFicheAchatGlobal(this.myFicheAchat.id_fiche, this.myFicheAchat)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
       }, error => {

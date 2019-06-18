@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CustomIconBadge } from '@ab/custom-icons';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
@@ -12,7 +15,10 @@ import { FichesMaterielService } from '../../services/fiches-materiel.service';
     FichesMaterielService
   ]
 })
-export class FichesMaterielAllComponent implements OnInit {
+export class FichesMaterielAllComponent implements OnInit, OnDestroy {
+
+  private onDestroy$: Subject<any> = new Subject();
+
   public headerTableLinkExist = false;
   public tableTitle = 'Toutes les fiches Matériel';
   public daysNumber = 100;
@@ -63,9 +69,14 @@ export class FichesMaterielAllComponent implements OnInit {
     this.getFichesMaterielByIntervalCreationIsArchived(this.daysNumber, this.isArchived);
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   getFichesMaterielByIntervalCreationIsArchived(intervalModif: number, isArchived: number) {
     this.fichesMaterielService
       .getFichesMaterielByIntervalCreationIsArchived(intervalModif, isArchived)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         if (!data) {
           this.data = [];

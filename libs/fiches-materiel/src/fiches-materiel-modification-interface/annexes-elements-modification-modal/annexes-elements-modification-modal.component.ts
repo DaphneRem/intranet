@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, SimpleChange, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 import { AnnexElementsService } from '../../services/annex-elements.service';
 import {
@@ -20,7 +23,7 @@ import { AnnexElementCommentsFicheMAteriel } from '../../models/annex-elements-c
   ],
   providers: [AnnexElementsService]
 })
-export class AnnexesElementsModificationModalComponent implements OnInit, OnChanges {
+export class AnnexesElementsModificationModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() allIdSelectedFichesMateriel;
   @Input() annexElementsFicheMateriel;
   @Input() selectionType;
@@ -31,6 +34,8 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
 
   @Output() newStateElementsAnnexNgModel = new EventEmitter();
   @Output() newComments: EventEmitter<AnnexElementCommentsFicheMAteriel[]> = new EventEmitter();
+
+  private onDestroy$: Subject<any> = new Subject();
 
   // LIB variables
   public annexElementsCategories;
@@ -51,18 +56,29 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     // const refreshEACommentModel = changes.refreshEACommentModel;
     // const reload = changes.reload;
     const com = changes.comments;
     console.log(changes);
     console.log('CHANGEMENT DE COMMENTAIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', changes.comments);
-    if (!com.firstChange && this.selectionType !== 'multi') {
-      console.log('NOT FIRST CHANGE !!!!!!!!');
-      // const com: SimpleChange = changes.comments;
-      // this.comments = com.currentValue;
-      console.log(this.comments);
-      this.displayNewObjectEAComments(this.annexElementsCategories);
+    // if (!com.firstChange && this.selectionType !== 'multi') {
+      if (!com.firstChange) {
+        console.log('NOT FIRST CHANGE !!!!!!!!');
+        // const com: SimpleChange = changes.comments;
+        // this.comments = com.currentValue;
+        console.log(this.comments);
+        // this.getAnnexElementsCategories();
+        if (this.selectionType !== 'multi') {
+          this.displayNewObjectEAComments(this.annexElementsCategories);
+        } else {
+          console.log('change comment multi => ', this.comments);
+          // this.displayOriginValuesEAComments(this.annexElementsCategories)
+        }
     }
 
     // console.log('comment before change format other time ==> ', this.comments);
@@ -174,6 +190,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   getAnnexElementsCategories() {
     this.annexElementsService
       .getAnnexElementsCategories()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.annexElementsCategories = data;
         console.log(data);
@@ -189,6 +206,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes) {
     this.annexElementsService
       .getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes)
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
       });
@@ -197,6 +215,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   getAnnexElementsAllSubCategories() {
     this.annexElementsService
       .getAnnexElementsAllSubCategories()
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log(data);
         this.annexElementsAllSubCategories = data;
@@ -256,6 +275,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       }
      });
     this.comments = this.newEAComments;
+    console.log('changement de comments = ', this.comments)
     this.newComments.emit(this.newEAComments);
 
 
@@ -316,7 +336,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
         Commentaire: 'valeur d\'origine'
       });
     });
-    this.comments = this.originValuesEAComments;
+    // this.comments = this.originValuesEAComments;
     this.newComments.emit(this.originValuesEAComments);
   }
 
