@@ -106,10 +106,20 @@ $InfoBtnHoverColor :  #2eced6;
     }
 }
 /deep/ .schedule-drag-drop {
-    max-height: 90%;
-    // zoom: 90%;
-}
+    // max-height: calc(100vh - 20px);
+    // height: 850px;
+// border:red 2px solid;
 
+
+    // 
+}
+/deep/ .schedule {
+    zoom: 90%;
+    // border:black 2px solid
+}
+// /deep/ .e-table-container{
+//     border:green 2px solid
+// }
 /deep/ .schedule-drag-drop .e-quick-popup-wrapper .e-event-popup .e-popup-content .e-sub-object-list {
     margin-top: 10px;
     font-size: 14px;
@@ -459,11 +469,11 @@ $InfoBtnHoverColor :  #2eced6;
     //     } 
     // }
     .operateur {
-        // background-color: $operatorColor;
+        // background-color:  #f5d8fa;;
         // margin-right: 5px;
         // padding: 3px;
         // border: 1px solid #ffffff;
-        font-size: 10px
+        font-size: 11px
     }
 }
 .icofont-search{
@@ -532,7 +542,10 @@ overflow: scroll
 /deep/  .tooltip{
     background : black;
     z-index:9999;
+    
 }
+
+
 /deep/ .e-schedule .e-schedule-toolbar .e-active-view .e-tbar-btn-text {
     color: #e3165b
 }
@@ -646,3 +659,9 @@ overflow: scroll
         border: 1px grey solid;
     }
 }
+
+// +n : TIMELINEDAY & TIMELINEWEEK
+/deep/ .e-schedule .e-timeline-view .e-more-indicator{
+    display:none
+}
+
