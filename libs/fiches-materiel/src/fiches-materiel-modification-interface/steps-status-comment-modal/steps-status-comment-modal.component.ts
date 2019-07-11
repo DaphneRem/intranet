@@ -17,6 +17,7 @@ import swal from 'sweetalert2';
   styleUrls: ['./steps-status-comment-modal.component.scss']
 })
 export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
+  @Input() selectionType;
   @Input() step;
   @Input() status;
   @Input() newObject;
@@ -40,6 +41,7 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     console.log(changes);
+    console.log('INIT => ', this.init);
     if ((changes.status) && (changes.status)) {
       console.log('change STEP + STATUS');
       const changeStatus: SimpleChange = changes.status;
@@ -125,7 +127,11 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
         } else {
           if (this.addCommentStepStatus) {
             console.log('add comment statut without change step');
-            this.openCommentSwal();
+            if (this.init > 1 && this.selectionType === 'multi') {
+              this.openCommentSwal();
+            } else if (this.selectionType !== 'multi') {
+              this.openCommentSwal();
+            }
           }
         }
       }

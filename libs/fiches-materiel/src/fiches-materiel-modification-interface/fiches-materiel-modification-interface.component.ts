@@ -76,7 +76,10 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   private onDestroy$: Subject<any> = new Subject();
 
   // public browserRefresh: boolean;
+  public sameComments = {};
+  public sameEAComments = [];
 
+  public sameOriginalProperties = [];
   public refreshEACommentModel = -1;
   public comments: AnnexElementCommentsFicheMAteriel[];
   public allEACommentsMultiSelect = [];
@@ -337,20 +340,30 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     // this.changeDateFormat(event);
     // this.ngOnInit();
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
-    console.log(this.newObject);
+    // this.newObject = new NewObject();
+    console.log('this.newObject = new NewObject ==>',  this.newObject);
   }
 
   resetPropertiesChanged(event) {
-    let propertiesToReset = event;
-    let datesInFM = ['DateAcceptation', 'DateLivraison', 'DatePremiereDiff', 'DateRetourOri', 'Deadline', 'ReceptionAccesLabo'];
-    console.log('Properties changed to RESET ====> ', event);
-    Object.keys(propertiesToReset).map(item => {
-      this.newObject[item] = this.valueNotToChangeLibelle;
+    // let propertiesToReset = event;
+    // let datesInFM = ['DateAcceptation', 'DateLivraison', 'DatePremiereDiff', 'DateRetourOri', 'Deadline', 'ReceptionAccesLabo'];
+    // console.log('Properties changed to RESET ====> ', event);
+    //  Object.keys(this.newObject).map(item => {
+    //     this.newObject[item] = this.valueNotToChangeLibelle;
+    //  });
+    // Object.keys(propertiesToReset).map(item => {
+      // this.newObject[item] = this.valueNotToChangeLibelle;
+      // for (let key in this.newObject) {
+      //   if (key === item) {
+      //       this.newObject[key] = propertiesToReset[item];
+      //   }
+      // }
       // if (datesInFM.includes(item)) {
       //   console.log('date item to change format ====>', item);
       //   this.changeDateFormat(item);
       // }
-    });
+    // });
+    console.log('newObject ==> ', this.newObject);
   }
   public fmInRecording = false;
   checkCurrentRecord(event) {
@@ -465,11 +478,11 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.getStatusLib();
     if (this.storeFichesToModif.modificationType !== 'multi') {
       console.log('CALL GET COMMENTS FUNCTION AFTER GETallFICHESMATERIEL !!!!!!!');
-        this.getCommentaireAnnexElementsFicheMateriel(this.storeFichesToModif.selectedFichesMateriel[0].idFicheMateriel);
+        this.getCommentaireAnnexElementsFicheMateriel(this.storeFichesToModif.selectedFichesMateriel[0]);
     } else {
-      console.log('this.storeFichesToModif.modificationType !== multi => ', this.storeFichesToModif);
+      console.log('this.storeFichesToModif.modificationType === multi => ', this.storeFichesToModif);
       this.storeFichesToModif.selectedFichesMateriel.map(item => {
-        this.getCommentaireAnnexElementsFicheMateriel(item.idFicheMateriel);
+        this.getCommentaireAnnexElementsFicheMateriel(item);
       });
     }
   }
@@ -477,27 +490,6 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /************************ Datepicker / Date functions ********************/
 
   changeDateFormat(originalDate) {
-    // console.log(originalDate);
-    // let date = new Date(this.newObject[originalDate]);
-    // console.log(new Date(this.newObject[originalDate]));
-    // let defaultFormat = 'dd-mm-yyyy';
-    // if (this.selectionType === 'one') {
-    //   if (this.newObject[originalDate] !== undefined && this.newObject[originalDate] !== null) { // DATE RETOUR ORI
-    //     console.log(date.getFullYear());
-    //     let dateNgFormat = {
-    //       year: new Date(this.newObject[originalDate]).getFullYear(),
-    //       month: new Date(this.newObject[originalDate]).getMonth() + 1,
-    //       day: new Date(this.newObject[originalDate]).getDate()
-    //     };
-    //     this.newObject[originalDate] = dateNgFormat;
-    //   } else {
-    //     this.newObject[originalDate] = defaultFormat;
-    //   }
-    // } else {
-    //   this.newObject[originalDate] = this.valueNotToChangeLibelle;
-    // }
-    // console.log(originalDate);
-
     let defaultFormat = 'dd-mm-yyyy';
     if (this.selectionType === 'one') {
       if (
@@ -505,12 +497,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.newObject.DateRetourOri !== null
       ) {
         // DATE RETOUR ORI
-        this.retourDateOriNgFormat = {
-          year: new Date(this.newObject.DateRetourOri).getFullYear(),
-          month: new Date(this.newObject.DateRetourOri).getMonth() + 1,
-          day: new Date(this.newObject.DateRetourOri).getDate()
-        };
-        this.newObject.DateRetourOri = this.retourDateOriNgFormat;
+        this.newObject.DateRetourOri = this.changeToNgFormatDate(this.newObject.DateRetourOri);
       } else {
         this.newObject.DateRetourOri = defaultFormat;
       }
@@ -519,17 +506,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.newObject.Deadline !== null
       ) {
         // DATE DEADLINE
-        this.deadLineNgFormat = {
-          year: new Date(this.newObject.Deadline).getFullYear(),
-          month: new Date(this.newObject.Deadline).getMonth() + 1,
-          day: new Date(this.newObject.Deadline).getDate()
-        };
-        this.newObject.Deadline = this.deadLineNgFormat;
-        // console.log(
-        //   `${this.newObject.Deadline.year}-${this.newObject.Deadline.month}-${
-        //     this.newObject.Deadline.day
-        //   }T00:00:00`
-        // );
+        this.newObject.Deadline = this.changeToNgFormatDate(this.newObject.Deadline);
       } else {
         this.newObject.Deadline = defaultFormat;
       }
@@ -538,12 +515,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.newObject.DateLivraison !== null
       ) {
         // DATE LIVRAISON
-        this.livraisonDateNgFormat = {
-          year: new Date(this.newObject.DateLivraison).getFullYear(),
-          month: new Date(this.newObject.DateLivraison).getMonth() + 1,
-          day: new Date(this.newObject.DateLivraison).getDate()
-        };
-        this.newObject.DateLivraison = this.livraisonDateNgFormat;
+        this.newObject.DateLivraison = this.changeToNgFormatDate(this.newObject.DateLivraison);
       } else {
         this.newObject.DateLivraison = defaultFormat;
       }
@@ -552,12 +524,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.newObject.DatePremiereDiff !== null
       ) {
         // DATE PREMIERE DIFF
-        this.diffDateNgFormat = {
-          year: new Date(this.newObject.DatePremiereDiff).getFullYear(),
-          month: new Date(this.newObject.DatePremiereDiff).getMonth() + 1,
-          day: new Date(this.newObject.DatePremiereDiff).getDate()
-        };
-        this.newObject.DatePremiereDiff = this.diffDateNgFormat;
+        this.newObject.DatePremiereDiff = this.changeToNgFormatDate(this.newObject.DatePremiereDiff);
       } else {
         this.newObject.DatePremiereDiff = defaultFormat;
       }
@@ -566,12 +533,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.newObject.DateAcceptation !== null
       ) {
         // DATE ACCEPTATION
-        this.acceptationDateNgFormat = {
-          year: new Date(this.newObject.DateAcceptation).getFullYear(),
-          month: new Date(this.newObject.DateAcceptation).getMonth() + 1,
-          day: new Date(this.newObject.DateAcceptation).getDate()
-        };
-        this.newObject.DateAcceptation = this.acceptationDateNgFormat;
+        this.newObject.DateAcceptation = this.changeToNgFormatDate(this.newObject.DateAcceptation);
       } else {
         this.newObject.DateAcceptation = defaultFormat;
       }
@@ -580,31 +542,57 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.newObject.ReceptionAccesLabo !== null
       ) {
         // DATE RECEPTION ACCES LABO
-        this.accLaboDateNgFormat = {
-          year: new Date(this.newObject.ReceptionAccesLabo).getFullYear(),
-          month: new Date(this.newObject.ReceptionAccesLabo).getMonth() + 1,
-          day: new Date(this.newObject.ReceptionAccesLabo).getDate()
-        };
-        this.newObject.ReceptionAccesLabo = this.accLaboDateNgFormat;
+        this.newObject.ReceptionAccesLabo = this.changeToNgFormatDate(this.newObject.ReceptionAccesLabo);
       } else {
         this.newObject.ReceptionAccesLabo = defaultFormat;
       }
     } else {
-      this.newObject.DateRetourOri = this.valueNotToChangeLibelle;
-      this.newObject.Deadline = this.valueNotToChangeLibelle;
-      this.newObject.DateLivraison = this.valueNotToChangeLibelle;
-      this.newObject.DatePremiereDiff = this.valueNotToChangeLibelle;
-      this.newObject.DateAcceptation = this.valueNotToChangeLibelle;
-      this.newObject.ReceptionAccesLabo = this.valueNotToChangeLibelle;
+      if (this.newObject.DateRetourOri !== this.valueNotToChangeLibelle) {
+        this.newObject.DateRetourOri = this.changeToNgFormatDate(this.newObject.DateRetourOri);
+      }
+      if (this.newObject.Deadline !== this.valueNotToChangeLibelle) {
+        this.newObject.Deadline = this.changeToNgFormatDate(this.newObject.Deadline);
+      }
+      if (this.newObject.DateLivraison !== this.valueNotToChangeLibelle) {
+        this.newObject.DateLivraison = this.changeToNgFormatDate(this.newObject.DateLivraison);
+      }
+      if (this.newObject.DatePremiereDiff !== this.valueNotToChangeLibelle) {
+        this.newObject.DatePremiereDiff = this.changeToNgFormatDate(this.newObject.DatePremiereDiff);
+      }
+      if (this.newObject.DateAcceptation !== this.valueNotToChangeLibelle) {
+        this.newObject.DateAcceptation = this.changeToNgFormatDate(this.newObject.DateAcceptation);
+      }
+      if (this.newObject.ReceptionAccesLabo !== this.valueNotToChangeLibelle) {
+        this.newObject.ReceptionAccesLabo = this.changeToNgFormatDate(this.newObject.ReceptionAccesLabo);
+      }
     }
+  }
+
+  addZeroToDate(date) {
+    if (date.length === 1) {
+      return `0${date}`;
+    } else {
+      return date;
+    }
+  }
+
+  changeToNgFormatDate(originDate) {
+    console.log('originDate => ', originDate);
+    let newDate = {
+      year: new Date(originDate).getFullYear(),
+      month: new Date(originDate).getMonth() + 1,
+      day: new Date(originDate).getDate()
+    };
+    console.log('newDate => ', newDate);
+    return newDate;
   }
 
   /*****************************************************************************/
   /**************************** GET Fiche Materiel *****************************/
-
+  public equalObject = {};
   getFicheMateriel(id: number, index, length) {
-    // console.log(index);
-    // console.log(length);
+    console.log(index);
+    console.log(length);
     this.allFichesMateriel = [];
     this.fichesMaterielService.getOneFicheMateriel(id)
       .pipe(takeUntil(this.onDestroy$))
@@ -619,20 +607,23 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
             this.getAnnexElementsFicheMateriel(id, index, length);
           } else {
             this.getAnnexElementsFicheMateriel(id, index, length);
+            this.getVersionFicheMateriel(id);
           }
           if (index === length - 1) {
             console.log('call displayNewObject function !!!!!!!!!');
             this.displayNewObject(length, data[0]);
-            this.dataIdFicheMaterielReady = true;
-          } else {
-            this.dataIdFicheMaterielReady = true;
+            // this.dataIdFicheMaterielReady = true;
           }
         }
       });
     console.log('allFichesMateriel => ', this.allFichesMateriel);
   }
 
+
   displayNewObject(length, ficheMateriel) {
+    this.sameOriginalProperties = [];
+    this.equalObject = {};
+    // console.log('this.newObject in displayNewObject() => ', this.newObject);
     if (length === 1) {
       this.newObject = ficheMateriel;
       this.detailedReportLink = `${urlDetailedReportFicheAchat}${
@@ -643,11 +634,83 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       this.changeDateFormat('arg');
       // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
       this.fmInRecording = false;
+      this.dataIdFicheMaterielReady = true;
     } else {
+      // console.log('this.dataIdFicheMaterielReady ==> ', this.dataIdFicheMaterielReady);
+      // console.log('call displayNewObject function !!!!!!!!!');
+      // CHECK ALL DATA TO FIND SAME PROPERTIES
+      const allEqual = this.allFichesMateriel.every(item => item === this.allFichesMateriel[0]);
+      // console.log('allEqual ====>  ', allEqual);
+      // console.log('nombre de fiches materiel ==> ', this.allFichesMateriel.length);
+      // console.log('fiches matériel ==> ', this.allFichesMateriel);
+      this.allFichesMateriel.map(item => {
+        let index = this.allFichesMateriel.indexOf(item);
+        for (let key in item) {
+          if ((index + 1) < this.allFichesMateriel.length) {
+            if (item[key] === this.allFichesMateriel[index + 1][key]) {
+              // console.log('keyyy same value (all)^^^^^^^ => ', key);
+              // console.log('same value ******** => ', item[key]);
+              if (!this.equalObject[key] || this.equalObject[key].length === 0) {
+                this.equalObject[key] = [];
+                this.equalObject[key].push(item[key]);
+              }
+              this.equalObject[key].push(item[key]);
+            } else {
+              // console.log('keyyy different value (all) ^^^^^^^ => ', key);
+              // console.log('different value ******** => ', item[key]);
+            }
+          }
+        }
+      });
+      for (let key in this.equalObject) {
+        if (this.equalObject[key].length === this.allFichesMateriel.length) {
+          this.newObject[key] = this.equalObject[key][0];
+          this.sameOriginalProperties.push(key);
+        }
+      }
+      // console.log('this.newObject before chengeDateFormat ====> ', this.newObject);
+      this.changeDateFormat('arg');
+      // console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
+      // console.log('this.newObject ====> ', this.newObject);
+      // console.log('equalObject ==> ', this.equalObject);
       this.displayLibValueNotToChange();
       this.fmInRecording = false;
+      this.dataIdFicheMaterielReady = true;
     }
   }
+
+  checkIsOriginalProperty(property, value): boolean {
+    // console.log('property => ', property);
+    // console.log('value => ', value);
+    // console.log('this.sameOriginalProperties ==> ', this.sameOriginalProperties);
+    // console.log('this.sameOriginalProperties.includes(property) => ', this.sameOriginalProperties.includes(property));
+    if (this.sameOriginalProperties.includes(property)) {
+      // console.log('this.equalObject[property] => ', this.equalObject[property]);
+      // console.log('value => ', value);
+      // if (this.equalObject[property][0] === value) {
+      //   return true;
+      // } else {
+      //   return false;
+      // }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkIfSameOriginalProperty(property, value): boolean {
+    // console.log('property => ', property);
+    // console.log('value => ', value);
+    // console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
+    // console.log('this.sameOriginalProperties.includes(property) => ', this.sameOriginalProperties.includes(property));
+    if (this.sameOriginalProperties.includes(property)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
 
   getQualiteFicheMateriel(id) {
     this.qualiteService.getQualiteFicheMateriel(id)
@@ -661,16 +724,67 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   // versionArrayIdExist
+  public allVersionFm = [];
   getVersionFicheMateriel(id) {
     // Get Version from Fiche Materiel
     this.versionService.getVersionFicheMateriel(id)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        this.versionFicheMateriel = data;
+        if (this.selectionType !== 'multi') {
+          console.log('getVersionFicheMateriel() => data : ', data);
+          this.versionFicheMateriel = data;
+          
+          // console.log(data);
+        } else {
+          this.allVersionFm.push(data);
+          console.log('this.allVersionFm => ', this.allVersionFm);
+          this.checkSameValuesVersionMultiSelection();
+        }
         this.versionFmReady = true;
-        // console.log(data);
       });
   }
+
+  checkSameValuesVersionMultiSelection() { // TODO 08/07/2019
+    // this.allVersionFm.map(item => {
+    //   let index = this.allVersionFm.indexOf(item);
+    //   item.map(e => {
+    //     let i = item.indexOf(e);
+    //     console.log(e);
+    //     if () {
+
+    //     }
+    //   });
+    // });
+  }
+
+
+      //   this.allFichesMateriel.map(item => {
+      //   let index = this.allFichesMateriel.indexOf(item);
+      //   for (let key in item) {
+      //     if ((index + 1) < this.allFichesMateriel.length) {
+      //       if (item[key] === this.allFichesMateriel[index + 1][key]) {
+      //         console.log('keyyy same value (all)^^^^^^^ => ', key);
+      //         console.log('same value ******** => ', item[key]);
+      //         this.sameOriginalProperties.push(key);
+      //         if (!this.equalObject[key] || this.equalObject[key].length === 0) {
+      //           this.equalObject[key] = [];
+      //           this.equalObject[key].push(item[key]);
+      //         }
+      //         this.equalObject[key].push(item[key]);
+      //       } else {
+      //         console.log('keyyy different value (all) ^^^^^^^ => ', key);
+      //         console.log('different value ******** => ', item[key]);
+      //       }
+      //     }
+      //   }
+      // });
+      // for (let key in this.equalObject) {
+      //   if (this.equalObject[key].length === this.allFichesMateriel.length) {
+      //     this.newObject[key] = this.equalObject[key][0];
+      //   }
+      // }
+
+
 
   /************************** GET lib select Options ***************************/
 
@@ -735,28 +849,29 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   // [checked]='displayCheckedVersion(item.id_version)'
   displayCheckedVersion(id) {
     let checked = [];
-    // console.log(this.versionFicheMateriel);
+    console.log('this.versionFicheMateriel ==> ', this.versionFicheMateriel);
     this.versionFicheMateriel.map(item => {
-      // console.log(item);
+      console.log(item);
       if (item.IdFicheAch_Lib_Versions === id && item.Isvalid) {
-        // console.log(item);
+        console.log(item);
         checked.push(item);
       }
     });
     if (checked.length > 0) {
       return true;
     } else {
-      // console.log('non non non version');
+      console.log('non non non version');
       return false;
     }
   }
 
   changeModelVersion(id) {
+    console.log('changeModelVersion()');
     this.versionFicheMateriel.map(item => {
       if (item.IdFicheAch_Lib_Versions === id) {
-        // console.log(item);
+        console.log(item);
         item.Isvalid = !item.Isvalid;
-        // console.log(item.Isvalid);
+        console.log(item.Isvalid);
       }
     });
   }
@@ -830,16 +945,19 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         // console.log('==============================> this.statusReady :');
         // console.log(this.statusReady);
         // console.log(data);
-        this.clickStepOptions();
+        if (this.selectionType !== 'multi') {
+          this.clickStepOptions();
+        }
       });
   }
 
-  getAnnexStatus() {
+  getAnnexStatus() { // ISCALL
+    console.log('getAnnexStatus CALL ');
     this.annexElementsService.getAnnexElementsStatus()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.annexElementsStatus = data;
-        // console.log(this.annexElementsStatus);
+        console.log('this.annexElementsStatus => ', this.annexElementsStatus);
         this.annexElementsReady = true;
       });
   }
@@ -877,7 +995,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /***********************************************************************************/
   /***************************** ANNEXES ELEMENTS ************************************/
 
-  getAnnexElementsFicheMateriel(IdFicheMateriel, index, length) {
+  getAnnexElementsFicheMateriel(IdFicheMateriel, index, length) { // ISCALL
     // lancée en même temps que le get FM
     console.log('IdFicheMateriel =>', IdFicheMateriel);
     console.log(
@@ -888,22 +1006,76 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.annexElementsFicheMateriel = data;
+        console.log('this.annexElementsFicheMateriel => ', this.annexElementsFicheMateriel);
         this.allAnnexElementsFicheMateriel.push(data);
         if (index === length - 1) {
+          console.log('this.allAnnexElementsFicheMateriel ==> ', this.allAnnexElementsFicheMateriel);
+          console.log('iciiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
           this.displayAnnexElementNgModel();
         }
       });
   }
 
-  displayAnnexElementNgModel() {
+  public sameValueElementsAnnexes = {};
+  public originalsValuesElementsAnnexes;
+  displayAnnexElementNgModel() { // iSCALL
+    let sameValue = {};
+    this.sameValueElementsAnnexes = {};
     this.annexElementsNgModel = this.annexElementsFicheMateriel.map(item => ({
       IdPackageAttendu: item.IdPackageAttendu,
       IsValid: 'same'
     }));
-    // console.log('annexElementsNgModel : ', this.annexElementsNgModel);
+    this.originalsValuesElementsAnnexes = this.annexElementsFicheMateriel.map(item => ({
+      IdPackageAttendu: item.IdPackageAttendu,
+      IsValid: 'same'
+    }));
+    console.log('coooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
+    console.log('this.allAnnexElementsFicheMateriel =>', this.allAnnexElementsFicheMateriel);
+    console.log('this.annexElementsFicheMateriel => ', this.annexElementsFicheMateriel);
+    this.allAnnexElementsFicheMateriel.map(item => {
+      console.log('item in this.allAnnexElementsFicheMateriel => ', item);
+      let index = this.allAnnexElementsFicheMateriel.indexOf(item);
+      console.log('index => ', index);
+      if (index + 1 < this.allFichesMateriel.length) {
+        console.log('this.allAnnexElementsFicheMateriel[index + 1] => ', this.allAnnexElementsFicheMateriel[index + 1]);
+        item.map(object => {
+          let i = item.indexOf(object);
+          console.log('i => ', i);
+          console.log('object => ', object);
+            console.log(object);
+            if (object.IsValid === this.allAnnexElementsFicheMateriel[0][i].IsValid) { // remplacer par this.allAnnexElementsFicheMateriel[index+1][i].IsValid
+              let key = object.IdPackageAttendu;
+              if (!this.sameValueElementsAnnexes[key] || this.sameValueElementsAnnexes[key].length === 0) {
+                this.sameValueElementsAnnexes[key] = [];
+                this.sameValueElementsAnnexes[key].push(object.IsValid);
+              }
+              this.sameValueElementsAnnexes[key].push(object.IsValid);
+              console.log('object.IsValid => ', object.IsValid);
+              console.log('this.sameValueElementsAnnexes ==> ', this.sameValueElementsAnnexes);
+            }
+        });
+      }
+    }); 
+    for (let key in this.sameValueElementsAnnexes) {
+      if (this.sameValueElementsAnnexes[key].length === this.allFichesMateriel.length) {
+        console.log('same value to all keys in this.sameValueElementsAnnexes => ', key);
+        for (let key2 in this.annexElementsNgModel) {
+          if (this.annexElementsNgModel[key2].IdPackageAttendu === +key) {
+            console.log('package attendu ==> ', this.annexElementsNgModel[key2].IdPackageAttendu);
+            this.annexElementsNgModel[key2].IsValid = this.sameValueElementsAnnexes[key][0];
+            this.originalsValuesElementsAnnexes[key2].IsValid = this.sameValueElementsAnnexes[key][0];
+            console.log('this.annexElementsNgModel[key2].IsValid => ', this.annexElementsNgModel[key2].IsValid);
+            console.log('this.sameValueElementsAnnexes[key][0] => ', this.sameValueElementsAnnexes[key][0]);
+          }
+        }
+      }
+    }
+    console.log('this.originalsValuesElementsAnnexes => ', this.originalsValuesElementsAnnexes);
+    console.log('this.annexElementsNgModel', this.annexElementsNgModel);
   }
 
-  getAnnexElementsCategories() {
+  getAnnexElementsCategories() { // DONT CALL
+    console.log('getAnnexElementsCategories() CALL');
     this.annexElementsService.getAnnexElementsCategories()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
@@ -912,7 +1084,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
-  getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes) {
+  getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes) { // DONT CALL
+    console.log('getAnnexElementsSubCategoriesByCategory CALL');
     this.annexElementsService
       .getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes)
       .pipe(takeUntil(this.onDestroy$))
@@ -921,7 +1094,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
-  getAnnexElementsAllSubCategories() {
+  getAnnexElementsAllSubCategories() { // DONT CALL
+    console.log('getAnnexElementsAllSubCategories() CALL');
     this.annexElementsService
       .getAnnexElementsAllSubCategories()
       .pipe(takeUntil(this.onDestroy$))
@@ -931,23 +1105,24 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
-  displayCheckedElements(id) {
+  displayCheckedElements(id) { // DONT CALL
     // for (let i = 0; i < this.annexElementsFicheMateriel.length; i++) {
     //   if (this.annexElementsFicheMateriel[i].IdPackageAttendu === id) {
 
     //   }
     // }
+    console.log('displayCheckedElements call');
     let checked = [];
     this.annexElementsFicheMateriel.map(item => {
       if (item.IdPackageAttendu === id && item.IsValid) {
-        // console.log(item);
+        console.log(item);
         checked.push(item);
       }
     });
     if (checked.length > 0) {
       return true;
     } else {
-      // console.log('non non non non');
+      console.log('non non non non');
       return false;
     }
   }
@@ -1143,28 +1318,56 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
 
   /*************** Comments *****************/
 
-  getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel: number) {
-    console.log('IdFicheMateriel => ', IdFicheMateriel);
-    console.log('GET COMMENT elements annexes in fiche materiel component !!!!', this.comments);
+  getCommentaireAnnexElementsFicheMateriel(selectedId) {
+    let IdFicheMateriel = selectedId.idFicheMateriel;
     this.annexElementsService.getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        console.log('commentaire pour idFIcheMateriel n°', IdFicheMateriel, ' ==> ', data);
-        console.log(this.storeFichesToModif.modificationType);
         if (this.storeFichesToModif.modificationType !== 'multi') { // DISPLAY COMMENTS TO SIMPLE MODIF
-          console.log('Commentaire Elements Annexes Fiches Matériel ============================================>', data);
           this.comments = data;
           this.refreshEACommentModel = this.refreshEACommentModel++;
         } else {  // GET allEACommentsMultiSelect (all comments) TO MULTI MODIF
-          console.log('Comments in multi selection ==> ', data);
-          // this.comments = data;
+          let allFmlength = this.storeFichesToModif.selectedFichesMateriel.length;
+          let index = this.storeFichesToModif.selectedFichesMateriel.indexOf(selectedId);
           data.map(item => {
             this.allEACommentsMultiSelect.push(item);
-            console.log('this.allEACommentsMultiSelect ===> ', this.allEACommentsMultiSelect);
           });
           this.allEACommentsMultiSelect = [...new Set(this.allEACommentsMultiSelect)]; // remove same value
-          console.log('this.allEACommentsMultiSelect2 ===> ', this.allEACommentsMultiSelect);
           this.refreshEACommentModel = this.refreshEACommentModel++;
+          if (index === allFmlength - 1) {
+            this.allEACommentsMultiSelect.map(item => {
+              if (this.sameComments[item.idLibCategorieElementsAnnexes]) {
+                this.sameComments[item.idLibCategorieElementsAnnexes].push(item.Commentaire);
+              } else {
+                this.sameComments[item.idLibCategorieElementsAnnexes] = [];
+                this.sameComments[item.idLibCategorieElementsAnnexes].push(item.Commentaire);
+              }
+            });
+            let newnew = {};
+            for (let key in this.sameComments) {
+              if (this.sameComments[key].length === allFmlength) {
+                this.sameComments[key].map(item => {
+                  if (item === this.sameComments[key][0]) {
+                    if (newnew[key]) {
+                      newnew[key].push(item);
+                    } else {
+                      newnew[key] = [];
+                      newnew[key].push(item);
+                    }
+                  }
+                });
+                if (newnew[key].length === allFmlength) {
+                  this.sameEAComments.push({
+                    IdCategorieElementsAnnexesCommentaire: 'same',
+                    idLibCategorieElementsAnnexes: +key,
+                    IdFicheMateriel: 'same',
+                    Commentaire: this.sameComments[key][0]
+                  });
+                }
+
+              }
+            }
+          }
         }
       });
   }

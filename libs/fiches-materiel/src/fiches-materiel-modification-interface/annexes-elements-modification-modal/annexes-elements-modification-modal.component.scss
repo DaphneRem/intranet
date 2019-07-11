@@ -1,5 +1,7 @@
 $creationBtnColor :  #17AAB2;
 $creationBtnHoverColor :  #2eced6;
+$importantColor : #fd5f5f;
+$iconColor : #7f7f7f;
 
 .open-btn {
     background-color: #17AAB2;
@@ -55,6 +57,37 @@ button {
             flex-wrap: wrap;
             .checkbox-color {
                 display: block;
+                .itemNotValid {
+                    color : #b7b7b7;
+                }
+                .itemValid {
+                    color : #ffffff;
+                }
+            }
+            .label-icons {
+                display: flex;
+                .icons {
+                    margin: auto;
+                    cursor: pointer;
+                    padding-top: 3px;
+                    height: 30px;
+                    min-width: 100px;
+                    justify-content: space-around;
+                    align-items: center;
+                    margin-top: -5px;
+                    .delete {
+                        color :  $importantColor;
+                        font-size: 20px;
+                    }
+                    .reply {
+                        color: $iconColor;
+                        font-size: 17px;
+                    }
+                    .other {
+                        color: rgb(206, 55, 186);
+                        font-size: 17px;
+                    }
+                }
             }
         }
         textarea {
