@@ -28,9 +28,14 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   @Input() annexElementsFicheMateriel;
   @Input() selectionType;
   @Input() annexElementsNgModel;
+  @Input() originalsValuesElementsAnnexes;
   @Input() comments: AnnexElementCommentsFicheMAteriel[];
   @Input() refreshEACommentModel;
+  @Input() sameEAComments;
   @Input() reload;
+  @Input() resetTooltipMessage;
+  @Input() replyTooltipMessage;
+  @Input() valueNotToChangeLibelle;
 
   @Output() newStateElementsAnnexNgModel = new EventEmitter();
   @Output() newComments: EventEmitter<AnnexElementCommentsFicheMAteriel[]> = new EventEmitter();
@@ -42,7 +47,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   public annexElementsAllSubCategories;
   public newEAComments: AnnexElementCommentsFicheMAteriel[] = [];
   public originValuesEAComments;
-
+  public init = 0;
   constructor(
     private modalService: NgbModal,
     private annexElementsService: AnnexElementsService
@@ -66,8 +71,9 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     const com = changes.comments;
     console.log(changes);
     console.log('CHANGEMENT DE COMMENTAIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', changes.comments);
+    console.log('this.init => ', this.init);
     // if (!com.firstChange && this.selectionType !== 'multi') {
-      if (!com.firstChange) {
+      if (this.init > 0 && this.selectionType !== 'multi') {
         console.log('NOT FIRST CHANGE !!!!!!!!');
         // const com: SimpleChange = changes.comments;
         // this.comments = com.currentValue;
@@ -77,8 +83,11 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
           this.displayNewObjectEAComments(this.annexElementsCategories);
         } else {
           console.log('change comment multi => ', this.comments);
-          // this.displayOriginValuesEAComments(this.annexElementsCategories)
+          this.displayOriginValuesEAComments(this.annexElementsCategories)
         }
+        this.init++;
+    } else if (this.init > 1 && this.selectionType === 'multi') {
+      this.init++;
     }
 
     // console.log('comment before change format other time ==> ', this.comments);
@@ -110,12 +119,13 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     if (checked.length > 0) {
       return true;
     } else {
-      // console.log('non non non non');
+      // console.log('non non non non (annex element modif action component)');
       return false;
     }
   }
 
   changeModel(IdLibElementAnnexes) {
+    // console.log('changeModel() CALL');
     this.annexElementsFicheMateriel.map(item => {
       if (item.IdPackageAttendu === IdLibElementAnnexes) {
         console.log(item);
@@ -129,10 +139,11 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
 /***************************** SELECTTION TYPE : MULTI MODIF *****************************/
 /*****************************************************************************************/
 
-/******** checkbox management ********/
+/**************** checkbox management **************/
 
 // first displaying checkbox
   displayCheckedOption(id) {
+    console.log('displayCheckedOption CALL');
     let checked = [];
     this.annexElementsNgModel.map(item => {
       if ((item.IdPackageAttendu === id) && (item.IsValid !== 'same') && (item.IsValid !== false)) {
@@ -148,13 +159,16 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   }
 
 // click checkbox
-  changeResetModel(IdLibElementAnnexes) {
+  changeResetModel(IdLibElementAnnexes) { // D
+    console.log('changeResetModel CALL');
     this.annexElementsNgModel.map(item => {
       if (item.IdPackageAttendu === IdLibElementAnnexes) {
         if (item.IsValid === 'same') {
           item.IsValid = true;
         } else {
+          console.log(item);
           item.IsValid = !item.IsValid;
+          console.log(item.IsValid);
         }
       }
     });
@@ -162,6 +176,24 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     // console.log('this.annexElementsNgModel', this.annexElementsNgModel);
     // console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
   }
+
+  checkIfValueIsNotValid(IdLibElementAnnexes): boolean {
+    let itemIsNotValid: boolean;
+    this.annexElementsNgModel.map(item => {
+      if (item.IdPackageAttendu === IdLibElementAnnexes) {
+        console.log('item.IsValid => ', item.IsValid);
+        if ((item.IsValid === 'same') || item.IsValid === true) {
+          itemIsNotValid = false;
+        } else {
+          itemIsNotValid = true;
+        }
+      }
+    });
+    return itemIsNotValid;
+  }
+
+/************************************************/
+/******* ELEMENTS ANNEXES BUTTONS ACTIONS *******/
 
 // clear all data (all values = false)
   clearAllAnnexElementsValue() {
@@ -176,18 +208,24 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   resetAllAnnexElementsValue() {
     console.log('ACTION : resetAllAnnexElementsValue()');
     this.annexElementsNgModel.map(item => {
-      item.IsValid = 'same';
+      this.originalsValuesElementsAnnexes.map(item2 => {
+        if (item.IdPackageAttendu === item2.IdPackageAttendu) {
+          item.IsValid = item2.IsValid;
+        }
+      });
     });
+    console.log('this.originalsValuesElementsAnnexes => ', this.originalsValuesElementsAnnexes);
+    // this.annexElementsNgModel = this.originalsValuesElementsAnnexes;
     console.log('this.annexElementsNgModel Afeter reset action : ', this.annexElementsNgModel);
   }
 
-/*************************************/
 
 /*****************************************************************************************/
 /******************************** GET LIB ANNEXES ELEMENTS *******************************/
 /*****************************************************************************************/
 
-  getAnnexElementsCategories() {
+  getAnnexElementsCategories() { // ISCALL
+    console.log('getAnnexElementsCategories() from ACTION component');
     this.annexElementsService
       .getAnnexElementsCategories()
       .pipe(takeUntil(this.onDestroy$))
@@ -198,12 +236,13 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
           this.displayNewObjectEAComments(this.annexElementsCategories);
         } else {
           this.displayOriginValuesEAComments(this.annexElementsCategories);
-          console.log('oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
+          console.log('ooooooooooooooooooooooooooo selection multi oooooooooooooooooooooooooooooooooooo');
         }
       });
   }
 
-  getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes) {
+  getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes) { // DONT CALL
+    console.log('getAnnexElementsSubCategoriesByCategory() from ACTION component');
     this.annexElementsService
       .getAnnexElementsSubCategoriesByCategory(IdLibCategorieElementsAnnexes)
       .pipe(takeUntil(this.onDestroy$))
@@ -212,7 +251,8 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       });
   }
 
-  getAnnexElementsAllSubCategories() {
+  getAnnexElementsAllSubCategories() { // ISCALL
+    console.log('getAnnexElementsAllSubCategories() from ACTION component');
     this.annexElementsService
       .getAnnexElementsAllSubCategories()
       .pipe(takeUntil(this.onDestroy$))
@@ -226,21 +266,15 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
 
   displayNewObjectEAComments(annexElementsCategories) {
     this.newEAComments = [];
-    console.log('this.comments ==> ', this.comments);
-    console.log('annexElementsCategories ==> ', annexElementsCategories);
-    console.log('this.newEAComments ==> ', this.newEAComments);
     let categories = [];
     this.annexElementsCategories.map(item => {
       if (this.comments.length > 0) {
         this.comments.map(comment => {
           console.log(comment);
           if (comment.idLibCategorieElementsAnnexes === item.IdLibCategorieElementsAnnexes) {
-            console.log('comment idcategory same => ', comment);
             this.newEAComments.push(comment);
             categories.push(item.IdLibCategorieElementsAnnexes);
-            console.log('categories ===> ', categories);
           } else {
-            console.log(this.comments.includes(comment));
             if (!this.comments.includes(comment)) {
               this.newEAComments.push({
                 IdCategorieElementsAnnexesCommentaire: 0,
@@ -248,7 +282,6 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
                 IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
                 Commentaire: ''
               });
-              console.log('comment idcategory different => ', comment);
             }
           }
       });
@@ -262,7 +295,6 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       // console.log('category without comment => ', item);
 
     }
-    console.log('COMMENT ALL AFTER change model ===============================================================> ', this.newEAComments);
     });
     this.annexElementsCategories.map(item => {
       if (!categories.includes(item.IdLibCategorieElementsAnnexes)) {
@@ -275,7 +307,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       }
      });
     this.comments = this.newEAComments;
-    console.log('changement de comments = ', this.comments)
+
     this.newComments.emit(this.newEAComments);
 
 
@@ -323,21 +355,97 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     // this.newComments.emit(this.newEAComments);
   }
 
-  displayOriginValuesEAComments(annexElementsCategories) {
+  /***** SELECTION TYPE MULTI ****/
+  public allComments = []; 
+  public odlSameComments = [];
+  displayOriginValuesEAComments(annexElementsCategories) { // ISCALL
     this.originValuesEAComments = [];
-    console.log('this.comments ==> ', this.comments);
-    console.log('annexElementsCategories ==> ', annexElementsCategories);
-    console.log('this.newEAComments ==> ', this.newEAComments);
-    this.annexElementsCategories.map(item => {
-      this.originValuesEAComments.push({
-        IdCategorieElementsAnnexesCommentaire: 'same',
-        idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
-        IdFicheMateriel: 'same',
-        Commentaire: 'valeur d\'origine'
+    this.sameEAComments.map(item => {
+      this.odlSameComments.push({
+        id: item.idLibCategorieElementsAnnexes,
+        value: item.Commentaire
       });
     });
-    // this.comments = this.originValuesEAComments;
-    this.newComments.emit(this.originValuesEAComments);
+    this.originValuesEAComments = this.sameEAComments;
+    this.allComments = [];
+    let sameValueIdLibCategorieElementsAnnexes = [];
+    this.originValuesEAComments.map(e => {
+      sameValueIdLibCategorieElementsAnnexes.push(e.idLibCategorieElementsAnnexes);
+    });
+
+    this.annexElementsCategories.map(item => {
+      if (!sameValueIdLibCategorieElementsAnnexes.includes(item.IdLibCategorieElementsAnnexes)) {
+          this.allComments.push({
+            IdCategorieElementsAnnexesCommentaire: 'same',
+            idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+            IdFicheMateriel: 'same',
+            Commentaire: this.valueNotToChangeLibelle
+          });
+        }
+      });
+    // this.annexElementsCategories.map(item => {
+    //   this.originValuesEAComments.map(e => {
+    //     console.log('item.IdLibCategorieElementsAnnexes => ', item.IdLibCategorieElementsAnnexes);
+    //     console.log('e.idLibCategorieElementsAnnexes => ', e.idLibCategorieElementsAnnexes);
+    //     if (item.IdLibCategorieElementsAnnexes !== e.idLibCategorieElementsAnnexes) {
+    //       this.allComments.push({
+    //         IdCategorieElementsAnnexesCommentaire: 'same',
+    //         idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+    //         IdFicheMateriel: 'same',
+    //         Commentaire: 'valeur d\'origine'
+    //       });
+    //     }
+    //   });
+    // });
+    this.sameEAComments.map(item => {
+      this.allComments.push(item);
+    });
+    this.newComments.emit(this.allComments);
+  }
+
+
+  checkIfIsNotOriginalProperty(idCategory, value) {
+    let oldCategory = [];
+    this.odlSameComments.map(item => {
+      if (item.id === idCategory) {
+          oldCategory.push(item);
+      }
+    });
+    if (oldCategory.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  checkIfDifferentOriginalComment(idCategory, value): boolean {
+    let sameIdCategory = [];
+    this.odlSameComments.map(item => {
+      if (item.id === idCategory) {
+        if (value !== item.value) {
+          sameIdCategory.push(item);
+        }
+      }
+    });
+    if (sameIdCategory.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  returnToOriginalComment(idCategory, value) {
+    let koo;
+    this.odlSameComments.map(item => {
+      if (item.id === idCategory) {
+        koo = item.value;
+      }
+    });
+    this.allComments.map(item => {
+      if (item.idLibCategorieElementsAnnexes === idCategory) {
+        item.Commentaire = koo;
+      }
+    });
   }
 
   checkCommentExistInModel(comment): boolean {

@@ -22,6 +22,7 @@ import swal from 'sweetalert2';
 export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
   @Input() deliveryDate;
   @Input() livraisonIsValid;
+  @Input() selectionType;
   @Output() newComment = new EventEmitter<string>();
 
   @ViewChild('commentDeliveryDate') modalTemplate;
@@ -40,13 +41,19 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
     console.log(changes);
     console.log(typeof changeDeliveryDate.currentValue);
     console.log('this.livraisonIsValid => ', this.livraisonIsValid);
+    console.log('this.intit in deliveryDate => ', this.init);
     setTimeout(() => {
       if (this.livraisonIsValid) {
         if (changeDeliveryDate) {
           if ((this.init > 0) && (typeof changeDeliveryDate.currentValue === 'string') && (typeof changeDeliveryDate.previousValue === 'object')) {
             this.init = -1;
           } else if (this.init && (typeof changeDeliveryDate.currentValue !== 'string')) {
-            this.openSwal();
+            console.log('openSwal in delivery date. this.intit = >', this.init);
+            if (this.selectionType === 'multi' && this.init > 1) {
+              this.openSwal();
+            } else if (this.selectionType !== 'multi') {
+              this.openSwal();
+            }
           }
           this.init++;
         }
@@ -60,6 +67,7 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
   }
 
   openSwal() {
+    console.log(this.init);
     swal({
       title: 'Ajouter un commentaire : Date de livraison',
       input: 'textarea',

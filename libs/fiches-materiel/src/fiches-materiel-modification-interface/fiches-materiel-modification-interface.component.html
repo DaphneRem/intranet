@@ -1,5 +1,4 @@
 <!-- {{newObject | json}} -->
-
 <div *ngIf="dataIdFicheMaterielReady" class="row form-group fm-details">
   <form class="card col-lg-12">
     <div class="row">
@@ -83,7 +82,7 @@
               class="form-control" 
               id="epAb" 
               name="epAb"
-              autocomplete="off">              
+              autocomplete="off">
               <div class="icons col-lg-6" *ngIf="selectionType === 'multi'">
                 <i *ngIf="newObject.NumEpisodeAB !== ''"
                   class="icofont icofont-close-line-circled delete"
@@ -91,7 +90,7 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NumEpisodeAB = ''">
                 </i>
-                <i *ngIf="newObject.NumEpisodeAB !== valueNotToChangeLibelle"
+                <i *ngIf="(newObject.NumEpisodeAB !== valueNotToChangeLibelle)"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
@@ -151,6 +150,7 @@
     <steps-status-comment-modal
       (newComment)="displayStepsStatusModelComment($event)"
       (lastStatus)="displayPreviousStatus($event)"
+      [selectionType]="selectionType"
       [step]="newObject.IdLibEtape"
       [status]="newObject.IdLibstatut" 
       [newObject]="newObject"
@@ -206,11 +206,27 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NumEpisodeProd = ''">
                 </i>
-                <i *ngIf="newObject.NumEpisodeProd !== valueNotToChangeLibelle"
+                <!-- <i *ngIf="newObject.NumEpisodeProd !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.NumEpisodeProd = valueNotToChangeLibelle">
+                </i> -->
+                <i *ngIf="(newObject.NumEpisodeProd !== valueNotToChangeLibelle) && !checkIsOriginalProperty('NumEpisodeProd', newObject.NumEpisodeProd)"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NumEpisodeProd = valueNotToChangeLibelle">
+                </i>
+                <i *ngIf="(newObject.NumEpisodeProd !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('NumEpisodeProd', newObject.NumEpisodeProd)
+                  && newObject.NumEpisodeProd !== equalObject.NumEpisodeProd[0])" 
+                  class="icofont icofont-ui-reply reply" 
+                  [placement]="'right'"
+                  [ngbTooltip]="replyTooltipMessage" 
+                  (click)="checkIsOriginalProperty('NumEpisodeProd', newObject.NumEpisodeProd) ? 
+                  newObject.NumEpisodeProd = equalObject.NumEpisodeProd[0] : 
+                  newObject.NumEpisodeProd = valueNotToChangeLibelle">
                 </i>
                 <!-- <i *ngIf="newObject.NumEpisodeProd !== allFichesMateriel[0].NumEpisodeProd && selectionType === 'one'"
                   class="icofont icofont-ui-reply reply"
@@ -237,11 +253,21 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NumEpisodeAB = ''">
                 </i>
-                <i *ngIf="newObject.NumEpisodeAB !== valueNotToChangeLibelle"
+                <i *ngIf="(newObject.NumEpisodeAB !== valueNotToChangeLibelle) && !checkIsOriginalProperty('NumEpisodeAB', newObject.NumEpisodeAB)"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.NumEpisodeAB = valueNotToChangeLibelle">
+                </i>
+                <i *ngIf="(newObject.NumEpisodeAB !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('NumEpisodeAB', newObject.NumEpisodeAB)
+                  && newObject.NumEpisodeAB !== equalObject.NumEpisodeAB[0])" 
+                  class="icofont icofont-ui-reply reply"   
+                  [placement]="'right'"
+                  [ngbTooltip]="replyTooltipMessage" 
+                  (click)="checkIsOriginalProperty('NumEpisodeAB', newObject.NumEpisodeAB) ? 
+                  newObject.NumEpisodeAB = equalObject.NumEpisodeAB[0] : 
+                  newObject.NumEpisodeAB = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -267,11 +293,27 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NumProgram = ''">
                 </i>
-                <i *ngIf="newObject.NumProgram !== valueNotToChangeLibelle"
+                <!-- <i *ngIf="newObject.NumProgram !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.NumProgram = valueNotToChangeLibelle">
+                </i> -->
+                <i *ngIf="(newObject.NumProgram !== valueNotToChangeLibelle) && !checkIsOriginalProperty('NumProgram', newObject.NumProgram)"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NumProgram = valueNotToChangeLibelle">
+                </i>
+                <i *ngIf="(newObject.NumProgram !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('NumProgram', newObject.NumProgram)
+                  && newObject.NumProgram !== equalObject.NumProgram[0])" 
+                  class="icofont icofont-ui-reply reply" 
+                  [placement]="'right'"
+                  [ngbTooltip]="replyTooltipMessage" 
+                  (click)="checkIsOriginalProperty('NumProgram', newObject.NumProgram) ? 
+                  newObject.NumProgram = equalObject.NumProgram[0] : 
+                  newObject.NumProgram = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -292,11 +334,17 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.TitreEpisodeVF = ''">
                 </i>
-                <i *ngIf="newObject.TitreEpisodeVF !== valueNotToChangeLibelle"
+                <i *ngIf="(newObject.TitreEpisodeVF !== valueNotToChangeLibelle) && !checkIsOriginalProperty('TitreEpisodeVF', newObject.TitreEpisodeVF)"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.TitreEpisodeVF = valueNotToChangeLibelle">
+                </i>
+                <i *ngIf="(newObject.TitreEpisodeVF !== valueNotToChangeLibelle) && (checkIsOriginalProperty('TitreEpisodeVF', newObject.TitreEpisodeVF) && newObject.TitreEpisodeVF !== equalObject.TitreEpisodeVF[0])"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="checkIsOriginalProperty('TitreEpisodeVF', newObject.TitreEpisodeVF) ? newObject.TitreEpisodeVF = equalObject.TitreEpisodeVF[0] : newObject.TitreEpisodeVF = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -317,17 +365,28 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.TitreEpisodeVO = ''">
                 </i>
-                <i *ngIf="newObject.TitreEpisodeVO !== valueNotToChangeLibelle"
+                <i *ngIf="(newObject.TitreEpisodeVO !== valueNotToChangeLibelle) && !checkIsOriginalProperty('TitreEpisodeVO', newObject.TitreEpisodeVO)"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.TitreEpisodeVO = valueNotToChangeLibelle">
                 </i>
+                <i *ngIf="(newObject.TitreEpisodeVO !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('TitreEpisodeVO', newObject.TitreEpisodeVO) 
+                  && newObject.TitreEpisodeVO !== equalObject.TitreEpisodeVO[0])"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="checkIsOriginalProperty('TitreEpisodeVO', newObject.TitreEpisodeVO) ? 
+                    newObject.TitreEpisodeVO = equalObject.TitreEpisodeVO[0] : 
+                    newObject.TitreEpisodeVO = valueNotToChangeLibelle">
+                </i>
               </div>
           </div>
 
-
-<!-- {{versionFicheMateriel | json}} -->
+<!-- 
+{{versionFicheMateriel | json}}
+{{versionLib | json}} -->
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Version : </label>
             <div class="right-details col-lg-6">
@@ -374,13 +433,12 @@
               </div>
             </div>
           </div>
-
           <div class="row form-group">
             <label class="col-form-label col-lg-4">Support :</label>
             <input 
               [(ngModel)]="newObject.IdSupport"
               type="text" 
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4"
               id="support" 
               name="support"
               autocomplete="off">
@@ -391,11 +449,27 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.IdSupport = ''">
                 </i>
-                <i *ngIf="newObject.IdSupport !== valueNotToChangeLibelle"
+                <!-- <i *ngIf="newObject.IdSupport !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.IdSupport = valueNotToChangeLibelle">
+                </i> -->
+                <i *ngIf="(newObject.IdSupport !== valueNotToChangeLibelle) && !checkIsOriginalProperty('IdSupport', newObject.IdSupport)"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.IdSupport = valueNotToChangeLibelle">
+                </i>
+                <i *ngIf="(newObject.IdSupport !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('IdSupport', newObject.IdSupport)
+                  && newObject.IdSupport !== equalObject.IdSupport[0])" 
+                  class="icofont icofont-ui-reply reply" 
+                  [placement]="'right'"
+                  [ngbTooltip]="replyTooltipMessage" 
+                  (click)="checkIsOriginalProperty('IdSupport', newObject.IdSupport) ? 
+                  newObject.IdSupport = equalObject.IdSupport[0] : 
+                  newObject.IdSupport = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -516,6 +590,7 @@
           <div *ngIf="!checkValidDate(newObject.DateLivraison) && !fmInRecording" class="col-form-label invalid-form">La date de livraison n'est pas valide</div>
           <delivery-date-comment-modal 
             [deliveryDate]="newObject.DateLivraison"
+            [selectionType]="selectionType"
             [livraisonIsValid]= "livraisonIsValid"
             (newComment)="displayDeliveryDateModelComment($event)"
             ></delivery-date-comment-modal>
@@ -602,11 +677,27 @@
                 [ngbTooltip]="resetTooltipMessage"
                 (click)="newObject.AccesVF = ''">
               </i>
-              <i *ngIf="newObject.AccesVF !== valueNotToChangeLibelle"
+              <!-- <i *ngIf="newObject.AccesVF !== valueNotToChangeLibelle"
                 class="icofont icofont-ui-reply reply"
                 [placement]="'right'" 
                 [ngbTooltip]="replyTooltipMessage"
                 (click)="newObject.AccesVF = valueNotToChangeLibelle">
+              </i> -->
+              <i *ngIf="(newObject.AccesVF !== valueNotToChangeLibelle) && !checkIsOriginalProperty('AccesVF', newObject.AccesVF)"
+                class="icofont icofont-ui-reply reply"
+                [placement]="'right'" 
+                [ngbTooltip]="replyTooltipMessage"
+                (click)="newObject.AccesVF = valueNotToChangeLibelle">
+              </i>
+              <i *ngIf="(newObject.AccesVF !== valueNotToChangeLibelle) 
+                && (checkIsOriginalProperty('AccesVF', newObject.AccesVF)
+                && newObject.AccesVF !== equalObject.AccesVF[0])" 
+                class="icofont icofont-ui-reply reply" 
+                [placement]="'right'"
+                [ngbTooltip]="replyTooltipMessage" 
+                (click)="checkIsOriginalProperty('AccesVF', newObject.AccesVF) ? 
+                newObject.AccesVF = equalObject.AccesVF[0] : 
+                newObject.AccesVF = valueNotToChangeLibelle">
               </i>
             </div>
           </div>
@@ -637,11 +728,17 @@
               (newComments)="displaynewEAComments($event)"
               [selectionType]="selectionType"
               [annexElementsNgModel]="annexElementsNgModel"
+              [originalsValuesElementsAnnexes]="originalsValuesElementsAnnexes"
               [comments]="comments"
               [reload]="reload"
               [refreshEACommentModel]="refreshEACommentModel"
+              [sameEAComments]="sameEAComments"
+              [resetTooltipMessage]= "resetTooltipMessage"
+              [replyTooltipMessage]= "replyTooltipMessage"
+              [valueNotToChangeLibelle]="valueNotToChangeLibelle"
               [annexElementsFicheMateriel]="annexElementsFicheMateriel">
             </annexes-elements-modification-modal>
+            {{comments |json}}
           </div>
           <!-- <div class="details row form-group" *ngIf="selectionType === 'multi'">
             <div class="left-details col-lg-6">
@@ -780,11 +877,27 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.NomLabo = ''">
                 </i>
-                <i *ngIf="newObject.NomLabo !== valueNotToChangeLibelle"
+                <!-- <i *ngIf="newObject.NomLabo !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.NomLabo = valueNotToChangeLibelle">
+                </i> -->
+                <i *ngIf="(newObject.NomLabo !== valueNotToChangeLibelle) && !checkIsOriginalProperty('NomLabo', newObject.NomLabo)"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.NomLabo = valueNotToChangeLibelle">
+                </i>
+                <i *ngIf="(newObject.NomLabo !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('NomLabo', newObject.NomLabo)
+                  && newObject.NomLabo !== equalObject.NomLabo[0])" 
+                  class="icofont icofont-ui-reply reply" 
+                  [placement]="'right'"
+                  [ngbTooltip]="replyTooltipMessage" 
+                  (click)="checkIsOriginalProperty('NomLabo', newObject.NomLabo) ? 
+                  newObject.NomLabo = equalObject.NomLabo[0] : 
+                  newObject.NomLabo = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -804,11 +917,27 @@
                   [ngbTooltip]="resetTooltipMessage"
                   (click)="newObject.CoutLabo = ''">
                 </i>
-                <i *ngIf="newObject.CoutLabo !== valueNotToChangeLibelle"
+                <!-- <i *ngIf="newObject.CoutLabo !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
                   (click)="newObject.CoutLabo = valueNotToChangeLibelle">
+                </i> -->
+                <i *ngIf="(newObject.CoutLabo !== valueNotToChangeLibelle) && !checkIsOriginalProperty('CoutLabo', newObject.CoutLabo)"
+                  class="icofont icofont-ui-reply reply"
+                  [placement]="'right'" 
+                  [ngbTooltip]="replyTooltipMessage"
+                  (click)="newObject.CoutLabo = valueNotToChangeLibelle">
+                </i>
+                <i *ngIf="(newObject.CoutLabo !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('CoutLabo', newObject.CoutLabo)
+                  && newObject.CoutLabo !== equalObject.CoutLabo[0])" 
+                  class="icofont icofont-ui-reply reply" 
+                  [placement]="'right'"
+                  [ngbTooltip]="replyTooltipMessage" 
+                  (click)="checkIsOriginalProperty('CoutLabo', newObject.CoutLabo) ? 
+                  newObject.CoutLabo = equalObject.CoutLabo[0] : 
+                  newObject.CoutLabo = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -837,11 +966,27 @@
               [ngbTooltip]="resetTooltipMessage"
               (click)="newObject.Commentaires = ''">
             </i>
-            <i *ngIf="newObject.Commentaires !== valueNotToChangeLibelle"
+            <!-- <i *ngIf="newObject.Commentaires !== valueNotToChangeLibelle"
               class="icofont icofont-ui-reply reply"
               [placement]="'right'" 
               [ngbTooltip]="replyTooltipMessage"
               (click)="newObject.Commentaires = valueNotToChangeLibelle">
+            </i> -->
+            <i *ngIf="(newObject.Commentaires !== valueNotToChangeLibelle) && !checkIsOriginalProperty('Commentaires', newObject.Commentaires)"
+              class="icofont icofont-ui-reply reply"
+              [placement]="'right'" 
+              [ngbTooltip]="replyTooltipMessage"
+              (click)="newObject.Commentaires = valueNotToChangeLibelle">
+            </i>
+            <i *ngIf="(newObject.Commentaires !== valueNotToChangeLibelle) 
+              && (checkIsOriginalProperty('Commentaires', newObject.Commentaires)
+              && newObject.Commentaires !== equalObject.Commentaires[0])" 
+              class="icofont icofont-ui-reply reply" 
+              [placement]="'right'"
+              [ngbTooltip]="replyTooltipMessage" 
+              (click)="checkIsOriginalProperty('Commentaires', newObject.Commentaires) ? 
+              newObject.Commentaires = equalObject.Commentaires[0] : 
+              newObject.Commentaires = valueNotToChangeLibelle">
             </i>
           </div>
         </div>

@@ -1,5 +1,6 @@
 <button class="btn open-btn" (click)="openLg(annexesElementsToModif)">Modifier détails éléments annexes</button>
-
+<!-- {{annexElementsNgModel | json}} -->
+{{allComments |json}}
 <!--************* MODAL **************-->
 <ng-template #annexesElementsToModif let-c="close" let-d="dismiss" class="affected-annexes-modal">
     <div class="modal-header">
@@ -67,6 +68,7 @@
                 <label class="badge badge-lg bg-info">{{category.Libelle}} :</label>
                 <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="checkbox-color checkbox-info">
                     <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
+                        <i class="icofont icofont-close-line not-valid" [ngClass]="checkIfValueIsNotValid(item.IdLibElementAnnexes) ? 'itemNotValid' : 'itemValid' " ></i>
                         <input 
                             id="{{item.IdLibElementAnnexes}}" 
                             name="{{item.Libelle}}"
@@ -75,11 +77,66 @@
                             type="checkbox">
                         <label for="{{item.IdLibElementAnnexes}}">
                         {{item.Libelle}}
+                        {{item.IdLibElementAnnexes}}
                         </label>
                     </div>
                 </div>
-                <label>Commentaires :</label>
-                <div *ngFor="let comment of comments">          
+                {{valueNotToChangeLibelle}}
+                <div class="label-icons">
+                    <label>Commentaires :</label>
+                    <div *ngFor="let comment of allComments">
+                        <div *ngIf="comment.idLibCategorieElementsAnnexes === category.IdLibCategorieElementsAnnexes" class="icons col-lg-3 textarea-icons">
+                            <i  *ngIf="comment.Commentaire !== ''"
+                                class="icofont icofont-close-line-circled delete"
+                                [placement]="'right'" 
+                                [ngbTooltip]="resetTooltipMessage"
+                                (click)="comment.Commentaire = ''">
+                            </i>
+                            <i  *ngIf="(comment.Commentaire !== valueNotToChangeLibelle && checkIfIsNotOriginalProperty(comment.idLibCategorieElementsAnnexes, comment.Commentaire))"
+                                class="icofont icofont-ui-reply reply" 
+                                [placement]="'right'"
+                                [ngbTooltip]="replyTooltipMessage"
+                                (click)="comment.Commentaire = valueNotToChangeLibelle">
+                            </i>
+                            <i  *ngIf="(comment.Commentaire !== valueNotToChangeLibelle) 
+                                && checkIfDifferentOriginalComment(comment.idLibCategorieElementsAnnexes, comment.Commentaire)"
+                                class="icofont icofont-ui-reply other"
+                                [placement]="'right'" 
+                                [ngbTooltip]="replyTooltipMessage"
+                                (click)="returnToOriginalComment(comment.idLibCategorieElementsAnnexes, comment.Commentaire)">
+                            </i>
+
+
+
+                            <!-- <i *ngIf="newObject.AccesVF !== ''"
+                                class="icofont icofont-close-line-circled delete"
+                                [placement]="'right'" 
+                                [ngbTooltip]="resetTooltipMessage"
+                                (click)="newObject.AccesVF = ''">
+                            </i>
+                                <i *ngIf="(newObject.AccesVF !== valueNotToChangeLibelle) && !checkIsOriginalProperty('AccesVF', newObject.AccesVF)"
+                                class="icofont icofont-ui-reply reply"
+                                [placement]="'right'" 
+                                [ngbTooltip]="replyTooltipMessage"
+                                (click)="newObject.AccesVF = valueNotToChangeLibelle">
+                            </i>
+                            <i *ngIf="(newObject.AccesVF !== valueNotToChangeLibelle) 
+                                && (checkIsOriginalProperty('AccesVF', newObject.AccesVF)
+                                && newObject.AccesVF !== equalObject.AccesVF[0])" 
+                                class="icofont icofont-ui-reply reply" 
+                                [placement]="'right'"
+                                [ngbTooltip]="replyTooltipMessage" 
+                                (click)="checkIsOriginalProperty('AccesVF', newObject.AccesVF) ? 
+                                newObject.AccesVF = equalObject.AccesVF[0] : 
+                                newObject.AccesVF = valueNotToChangeLibelle">
+                            </i> -->
+
+
+                        </div>
+                    </div>
+                </div>
+                
+                <div *ngFor="let comment of allComments">          
                     <textarea
                         *ngIf="comment.idLibCategorieElementsAnnexes === category.IdLibCategorieElementsAnnexes"
                         [(ngModel)]="comment.Commentaire"
