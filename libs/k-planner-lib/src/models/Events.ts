@@ -25,7 +25,9 @@ export class EventModel{
    libtypeWO?: string;
    Commentaire_Planning?: string;
    Id_Planning_Container?:number;
-   IdGenerationWO:number
+   IdGenerationWO:number;
+   isTempsReel?:boolean;
+  
 }
 
     // Id: number;

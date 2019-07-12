@@ -1,6 +1,6 @@
 export class Workorder {
 
-    Id_Planning_Events: number;
+    Id_Planning_Events: any;
     Iddetail: number;
     IdTypeWO: number;
     UserEnvoi: string;
