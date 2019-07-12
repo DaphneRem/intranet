@@ -15,6 +15,8 @@ $InfoBtnHoverColor :  #2eced6;
 
 .control-section {
     margin-bottom: 0;
+ position: fixed;
+
     .refresh-btn {
         padding: 6px 10px;
         box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -106,15 +108,20 @@ $InfoBtnHoverColor :  #2eced6;
     }
 }
 /deep/ .schedule-drag-drop {
-    // max-height: calc(100vh - 20px);
+    // max-height: calc(100vh - 40px); // hauteur du schedule
+    // margin-left: 15px;
+    // margin-right: 15px
     // height: 850px;
     // border:red 2px solid;
+    // zoom: 90%;
+ 
 }
 
-/deep/ .schedule {
-    zoom: 90%;
+// /deep/ .schedule {
+  
+
     // border:black 2px solid
-}
+// }
 // /deep/ .e-table-container{
 //     border:green 2px solid
 // }
@@ -285,23 +292,23 @@ $InfoBtnHoverColor :  #2eced6;
 
 /deep/ .e-schedule .e-timeline-view .e-work-cells{
     max-height:100px;
-    height: 100px;
+    // height: 100px;
     min-height: 100px,
 }
 
 /deep/ .e-schedule .e-timeline-view .e-resource-cells{
     max-height:100px;
-    height: 100px;
+    // height: 100px;
     min-height: 100px,
 }
 
 /deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
-    height: 100px;
+    // height: 100px;
     min-height: 100px,
 
 }
 /deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
-    height: 100px;
+    // height: 100px;
     min-height: 100px,
 }
 
@@ -663,3 +670,7 @@ overflow: scroll
     display:none
 }
 
+/deep/ .e-schedule  .e-resource-text { // centrer les régies
+text-align: center;
+padding: 0
+  }

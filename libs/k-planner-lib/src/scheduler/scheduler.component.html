@@ -75,7 +75,6 @@
                     (eventClick)="onEventClick()"
                     (popupOpen)="onPopupOpen($event)" 
                     cssClass='schedule-drag-drop' 
-                    
                     [group]="group" 
                     [currentView]="currentView" 
                     [selectedDate]="selectedDate" 
@@ -90,8 +89,9 @@
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
                     (change)="onChange($event)"
-                    [showHeaderBar]="true"
-                  
+                    [showHeaderBar]='true'
+                    width='100%'
+                    height='100%'
                     >
                   
                     <!-- (renderCell)="onRenderCell($event)" -->
@@ -119,7 +119,7 @@
                                 </div>
                             </ng-template > -->              
                     <e-views>
-                        <e-view option='TimelineDay'  #scheduleObjDay >
+                        <e-view option='TimelineDay'  #scheduleObjDay [interval]="2" >
                             <ng-template #eventTemplate let-data  class="event">
                                 <div class='template-wrap ' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                     <div>
@@ -324,14 +324,14 @@
 
         
     </ejs-sidebar>  
-   <div id="head"  >
+   <div id="head" >
             <button ejs-button 
             id="toggle" #togglebtnslide 
             isToggle="true" 
             (click)="btnClickSlide()" 
             content="" 
             class="btn btn-info float-right regie btn-backlog"
-            [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"
+            [ngStyle]="{'display':(scheduleObj.currentView =='TimelineMonth' ) ? 'none':'block'   }"
             [hidden]="hiderefresh"
             > 
             BackLog
