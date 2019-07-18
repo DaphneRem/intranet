@@ -31,9 +31,7 @@ export class WorkOrderTempsReelService {
         )
         .map((res: any) => {
           console.log(res);
-          res.map(data =>{
-            data.Id_Planning_Events =  data.Id_Planning_Events.toString() 
-          })
+        
           return res as EventModel[];
         });
   }

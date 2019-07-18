@@ -27,7 +27,8 @@ export class EventModel{
    Id_Planning_Container?:number;
    IdGenerationWO:number;
    isTempsReel?:boolean;
-  
+   IsReadonly? : boolean;
+   Id_Planning_Events_TempsReel:number;
 }
 
     // Id: number;

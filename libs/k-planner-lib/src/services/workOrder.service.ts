@@ -23,9 +23,7 @@ export class WorkOrderService {
     .get(urlKPlanner + urlPlanningEventsByidContainer + id)
     .map((res: any) => {
       // console.log('GETworkorderByIdContainer res : ', res);
-      res.map(data =>{
-        data.Id_Planning_Events =  data.Id_Planning_Events.toString() 
-      })
+     
       return res as Workorder[];
     });
   }
@@ -35,9 +33,7 @@ export class WorkOrderService {
       .get(urlKPlanner + urlPlanningEventsByidGroup + idGroup)
       .map((res: any) => {
         // console.log('GETworkorderByIdGroup present in backlog => res : ', res);
-        res.map(data =>{
-          data.Id_Planning_Events =  data.Id_Planning_Events.toString() 
-        })
+     
         return res as Workorder[];
     });
   }
