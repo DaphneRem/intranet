@@ -26,9 +26,11 @@ export class EventModel{
    Commentaire_Planning?: string;
    Id_Planning_Container?:number;
    IdGenerationWO:number;
-   isTempsReel?:boolean;
+   isTempsReel?:number;
    IsReadonly? : boolean;
    Id_Planning_Events_TempsReel:number;
+   DateDebutTheo?:Date;
+   DateFinTheo?:Date
 }
 
     // Id: number;

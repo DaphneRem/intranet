@@ -19,6 +19,7 @@ const routes: Routes = [
           }
         ]
       },
+      { path: '**', component: Page404Component },
       // { path: '**', component: LoaderAnimationComponent  },
       // { path: config.tenant , component: LoaderAnimationComponent  },
       // { path: config.clientId , component: LoaderAnimationComponent  },

@@ -1,4 +1,4 @@
-import {
+ import {
     Component,
     ViewChild,
     OnInit,
@@ -35,14 +35,14 @@ import {
   import { ChangeEventArgs as DropDownChangeArgs } from '@syncfusion/ej2-angular-dropdowns';
   import { TimePickerComponent } from '@syncfusion/ej2-angular-calendars';
   // Syncfusion Angular
-  import { ButtonComponent, ChangeEventArgs } from '@syncfusion/ej2-angular-buttons';
+  import { ButtonComponent, ChangeEventArgs, CheckBoxComponent } from '@syncfusion/ej2-angular-buttons';
   import {
       TabComponent,
-      SelectEventArgs,
-      TreeViewComponent,
+       TreeViewComponent,
       MenuItemModel,
       ContextMenuComponent,
       SidebarComponent,
+      SelectEventArgs
   } from '@syncfusion/ej2-angular-navigations';
   import {
       EventSettingsModel,
@@ -68,7 +68,9 @@ import {
       DayService,
       WeekService,
       ResizeService,
-      DragAndDropService
+      DragAndDropService,
+      EventClickArgs,
+     
   } from '@syncfusion/ej2-angular-schedule';
   
   // Locale Data Imports
@@ -97,7 +99,7 @@ import {
   import { EventModel } from '../models/Events';
   import { LibGroupeService } from '../services/libGroupe.service';
   import { LibelleGroupe } from '../models/libelle-groupe';
-  import { DataManager, Query, ReturnOption } from '@syncfusion/ej2-data';
+  import { DataManager, Query, ReturnOption, Predicate } from '@syncfusion/ej2-data';
   import { Grid } from '@syncfusion/ej2-angular-grids';
   import { SpinSettingsModel } from "@syncfusion/ej2-splitbuttons";
   import { splitClasses, ConditionalExpr } from "@angular/compiler";
@@ -116,7 +118,7 @@ import {
   loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
   
   L10n.load(localeFrenchData);
-  
+
   @Component({
       selector: 'scheduler',
       templateUrl: './scheduler.component.html',
@@ -173,7 +175,10 @@ import {
       public ejStartTimePicker: TimePickerComponent;
       @ViewChild('ejEndTimePicker')
       public ejEndTimePicker: TimePickerComponent;
-      @ViewChild('panzoomDiv') panzoomDiv: ElementRef;
+      @ViewChild('reel') 
+      public reel: CheckBoxComponent;
+      @ViewChild('theorique') 
+      public theorique: CheckBoxComponent;
   
   
       private onDestroy$: Subject<any> = new Subject();
@@ -226,7 +231,7 @@ import {
       public btnRegieMessageAll
       public colorReadOnly
       public currentView: View = 'TimelineDay';
-      public workHours: WorkHoursModel = { start: '07:00', end: '23:00', highlight: true };
+      public workHours: WorkHoursModel = { start: '06:00', end: '23:00', highlight: true };
       public weekNumber = true
       public cssClass: string = 'custom';
       public readonly: boolean = true;
@@ -242,13 +247,13 @@ import {
           { Id: 0, Color: '#e8e2ae' },
           { Id: 1, Color: '#e8e2ae' },
           { Id: 2, Color: '#7FB3D5' },
-          { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER
+          { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER JAUNE
           { Id: 4, Color: '#F3BE09' },
-          { Id: 5, Color: '#3498DB' },
-          { Id: 6, Color: '#3ba506' }, //  STATUT_TERMINE_OK 
-          { Id: 7, Color: '#B01106' }, //   STATUT_TERMINE_KO 
-          { Id: 8, Color: '#F39009' }, //   STATUT_EN_ATTENTE
-          { Id: 9, Color: '#3ba506' },
+          { Id: 5, Color: '#090778' }, //  STATUT_A_FINIR bleu foncé (pause)
+          { Id: 6, Color: '#3ba506' }, //  STATUT_TERMINE_OK VERT
+          { Id: 7, Color: '#B01106' }, //   STATUT_TERMINE_KO ROUGE
+          { Id: 8, Color: '#F39009' }, //   STATUT_EN_ATTENTE ORANGE
+          { Id: 9, Color: '#e8e2ae' },
           { Id: 10, Color: '#3ba506' },//  STATUT_TACHES_OK
           { Id: 11, Color: '#B01106' },
           { Id: 12, Color: '#17AAB2' },
@@ -356,10 +361,11 @@ import {
       public isTreeItemDroppedMonteur: boolean = false; // drag and drop operateur
       public zoomCont: number = 0
       public valueMax: number = 60
-      public value: number = 90
-      public valueAdd: number =10
+      public value: number =60
+      public valueAdd: number =5
       public refreshF4 : boolean
-      public navigation: boolean = false
+      public navigation: boolean = false;
+      public intervalChanged: boolean = false
       // public fistCallAction: boolean = false;
       // public deleteWorkorderAction: boolean = false;
       // public deleteContainerAction: boolean = false;
@@ -408,43 +414,61 @@ import {
                   console.log(btnrefresh, btnrefreshWo)
   
               }
-             
+       
   
           })
-  
-          let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-          console.log(scheduleElement)
-         let scheduletable = document.getElementsByClassName('e-schedule-table e-outer-table');
-         
-        document.body.addEventListener('keyup', (eKey: KeyboardEvent) => {
-          if (eKey.keyCode === 109  && scheduleElement ) {
-              // -------------------------------------------------
-            if(this.value > this.valueMax){
-                this.value = this.value - this.valueAdd
-              scheduleElement[0]['style'].transform ="scale(this.value/100,this.value/100)"
-              scheduleElement[0]['style'].zoom =this.value.toString() +"%"
-              scheduleElement[0]['style'].maxHeight ="1000px";
+          let scheduleElement = document.getElementsByClassName('e-content-wrap');
+          //   console.log(scheduleElement)
            
-              console.log(this.value , this.valueMax)
-          console.log( scheduleElement[0]['style'].zoom,"value -",scheduletable[0]['style'].height, this.scheduleObj )
+           let scheduletable = document.getElementsByClassName('schedule-drag-drop');
   
-       
-      }
-         } else {
-    
-             if (eKey.keyCode === 107 && scheduleElement ) {
-                    //+++++++++++++++++++++++
-                    this.value = this.value +  this.valueAdd
-              scheduleElement[0]['style'].transform ="scale(this.value/100,this.value/100)"
-              scheduleElement[0]['style'].zoom =this.value.toString() +"%"
-              scheduleElement[0]['style'].maxHeight ="1000px";
-              console.log( scheduleElement[0]['style'],"value +",scheduletable[0]['style'])
-                 
-             }
-         }
-      }, true);
+           document.body.addEventListener('keyup', (eKey: KeyboardEvent) => {
+            // let idSchedule  = document.getElementById('schedule');
+           
+            if (eKey.keyCode === 109   && this.value <= 180  ) {
+                // -------------------------------------------------           
+              //   scheduleElement[0]['style'].zoom =this.value.toString() +"%"
+              //   scheduleElement[0]['style'].maxHeight ="1000px";
+              this.intervalChanged = true
+                this.value = this.value + this.valueAdd
+                
+                this.scheduleObj.timeScale.interval = this.value     
+           
+                this.scheduleObj.refreshEvents()   
+                console.log(this.value , this.valueMax)
+            console.log( "-----",this.scheduleObj,scheduleElement[0]['style'] )
+           } else {
+      
+               if (eKey.keyCode === 107  && this.value >= 5 ) {
+                      //+++++++++++++++++++++++
+                      this.intervalChanged = true
+                      this.value = this.value - this.valueAdd
+                      // this.scheduleObj.timeScale.slotCount = this.value;
+                      this.scheduleObj.timeScale.interval = this.value 
+            
+                      this.scheduleObj.refreshEvents()                  
+              //   scheduleElement[0]['style'].transform ="scale(this.value/100,this.value/100)"
+              //   scheduleElement[0]['style'].zoom =this.value.toString() +"%"
+              //   scheduleElement[0]['style'].maxHeight ="1000px";
+              console.log( "+++++++",this.scheduleObj, this.value )
+            
+               }
+           }
+          
+           if(this.hourContainer == undefined){
+            this.hourContainer =moment().subtract(1,'hour').format('HH:mm'); 
+            console.log(this.hourContainer)
+           }
+           if(eKey.keyCode === 107  || eKey.keyCode === 109 ){
+           setTimeout(() => {
+         
+            this.scheduleObj.scrollTo(this.hourContainer)  
+     
+        }, 500);
+        }
+        }, true);
   
-  
+        
           console.log('******* constructor end *******');
       }
   
@@ -912,7 +936,8 @@ import {
                               IsAllDay: false,
                               Commentaire: data.Commentaire,
                               Commentaire_Planning: data.Commentaire_Planning,
-                              IsReadonly: false
+                              IsReadonly: false,
+                              isTempsReel:0,
                           });
                           let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                           let length = this.dataContainersByRessourceStartDateEndDate.length;
@@ -998,7 +1023,7 @@ import {
                   // console.log('response workorder for container : ', res);
                   this.WorkorderByContainerId = res;
                   this.allDataWorkorders = [...this.allDataWorkorders, ...res];
-                //   console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
+                  console.log('******* res workorder  ******* => ', this.WorkorderByContainerId);
                   // console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
               
                   if (this.WorkorderByContainerId.length > 0) {
@@ -1033,7 +1058,7 @@ import {
                               libtypeWO: data.libtypeWO,
                               Commentaire_Planning: data.Commentaire_Planning,
                               IdGenerationWO: data.IdGenerationWO,
-                              isTempsReel:false,
+                              isTempsReel:0,
                               IsReadonly: false,
                               Id_Planning_Events_TempsReel:0
                           }
@@ -1055,7 +1080,7 @@ import {
                           console.log('*********** end to initial request for all regies container and workorders ***********');
                         
                           // récuperer les workOrders du dérnier container de la derniére régie
-                          let workorderEvent = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === containerEvent[indexContainer].AzaNumGroupe && item.AzaIsPere === false);
+                          let workorderEvent = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === containerEvent[indexContainer].AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel ===0);
                           let indexWorkorder
                           workorderEvent.map(data => {
                               indexWorkorder = workorderEvent.indexOf(data)
@@ -1188,9 +1213,11 @@ import {
        
             this.dataWorkorderTempsReelByIdGroupeStartDateEndDate.map(data => {
             
-                let dateDebut = moment(data.DateDebutReel, moment.defaultFormat).toDate();
-                let dateFin = moment(data.DateFinReel, moment.defaultFormat).toDate();
-                let codeSalleTempsReel
+                let dateDebut = moment(data.DateDebutReel, moment.defaultFormat).toDate(),
+                 dateFin = moment(data.DateFinReel, moment.defaultFormat).toDate(),
+                 dateDebutTheo = moment(data.DateDebutTheo, moment.defaultFormat).toDate(),
+                 dateFinTheo = moment(data.DateFinTheo, moment.defaultFormat).toDate(),
+                 codeSalleTempsReel
        
                
              if( moment(data.DateFinReel, moment.defaultFormat).isValid()){
@@ -1217,13 +1244,13 @@ import {
                   EndTime: dateFin, 
                   CodeRessourceSalle: data.CodeRessourceSalle,
                   Container: false,
-                  numGroup: data.Id_Planning_Container,
+               
                   Description: data.Commentaire,
                   Operateur: data.LibelleRessourceOperateur,
                   coordinateurCreate: data.LibelleRessourceCoordinateur,
                   Statut: data.Statut,
                   AzaIsPere: false,
-                  AzaNumGroupe: data.Id_Planning_Container,
+                
                   DepartmentID: data.CodeRessourceSalle,
                   ConsultantID: 2,
                   DepartmentName: '',
@@ -1236,9 +1263,12 @@ import {
                   libtypeWO: data.libtypeWO,
                   Commentaire_Planning: data.Commentaire_Planning,
                   IdGenerationWO: data.IdGenerationWO,
-                  isTempsReel:true,
+                  isTempsReel:1,
                   IsReadonly: true,
-                  Id_Planning_Events_TempsReel: data.Id_Planning_Events_TempsReel
+                  Id_Planning_Events_TempsReel: data.Id_Planning_Events_TempsReel,
+                  Id_Planning_Events: data.Id_Planning_Events,
+                  DateDebutTheo:dateDebutTheo,
+                  DateFinTheo:dateFinTheo
               }
               console.log(newWorkorderTempsReelEvent, "newWorkorderTempsReelEvent")
               this.timelineResourceDataOut.push(newWorkorderTempsReelEvent);
@@ -1251,7 +1281,7 @@ import {
       })
    
       }
-  
+
       createTooltipWorkorder() {
           let nameService = false
           this.libGroupe.map(libelle => {
@@ -1275,6 +1305,7 @@ import {
                 
             }
              )
+
               let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
                   numepisode = this.timelineResourceDataOut[i].numepisode,
                   dureecommerciale = this.timelineResourceDataOut[i].dureecommerciale,
@@ -1282,17 +1313,20 @@ import {
                   libchaine = this.timelineResourceDataOut[i].libchaine,
                   coordinateurCreate = this.timelineResourceDataOut[i].coordinateurCreate,
                   Operateur = this.timelineResourceDataOut[i].Operateur,
-                  statut = this.libelleStatut
-                  
+                  statut = this.libelleStatut,
+                  DateDebutTheo=this.timelineResourceDataOut[i].DateDebutTheo,
+                  DateFinTheo=this.timelineResourceDataOut[i].DateFinTheo
+                 
               
               this.temp = '<div class="tooltip-wrap">' +
                   '<div class="tooltip-wrap">' +
                   '${if( titreoeuvre != null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" >   Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${typetravail} <br> Libellé chaine : &nbsp; ${libchaine}  <br> Libellé WorkOrder : &nbsp; ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} <br> Statut :&nbsp; ${Statut} </>  </>  </div> ${/if}' +
                   '${if(   Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null)}<div> Description : &nbsp; ${Commentaire_Planning}  </>  </div> ${/if}' +
                   '${if (AzaIsPere  ) }<div class="time"> Titre: &nbsp;${Name} <br>  Coordinateur: &nbsp; ${coordinateurCreate}  </div> ${/if}' +
-                  '${if (AzaIsPere && Operateur != null && Operateur !== "" && Operateur !== undefined ) }<div class="time">Opérateur:&nbsp;${Operateur} </div> ${/if}' +
+                  '${if (AzaIsPere && Operateur != null && Operateur !== "" && Operateur !== undefined ) }<div class="time">Opérateur:&nbsp;${Operateur} </div> ${/if}' + 
                   '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
-                  '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
+                  '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ' +
+                  '${if (!AzaIsPere && isTempsReel === 1 ) }<div class="time">Début théorique &nbsp;:&nbsp; ${DateDebutTheo.toLocaleString()} <br>Fin théorique &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${DateFinTheo.toLocaleString()} </div> ${/if}';
   
           }
       }
@@ -1341,7 +1375,7 @@ import {
                       libtypeWO:workOrder.libtypeWO,
                       Commentaire_Planning: workOrder.Commentaire_Planning,
                       IdGenerationWO:workOrder.IdGenerationWO,
-                      isTempsReel:false,
+                      isTempsReel:0,
                       IsReadonly: false,
                       Id_Planning_Events_TempsReel:0
                   });
@@ -1399,7 +1433,7 @@ import {
                   this.allDataContainers = this.allDataContainers.filter(container => container.Id_Planning_Container !== id);
                   console.log('this.allDataContainers after delete container : ', this.allDataContainers);
                   this.timelineResourceDataOut.forEach(item => {
-                      if ((+event.AzaNumGroupe === +item.AzaNumGroupe) && !item.AzaIsPere) {
+                      if ((+event.AzaNumGroupe === +item.AzaNumGroupe) && !item.AzaIsPere && item.isTempsReel ===0) {
                           if (!this.field['dataSource'].includes(item)) {
                               this.updateWorkorderBackToBacklog(item, event);
                           }
@@ -1439,7 +1473,7 @@ import {
                       event.AzaNumGroupe = res.Id_Planning_Container;
                       console.log('event after post and update id')
                       containerToCreate.Id_Planning_Container = res.Id_Planning_Container;
-                      let workorderEventToUpdate = this.creationArray.filter(item => !item.AzaIsPere);
+                      let workorderEventToUpdate = this.creationArray.filter(item => !item.AzaIsPere && item.isTempsReel ===0);
                       console.log('workorderEventToUpdate=> ',workorderEventToUpdate);
                       console.log('this.creationArray => ', this.creationArray);
                       if (workorderEventToUpdate.length > 0) {
@@ -1467,7 +1501,7 @@ import {
                                   Commentaire_Planning: item.Commentaire_Planning,
                                   IdGenerationWO: item.IdGenerationWO,
                                   libtypeWO: item.libtypeWO,
-                                  isTempsReel:false,
+                                  isTempsReel:0,
                                   IsReadonly: false,
                                   Id_Planning_Events_TempsReel:0
                               };
@@ -1554,7 +1588,8 @@ import {
               Commentaire_Planning: event.Commentaire_Planning,
               DateMaj: now,
               UserMaj: libelleRessourceCoordinateur,
-              PlanningEventsList: null
+              PlanningEventsList: null,
+              isTempsReel:0,
           };
           console.log('nouveau container fot api request : ', newContainer);
           console.log(event);
@@ -1632,7 +1667,8 @@ import {
               UserMaj: this.user.shortUserName,
               PlanningEventsList: null,
               DepartmentID:codeRessourceSalle,
-              IsReadonly:false
+              IsReadonly:false,
+              isTempsReel:0,
           };
           this.putContainer(newContainer.Id_Planning_Container, newContainer, event);
       }
@@ -1707,7 +1743,7 @@ import {
                           console.log('timelineResourceDataOut with new item => ', this.timelineResourceDataOut);
                       }}
                   })
-                  let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere);
+                  let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel ===0);
                   
             
                    
@@ -1838,8 +1874,8 @@ import {
           // this.startofDay = moment(newStartOfDay).toDate();
           // if (this.scheduleObj['activeView'].renderDates[0] === container.st )
           let timelineDataOut = this.timelineResourceDataOut;
-          let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && !item.isTempsReel);
-          let workorderFromLastTime = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && !item.isTempsReel);
+          let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel===0);
+          let workorderFromLastTime = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel===0);
           console.log('workorderEventToUpdate => ', workorderEventToUpdate);
           let numberOfWorkorder = workorderEventToUpdate.length;
           if (workorderEventToUpdate.length > 0) {
@@ -1934,7 +1970,7 @@ import {
               fin: workorderSelected.fin,
               dureeestime: workorderSelected.dureeestime,
               idwoprec: workorderSelected.idwoprec,
-              isTempsReel:false,
+              isTempsReel:0,
               IsReadonly:false,
               Id_Planning_Events_TempsReel:0
           }
@@ -2040,7 +2076,7 @@ import {
               fin: workorderSelected.fin,
               dureeestime: workorderSelected.dureeestime,
               idwoprec: workorderSelected.idwoprec,
-              isTempsReel:false,
+              isTempsReel:0,
               IsReadonly:false,
               Id_Planning_Events_TempsReel:0
   
@@ -2104,7 +2140,7 @@ import {
           let now = moment().format('YYYY-MM-DDTHH:mm:ss');
           let workorderResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id );
           let workorderSelected = workorderResult[0];
-          let otherWorkorderExistForCOntainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere &&  !item.isTempsReel);
+          let otherWorkorderExistForCOntainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere &&  item.isTempsReel===0);
           console.log('otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
           let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
           let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
@@ -2137,7 +2173,7 @@ import {
               );
               console.log('provisionalTimelineDataOut => ', provisionalTimelineDataOut);
               console.log(event.Id);
-              let eventNewDates = provisionalTimelineDataOut.filter(item => item['AzaNumGroupe'] === event.AzaNumGroupe && !item['AzaIsPere'] && !item['isTempsReel']);
+              let eventNewDates = provisionalTimelineDataOut.filter(item => item['AzaNumGroupe'] === event.AzaNumGroupe && !item['AzaIsPere'] && item['isTempsReel']===0);
               console.log(eventNewDates);
               for (let i = 0; i < eventNewDates.length; i++) {
                   console.log(eventNewDates[i]);
@@ -2184,7 +2220,7 @@ import {
                   fin: workorderSelected.fin,
                   dureeestime: workorderSelected.dureeestime,
                   idwoprec: workorderSelected.idwoprec,
-                  isTempsReel:false,
+                  isTempsReel:0,
                   IsReadonly:false,
                   Id_Planning_Events_TempsReel:0
               }
@@ -2296,7 +2332,7 @@ import {
               fin: workorder.fin,
               dureeestime: workorder.dureeestime,
               idwoprec: workorder.idwoprec,
-              isTempsReel:false,
+              isTempsReel:0,
               IsReadonly:false,
               Id_Planning_Events_TempsReel:0
           }
@@ -2316,7 +2352,7 @@ import {
           let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id);
           console.log(this.allDataWorkorders);
           let workorderSelected = workorderResult[0];
-          let othersWorkorderForContainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere && !item.isTempsReel);
+          let othersWorkorderForContainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere && item.isTempsReel===0);
           if (othersWorkorderForContainer.length <= 0) {
               swal({
                   title: 'Supprimer le container associé',
@@ -2414,7 +2450,7 @@ import {
               fin: workorderSelected.fin,
               dureeestime: workorderSelected.dureeestime,
               idwoprec: workorderSelected.idwoprec,
-              isTempsReel:false,
+              isTempsReel:0,
               IsReadonly: false,
               Id_Planning_Events_TempsReel:0
           }
@@ -2452,7 +2488,7 @@ import {
                       console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
                       console.log(event.Id);
                       let containerParent = this.allDataContainers.filter(item => item.Id_Planning_Container === containerPere.Id);
-                      let eventNewDates = this.timelineResourceDataOut.filter(item => item['AzaNumGroupe'] === containerPere.Id && !item['AzaIsPere'] && !item["isTempsReel"]);
+                      let eventNewDates = this.timelineResourceDataOut.filter(item => item['AzaNumGroupe'] === containerPere.Id && !item['AzaIsPere'] && item["isTempsReel"]===0);
                       console.log(eventNewDates);
                       for (let i = 0; i < eventNewDates.length; i++) {
                           console.log(eventNewDates[i]);
@@ -2507,7 +2543,7 @@ import {
               fin: selectedItem.fin,
               dureeestime: selectedItem.dureeestime,
               idwoprec: selectedItem.idwoprec,
-              isTempsReel:false,
+              isTempsReel:0,
               IsReadonly: false,
               Id_Planning_Events_TempsReel:0
           };
@@ -2595,7 +2631,7 @@ import {
               fin: workorder.fin,
               dureeestime: workorder.dureeestime,
               idwoprec: workorder.idwoprec,
-              isTempsReel:false,
+              isTempsReel:0,
               IsReadonly: false,
               Id_Planning_Events_TempsReel:0
           }
@@ -2733,6 +2769,7 @@ import {
   
       public lastAllDataContainers;
       public lastAllDataWorkorders;
+      public argsOnNavigating
   
      /***** refresh backlog********* */
   public lastTimelineResourceDataOut = [];
@@ -2743,6 +2780,7 @@ import {
           console.log('this.timelineResourceDataOut before reset => ', this.timelineResourceDataOut);
           console.log("this.scheduleObj.getEvents() before reset =>",this.scheduleObj.getEvents())
           console.log("this.scheduleObj.eventsProcessed() before reset =>",this.scheduleObj.eventsProcessed)
+          this.argsOnNavigating = args
           this.lastTimelineResourceDataOut = this.timelineResourceDataOut;
           this.lastAllDataContainers = this.allDataContainers;
           this.lastAllDataWorkorders = this.allDataWorkorders;
@@ -2757,7 +2795,7 @@ import {
       
           this.navigation = true
           // this.refreshWorkordersBacklog()
-  
+    
       
           // this.newTreeObj = this.treeObj;
           // this.treeObj.destroy();
@@ -2818,6 +2856,7 @@ import {
           /** readonly management **/
           if ((args.currentView === 'TimelineWeek') || (args.currentView === 'TimelineDay') || (args.currentView === 'MonthAgenda')) {      
               this.scheduleObj.readonly = false
+              this.scheduleObj.rowAutoHeight = true
               if (this.isnotMyGroup == true) {
                   this.scheduleObj.readonly = true
               } else {
@@ -2825,6 +2864,7 @@ import {
               }
           } else if (args.currentView === 'TimelineMonth' || args.currentView === 'Agenda') {
               this.scheduleObj.readonly = true
+              this.scheduleObj.rowAutoHeight = false
               if (args.action === 'date') {
                   this.scheduleObj.readonly = true
                   console.log('this.scheduleObj.readonly => ', this.scheduleObj.readonly)
@@ -2832,10 +2872,11 @@ import {
           }
           // TIMELINEDAY
           if ((args.currentView === 'TimelineDay') || (args.currentView == undefined && (this.scheduleObj.currentView === 'TimelineDay'))) {
-              this.valueMax = 60
+            //   this.valueMax = 60
+          
               if(this.value <this.valueMax){
-                  scheduleElement[0]['style'].zoom =this.valueMax.toString() +"%"
-                  this.value = 60
+                //   scheduleElement[0]['style'].zoom =this.valueMax.toString() +"%"
+                //   this.value = 60
                   console.log("value zoom ",scheduleElement[0]['style'].zoom )
               }
               console.log( 'TimelineDay first call condition width management value');  
@@ -2844,6 +2885,9 @@ import {
               // this.valueAdd = 10       
               this.intervalData = ['10', '20', '30', '40', '50', '60'];
               this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValueDay as string, 10), slotCount: 2 }
+              if(this.intervalChanged){
+              this.scheduleObj.timeScale.interval = this.value 
+            }
               console.log('TIMELINEDAY !!!! => date contition');
               this.refreshDateStart = this.startofDay;
               this.refreshDateEnd = this.endofDay;
@@ -2859,7 +2903,7 @@ import {
                   );
                   let debut = moment(this.startofDay).format('YYYY-MM-DD').toString();
                   let fin = moment(this.endofDay).format('YYYY-MM-DD').toString();
-                  this.getWorkorderTempsReelByIdGroupeStartDateEndDate(   this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
+                  this.getWorkorderTempsReelByIdGroupeStartDateEndDate(this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
               });
               this.scheduleObj.refreshEvents();
               console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);    
@@ -2868,12 +2912,15 @@ import {
           } else if ((args.currentView === 'TimelineWeek') || (args.currentView == undefined && (this.scheduleObj.currentView === 'TimelineWeek'))) {        
               console.log(this.disableNavigation,"disablenavig")
               console.log( 'TimelineWEEK first call condition width management value');
-              this.valueMax = 60
+            //   this.valueMax = 60
               // this.value = parseInt(this.intervalValue as string, 10)
               // this.valueMax = 240
               // this.valueAdd = 60       
               this.intervalData = ['10', '20', '30', '40', '50','60', '120'];
               this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValue as string, 10), slotCount: 1 }
+              if(this.intervalChanged){
+                this.scheduleObj.timeScale.interval = this.value 
+              }
               this.timelineResourceDataOut = []
               console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
               this.refreshDateStart = this.startofWeek;
@@ -2896,13 +2943,14 @@ import {
               this.scheduleObj.refreshEvents();
               console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
               console.log("this.scheduleObj.getEvents() =>",this.scheduleObj.getEvents() , this.scheduleObj.eventsProcessed)
+            
           // TIMELINEMONTH
           } else if ((args.currentView === 'TimelineMonth') || (args.currentView == undefined && (this.scheduleObj.currentView === 'TimelineMonth'))){     
-              this.valueMax = 80
-              if(this.value <this.valueMax){
-                  scheduleElement[0]['style'].zoom =this.valueMax.toString() +"%"
-                  this.value = this.valueMax
-              }
+            //   this.valueMax = 80
+            //   if(this.value <this.valueMax){
+            //     //   scheduleElement[0]['style'].zoom =this.valueMax.toString() +"%"
+            //       this.value = this.valueMax
+            //   }
               this.timelineResourceDataOut = [];
               console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
               this.refreshDateStart = this.startofMonth;
@@ -3005,19 +3053,19 @@ import {
       onEventRendered(args: EventRenderedArgs): void {
           let couleur
           let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-          scheduleElement[0]['style'].zoom =this.value.toString() +"%"
+          scheduleElement[0]['style'].zoom ="90"+"%"
           if (args.data.AzaIsPere) {
               return;
           } else {
               this.statutWorkorder.map(statut => {
-                  if (args.data.Statut === statut["Code"] && !args.data.isTempsReel) {
+                  if (args.data.Statut === statut["Code"] && args.data.isTempsReel ===0) {
                       couleur = statut['Color']
                   }
   
-                  if( args.data.Statut === statut["Code"] && args.data.isTempsReel){
-                      args.element.style.borderBottomColor  = statut['Color'] 
-                      args.element.style.borderBottomWidth = "5px"
-                      couleur = "#FFEBCD"
+                  if( args.data.Statut === statut["Code"] && args.data.isTempsReel===1){
+                      args.element.style.borderTopColor =  "#FFEBCD"
+                      args.element.style.borderTopWidth = "5px"
+                      couleur = statut['Color'] 
            
                   }
               })
@@ -3058,6 +3106,7 @@ import {
           let workOrders = [];
           // this.filtre = true
           // this.zoom = true
+        
           console.log(args);
           // if (args.type === 'EventContainer') {
           //     args.data.element.innerText = `Plus`;
@@ -3073,7 +3122,8 @@ import {
           //         console.log(this.scheduleObj);
           //     }
           // }
-          this.hourContainer =  moment(args.data['StartTime']).add(1,"hour").format('HH:mm')
+          this.hourContainer =  moment(args.data['StartTime']).format('HH:mm')
+          console.log(this.hourContainer)
           if (args.type === 'QuickInfo') {
             this.statutWorkorder.map(statut => {
                 if (args.data.Statut == statut['Code']) {
@@ -3121,8 +3171,13 @@ import {
           if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
               if (args.data.AzaIsPere) {
                   this.timelineResourceDataOut.map(item => {
-                      if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === false) {
+                      if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
                           workOrders.push(item);
+                          if(item.Statut === 10 || item.Statut === 6 ){
+                 
+                            args.cancel = true
+                            console.log(args, "==> statut")
+                           }
                       }
                   });
                   let row: HTMLElement = createElement('div', {
@@ -3159,12 +3214,12 @@ import {
                           console.log(child)
                       }, true);
                   }
-  
+                 
               } else {
                   let elementworkorder: HTMLElement = <HTMLElement>args.element.querySelector('.e-subject');
   
                   this.timelineResourceDataOut.map(item => {
-                      if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false  && !item.isTempsReel) {
+                      if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false  && item.isTempsReel===0) {
                           workOrders.push(item);
                       }
                   });
@@ -3172,8 +3227,11 @@ import {
                       // ${workOrders[i].typetravail}
                       elementworkorder.innerHTML = `<div class='e-subject e-text-ellipsis' style="color : black"> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode} </div>`
                   }
-  
-  
+                  if(args.data.Statut === 10 || args.data.Statut === 6){
+                 
+                 args.cancel = true
+                 console.log(args, "==> statut")
+                }
               }
           }
           if (args.data.name === 'cellClick') {
@@ -3232,7 +3290,7 @@ import {
                   let subTitle = document.getElementsByClassName('e-location-container');
                   subTitle[0]['style'].display = 'none';
   
-                  if (!args.data.AzaIsPere && !args.data.isTempsReel) {
+                  if (!args.data.AzaIsPere && args.data.isTempsReel===0) {
                       let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
                       let repeat = document.getElementsByClassName('e-editor');
                       let title = document.getElementsByClassName('e-subject-container');
@@ -3249,7 +3307,7 @@ import {
                       repeat[0]['style'].display = 'none';
                   }
               }
-              if (!args.data.AzaIsPere && !args.data.isTempsReel) {
+              if (!args.data.AzaIsPere && args.data.isTempsReel===0) {
                   let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
                   let repeat = document.getElementsByClassName('e-editor');
                   let title = document.getElementsByClassName('e-subject-container');
@@ -3270,6 +3328,11 @@ import {
                   repeat[0]['style'].display = 'none';
                   console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
                  this.updateWO = true
+                 if(args.data.Statut === 10 || args.data.Statut === 6){
+                 
+                    args.cancel = true
+                    console.log(args, "==> statut")
+                   }
               } else {
                   let subTitle = document.getElementsByClassName('e-location-container');
                   let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
@@ -3342,9 +3405,11 @@ import {
                       regie[0]['style'].display = 'block';
                       console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
                   } else { // dblclick workorder
+                    if(containerOperateur[0].parentNode != undefined){
                       containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
+                    }
                       console.log("edit click")
-                      if (!args.data.AzaIsPere && !args.data.isTempsReel) {
+                      if (!args.data.AzaIsPere && args.data.isTempsReel===0) {
                           let isAllDay = document.getElementsByClassName('e-all-day-time-zone-row');
                           let repeat = document.getElementsByClassName('e-editor');
                           let title = document.getElementsByClassName('e-subject-container');
@@ -3426,14 +3491,36 @@ import {
               }
               this.openEditorCount = 1;
               this.eventClick = false;
+              this.timelineResourceDataOut.map(item => {
+                if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
+                  
+                    if(item.Statut === 10 || item.Statut === 6 ){
+           
+                      args.cancel = true
+                      console.log(args, "==> statut")
+                     }
+                }
+            });
           } else if ((args.type === 'Editor') && this.checkIfContainerAlreadyExists(args)) {
               console.log('this.checkIfContainerAlreadyExists(args); => ', this.checkIfContainerAlreadyExists(args));
               args.cancel = true;
+              this.timelineResourceDataOut.map(item => {
+                if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
+                  
+                    if(item.Statut === 10 || item.Statut === 6 ){
+           
+                      args.cancel = true
+                      console.log(args, "==> statut")
+                     }
+                }
+            });
           }
           if (args.target != undefined && (args.target.classList.value === "e-header-cells e-current-day" || args.target.classList.value === "e-header-cells")) {
               args.data.cancel = true;
               args.cancel = true;
-              console.log(args, "-----------------------------------")
+
+              console.log(args, this.argsOnNavigating ,"-----------------------------------")
+            
           }
       }
   
@@ -3517,21 +3604,22 @@ import {
       /********************** DRAG AND DROP M1ANAGEMENT ***********************/
   
       onDragStart(args: DragEventArgs): void {
+        if(!args.data['AzaIsPere']  ) {
+            args.cancel = true
+        }
           args.interval = 5; // drag interval time is changed to 10 minutes
           console.log('onDragStart args =======> ', args);
           // args.navigation = { enable: true, timeDelay: 2000 };
           // args.scroll.enable = false;
        
-         if(!args.data['AzaIsPere']) {
-             args.cancel = true
-         }
+       
       }
   
       onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
           event.interval = 5;
           this.disabledrefresh = true
           console.log('onItemDrag event ==> ', event)
-          
+        //   dropIndicator: "e-drop-out"
           if(event.name === 'nodeDragging') {
               console.log('nodeDragging event => ', event)
               this.tabInstance.select(tabIndex);
@@ -3546,6 +3634,7 @@ import {
                   }
               }
           }
+     
       }
   
       public onTreeDragStartCountDevTool = 0;
@@ -3566,7 +3655,7 @@ import {
   
       onTreeDragStop(event: DragAndDropEventArgs): void {
           console.log(event)
-          if(event.name === "nodeDragStop"){
+          if(event["name"]=== "nodeDragStop"){
               this.disabledrefresh = false
               console.log("tree drag stop")
           }
@@ -3603,7 +3692,8 @@ import {
                           AzaNumGroupe: this.lastRandomId,
                           coordinateurCreate: this.user.initials,
                           Operateur: '',
-                          IsReadonly : false
+                          IsReadonly : false,
+                          isTempsReel:0,
                                           };
                       console.log(filteredData[0], 'filteredData[0]');
                       let eventData: { [key: string]: Object } = { // DISPLAY DATA FOR EVENT
@@ -3628,7 +3718,7 @@ import {
                           Commentaire_Planning: filteredData[0].Commentaire_Planning,
                           libtypeWO: filteredData[0].libtypeWO,
                           IdGenerationWO: filteredData[0].IdGenerationWO,
-                          isTempsReel:false,
+                          isTempsReel:0,
                           IsReadonly : false,
                           Id_Planning_Events_TempsReel:0
                       };
@@ -3704,7 +3794,7 @@ import {
                               libtypeWO: filteredDataW[0].libtypeWO,
                               Commentaire_Planning: filteredDataW[0].Commentaire_Planning,
                               IdGenerationWO: filteredDataW[0].IdGenerationWO,
-                              isTempsReel:false,
+                              isTempsReel:0,
                               IsReadonly : false,
                               Id_Planning_Events_TempsReel:0
                           };
@@ -3739,7 +3829,7 @@ import {
   
       onTreeDragStopMonteur(event: DragAndDropEventArgs): void {
           console.log(event)
-          if(event.name === "nodeDragStop"){
+          if(event["name"] === "nodeDragStop"){
               this.disabledrefresh = false
               console.log("tree drag stop")
           }
@@ -3778,7 +3868,8 @@ import {
                           AzaNumGroupe: filteredData[0].CodeRessource,
                           Operateur: filteredData[0].Username,
                           coordinateurCreate: this.user.initials,
-                          IsReadonly : false
+                          IsReadonly : false,
+                          isTempsReel:0,
                       };
                       console.log('création array ==============', this.creationArray);
                       // this.timelineResourceDataOut.push(containerData); // filteredData[0]
@@ -3815,7 +3906,8 @@ import {
                               AzaNumGroupe: filteredData[0].CodeRessource,
                               Operateur: filteredData[0].Username,
                               coordinateurCreate: this.user.initials,
-                              IsReadonly : false
+                              IsReadonly : false,
+                              isTempsReel:0,
                           };
                           this.timelineResourceDataOut.push(containerData); // filteredData[0]
                           this.scheduleObj.openEditor(containerData, 'Add', true);
@@ -3839,7 +3931,8 @@ import {
   
       /*********************** ACTION BEGIN FUNCTION *********************/
       public containerParent;
-    public firstZoom = 0 
+    public firstZoom = 0 ;
+    public argsOnActionBegin
       onActionBegin(event: ActionEventArgs): void {
           this.containerParent = {};
           console.log('onActionBegin()');
@@ -3847,7 +3940,7 @@ import {
           console.log(this.scheduleObj.currentView)
           console.log(this.isTreeItemDropped);
           console.log(this.scheduleObj, '====== scheduleobj');
-        
+        this.argsOnActionBegin = event
           // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
           //     console.log('is not pere');
           // } 
@@ -3964,7 +4057,8 @@ import {
                               Commentaire_Planning: event.data[0].Commentaire_Planning,
                               CodeRessourceSalle: event.data[0].CodeRessourceSalle,
                               LibelleRessourceSalle: event.data[0].LibelleRessourceSalle,
-                              IsReadonly : false
+                              IsReadonly : false,
+                              isTempsReel:0,
                           };
                           this.containerParent = newItemContainerAfterEditorUpdate;
                           console.log('newItemContainerAfterEditorUpdate', newItemContainerAfterEditorUpdate);
@@ -4005,7 +4099,8 @@ import {
                           coordinateurCreate: item.coordinateurCreate,
                           Operateur: event.data[0].Operateur === 'Aucun Opérateur' ? '' : event.data[0].Operateur,
                           Commentaire_Planning: event.data[0].Commentaire_Planning,
-                          IsReadonly : false
+                          IsReadonly : false,
+                          isTempsReel:0,
                       };
                       console.log('newItemContainerFromMonteurAfterEditorUpdate ==== ', newItemContainerFromMonteurAfterEditorUpdate);
                       // this.timelineResourceDataOut.push(newItemContainerFromMonteurAfterEditorUpdate);
@@ -4024,7 +4119,7 @@ import {
           }
           // console.log('customActionBegin()');
           // this.customActionBegin(event); 
-      
+     
       }
   
       customActionBegin(args: any) { // CUSTOM ACTION BEGIN
@@ -4086,7 +4181,8 @@ import {
                   coordinateurCreate: this.user.initials,
                   Operateur: data.Operateur === 'Aucun Opérateur' ? '' : data.Operateur,
                   Commentaire_Planning: data.Commentaire_Planning,
-                  IsReadonly : false
+                  IsReadonly : false,
+                  isTempsReel:0,
   
               };
               this.createContainer(containerData);
@@ -4148,11 +4244,11 @@ import {
           }
   
           if (e.requestType === 'eventChanged') {
-              if (e.data.AzaIsPere || (!e.data.AzaIsPere && this.isTreeItemDropped)) {
+              if (e.data.AzaIsPere || (!e.data.AzaIsPere && e.data.isTempsReel ===0 && this.isTreeItemDropped)) {
                   console.log("************************************************* onaction complete : update container");
                   this.updateContainer(e);
               } else {
-                  if (!e.data.AzaIsPere && this.updateWO) {
+                  if (!e.data.AzaIsPere && e.data.isTempsReel ===0 && this.updateWO) {
                       console.log("************************************************* onaction complete : update WorkOrder",e);
                      
                       this.updateWorkOrder(e)
@@ -4169,7 +4265,7 @@ import {
                   this.sidebar.position = 'Right';
                   this.sidebar.animate = false;
               }
-              // this.updateContainer(e);
+              // this.updateContainer(e); 
           }
           if (this.drowDownExist) {
               this.drowDownOperateurList.value = null;
@@ -4214,12 +4310,7 @@ import {
               };
               console.log('this.eventSettings ==> ', this.eventSettings);
           }
-          if( (this.timelineResourceDataOut.length === 0 && e.requestType === 'dateNavigate') ){
-              console.log("pas d'event sur cette date", )
-              let toolbar = document.getElementsByClassName('e-toolbar-items');
-              for(let i =0; i<toolbar.length; i++){
-                      toolbar[i]["style"].display = 'block'
-          }}
+        
          
           this.treeObj.fields = this.field;
           this.isTreeItemDropped = false;
@@ -4907,14 +4998,27 @@ import {
       /*************************************************************************************** */
       onRenderCell(args: RenderCellEventArgs): void {
           if (this.scheduleObj.currentView == 'TimelineWeek') {
-              if (args.element.classList.contains('e-work-cells') && ((args.date.getDate() % 2) === 0)) {
+              if (args.element.classList.contains('e-work-cells') && ((args.date.getDay() % 2) != 0)) {
                   args.element['style'].background = '#E5FCFD';
              
               }
+              if (args.element.classList.contains('e-work-cells') && (args.date.getDay() === 0)){
+                args.element['style'].background = '#E5FCFD';
+              }
 
+              if(args.elementType === "dateHeader") {
+            
+            
+            }
+          
           }
-         
-     
+    //  if(this.scheduleObj.currentView == 'TimelineMonth'){
+    //     if(args.elementType === "dateHeader") {
+           
+    //       console.log(args)
+    //     }
+    //  }
+
           if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
               let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
               if (this.scheduleObj.readonly == false) {
@@ -4923,7 +5027,7 @@ import {
                   target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
               }
           }
-          if(this.timelineResourceDataOut.length === 0){
+          if(this.timelineResourceDataOut.length === 0 || this.isnotMyGroup === true){
             let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
             
               scheduleElement[0]['style'].zoom = "90%"
@@ -4932,7 +5036,9 @@ import {
           //     // args.element['style'].height = '160px' || args.element.classList.contains('e-work-cells ')
           //        console.log(args.element['style'].height)
           // }
-    
+        
+  
+  
       }
       
   
@@ -4941,19 +5047,27 @@ import {
          console.log(this.scheduleObj,"this.scheduleObj..................")
        args.interval = 5
       }
-      // public valueCellTemplateArgs : CellTemplateArgs 
+      onChange() {
+        let predicate: Predicate;
+        let checkBoxes: CheckBoxComponent[] = [this.reel, this.theorique];
+        checkBoxes.forEach((checkBoxObj: CheckBoxComponent) => {
+            if (checkBoxObj.checked) {
+                if (predicate) {
+                    predicate = predicate.or('isTempsReel', 'equal', parseInt(checkBoxObj.value, 10));
+                } else {
+                    predicate = new Predicate('isTempsReel', 'equal', parseInt(checkBoxObj.value, 10));
+                }
+            }
+        });
+        this.scheduleObj.eventSettings.query = new Query().where(predicate);
+    }
+    onCreated(args:Object) {
+    
+        
+        let time: string = moment().format('HH:mm'); 
+        this.scheduleObj.scrollTo(time);
+        console.log(args,"on created !!!!!!!!!")
+      }
+   
   
-      // getMonthDetails(value: CellTemplateArgs): string {
-      //     return this.instance.formatDate((value as CellTemplateArgs).date, { skeleton: 'yMMMM' });
-      // }
-      // getWeekDetails(value: CellTemplateArgs): string {
-  
-      //     return 'semaine ' + getWeekNumber((value as CellTemplateArgs).date);
-          
-      // }
-  
-      //  getDateHeaderText: Function = (value: Date) => {
-      
-      //     return this.instance.formatDate(value, { skeleton: 'Ed' });
-      // };
   }

@@ -63,7 +63,17 @@
                                 </div>
                             </td>
                            
+                  
+                            <td >
+                                <ejs-checkbox  #reel cssClass="reel" label="Temps réel" value="1" [checked]="true" (change)="onChange()">
+                                </ejs-checkbox>
+                            </td>
+                            <td >
+                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps théorique" value="0" [checked]="true" (change)="onChange()">
+                                </ejs-checkbox>
+                            </td>
                         </tr>
+                     
                     </tbody>
                 </table>
             </div>
@@ -87,6 +97,8 @@
                     (renderCell)="onRenderCell($event)"
                     (navigating)="onNavigating($event)"
                     (resizeStart)="onResizing($event)"
+                    (created)="onCreated($event)"
+                    
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
                     (change)="onChange($event)"
@@ -128,15 +140,16 @@
                                             <!-- <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div> -->
                                             <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
                                             <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                            <div *ngIf="data.Operateur" class="mt-1 mb-2 operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000','background-color': user.initials === data.coordinateurCreate ? '#17AAB2' : '#f5d8fa'}">{{data.Operateur}}</div>
+                                            <div *ngIf="data.Operateur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
                                         <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                         
                                             <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
-                                            <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
+                                            <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br>
                                             <span *ngIf="nameService != '1'" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -154,13 +167,15 @@
                                                 <!-- <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div> -->
                                                 <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }}/ <span  >{{data.coordinateurCreate}}</span> </u> <br>
                                                 <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                                <div *ngIf="data.Operateur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000','background-color': user.initials === data.coordinateurCreate ? '#17AAB2' : '#f5d8fa'}">{{data.Operateur}}</div>
+                                                <div *ngIf="data.Operateur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
                                                 <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                     class="float-right  fixed mr-1"> -->
                                             </div>
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
-                                                <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span>
-                                                <span *ngIf="nameService != '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                                <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br>
+                                                <span *ngIf="nameService != '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span><br>
+                                                
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -192,7 +207,7 @@
                                    
                                             <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} </u> <br> 
                                       
-                                            <div *ngIf="data.Operateur" class="operateur mt-1 " [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000','background-color': user.initials === data.coordinateurCreate ? '#17AAB2' : '#f5d8fa'}" >{{data.Operateur}}</div>
+                                            <div *ngIf="data.Operateur" class="operateur mt-1 " [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}" >{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
@@ -216,7 +231,8 @@
         
         </div>
     </div>
-        
+
+    
         
    <!--************************************** tabItem ***********************************************************************-->
    <div class="sidebar"  *ngIf="!isnotMyGroup " [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
@@ -331,7 +347,7 @@
             isToggle="true" 
             (click)="btnClickSlide()" 
             content="" 
-            class="btn btn-info float-right regie btn-backlog"
+            class="btn btn-info float-right regie btn-backlog "
             [ngStyle]="{'display':(scheduleObj.currentView =='TimelineMonth' ) ? 'none':'block'   }"
             [hidden]="hiderefresh"
             > 
@@ -343,4 +359,3 @@
         </div>
     </div>
 </div>  
-
