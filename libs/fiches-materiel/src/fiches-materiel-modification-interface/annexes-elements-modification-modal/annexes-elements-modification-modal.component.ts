@@ -266,15 +266,21 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
 
   displayNewObjectEAComments(annexElementsCategories) {
     this.newEAComments = [];
+    console.log('this.comments ==> ', this.comments);
+    console.log('annexElementsCategories ==> ', annexElementsCategories);
+    console.log('this.newEAComments ==> ', this.newEAComments);
     let categories = [];
     this.annexElementsCategories.map(item => {
       if (this.comments.length > 0) {
         this.comments.map(comment => {
           console.log(comment);
           if (comment.idLibCategorieElementsAnnexes === item.IdLibCategorieElementsAnnexes) {
+            console.log('comment idcategory same => ', comment);
             this.newEAComments.push(comment);
             categories.push(item.IdLibCategorieElementsAnnexes);
+            console.log('categories ===> ', categories);
           } else {
+            console.log(this.comments.includes(comment));
             if (!this.comments.includes(comment)) {
               this.newEAComments.push({
                 IdCategorieElementsAnnexesCommentaire: 0,
@@ -282,6 +288,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
                 IdFicheMateriel: this.allIdSelectedFichesMateriel[0].IdFicheMateriel,
                 Commentaire: ''
               });
+              console.log('comment idcategory different => ', comment);
             }
           }
       });
@@ -295,6 +302,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       // console.log('category without comment => ', item);
 
     }
+    console.log('COMMENT ALL AFTER change model ===============================================================> ', this.newEAComments);
     });
     this.annexElementsCategories.map(item => {
       if (!categories.includes(item.IdLibCategorieElementsAnnexes)) {
@@ -307,7 +315,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       }
      });
     this.comments = this.newEAComments;
-
+    console.log('changement de comments = ', this.comments)
     this.newComments.emit(this.newEAComments);
 
 
@@ -359,7 +367,12 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   public allComments = []; 
   public odlSameComments = [];
   displayOriginValuesEAComments(annexElementsCategories) { // ISCALL
+    console.log('sameEAComments => ', this.sameEAComments);
+    console.log('displayOriginValuesEAComments() call from action component ');
     this.originValuesEAComments = [];
+    console.log('this.comments ==> ', this.comments);
+    console.log('annexElementsCategories ==> ', annexElementsCategories);
+    console.log('this.newEAComments ==> ', this.newEAComments);
     this.sameEAComments.map(item => {
       this.odlSameComments.push({
         id: item.idLibCategorieElementsAnnexes,
@@ -372,6 +385,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     this.originValuesEAComments.map(e => {
       sameValueIdLibCategorieElementsAnnexes.push(e.idLibCategorieElementsAnnexes);
     });
+    console.log('sameValueIdLibCategorieElementsAnnexes => ', sameValueIdLibCategorieElementsAnnexes);
 
     this.annexElementsCategories.map(item => {
       if (!sameValueIdLibCategorieElementsAnnexes.includes(item.IdLibCategorieElementsAnnexes)) {
@@ -400,6 +414,10 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     this.sameEAComments.map(item => {
       this.allComments.push(item);
     });
+    console.log('this.sameEAComments => ', this.sameEAComments);
+    // this.comments = this.originValuesEAComments;
+    console.log('this.originValuesEAComments => ', this.originValuesEAComments);
+    console.log('allComments => ', this.allComments);
     this.newComments.emit(this.allComments);
   }
 
@@ -421,12 +439,18 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   checkIfDifferentOriginalComment(idCategory, value): boolean {
     let sameIdCategory = [];
     this.odlSameComments.map(item => {
+      console.log('item in originValueEAComments => ', item);
+      console.log('idCategory => ', idCategory);
       if (item.id === idCategory) {
+        console.log('id present in original comment => ', item);
+        console.log('item.Commentaire => ', item.value);
         if (value !== item.value) {
           sameIdCategory.push(item);
         }
       }
     });
+    console.log('sameIdCategory => ', sameIdCategory);
+    console.log('sameIdCategory.length ==> ', sameIdCategory.length);
     if (sameIdCategory.length > 0) {
       return true;
     } else {
@@ -435,6 +459,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   }
 
   returnToOriginalComment(idCategory, value) {
+    console.log('==============================> value => ', value);
     let koo;
     this.odlSameComments.map(item => {
       if (item.id === idCategory) {
