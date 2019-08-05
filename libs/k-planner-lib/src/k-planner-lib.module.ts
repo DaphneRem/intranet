@@ -36,6 +36,7 @@ import { HttpModule, JsonpModule } from '@angular/http';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LoadersModule } from '@ab/loaders';
+import { ErrorPagesModule } from '@ab/error-pages';
 
 @NgModule({
   imports: [
@@ -67,7 +68,8 @@ import { LoadersModule } from '@ab/loaders';
     LoadersModule,
     TooltipModule,
     ButtonModule,
-    ContextMenuModule
+    ContextMenuModule,
+    ErrorPagesModule
   ],
   declarations: [
     SchedulerComponent,

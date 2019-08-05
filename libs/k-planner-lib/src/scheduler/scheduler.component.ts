@@ -15,7 +15,7 @@
   import { App, User } from '../../../../apps/k-planner/src/app/+state/app.interfaces';
   import * as moment from 'moment';
   import swal from 'sweetalert2';
-  
+  import Swal from 'sweetalert2/dist/sweetalert2.js'
   import { Subject } from 'rxjs/Subject';
   import { takeUntil } from 'rxjs/operators';
   
@@ -32,7 +32,7 @@
       EJ2Instance
   } from "@syncfusion/ej2-navigations";
   import { DropDownList } from '@syncfusion/ej2-dropdowns';
-  import { ChangeEventArgs as DropDownChangeArgs } from '@syncfusion/ej2-angular-dropdowns';
+  import { ChangeEventArgs as DropDownChangeArgs, DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
   import { TimePickerComponent } from '@syncfusion/ej2-angular-calendars';
   // Syncfusion Angular
   import { ButtonComponent, ChangeEventArgs, CheckBoxComponent } from '@syncfusion/ej2-angular-buttons';
@@ -179,8 +179,12 @@
       public reel: CheckBoxComponent;
       @ViewChild('theorique') 
       public theorique: CheckBoxComponent;
+      @ViewChild('selectplan')
+      public listObj: DropDownListComponent;
+     @Input() isReady
+     @Input() itemCoordinateur
   
-  
+      
       private onDestroy$: Subject<any> = new Subject();
   
       public dataAllEventsReady = false;
@@ -196,7 +200,7 @@
       public rowAutoHeight: Boolean = true;
       public dataContainersByRessourceStartDateEndDate;
       public containerData: EventModel[] = [];
-      public workOrderData: EventModel[] = [];
+      public workOrderData: EventModel[] = [];  
       // public selectedDate: Date = new Date();
       public selectedDate: Date = moment().toDate();
       public data: EventModel[] = <EventModel[]>extend([], this.containerData, null, true);
@@ -242,7 +246,7 @@
       public startHour: string = '00:00';
       public endHour: string = '01:00';
       public timeScale: TimeScaleModel = { enable: true, interval: 60, slotCount: 2 };
-  
+   
       public colorStatut: Object[] = [
           { Id: 0, Color: '#e8e2ae' },
           { Id: 1, Color: '#e8e2ae' },
@@ -304,6 +308,8 @@
       public codegroupe;
       public libelleGroupe
       public filtermonteurListeArray;
+      public otherSchedule : string = "Autres plannings" ;
+      public sorting: string = 'Ascending';
       public addMonteur: boolean;
       public fieldArray = this.field['dataSource'];
       public isDragged: boolean;
@@ -312,6 +318,7 @@
       public count: number = 0;
       public groupeCharger: number;
       public workOrderColor: string;
+      public fieldsPlanning
       // public SelectDateDebut: Date = new Date();
       // public SelectDateFin: Date = new Date();
       public SelectDateDebut: Date = new Date(2019, 0, 1);
@@ -390,13 +397,15 @@
       ) {
           console.log('******* constructor start *******');
           this.isnotMyGroup = false;
-          this.storeAppSubscription();
-       
+          setTimeout(() => {
+            this.storeAppSubscription();
+          }, 50);
+             
           document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
               let btnrefresh = document.getElementById('btn-refresh');
               let btnrefreshWo = document.getElementById('btn-refreshWo');
               let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-             
+         
               if (eKey.keyCode === 115) {
              
   
@@ -424,7 +433,7 @@
   
            document.body.addEventListener('keyup', (eKey: KeyboardEvent) => {
             // let idSchedule  = document.getElementById('schedule');
-           
+          
             if (eKey.keyCode === 109   && this.value <= 180  ) {
                 // -------------------------------------------------           
               //   scheduleElement[0]['style'].zoom =this.value.toString() +"%"
@@ -464,10 +473,10 @@
          
             this.scheduleObj.scrollTo(this.hourContainer)  
      
-        }, 500);
+        }, 50);
         }
         }, true);
-  
+        
         
           console.log('******* constructor end *******');
       }
@@ -645,41 +654,63 @@
       // }
       public idCoordinateur
       public groupCoordinateur
+    //   getCoordinateurByUsername(Username) {
+    //       this.timelineResourceDataOut = [];
+    //       this.departmentGroupDataSource = [];
+    //       this.allDataContainers = [];
+    //       this.allDataWorkorders = [];
+    //       console.log('get Current Coordinateur');
+    //       let startofDay = moment().toDate()
+    //       let endofDay = moment().add(2, 'd').toDate();
+    //  console.log('COORDINATEUR => ',this.itemCoordinateur);
+    //               this.getSalleByGroup(this.idGroupeCoordinateur, startofDay, endofDay);
+    //               this.getMonteursByGroup(this.idGroupeCoordinateur);
+    //               this.getWorkOrderByidGroup(this.idGroupeCoordinateur);
+    //               this.getAllMonteurs(this.idGroupeCoordinateur);
+    //               this.currentCoordinateur = this.itemCoordinateur;
+    //               this.getLibGroupe(this.idGroupeCoordinateur)
+    //               this.groupCoordinateur =this.idGroupeCoordinateur
+              
+        
+  
+  
+    //   }
       getCoordinateurByUsername(Username) {
-          this.timelineResourceDataOut = [];
-          this.departmentGroupDataSource = [];
-          this.allDataContainers = [];
-          this.allDataWorkorders = [];
-          console.log('get Current Coordinateur');
-          let startofDay = moment().toDate()
-          let endofDay = moment().add(2, 'd').toDate();
-          this.coordinateurService.getCoordinateurByUsername(Username)
-              .subscribe(item => {
-                  console.log('COORDINATEUR => ', item);
-                  this.getSalleByGroup(item.Groupe, startofDay, endofDay);
-                  this.getMonteursByGroup(item.Groupe);
-                  this.getWorkOrderByidGroup(item.Groupe);
-                  this.getAllMonteurs(item.Groupe);
-                  this.currentCoordinateur = item;
-                  this.getLibGroupe(item.Groupe)
-                  this.groupCoordinateur = item.Groupe
-              });
-  
-  
-      }
-  
+        this.timelineResourceDataOut = [];
+        this.departmentGroupDataSource = [];
+        this.allDataContainers = [];
+        this.allDataWorkorders = [];
+        console.log('get Current Coordinateur');
+        let startofDay = moment().toDate()
+        let endofDay = moment().add(2, 'd').toDate();
+     
+               
+              
+                    console.log('COORDINATEUR => ', this.itemCoordinateur);
+                this.getStatut()
+                this.getSalleByGroup(this.itemCoordinateur.Groupe, startofDay, endofDay);
+                this.getMonteursByGroup(this.itemCoordinateur.Groupe);
+                this.getWorkOrderByidGroup(this.itemCoordinateur.Groupe);
+                this.getAllMonteurs(this.itemCoordinateur.Groupe);
+                this.currentCoordinateur = this.itemCoordinateur;
+                this.getLibGroupe(this.itemCoordinateur.Groupe)
+                this.groupCoordinateur = this.itemCoordinateur.Groupe
+   
+           
+
+    }
   
       storeAppSubscription() {
           this.store
               .pipe(takeUntil(this.onDestroy$))
               .subscribe(data => {
                   console.log(data);
-                  this.user = data["app"].user;
+                  this.user = data["app"].user;            
                   console.log(this.user);
-              });
-              this.getCoordinateurByUsername(this.user.shortUserName);
-        
-  
+              });     
+                this.getCoordinateurByUsername(this.user.shortUserName);
+           
+           
       }
   
       onEventClick(e: ActionEventArgs) {
@@ -753,9 +784,8 @@
   
               })
               this.listeRegies = this.departmentGroupDataSource
-              this.getStatut()
-           
-        
+         
+               
       }
   
       getSalleAll(currentGroup, start, end) {
@@ -1250,7 +1280,7 @@
                   coordinateurCreate: data.LibelleRessourceCoordinateur,
                   Statut: data.Statut,
                   AzaIsPere: false,
-                
+                  AzaNumGroupe: data.Id_Planning_Container,
                   DepartmentID: data.CodeRessourceSalle,
                   ConsultantID: 2,
                   DepartmentName: '',
@@ -1402,7 +1432,7 @@
   
       getLibGroupe(id) {
           this.idCoordinateur = id
-          let libGroupe
+          let libGroupe 
           this.libGroupeService
           .getLibGroupe(id)
           .pipe(takeUntil(this.onDestroy$))
@@ -1414,9 +1444,9 @@
                       Code: donnees.Code
                   })
               })
-            
+              this.libGroupe.push({Libelle: "Mon Planning",Code: id  }) 
               })
-              
+              this.fieldsPlanning = { text: 'Libelle', value: 'Code' }
           console.log('............................', this.libGroupe)
           console.log(this.idCoordinateur, '################################ ID')
           
@@ -1440,7 +1470,7 @@
                       }
                   });
                   this.timelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
-                      if (+event.AzaNumGroupe !== +item.AzaNumGroupe) {
+                      if (+event.AzaNumGroupe !== +item.AzaNumGroupe  && item.isTempsReel ===0 ) {
                           return item;
                       }
                   });
@@ -1975,6 +2005,8 @@
               Id_Planning_Events_TempsReel:0
           }
           console.log("newWorkorder => ", newWorkorder);
+          let classWorkorder = document.getElementsByClassName("ng-star-inserted")
+          console.log(classWorkorder)
           this.workorderService
               .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
               .pipe(takeUntil(this.onDestroy$))
@@ -1982,7 +2014,7 @@
                   console.log('update workorder with success : ', res);
                   console.log(this.allDataWorkorders); // all brut workorder data in backlog
                   // LUNDI ====> AJOUTER UN REFRESH DES EVENEMENTS !!!!!!!!!!
-                  this.allDataWorkorders = this.allDataWorkorders.filter(item => item.Id !== newWorkorder.Id_Planning_Events);
+                  this.allDataWorkorders = this.allDataWorkorders.filter(item => item.Id !== newWorkorder.Id_Planning_Events && item.isTempsReel == 0 );
                   this.allDataWorkorders.push(newWorkorder);
                   console.log(this.allDataWorkorders);
                   console.log('this.scheduleObj.getEvents() ==> ', this.scheduleObj.getEvents());
@@ -2163,6 +2195,16 @@
           });
           if (otherWorkorderExistForCOntainer.length > 0) {
               console.log('otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
+              let checkIfCloture = false;
+              otherWorkorderExistForCOntainer.map(item =>{
+                  if(item.Statut === 10 || item.Statut === 6){
+                    checkIfCloture = true
+                  }else{
+                    checkIfCloture = false
+                  }
+              })
+              console.log(checkIfCloture,"checkIfCloture")
+         if(!checkIfCloture){
               let startDifferent = this.checkDiffExistById(containerParent, this.timelineResourceDataOut, 'StartTime', 'StartTime');
               let endDifferent = this.checkDiffExistById(containerParent, this.timelineResourceDataOut, 'EndTime', 'EndTime');
               this.timelineResourceDataOut.push(event);
@@ -2178,6 +2220,10 @@
               for (let i = 0; i < eventNewDates.length; i++) {
                   console.log(eventNewDates[i]);
                   this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent, provisionalTimelineDataOut);
+                  console.log(checkIfCloture,"checkIfCloture if")
+              }} else {
+                  this.refreshWorkordersBacklog()
+                  console.log(checkIfCloture,"checkIfCloture else")
               }
           } else {
               console.log('NO otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
@@ -2284,7 +2330,7 @@
           console.log('event ID ============> ', event.Id);
           console.log('this.allDataWorkorders -----> ', this.allDataWorkorders);
           console.log('this.WorkOrderByidgroup -----> ', this.WorkOrderByidgroup);
-          let workorderPlanningResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id);
+          let workorderPlanningResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id );
           let workorderBacklogResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id);
           if (workorderPlanningResult.length > 0) {
               workorder = workorderPlanningResult[0];
@@ -2349,7 +2395,7 @@
           console.log(containerPere);
           console.log('event workorder to transform in workorder data : ', event);
           let now = moment().format('YYYY-MM-DDTHH:mm:ss');
-          let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id);
+          let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id );
           console.log(this.allDataWorkorders);
           let workorderSelected = workorderResult[0];
           let othersWorkorderForContainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere && item.isTempsReel===0);
@@ -2369,7 +2415,7 @@
                               this.allDataContainers = this.allDataContainers.filter(container => container.Id_Planning_Container !== containerPere.Id);
                               console.log('this.allDataContainers after delete container : ', this.allDataContainers);
                               this.timelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
-                                  if (+event.AzaNumGroupe !== +item.AzaNumGroupe) {
+                                  if (+event.AzaNumGroupe !== +item.AzaNumGroupe  && item.isTempsReel ===0) {
                                       return item;
                                   }
                               });
@@ -2701,7 +2747,7 @@
                   //     enableTooltip: true, tooltipTemplate: this.temp
                   // };
                   this.updateWO = false;
-                  console.log("UPDATE WORKORDERS", this.updateWO)
+                  console.log(" this.updateWO ===> UPDATE WORKORDERS", this.updateWO)
               }, error => {
                   console.error('error updateworkorder', error);
                   console.log(event, "event")
@@ -2779,6 +2825,7 @@
           console.log('onNavigating(args) function => args.currentView ==> ', args.currentView);
           console.log('this.timelineResourceDataOut before reset => ', this.timelineResourceDataOut);
           console.log("this.scheduleObj.getEvents() before reset =>",this.scheduleObj.getEvents())
+          console.log("this.scheduleObj.getCurrentViewEvents before reset =>",this.scheduleObj.getCurrentViewEvents())
           console.log("this.scheduleObj.eventsProcessed() before reset =>",this.scheduleObj.eventsProcessed)
           this.argsOnNavigating = args
           this.lastTimelineResourceDataOut = this.timelineResourceDataOut;
@@ -2796,7 +2843,6 @@
           this.navigation = true
           // this.refreshWorkordersBacklog()
     
-      
           // this.newTreeObj = this.treeObj;
           // this.treeObj.destroy();
           // this.treeObj = this.newTreeObj;
@@ -2915,7 +2961,8 @@
             //   this.valueMax = 60
               // this.value = parseInt(this.intervalValue as string, 10)
               // this.valueMax = 240
-              // this.valueAdd = 60       
+              // this.valueAdd = 60     
+            
               this.intervalData = ['10', '20', '30', '40', '50','60', '120'];
               this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValue as string, 10), slotCount: 1 }
               if(this.intervalChanged){
@@ -3060,6 +3107,7 @@
               this.statutWorkorder.map(statut => {
                   if (args.data.Statut === statut["Code"] && args.data.isTempsReel ===0) {
                       couleur = statut['Color']
+                      this.couleur = couleur
                   }
   
                   if( args.data.Statut === statut["Code"] && args.data.isTempsReel===1){
@@ -3125,14 +3173,14 @@
           this.hourContainer =  moment(args.data['StartTime']).format('HH:mm')
           console.log(this.hourContainer)
           if (args.type === 'QuickInfo') {
-            this.statutWorkorder.map(statut => {
-                if (args.data.Statut == statut['Code']) {
-                  this.couleur = statut['Color']
-                    let colorRow = this.couleur
-                }
-            })
+          
           }
-        
+          this.statutWorkorder.map(statut => {
+            if (args.data.Statut == statut['Code']) {
+            //   this.couleur = statut['Color']
+                let colorRow = this.couleur
+            }
+        })
           args.element.hidden = false;
           if ((args.type === 'QuickInfo') && (args.data.name === 'cellClick')) {
               args.cancel = true;
@@ -3173,11 +3221,11 @@
                   this.timelineResourceDataOut.map(item => {
                       if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
                           workOrders.push(item);
-                          if(item.Statut === 10 || item.Statut === 6 ){
+                        //   if(item.Statut === 10 || item.Statut === 6 ){
                  
-                            args.cancel = true
-                            console.log(args, "==> statut")
-                           }
+                        //     args.cancel = true
+                        //     console.log(args, "==> statut")
+                        //    }
                       }
                   });
                   let row: HTMLElement = createElement('div', {
@@ -3516,11 +3564,14 @@
             });
           }
           if (args.target != undefined && (args.target.classList.value === "e-header-cells e-current-day" || args.target.classList.value === "e-header-cells")) {
-              args.data.cancel = true;
-              args.cancel = true;
-
-              console.log(args, this.argsOnNavigating ,"-----------------------------------")
+            //   args.data.cancel = true;
+            //   args.cancel = true;
+              this.argsOnNavigating.currentView = "TimelineDay"
+              this.argsOnNavigating.previousView = "TimelineWeek"
+              console.log(args, this.argsOnNavigating ,  "-----------------------------------")
             
+            let clickDateWeek = document.getElementsByClassName("e-navigate")
+            console.log(clickDateWeek)
           }
       }
   
@@ -3608,10 +3659,12 @@
             args.cancel = true
         }
           args.interval = 5; // drag interval time is changed to 10 minutes
+           
+
           console.log('onDragStart args =======> ', args);
           // args.navigation = { enable: true, timeDelay: 2000 };
-          // args.scroll.enable = false;
-       
+        //   args.scroll.scrollBy = 5
+          
        
       }
   
@@ -3643,6 +3696,7 @@
           this.onTreeDragStartCountDevTool++;
           console.log('call onTreeDragStart() / event => ', event);
           console.log(this.treeObj);
+          event.draggedParentNode.ej2_instances[1].enableAutoScroll = false 
       }
   
       selectTabWitoutSwip (e: SelectEventArgs) {
@@ -4357,7 +4411,7 @@
                   }
               });
               this.timelineResourceDataOut.forEach(item => {
-                  if (+data.AzaNumGroupe === +item.AzaNumGroupe) {
+                  if (+data.AzaNumGroupe === +item.AzaNumGroupe  && item.isTempsReel ===0) {
                       newGroup.push(item);
                       if (item.AzaIsPere) {
                           pere = item;
@@ -4463,7 +4517,7 @@
           let countWorkorderSameGroup = 0;
           objectin.forEach(item => {
               if (+item[property] === numGroup) {
-                  if (!item['AzaIsPere']) {
+                  if (!item['AzaIsPere'] && item['isTempsReel'] === 0) {
                       countWorkorderSameGroup++;
                   }
               }
@@ -4478,7 +4532,7 @@
           let mindate, maxDate, regie: number;
           let arrayDatesGroup = [];
           atimelineResourceData.forEach(item => {
-              if (+item.AzaNumGroupe === numGroup) {
+              if (+item.AzaNumGroupe === numGroup  && item.isTempsReel ===0) {
                   arrayDatesGroup.push(+item[timePosition]);
                   if (item.AzaIsPere) {
                       regie = item.DepartmentID;
@@ -4486,7 +4540,7 @@
               }
           });
           atimelineResourceData.forEach(item => {
-              if (+item.AzaNumGroupe === numGroup) {
+              if (+item.AzaNumGroupe === numGroup  && item.isTempsReel ===0) {
                   if (!item.AzaIsPere) {
                       item.DepartmentID = regie;
                   }
@@ -4499,7 +4553,7 @@
           if (timePosition === 'StartTime') {
               if (isUpdate) {
                   if (Objupdate != null) {
-                      if (+Objupdate['AzaNumGroupe'] === numGroup) {
+                      if (+Objupdate['AzaNumGroupe'] === numGroup  && Objupdate["isTempsReel"]===0) {
                           mindate = Objupdate[timePosition];
                       }
                   }
@@ -4509,7 +4563,7 @@
           } else if (timePosition === 'EndTime') {
               if (isUpdate) {
                   if (Objupdate != null) {
-                      if (+Objupdate['AzaNumGroupe'] === numGroup) {
+                      if (+Objupdate['AzaNumGroupe'] === numGroup && Objupdate["isTempsReel"]===0) {
                           maxDate = Objupdate[timePosition];
                       }
                   }
@@ -4524,7 +4578,7 @@
           let tempmindate = minDateGroup;
           let tempmaxdate = maxDateGroup;
           for (let entry of atimelineResourceData) {
-              if (entry.AzaNumGroupe === numGroup) {
+              if (entry.AzaNumGroupe === numGroup && entry.isTempsReel===0) {
                   const properties = Object.getOwnPropertyNames(entry);
                   if (entry['AzaIsPere']) { // IF CONTAINER DISPLAY STARTTIME AND ENDTIME MAX
                       entry['StartTime'] = minDateGroup;
@@ -4980,6 +5034,7 @@
           this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
           this.intervalValue = e.value as string
           value = parseInt(e.value as string, 10);
+        
           console.log(e.value)
           console.log(this.intervalValue)
           this.scheduleObj.dataBind();
@@ -5063,11 +5118,17 @@
     }
     onCreated(args:Object) {
     
-        
-        let time: string = moment().format('HH:mm'); 
+        let currTime: Date = new Date();
+        let hours: string = currTime.getHours() < 10 ? '0' +currTime.getHours().toString() : currTime.getHours().toString();
+        let minutes: string = currTime.getMinutes().toString();
+        let time: string = hours + ':' + minutes;
         this.scheduleObj.scrollTo(time);
         console.log(args,"on created !!!!!!!!!")
       }
-   
+   //plages horaires 
+   onSubmit(){
+    this.scheduleObj.startHour = this.instance.formatDate(this.ejStartTimePicker.value, { skeleton: 'Hm' });
+    this.scheduleObj.endHour = this.instance.formatDate(this.ejEndTimePicker.value, { skeleton: 'Hm' });
+}
   
   }

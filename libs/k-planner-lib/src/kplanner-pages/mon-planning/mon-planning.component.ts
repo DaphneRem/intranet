@@ -1,15 +1,72 @@
 import { Component, OnInit } from '@angular/core';
+import { CoordinateurService } from '../../services/coordinateur.service';
+import { Store } from '@ngrx/store';
+import { App } from 'apps/k-planner/src/app/+state/app.interfaces';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
 
 @Component({
   selector: 'mon-planning',
   templateUrl: './mon-planning.component.html',
-  styleUrls: ['./mon-planning.component.scss']
+  styleUrls: ['./mon-planning.component.scss'],
+  providers: [
+    Store,
+    CoordinateurService
+
+]
 })
 export class MonPlanningComponent implements OnInit {
-
-  constructor() { }
+public groupCoordinateur 
+public itemCoordinateur
+public isCoordinateurReady = true
+public user;
+private onDestroy$: Subject<any> = new Subject();
+  constructor( private coordinateurService: CoordinateurService,
+               private store: Store<App>,) { 
+                this.storeAppSubscription()
+               }
 
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+}
+  storeAppSubscription() {
+    this.store
+    .pipe(takeUntil(this.onDestroy$))
+        .subscribe(data => {
+            console.log(data);
+            this.user = data["app"].user;
+            
+            console.log(this.user);
+        });
+    
+          this.getCoordinateurByUsername(this.user.shortUserName);
+     
+     
+  
+
+}
+  getCoordinateurByUsername(Username) {
+
+    this.coordinateurService.getCoordinateurByUsername(Username)
+    .pipe(takeUntil(this.onDestroy$))
+        .subscribe(item => {
+            console.log('COORDINATEUR => ', item );     
+            this.itemCoordinateur = item;
+            this.groupCoordinateur = item.Groupe;
+            console.log('COORDINATEUR GROUPE => ', this.groupCoordinateur  )
+            this.isCoordinateurReady = true
+            console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );
+        });
+     setTimeout(() => {
+      if( this.itemCoordinateur === undefined){
+        this.isCoordinateurReady = false
+        console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );  
+ } 
+     }, 1000);
+    
+}
 }

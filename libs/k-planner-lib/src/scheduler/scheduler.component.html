@@ -3,8 +3,8 @@
 
 
 <!-- <button  ejs-button id="btn" (click)="backTomyPlanning()" class="btn btn-info btn-outline-dark regie ml-3" *ngIf="isnotMyGroup " iconCss = "e-icons B_Undo"></button>  -->
-<loader-animation *ngIf="!dataRegieReady"></loader-animation>
-<!-- <loader-animation *ngIf="!dataAllEventsReady" class="loader-all-data-ready"></loader-animation> -->
+
+<loader-animation *ngIf="!dataRegieReady" ></loader-animation>
 
 <div *ngIf="dataRegieReady" class="control-section card">
     <!-- <div class="autre-planinngs">
@@ -21,7 +21,7 @@
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
                 <button  
                   #btnrefresh
-                    class="btn btn-info regie refresh-btn ml-3 mt-1 btn-refresh " 
+                    class="btn btn-info regie refresh-btn ml-3 mr-3 mt-1 btn-refresh " 
                     (click)="refreshScheduler()" 
                     [disabled]="disabledrefresh" 
                     id="btn-refresh"
@@ -29,49 +29,69 @@
                    >
                     <i class="icofont icofont-refresh"></i>Rafraichir
                 </button>
-                <input type="text" 
-                    class="form-control form-control-info col-2 recherche" 
-                    placeholder="Rechercher une régie..." 
-                    #search 
-                    (keyup)="onFilterRegie(search.value,$event )" 
-                    (mousedown)="Filter()" 
-                    value="" >
-                <select class="form-control form-control-info m-0 select-plannings float-right mt-1 " 
+            
+                <!-- <select class="form-control form-control-info m-0 select-plannings float-right mt-1  " 
                     placeholder="Autres plannings" 
                     #selectplan 
                     (change)="onSelectPlannig(selectplan.value)">
                     <option value={{this.idCoordinateur}}>Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" value={{libelle.Code}}>{{libelle.Libelle}} </option>
-                </select>
-                <table class="table-light table-sm" id="property" title="Properties" >
+                </select> -->
+                <ejs-dropdownlist id='games' class =" mt-2 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
+                <input type="text" 
+                class="form-control form-control-info  e-input recherche" 
+                placeholder="Rechercher une régie..." 
+                #search 
+                (keyup)="onFilterRegie(search.value,$event )" 
+                (mousedown)="Filter()" 
+                value=""
+                style="width: 15%" >
+                <table class="table-light table-sm " id="property" title="Properties" >
                     <tbody>
                         <tr style="height: 40px">
-                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
-                                <div style="text-align:center"> Intervalle  (Minutes)</div>          
-                            </td>
-                            <td *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
-                                <div>
-                                    <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
-                                </div>
-                            </td>
-                            <td style="width: 5%" *ngIf="scheduleObj.currentView =='TimelineDay'" >
-                                <div style="text-align:center"> Intervalle  (Minutes)</div>          
-                            </td>
-                            <td *ngIf="scheduleObj.currentView =='TimelineDay'" >
-                                <div>
-                                    <ejs-dropdownlist style="width: 100%"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
-                                </div>
-                            </td>
+                          
                            
-                  
-                            <td >
-                                <ejs-checkbox  #reel cssClass="reel" label="Temps réel" value="1" [checked]="true" (change)="onChange()">
+                            <td  style="width: 5%">
+                                <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="true" (change)="onChange()">
                                 </ejs-checkbox>
                             </td>
-                            <td >
-                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps théorique" value="0" [checked]="true" (change)="onChange()">
+                            <td  style="width: 5%">
+                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" (change)="onChange()">
                                 </ejs-checkbox>
                             </td>
+                            <td style="width: 5%">
+                                <div style="text-align:center"> Intervalle <br> (Minutes)</div>          
+                            </td>
+                            <td  style="width: 10%"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                                <div style="width: 100%">
+                                    <ejs-dropdownlist   [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
+                                </div>
+                            </td>
+                          
+                            <td  style="width: 10%" *ngIf="scheduleObj.currentView =='TimelineDay'" class ="mr-2">
+                                <div style="width: 100%">
+                                    <ejs-dropdownlist   [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
+                                </div>
+                            </td>
+                            <!-- <td  style="width: 5%" >
+                                <div style="width:100%" > Heur de <br> Début
+                                </div>
+                            </td>
+                            <td style="width: 10%">
+                                <div style="width:100%" >
+                                    <ejs-timepicker #ejStartTimePicker id="startTime" [value]="startdate" format='HH:mm'></ejs-timepicker>
+                                </div>
+                            </td >
+                            <td style="width: 5%">
+                                <div style="width:100%" >Heur de  <br>  Fin
+                                </div>
+                            </td>
+                            <td style="width:10%">
+                                <div style="width:100%"  >
+                                    <ejs-timepicker #ejEndTimePicker id="endTime" [value]="enddate" format='HH:mm' (change)="onSubmit()"></ejs-timepicker>
+                                </div>
+                            </td> -->
+                       
                         </tr>
                      
                     </tbody>
@@ -98,15 +118,15 @@
                     (navigating)="onNavigating($event)"
                     (resizeStart)="onResizing($event)"
                     (created)="onCreated($event)"
-                    
+                
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
                     (change)="onChange($event)"
                     [showHeaderBar]='true'
-                    width='100%'
+                    width='auto'
                     height='100%'
                     >
-                  
+                 
                     <!-- (renderCell)="onRenderCell($event)" -->
                     <e-resources>
                         <e-resource 
@@ -130,7 +150,9 @@
                                         <div class="specialist-name">{{getConsultantName(data)}}</div>
                                     </div>
                                 </div>
-                            </ng-template > -->              
+                            </ng-template > -->  
+                         
+                        
                     <e-views>
                         <e-view option='TimelineDay'  #scheduleObjDay [interval]="2" >
                             <ng-template #eventTemplate let-data  class="event">
@@ -148,7 +170,7 @@
                                         
                                             <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
                                             <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br>
-                                            <span *ngIf="nameService != '1'" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
+                                            <span *ngIf="nameService != '1'"  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.typetravail }}  </span>
                                             
                                         </div>
                                     </div>
@@ -224,7 +246,7 @@
                                      </ng-template>   -->
                             
                     </e-view>
-                 
+               
                 </e-views>
                 
             </ejs-schedule>
