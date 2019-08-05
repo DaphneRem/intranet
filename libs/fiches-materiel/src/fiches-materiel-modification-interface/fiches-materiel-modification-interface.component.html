@@ -6,6 +6,7 @@
         {{modificationMessage}}
       </div>
     </div>
+     <!-- {{initialFichesMateriel | json}} -->
     <fiches-materiel-modification-action
       (modificationMessage)="displayModificationMessage($event)"
       (propertiesChanged)="resetPropertiesChanged($event)"
@@ -32,6 +33,10 @@
       [accesLabo]="accesLabo"
       [comments]="comments"
       [allEACommentsMultiSelect]="allEACommentsMultiSelect"
+      [allVersionFm]="allVersionFm"
+      [versionFmNgModel]="versionFmNgModel"
+      [allQualitiesFm]="allQualitiesFm"
+      [qualityFmNgModel]="qualityFmNgModel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
     <!-- {{annexElementsFicheMateriel | json}} -->
@@ -389,7 +394,7 @@
 {{versionLib | json}} -->
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Version : </label>
-            <div class="right-details col-lg-6">
+            <div *ngIf="selectionType !== 'multi'" class="right-details col-lg-6">
               <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
                 <input 
                   id="{{item.version_mat}}"
@@ -413,13 +418,45 @@
                 </label>
               </div> -->
             </div>
+            <div *ngIf="selectionType === 'multi' && versionMultiReady && versionLib" class="right-details col-lg-6">
+              <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
+                <i class="icofont icofont-close-line not-valid" [ngClass]="checkIfVersionValueIsNotValid(item.id_version) ? 'itemNotValid' : 'itemValid' "></i>
+                <input 
+                  id="{{item.version_mat}}"
+                  type="checkbox"
+                  (click)="changeModelVersion(item.id_version)"
+                  [checked]="displayCheckedVersion(item.id_version)"
+                  name="{{item.version_mat}}">
+                <label for="{{item.version_mat}}">
+                  {{item.version_mat}}
+                </label>
+              </div>
+            </div>
+            <div class="icons col-lg-2 ml-0" *ngIf="selectionType === 'multi' && versionMultiReady && versionLib">
+                <i *ngIf="displayClearVersionsIcon()"
+                  class="icofont icofont-close-line-circled delete"
+                  [placement]="'right'" 
+                  [ngbTooltip]="'vider tous les champs'"
+                  (click)="clearAllVersionsValue()">
+                </i>
+                <i *ngIf="displayResetVersionsIcon()"
+                  class="icofont icofont-ui-reply reply" 
+                  [placement]="'right'"
+                  [ngbTooltip]="'revenir aux valeurs d\'origines'"
+                  (click)="resetAllVersionsValue()">
+                </i>
+              </div>
+            <!-- {{checkIfValueIsNotValid(id_version)}}
+            {{versionLib | json}}
+            {{versionFicheMateriel | json}} -->
           </div>
+            <!-- {{versionFmNgModel | json}} -->
 
 
 
           <div class="row form-group" *ngIf="qualiteFmReady">
             <label class="col-form-label col-lg-3">Qualité : </label>
-            <div *ngIf="qualiteReady" class="right-details col-lg-6">
+            <div *ngIf="qualiteReady && selectionType !== 'multi'" class="right-details col-lg-6">
               <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-info">
                 <input 
                   id="{{item.Libelle}}"
@@ -432,7 +469,39 @@
                 </label>
               </div>
             </div>
+
+            <div *ngIf="selectionType === 'multi' && qualityMultiReady && qualiteLib" class="right-details col-lg-6">
+              <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-info">
+                <i class="icofont icofont-close-line not-valid" [ngClass]="checkIfQualityValueIsNotValid(item.Code) ? 'itemNotValid' : 'itemValid' "></i>
+                <input 
+                  id="{{item.Libelle}}"
+                  type="checkbox"
+                  (click)="changeModelQualite(item.Code)"
+                  [checked]="displayCheckedQualite(item.Code)"
+                  name="{{item.Libelle}}">
+                <label for="{{item.Libelle}}">
+                  {{item.Libelle}}
+                </label>
+              </div>
+            </div>
+            <div class="icons col-lg-2 ml-0" *ngIf="selectionType === 'multi' && qualityMultiReady && qualiteLib">
+              <i *ngIf="displayClearQualitiesIcon()"
+                class="icofont icofont-close-line-circled delete"
+                [placement]="'right'" 
+                [ngbTooltip]="'vider tous les champs'"
+                (click)="clearAllQualitiesValue()">
+              </i>
+              <i *ngIf="displayResetQualitiesIcon()"
+                class="icofont icofont-ui-reply reply" 
+                [placement]="'right'"
+                [ngbTooltip]="'revenir aux valeurs d\'origines'"
+                (click)="resetAllQualitiesValue()">
+              </i>
+            </div>
+
           </div>
+          <!-- {{qualityFmNgModel | json}} -->
+
           <div class="row form-group">
             <label class="col-form-label col-lg-4">Support :</label>
             <input 
@@ -738,7 +807,7 @@
               [valueNotToChangeLibelle]="valueNotToChangeLibelle"
               [annexElementsFicheMateriel]="annexElementsFicheMateriel">
             </annexes-elements-modification-modal>
-            {{comments |json}}
+            <!-- {{comments |json}} -->
           </div>
           <!-- <div class="details row form-group" *ngIf="selectionType === 'multi'">
             <div class="left-details col-lg-6">
@@ -1024,6 +1093,10 @@
       [accesLabo]="accesLabo"
       [comments]="comments"
       [allEACommentsMultiSelect]="allEACommentsMultiSelect"
+      [allVersionFm]="allVersionFm"
+      [versionFmNgModel]="versionFmNgModel"
+      [allQualitiesFm]="allQualitiesFm"
+      [qualityFmNgModel]="qualityFmNgModel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
   </form>

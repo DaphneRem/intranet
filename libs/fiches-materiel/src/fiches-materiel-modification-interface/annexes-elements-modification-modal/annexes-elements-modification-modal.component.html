@@ -1,6 +1,6 @@
 <button class="btn open-btn" (click)="openLg(annexesElementsToModif)">Modifier détails éléments annexes</button>
 <!-- {{annexElementsNgModel | json}} -->
-{{allComments |json}}
+<!-- {{allComments |json}} -->
 <!--************* MODAL **************-->
 <ng-template #annexesElementsToModif let-c="close" let-d="dismiss" class="affected-annexes-modal">
     <div class="modal-header">
@@ -77,11 +77,10 @@
                             type="checkbox">
                         <label for="{{item.IdLibElementAnnexes}}">
                         {{item.Libelle}}
-                        {{item.IdLibElementAnnexes}}
+                        <!-- {{item.IdLibElementAnnexes}} -->
                         </label>
                     </div>
                 </div>
-                {{valueNotToChangeLibelle}}
                 <div class="label-icons">
                     <label>Commentaires :</label>
                     <div *ngFor="let comment of allComments">

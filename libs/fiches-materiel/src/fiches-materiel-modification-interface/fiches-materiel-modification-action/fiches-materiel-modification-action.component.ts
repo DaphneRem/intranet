@@ -49,6 +49,10 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   @Input() comments: AnnexElementCommentsFicheMAteriel[];
   @Input() accesLabo;
   @Input() allEACommentsMultiSelect;
+  @Input() allVersionFm;
+  @Input() versionFmNgModel;
+  @Input() allQualitiesFm;
+  @Input() qualityFmNgModel;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
   @Output() propertiesChanged: EventEmitter<any> = new EventEmitter();
@@ -199,7 +203,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   }
 
   checkDeadline(newObject) {
-    console.log(newObject.Deadline);
+    console.log('newObject.Deadline => ', newObject.Deadline);
     if (
       // newObject.IdLibEtape === 17 ||
       // newObject.IdLibstatut === 3 ||
@@ -222,11 +226,13 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
 
   addZeroToDate(date) {
     console.log('date => ', date);
-    console.log(date.toString());
-    if (date.toString().length === 1) {
-      return `0${date}`;
-    } else {
-      return date;
+    if (date) {
+      console.log(date.toString());
+      if (date.toString().length === 1) {
+        return `0${date}`;
+      } else {
+        return date;
+      }
     }
   }
 
@@ -493,16 +499,20 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
         this.changedValues['Deadline'] = nullDate;
         this.changedValues['isarchived'] = 1;
-      } else if (this.newObject.Deadline === this.valueNotToChangeLibelle) {
+      } else if ((this.newObject.Deadline === this.valueNotToChangeLibelle) && (this.newObject.isarchived === 1)) {
         if (this.newObject.IdLibstatut === 1 // en cours
         || this.newObject.IdLibstatut === 3 && this.newObject.IdLibEtape !== 21
         || this.newObject.IdLibstatut === 2 && this.newObject.IdLibEtape !== 20
         || this.newObject.IdLibstatut === 5 && this.newObject.IdLibEtape !== 24
         ) {
-          this.changedValues['Deadline'] = moment().format();
+          this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
           console.log('&&&&&&&&&&&&&&&&& La deadline doit disparaitre &&&&&&&&&&&&&&&&&&&&&& => ', this.changedValues);
           this.changedValues['isarchived'] = 0;
         }
+      } else if (this.newObject.Deadline === this.valueNotToChangeLibelle) {
+        console.log('ERROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR => ', this.newObject.Deadline);
+        // this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
+        // console.log('deadline error => ', this.changedValues['Deadline']);
       }
     }
     let now = moment().format('YYYY-MM-DDTHH:mm:ss');
@@ -522,6 +532,27 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     //   this.patchFichesMateriel([item]);
     // });
     console.log(this.allAnnexElementsFicheMateriel);
+    if (!this.changedValues['IdLibstatut']) {
+      this.multiDataToUpdate.map(e => {
+        this.initialFichesMateriel.map(item => {
+          console.log('e.IdLibstatut => ', e.IdLibstatut);
+          if (item.IdFicheMateriel === e.IdFicheMateriel) {
+            e['IdLibstatut'] = item.IdLibstatut;
+          }
+        });
+      });
+    }
+    if (!this.changedValues['IdLibEtape']) {
+      this.multiDataToUpdate.map(e => {
+        this.initialFichesMateriel.map(item => {
+          console.log('e.IdLibEtape => ', e.IdLibEtape);
+          if (item.IdFicheMateriel === e.IdFicheMateriel) {
+            e['IdLibEtape'] = item.IdLibEtape;
+          }
+        });
+      });
+    }
+
     this.patchFichesMateriel(this.multiDataToUpdate); // patch sur tableau de fiches Matériel (partielles)
   }
 
@@ -537,6 +568,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         if (data) {
           this.changeValueToAnnexElementsInFM();
           this.checkChangeValueToEAComment();
+          this.updateVersionFM();
+          this.updateQualiteFM();
           // fichesMateriel.map(item => {
           //   console.log(item);
           //   this.addIdFicheMaterielToElementAnnexReset(item);
@@ -547,6 +580,102 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
             console.log('error patch FM');
           }
       });
+  }
+
+/************************************************/
+/*************** VERSION MANAGEMENT *************/
+/************************************************/
+
+  checkNeedChangeValueToVersion(): boolean {
+    console.log('this.allVersionFm => ', this.allVersionFm);
+    console.log('this.versionFmNgModel => ', this.versionFmNgModel);
+    let versionChangements = [];
+    this.allVersionFm.map(item => {
+      this.versionFmNgModel.map(model => {
+        item.forEach(versionFM => {
+          if (versionFM.IdFicheAch_Lib_Versions === model.IdFicheAch_Lib_Versions && versionFM.Isvalid !== model.Isvalid) {
+            versionChangements.push(versionFM);
+          }
+        });
+      });
+    });
+    console.log('versionChangements => ', versionChangements);
+    if (versionChangements.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  updateVersionFM() {
+    let needPutVersion: boolean = this.checkNeedChangeValueToVersion();
+    if (needPutVersion) {
+      this.allVersionFm.map(item => {
+        this.versionFmNgModel.map(model => {
+          item.forEach(versionFM => {
+            if (versionFM.IdFicheAch_Lib_Versions === model.IdFicheAch_Lib_Versions && versionFM.Isvalid !== model.Isvalid) {
+              console.log('versionFM before change => ', versionFM);
+              if (model.Isvalid !== 'same') {
+                versionFM.Isvalid = model.Isvalid;
+              }
+              console.log('versionFM after change => ', versionFM);
+            }
+          });
+        });
+      });
+    }
+    console.log('this.allVersionFm after change => ', this.allVersionFm);
+    this.allVersionFm.map(item => {
+      this.putVersionFicheMateriel(item);
+    });
+  }
+
+/************************************************/
+/************* QUALTITIES MANAGEMENT ************/
+/************************************************/
+
+  checkNeedChangeValueToQuality(): boolean {
+    console.log('this.allQualitiesFm => ', this.allQualitiesFm);
+    console.log('this.qualityFmNgModel => ', this.qualityFmNgModel);
+    let qualityChangements = [];
+    this.allQualitiesFm.map(item => {
+      this.qualityFmNgModel.map(model => {
+        item.forEach(qualityFM => {
+          if (qualityFM.idLibQualiteSup === model.idLibQualiteSup && qualityFM.IsValid !== model.IsValid) {
+            qualityChangements.push(qualityFM);
+          }
+        });
+      });
+    });
+    console.log('qualityChangements => ', qualityChangements);
+    if (qualityChangements.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  updateQualiteFM() {
+    let needPutQuality: boolean = this.checkNeedChangeValueToQuality();
+    if (needPutQuality) {
+      this.allQualitiesFm.map(item => {
+        this.qualityFmNgModel.map(model => {
+          item.forEach(qualityFM => {
+            if (qualityFM.idLibQualiteSup === model.idLibQualiteSup && qualityFM.IsValid !== model.IsValid) {
+              console.log('qualityFM before change => ', qualityFM);
+              if (model.IsValid !== 'same') {
+                qualityFM.IsValid = model.IsValid;
+              }
+              console.log('qualityFM after change => ', qualityFM);
+            }
+          });
+        });
+      });
+    }
+    console.log('this.allQualitiesFm after change => ', this.allQualitiesFm);
+    this.allQualitiesFm.map(item => {
+      this.putQualiteFicheMateriel(item);
+    });
   }
 
   checkChangeValueToEAComment() {

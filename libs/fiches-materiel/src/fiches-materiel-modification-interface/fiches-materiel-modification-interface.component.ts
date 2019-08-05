@@ -253,6 +253,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       if (typeof date === 'string') {
         if (date === 'dd-mm-yyyy' || date === this.valueNotToChangeLibelle) {
           return true;
+        // } else if (date ===) {
+
         } else if (date.length === 10 && date[2] === '-' && date[5] === '-') {
           let arrDate = date.split('-');
           let day = arrDate[0];
@@ -467,6 +469,9 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   getAllFichesMateriel(allIdFichesMateriel) {
+    this.initialFichesMateriel = [];
+    this.allVersionFm = [];
+    this.allQualitiesFm = [];
     allIdFichesMateriel.map(item => {
       console.log(item);
       this.getFicheMateriel(
@@ -578,12 +583,18 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
 
   changeToNgFormatDate(originDate) {
     console.log('originDate => ', originDate);
-    let newDate = {
-      year: new Date(originDate).getFullYear(),
-      month: new Date(originDate).getMonth() + 1,
-      day: new Date(originDate).getDate()
-    };
-    console.log('newDate => ', newDate);
+    let newDate;
+    if (originDate !== null) {
+      newDate = {
+        year: new Date(originDate).getFullYear(),
+        month: new Date(originDate).getMonth() + 1,
+        day: new Date(originDate).getDate()
+      };
+      console.log('newDate => ', newDate);
+    } else {
+      newDate = 'dd-mm-yyyy';
+      console.log('newDate => ', newDate);
+    }
     return newDate;
   }
 
@@ -608,6 +619,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
           } else {
             this.getAnnexElementsFicheMateriel(id, index, length);
             this.getVersionFicheMateriel(id);
+            this.getQualiteFicheMateriel(id);
           }
           if (index === length - 1) {
             console.log('call displayNewObject function !!!!!!!!!');
@@ -623,7 +635,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   displayNewObject(length, ficheMateriel) {
     this.sameOriginalProperties = [];
     this.equalObject = {};
-    // console.log('this.newObject in displayNewObject() => ', this.newObject);
+    console.log('this.newObject in displayNewObject() => ', this.newObject);
     if (length === 1) {
       this.newObject = ficheMateriel;
       this.detailedReportLink = `${urlDetailedReportFicheAchat}${
@@ -636,28 +648,28 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       this.fmInRecording = false;
       this.dataIdFicheMaterielReady = true;
     } else {
-      // console.log('this.dataIdFicheMaterielReady ==> ', this.dataIdFicheMaterielReady);
-      // console.log('call displayNewObject function !!!!!!!!!');
+      console.log('this.dataIdFicheMaterielReady ==> ', this.dataIdFicheMaterielReady);
+      console.log('call displayNewObject function !!!!!!!!!');
       // CHECK ALL DATA TO FIND SAME PROPERTIES
       const allEqual = this.allFichesMateriel.every(item => item === this.allFichesMateriel[0]);
-      // console.log('allEqual ====>  ', allEqual);
-      // console.log('nombre de fiches materiel ==> ', this.allFichesMateriel.length);
-      // console.log('fiches matériel ==> ', this.allFichesMateriel);
+      console.log('allEqual ====>  ', allEqual);
+      console.log('nombre de fiches materiel ==> ', this.allFichesMateriel.length);
+      console.log('fiches matériel ==> ', this.allFichesMateriel);
       this.allFichesMateriel.map(item => {
         let index = this.allFichesMateriel.indexOf(item);
         for (let key in item) {
           if ((index + 1) < this.allFichesMateriel.length) {
             if (item[key] === this.allFichesMateriel[index + 1][key]) {
-              // console.log('keyyy same value (all)^^^^^^^ => ', key);
-              // console.log('same value ******** => ', item[key]);
+              console.log('keyyy same value (all)^^^^^^^ => ', key);
+              console.log('same value ******** => ', item[key]);
               if (!this.equalObject[key] || this.equalObject[key].length === 0) {
                 this.equalObject[key] = [];
                 this.equalObject[key].push(item[key]);
               }
               this.equalObject[key].push(item[key]);
             } else {
-              // console.log('keyyy different value (all) ^^^^^^^ => ', key);
-              // console.log('different value ******** => ', item[key]);
+              console.log('keyyy different value (all) ^^^^^^^ => ', key);
+              console.log('different value ******** => ', item[key]);
             }
           }
         }
@@ -668,11 +680,11 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
           this.sameOriginalProperties.push(key);
         }
       }
-      // console.log('this.newObject before chengeDateFormat ====> ', this.newObject);
+      console.log('this.newObject before chengeDateFormat ====> ', this.newObject);
       this.changeDateFormat('arg');
-      // console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
-      // console.log('this.newObject ====> ', this.newObject);
-      // console.log('equalObject ==> ', this.equalObject);
+      console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
+      console.log('this.newObject ====> ', this.newObject);
+      console.log('equalObject ==> ', this.equalObject);
       this.displayLibValueNotToChange();
       this.fmInRecording = false;
       this.dataIdFicheMaterielReady = true;
@@ -680,10 +692,10 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   checkIsOriginalProperty(property, value): boolean {
-    // console.log('property => ', property);
-    // console.log('value => ', value);
-    // console.log('this.sameOriginalProperties ==> ', this.sameOriginalProperties);
-    // console.log('this.sameOriginalProperties.includes(property) => ', this.sameOriginalProperties.includes(property));
+    console.log('property => ', property);
+    console.log('value => ', value);
+    console.log('this.sameOriginalProperties ==> ', this.sameOriginalProperties);
+    console.log('this.sameOriginalProperties.includes(property) => ', this.sameOriginalProperties.includes(property));
     if (this.sameOriginalProperties.includes(property)) {
       // console.log('this.equalObject[property] => ', this.equalObject[property]);
       // console.log('value => ', value);
@@ -699,10 +711,10 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   checkIfSameOriginalProperty(property, value): boolean {
-    // console.log('property => ', property);
-    // console.log('value => ', value);
-    // console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
-    // console.log('this.sameOriginalProperties.includes(property) => ', this.sameOriginalProperties.includes(property));
+    console.log('property => ', property);
+    console.log('value => ', value);
+    console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
+    console.log('this.sameOriginalProperties.includes(property) => ', this.sameOriginalProperties.includes(property));
     if (this.sameOriginalProperties.includes(property)) {
       return true;
     } else {
@@ -710,18 +722,9 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     }
   }
 
-
-
-  getQualiteFicheMateriel(id) {
-    this.qualiteService.getQualiteFicheMateriel(id)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
-        this.qualiteFM = data;
-        this.qualiteFmReady = true;
-        // console.log('qualité from FM :');
-        // console.log(data);
-      });
-  }
+/****************************************************************/
+/************************ VERSION MANAGEMENT ********************/
+/****************************************************************/
 
   // versionArrayIdExist
   public allVersionFm = [];
@@ -737,54 +740,303 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
           // console.log(data);
         } else {
           this.allVersionFm.push(data);
-          console.log('this.allVersionFm => ', this.allVersionFm);
-          this.checkSameValuesVersionMultiSelection();
+          if (this.allVersionFm.length === this.allIdSelectedFichesMateriel.length) {
+            console.log('this.allVersionFm => ', this.allVersionFm);
+            this.checkSameValuesVersionMultiSelection();
+          }
         }
         this.versionFmReady = true;
       });
   }
 
+  public sameValuesVersionFm = {};
+  public versionFmNgModel; // object with all values ('same', false and true)
+  public originalsValuesVersionFm;
+  public versionMultiReady: boolean = false;
+  public originVersionValues;
   checkSameValuesVersionMultiSelection() { // TODO 08/07/2019
-    // this.allVersionFm.map(item => {
-    //   let index = this.allVersionFm.indexOf(item);
-    //   item.map(e => {
-    //     let i = item.indexOf(e);
-    //     console.log(e);
-    //     if () {
-
-    //     }
-    //   });
-    // });
+    console.log('this.allVersionFm => ', this.allVersionFm);
+    this.sameValuesVersionFm = {};
+    this.originVersionValues = this.allVersionFm[0].map(item => ({
+      IdFicheAch_Lib_Versions: item.IdFicheAch_Lib_Versions,
+      Isvalid: 'same'
+    }));
+    this.versionFmNgModel = this.allVersionFm[0].map(item => ({
+      IdFicheAch_Lib_Versions: item.IdFicheAch_Lib_Versions,
+      Isvalid: 'same'
+    }));
+    console.log('761 this.versionFmNgModel => ', this.versionFmNgModel);
+    console.log('this.originalsValuesVersionFm =>', this.originalsValuesVersionFm);
+    this.originalsValuesVersionFm = this.allVersionFm[0].map(item => item = {
+      IdFicheAch_Lib_Versions: item.IdFicheAch_Lib_Versions,
+      Isvalid: 'same'
+    });
+    console.log('coooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
+    console.log('this.originalsValuesVersionFm =>', this.originalsValuesVersionFm);
+    console.log('this.allVersionFm => ', this.allVersionFm);
+    this.sameValuesVersionFm = {};
+    this.allVersionFm.map(item => {
+      console.log('allVersionFm item => ', item);
+      let index = this.allVersionFm.indexOf(item);
+      console.log('index allVersionFm item => ', index);
+      if (index < this.allFichesMateriel.length) {
+        console.log('this.allVersionFm[index + 1] => ', this.allVersionFm[index + 1]);
+         item.map(object => {
+          let i = item.indexOf(object);
+          let isPushed = false;
+            console.log('index this.allVersionFm item object => ', i);
+            console.log('this.allVersionFm item object => ', object);
+            console.log('object.Isvalid => ', object.Isvalid);
+            console.log('this.allVersionFm[0][i].Isvalid => ',this.allVersionFm[0][i].Isvalid);
+            if (object.Isvalid === this.allVersionFm[0][i].Isvalid) {
+              let key = object.IdFicheAch_Lib_Versions;
+              console.log('this.sameValuesVersionFm[key] => ', this.sameValuesVersionFm[key]);
+              if (!this.sameValuesVersionFm[key] || (this.sameValuesVersionFm[key].length === 0) || (!this.sameValuesVersionFm)) {
+                  this.sameValuesVersionFm[key] = [];
+                  this.sameValuesVersionFm[key].push(object.Isvalid);
+                  isPushed = true;
+                }
+                console.log('isPushed =>', isPushed);
+                console.log('!isPushed =>', !isPushed);
+              if (!isPushed) {
+                this.sameValuesVersionFm[key].push(object.Isvalid);
+                isPushed = false;
+              }
+                console.log('object.Isvalid => ', object.Isvalid);
+                console.log('this.sameValuesVersionFm ==> ', this.sameValuesVersionFm);
+              }
+            });
+        }
+    });
+    for (let key in this.sameValuesVersionFm) {
+      if (this.sameValuesVersionFm[key].length === this.allFichesMateriel.length) {
+        console.log('same value to all keys in this.sameValuesVersionFm => ', key);
+        for (let key2 in this.versionFmNgModel) {
+          if (this.versionFmNgModel[key2].IdFicheAch_Lib_Versions === +key) {
+            console.log('package attendu ==> ', this.versionFmNgModel[key2].IdFicheAch_Lib_Versions);
+            console.log('this.originalsValuesVersionFm[key2].Isvalid BEFORE => ', this.originalsValuesVersionFm[key2].Isvalid);
+            this.versionFmNgModel[key2].Isvalid = this.sameValuesVersionFm[key][0];
+            this.originVersionValues[key2].Isvalid = this.sameValuesVersionFm[key][0];
+            this.originalsValuesVersionFm[key2].Isvalid = this.sameValuesVersionFm[key][0];
+            console.log('this.versionFmNgModel[key2].Isvalid => ', this.versionFmNgModel[key2].Isvalid);
+            console.log('this.sameValuesVersionFm[key][0] => ', this.sameValuesVersionFm[key][0]);
+          }
+        }
+      }
+    }
+    console.log('this.versionFmNgModel : end to function to display samevalues => ', this.versionFmNgModel);
+    console.log('this.originVersionValues => ', this.originVersionValues);
+    this.versionMultiReady = true;
   }
 
+// ACTIONS FOR ICONS CLICK
+  clearAllVersionsValue() {
+    this.versionFmNgModel.map(item => {
+      item.Isvalid = false;
+    });
+  }
 
-      //   this.allFichesMateriel.map(item => {
-      //   let index = this.allFichesMateriel.indexOf(item);
-      //   for (let key in item) {
-      //     if ((index + 1) < this.allFichesMateriel.length) {
-      //       if (item[key] === this.allFichesMateriel[index + 1][key]) {
-      //         console.log('keyyy same value (all)^^^^^^^ => ', key);
-      //         console.log('same value ******** => ', item[key]);
-      //         this.sameOriginalProperties.push(key);
-      //         if (!this.equalObject[key] || this.equalObject[key].length === 0) {
-      //           this.equalObject[key] = [];
-      //           this.equalObject[key].push(item[key]);
-      //         }
-      //         this.equalObject[key].push(item[key]);
-      //       } else {
-      //         console.log('keyyy different value (all) ^^^^^^^ => ', key);
-      //         console.log('different value ******** => ', item[key]);
-      //       }
-      //     }
-      //   }
-      // });
-      // for (let key in this.equalObject) {
-      //   if (this.equalObject[key].length === this.allFichesMateriel.length) {
-      //     this.newObject[key] = this.equalObject[key][0];
-      //   }
-      // }
+  resetAllVersionsValue() {
+    this.versionFmNgModel.map(item => {
+      this.originVersionValues.map(oldVersion => {
+        if (item.IdFicheAch_Lib_Versions === oldVersion.IdFicheAch_Lib_Versions) {
+          item.Isvalid = oldVersion.Isvalid;
+        }
+      });
+    });
+  }
 
+// DISPLAY ICONS
 
+  displayClearVersionsIcon(): boolean {
+    let itemIsvalid = [];
+    this.versionFmNgModel.map(item => {
+      if (item.Isvalid) {
+        itemIsvalid.push(item);
+      }
+    });
+    if (itemIsvalid.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  displayResetVersionsIcon(): boolean {
+    let itemsChanged = [];
+     this.versionFmNgModel.map(item => {
+      this.originVersionValues.map(oldVersion => {
+        if (item.IdFicheAch_Lib_Versions === oldVersion.IdFicheAch_Lib_Versions) {
+          if (item.Isvalid !== oldVersion.Isvalid) {
+            itemsChanged.push(item);
+          }
+        }
+      });
+    });
+    if (itemsChanged.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+/****************************************************************/
+/************************ QUALITY MANAGEMENT ********************/
+/****************************************************************/
+
+  public allQualitiesFm = [];
+  getQualiteFicheMateriel(id) {
+    this.qualiteService.getQualiteFicheMateriel(id)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        if (this.selectionType !== 'multi') {
+          this.qualiteFM = data;
+          this.qualiteFmReady = true;
+        } else {
+          this.allQualitiesFm.push(data);
+          if (this.allQualitiesFm.length === this.allIdSelectedFichesMateriel.length) {
+            console.log('this.allQualitiesFm => ', this.allQualitiesFm);
+            this.checkSameValuesQualitiesMultiSelection();
+            this.qualiteFmReady = true;
+          }
+        }
+        // console.log('qualité from FM :');
+        // console.log(data);
+      });
+  }
+
+  public sameValuesQualityFm = {};
+  public qualityFmNgModel; // object with all values ('same', false and true)
+  public originalsValuesQualityFm;
+  public qualityMultiReady: boolean = false;
+  public originQualityValues;
+
+  checkSameValuesQualitiesMultiSelection() {
+    console.log('this.allQualitiesFm => ', this.allQualitiesFm);
+       console.log('this.allQualitiesFm => ', this.allQualitiesFm);
+    this.sameValuesQualityFm = {};
+    this.originQualityValues = this.allQualitiesFm[0].map(item => ({
+      idLibQualiteSup: item.idLibQualiteSup,
+      IsValid: 'same'
+    }));
+    this.qualityFmNgModel = this.allQualitiesFm[0].map(item => ({
+      idLibQualiteSup: item.idLibQualiteSup,
+      IsValid: 'same'
+    }));
+    console.log('761 this.qualityFmNgModel => ', this.qualityFmNgModel);
+    console.log('this.originalsValuesQualityFm =>', this.originalsValuesQualityFm);
+    this.originalsValuesQualityFm = this.allQualitiesFm[0].map(item => item = {
+      idLibQualiteSup: item.idLibQualiteSup,
+      IsValid: 'same'
+    });
+    console.log('coooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
+    console.log('this.originalsValuesQualityFm =>', this.originalsValuesQualityFm);
+    console.log('this.allQualitiesFm => ', this.allQualitiesFm);
+    this.sameValuesQualityFm = {};
+    this.allQualitiesFm.map(item => {
+      console.log('allQualitiesFm item => ', item);
+      let index = this.allQualitiesFm.indexOf(item);
+      console.log('index allQualitiesFm item => ', index);
+      if (index < this.allFichesMateriel.length) {
+        console.log('this.allQualitiesFm[index + 1] => ', this.allQualitiesFm[index + 1]);
+         item.map(object => {
+          let i = item.indexOf(object);
+          let isPushed = false;
+            console.log('index this.allQualitiesFm item object => ', i);
+            console.log('this.allQualitiesFm item object => ', object);
+            console.log('object.IsValid => ', object.IsValid);
+            console.log('this.allQualitiesFm[0][i].IsValid => ', this.allQualitiesFm[0][i].IsValid);
+            if (object.IsValid === this.allQualitiesFm[0][i].IsValid) {
+              let key = object.idLibQualiteSup;
+              console.log('this.sameValuesQualityFm[key] => ', this.sameValuesQualityFm[key]);
+              if (!this.sameValuesQualityFm[key] || (this.sameValuesQualityFm[key].length === 0) || (!this.sameValuesQualityFm)) {
+                  this.sameValuesQualityFm[key] = [];
+                  this.sameValuesQualityFm[key].push(object.IsValid);
+                  isPushed = true;
+                }
+                console.log('isPushed =>', isPushed);
+                console.log('!isPushed =>', !isPushed);
+              if (!isPushed) {
+                this.sameValuesQualityFm[key].push(object.IsValid);
+                isPushed = false;
+              }
+                console.log('object.IsValid => ', object.IsValid);
+                console.log('this.sameValuesQualityFm ==> ', this.sameValuesQualityFm);
+              }
+            });
+        }
+    });
+    for (let key in this.sameValuesQualityFm) {
+      if (this.sameValuesQualityFm[key].length === this.allFichesMateriel.length) {
+        console.log('same value to all keys in this.sameValuesQualityFm => ', key);
+        for (let key2 in this.qualityFmNgModel) {
+          if (this.qualityFmNgModel[key2].idLibQualiteSup === +key) {
+            console.log('package attendu ==> ', this.qualityFmNgModel[key2].idLibQualiteSup);
+            console.log('this.originalsValuesQualityFm[key2].IsValid BEFORE => ', this.originalsValuesQualityFm[key2].IsValid);
+            this.qualityFmNgModel[key2].IsValid = this.sameValuesQualityFm[key][0];
+            this.originQualityValues[key2].IsValid = this.sameValuesQualityFm[key][0];
+            this.originalsValuesQualityFm[key2].IsValid = this.sameValuesQualityFm[key][0];
+            console.log('this.qualityFmNgModel[key2].IsValid => ', this.qualityFmNgModel[key2].IsValid);
+            console.log('this.sameValuesQualityFm[key][0] => ', this.sameValuesQualityFm[key][0]);
+          }
+        }
+      }
+    }
+    console.log('this.qualityFmNgModel : end to function to display samevalues => ', this.qualityFmNgModel);
+    console.log('this.originQualityValues => ', this.originQualityValues);
+    this.qualityMultiReady = true;
+  }
+
+// ACTIONS FOR ICONS CLICK
+  clearAllQualitiesValue() {
+    this.qualityFmNgModel.map(item => {
+      item.IsValid = false;
+    });
+  }
+
+  resetAllQualitiesValue() {
+    this.qualityFmNgModel.map(item => {
+      this.originQualityValues.map(oldQuality => {
+        if (item.idLibQualiteSup === oldQuality.idLibQualiteSup) {
+          item.IsValid = oldQuality.IsValid;
+        }
+      });
+    });
+  }
+
+// DISPLAY ICONS
+
+  displayClearQualitiesIcon(): boolean {
+    let itemIsValid = [];
+    this.qualityFmNgModel.map(item => {
+      if (item.IsValid) {
+        itemIsValid.push(item);
+      }
+    });
+    if (itemIsValid.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  displayResetQualitiesIcon(): boolean {
+    let itemsChanged = [];
+     this.qualityFmNgModel.map(item => {
+      this.originQualityValues.map(oldQuality => {
+        if (item.idLibQualiteSup === oldQuality.idLibQualiteSup) {
+          if (item.IsValid !== oldQuality.IsValid) {
+            itemsChanged.push(item);
+          }
+        }
+      });
+    });
+    if (itemsChanged.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   /************************** GET lib select Options ***************************/
 
@@ -818,62 +1070,180 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     });
   }
 
-  displayCheckedQualite(id) {
-    let checked = [];
-    // console.log(this.qualiteFM);
-    this.qualiteFM.map(item => {
-      if (item.idLibQualiteSup === id && item.IsValid) {
-        // console.log(item);
-        checked.push(item);
+  displayCheckedQualite(id): boolean {
+    if (this.selectionType !== 'multi') {
+      let checked = [];
+      // console.log(this.qualiteFM);
+      this.qualiteFM.map(item => {
+        if (item.idLibQualiteSup === id && item.IsValid) {
+          // console.log(item);
+          checked.push(item);
+        }
+      });
+      if (checked.length > 0) {
+        return true;
+      } else {
+        // console.log('non non non non qualité');
+        return false;
       }
-    });
-    if (checked.length > 0) {
-      return true;
     } else {
-      // console.log('non non non non qualité');
-      return false;
+      let checked = [];
+      this.qualityFmNgModel.map(item => {
+        console.log(item);
+        if (item.idLibQualiteSup === id && item.IsValid ) {
+          console.log(item);
+          if (item.IsValid !== 'same') {
+            console.log('item !== same => ', item);
+            checked.push(item);
+          }
+        }
+      });
+      if (checked.length > 0) {
+        return true;
+      } else {
+        console.log('non non non qualite');
+        return false;
+      }
     }
   }
 
   changeModelQualite(id) {
-    this.qualiteFM.map(item => {
-      if (item.idLibQualiteSup === id) {
-        // console.log(item);
-        item.IsValid = !item.IsValid;
-        // console.log(item.isValid);
+    if (this.selectionType !== 'multi') {
+      this.qualiteFM.map(item => {
+        if (item.idLibQualiteSup === id) {
+          // console.log(item);
+          item.IsValid = !item.IsValid;
+          // console.log(item.isValid);
+        }
+      });
+    } else {
+      console.log('ggggggggggggggggggggggggggggggggggggggggggggggggggggg');
+      this.qualityFmNgModel.map(item => {
+        if (item.idLibQualiteSup === id) {
+          console.log(item);
+          if (item.IsValid && item.IsValid !== 'same') {
+            console.log('item.IsValid before (true)=> ', item.IsValid);
+            item.IsValid = false;
+          } else if (!item.IsValid || item.IsValid === 'same') {
+            console.log('item.IsValid before => (false)', item.IsValid);
+            item.IsValid = true;
+          }
+          console.log(item.IsValid);
+        }
+      });
+    }
+  }
+
+  checkIfQualityValueIsNotValid(qualityCode): boolean {
+    console.log(qualityCode);
+    console.log('this.qualityFmNgModel ======> ', this.qualityFmNgModel);
+    let itemIsNotValid: boolean;
+    for (let key in this.qualityFmNgModel) {
+      if (key) {
+        console.log('key ==> ', this.qualityFmNgModel[key]);
+        console.log('key IsValid ==> ', this.qualityFmNgModel[key]['IsValid']);
+        if (this.qualityFmNgModel[key]['idLibQualiteSup'] === qualityCode ) {
+          if ((this.qualityFmNgModel[key]['IsValid'] === 'same') || this.qualityFmNgModel[key]['IsValid'] === true) {
+            itemIsNotValid = false;
+          } else {
+            itemIsNotValid = true;
+          }
+        }
       }
-    });
+    }
+    console.log('qualityCode => ', qualityCode, 'itemIsNotValid=> ', itemIsNotValid);
+    return itemIsNotValid;
   }
 
   //   (click)='changeModelVersion(item.id_version)'
   // [checked]='displayCheckedVersion(item.id_version)'
   displayCheckedVersion(id) {
-    let checked = [];
-    console.log('this.versionFicheMateriel ==> ', this.versionFicheMateriel);
-    this.versionFicheMateriel.map(item => {
-      console.log(item);
-      if (item.IdFicheAch_Lib_Versions === id && item.Isvalid) {
+    if (this.selectionType !== 'multi') {
+      let checked = [];
+      console.log('this.versionFicheMateriel ==> ', this.versionFicheMateriel);
+      this.versionFicheMateriel.map(item => {
         console.log(item);
-        checked.push(item);
+        if (item.IdFicheAch_Lib_Versions === id && item.Isvalid) {
+          console.log(item);
+          checked.push(item);
+        }
+      });
+      if (checked.length > 0) {
+        return true;
+      } else {
+        console.log('non non non version');
+        return false;
       }
-    });
-    if (checked.length > 0) {
-      return true;
     } else {
-      console.log('non non non version');
-      return false;
+      let checked = [];
+      console.log('this.versionFicheMateriel ==> ', this.versionFicheMateriel);
+      this.versionFmNgModel.map(item => {
+        console.log(item);
+        if (item.IdFicheAch_Lib_Versions === id && item.Isvalid ) {
+          console.log(item);
+          if (item.Isvalid !== 'same') {
+            console.log('item !== same => ', item);
+            checked.push(item);
+          }
+        }
+      });
+      if (checked.length > 0) {
+        return true;
+      } else {
+        console.log('non non non version');
+        return false;
+      }
     }
+
+  }
+
+  checkIfVersionValueIsNotValid(id_version): boolean {
+    console.log(id_version);
+    console.log('this.versionFmNgModel ======> ', this.versionFmNgModel);
+    let itemIsNotValid: boolean;
+    for (let key in this.versionFmNgModel) {
+      if (key) {
+        console.log('key ==> ', this.versionFmNgModel[key]);
+        console.log('key Isvalid ==> ', this.versionFmNgModel[key]['Isvalid']);
+        if (this.versionFmNgModel[key] ['IdFicheAch_Lib_Versions'] === id_version ) {
+          if ((this.versionFmNgModel[key]['Isvalid'] === 'same') || this.versionFmNgModel[key]['Isvalid'] === true) {
+            itemIsNotValid = false;
+          } else {
+            itemIsNotValid = true;
+          }
+        }
+      }
+    }
+    console.log('id_version => ', id_version, 'itemIsNotValid=> ', itemIsNotValid);
+    return itemIsNotValid;
   }
 
   changeModelVersion(id) {
-    console.log('changeModelVersion()');
-    this.versionFicheMateriel.map(item => {
-      if (item.IdFicheAch_Lib_Versions === id) {
-        console.log(item);
-        item.Isvalid = !item.Isvalid;
-        console.log(item.Isvalid);
-      }
-    });
+    if (this.selectionType !== 'multi') {
+      console.log('changeModelVersion()');
+      this.versionFicheMateriel.map(item => {
+        if (item.IdFicheAch_Lib_Versions === id) {
+          console.log(item);
+          item.Isvalid = !item.Isvalid;
+          console.log(item.Isvalid);
+        }
+      });
+    } else {
+      console.log('ggggggggggggggggggggggggggggggggggggggggggggggggggggg');
+      this.versionFmNgModel.map(item => {
+        if (item.IdFicheAch_Lib_Versions === id) {
+          console.log(item);
+          if (item.Isvalid && item.Isvalid !== 'same') {
+            console.log('item.Isvalid before (true)=> ', item.Isvalid);
+            item.Isvalid = false;
+          } else if (!item.Isvalid || item.Isvalid === 'same') {
+            console.log('item.Isvalid before => (false)', item.Isvalid);
+            item.Isvalid = true;
+          }
+          console.log(item.Isvalid);
+        }
+      });
+    }
   }
 
   getStepsLib() {
@@ -980,6 +1350,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         // console.log('get qualité lib :');
         // console.log(data);
         this.qualiteReady = true;
+        console.log('this.qualiteLib => ', this.qualiteLib);
       });
   }
 
@@ -988,7 +1359,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.versionLib = data;
-        // console.log(data);
+        console.log('this.versionLib => ', this.versionLib);
       });
   }
 
@@ -1319,6 +1690,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /*************** Comments *****************/
 
   getCommentaireAnnexElementsFicheMateriel(selectedId) {
+    console.log('call comment GET function');
     let IdFicheMateriel = selectedId.idFicheMateriel;
     this.annexElementsService.getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel)
       .pipe(takeUntil(this.onDestroy$))
@@ -1327,12 +1699,15 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
           this.comments = data;
           this.refreshEACommentModel = this.refreshEACommentModel++;
         } else {  // GET allEACommentsMultiSelect (all comments) TO MULTI MODIF
+          console.log('GET allEACommentsMultiSelect (all comments) TO MULTI MODIF');
           let allFmlength = this.storeFichesToModif.selectedFichesMateriel.length;
           let index = this.storeFichesToModif.selectedFichesMateriel.indexOf(selectedId);
+          console.log('this.allEACommentsMultiSelect before push => ', this.allEACommentsMultiSelect);
           data.map(item => {
             this.allEACommentsMultiSelect.push(item);
           });
           this.allEACommentsMultiSelect = [...new Set(this.allEACommentsMultiSelect)]; // remove same value
+          console.log('this.allEACommentsMultiSelect => ', this.allEACommentsMultiSelect);
           this.refreshEACommentModel = this.refreshEACommentModel++;
           if (index === allFmlength - 1) {
             this.allEACommentsMultiSelect.map(item => {
@@ -1367,6 +1742,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
 
               }
             }
+            console.log('this.sameEAComments =>', this.sameEAComments);
           }
         }
       });

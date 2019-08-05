@@ -265,6 +265,14 @@ $modificationColor: #FFB64D;
                             input {
                                 max-width: 250px;
                             }
+                            .checkbox-color {
+                                .itemNotValid {
+                                    color : #b7b7b7;
+                                }
+                                .itemValid {
+                                    color : #ffffff;
+                                }
+                            }
                             .icons {
                                 // margin: auto;
                                 cursor: pointer;
