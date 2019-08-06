@@ -49,6 +49,7 @@ private onDestroy$: Subject<any> = new Subject();
   
 
 }
+public errorUser
   getCoordinateurByUsername(Username) {
 
     this.coordinateurService.getCoordinateurByUsername(Username)
@@ -60,13 +61,13 @@ private onDestroy$: Subject<any> = new Subject();
             console.log('COORDINATEUR GROUPE => ', this.groupCoordinateur  )
             this.isCoordinateurReady = true
             console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );
+        },error => {
+          console.log("user not found")
+          this.errorUser = true
+          this.isCoordinateurReady = false
+          console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );  
         });
-     setTimeout(() => {
-      if( this.itemCoordinateur === undefined){
-        this.isCoordinateurReady = false
-        console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );  
- } 
-     }, 1000);
+   
     
 }
 }
