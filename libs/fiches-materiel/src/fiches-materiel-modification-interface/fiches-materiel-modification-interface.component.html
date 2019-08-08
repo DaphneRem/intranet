@@ -611,7 +611,7 @@
 
       </div>
       <div class="col-lg-4 fm-content">
-        <div class="sections droits" *ngIf="selectionType === 'one' && ficheAchatDetailReady">
+        <div class="sections droits" *ngIf="selectionType === 'one' && ficheAchatDetailReady" [ngStyle]="{'min-height': '160px'}">
           <i class="icofont icofont-law section-icon"></i>
 
           <p class="deb-droits">Date déb droits :
@@ -626,7 +626,7 @@
         </div>
 
 
-        <div class="sections livraison">
+        <div class="sections livraison" [ngStyle]="selectionType === 'multi' ? {'min-height': '400px'} : {'min-height': '440px'}">
           <i class="icofont icofont-clock-time section-icon"></i>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker livraison-date">
             <label class="col-lg-5 col-form-label">
@@ -727,7 +727,7 @@
           </div>
           <div *ngIf="!checkValidDate(newObject.DatePremiereDiff) && !fmInRecording" class="col-form-label invalid-form">La date de première diff n'est pas valide</div>
         </div>
-        <div class="sections acces-vf">
+        <div class="sections acces-vf" [ngStyle]="selectionType === 'multi' ? {'min-height': '220px'} : {'min-height': '265px'}">
           <i class="icofont icofont-unlock section-icon"></i>
           <label class="col-form-label col-lg-4">Accès VF :</label>
           <div class="row form-group">
@@ -773,7 +773,7 @@
         </div>
       </div>
       <div class="col-lg-4 fm-content">
-        <div class="sections press" [ngStyle]="selectionType === 'multi' ? {'min-height': '145px'} : {'min-height': '210px'}">
+        <div class="sections press" [ngStyle]="selectionType === 'multi' ? {'min-height': '215px'} : {'min-height': '210px'}">
           <i class="icofont icofont-newspaper section-icon"></i>
           <div class="row form-group">
             <label class="col-form-label col-lg-5">Elements annexes :</label>
@@ -856,7 +856,7 @@
 
           <!-- voir quel attribut correspond à ce commentaire -->
         </div>
-        <div class="sections ori" [ngStyle]="selectionType === 'multi' ? {'min-height': '140px'} : {'min-height': '195px'}">
+        <div class="sections ori" [ngStyle]="selectionType === 'multi' ? {'min-height': '140px'} : {'min-height': '270px'}">
           <i class="icofont icofont-space-shuttle section-icon"></i>
           <div class="row form-group retour-ori" [ngStyle]="selectionType === 'multi' ? {'margin-top': '0'} : {'margin-top': '30px'}">
             <label class="col-form-label col-lg-3">Retour Ori : </label>
@@ -905,7 +905,7 @@
         </div>
 
 <!--- ***************  SECTION RECEPTION LABO ***************** -->
-        <div class="sections labo" [ngStyle]="selectionType === 'multi' ? {'min-height': '250px'} : {'min-height': '310px'}">
+        <div class="sections labo" [ngStyle]="selectionType === 'multi' ? {'min-height': '250px'} : {'min-height': '385px'}">
           <i class="icofont icofont-beaker section-icon"></i>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker section-labo" [ngStyle]="selectionType === 'multi' ? {'margin-top': '10px'} : {'margin-top': '35px'}">
             <label class="col-lg-5 col-form-label">

@@ -123,20 +123,25 @@ $iconColor : #7f7f7f;
                     margin: 10px;
                     padding-bottom : 10px;
                     border : 1px solid $iconColor;
-                    &.info {
-                        min-height : 500px;
-                    }
-                    &.acces-vf {
-                        min-height: 140px;
-                        max-height: 140px;
-                    }
-                    &.press {
-                        min-height: 430px;
-                        max-height: 430px;
-                    }
-                    &.ori {
-                        min-height: 175px;
-                        max-height: 175px;
+                    .section-content {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;                    
+                        &.info {
+                            min-height : 460px;
+                        }
+                        &.acces-vf {
+                            min-height: 150px;
+                            max-height: 150px;
+                        }
+                        &.press {
+                            min-height: 395px;
+                            max-height: 395px;
+                        }
+                        &.ori {
+                            min-height: 190px;
+                            max-height: 190px;
+                        }
                     }
                     .section-icon {
                         color: grey;

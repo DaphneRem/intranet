@@ -85,244 +85,258 @@
       <div class="col-lg-4 fm-content">
         <div class="sections">
           <i class="icofont icofont-tag section-icon"></i>
+          <div class="section-content">
+            <p *ngIf="myFicheAchatGlobalExist"> N° fiche Achat : 
+              <span [ngClass]="!myFicheAchatGlobal.numero_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.numero_fiche ? myFicheAchatGlobal.numero_fiche : messageEmptyField}}</span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">N° fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
-          <p *ngIf="myFicheAchatGlobalExist"> N° fiche Achat : 
-            <span [ngClass]="!myFicheAchatGlobal.numero_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.numero_fiche ? myFicheAchatGlobal.numero_fiche : messageEmptyField}}</span>
-          </p>
-          <p *ngIf="!myFicheAchatGlobalExist">N° fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-
-          <p *ngIf="myFicheAchatGlobalExist">Type de fiche Achat : 
-            <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}</span>
-          </p>
-          <p *ngIf="!myFicheAchatGlobalExist">Type de fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-          <p *ngIf="myFicheAchatGlobalExist">
-            <a href="{{detailedReportLink}}" target="_blank" class="rapport-link" placement="top" ngbTooltip="Voir le rapport détaillé de la Fiche Achat">
-              <i class="icofont icofont-list rapport-icon"></i>
-              <span>Rapport détaillé</span>
-            </a>
-          </p>
+            <p *ngIf="myFicheAchatGlobalExist">Type de fiche Achat : 
+              <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}</span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Type de fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="myFicheAchatGlobalExist">
+              <a href="{{detailedReportLink}}" target="_blank" class="rapport-link" placement="top" ngbTooltip="Voir le rapport détaillé de la Fiche Achat">
+                <i class="icofont icofont-list rapport-icon"></i>
+                <span>Rapport détaillé</span>
+              </a>
+            </p>
+          </div>
         </div>
-        <div class="sections info">
+        <div class="sections">
           <i class="icofont icofont-info-circle section-icon"></i>
-          <p *ngIf="myFicheAchatGlobalExist">  Distributeur :
-            <span [ngClass]="!myFicheAchatGlobal.Distributeur ? 'empty-field' : ''">
-                {{myFicheAchatGlobal.Distributeur ? myFicheAchatGlobal.Distributeur : messageEmptyField}}
-            </span>
-          </p>
-          <p *ngIf="!myFicheAchatGlobalExist">Distributeur : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+          <div class="section-content info">
+            <p *ngIf="myFicheAchatGlobalExist">  Distributeur :
+              <span [ngClass]="!myFicheAchatGlobal.Distributeur ? 'empty-field' : ''">
+                  {{myFicheAchatGlobal.Distributeur ? myFicheAchatGlobal.Distributeur : messageEmptyField}}
+              </span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Distributeur : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
-          <p *ngIf="myFicheAchatGlobalExist">Année prod : 
-            <span [ngClass]="!myFicheAchatDetails.annee ? 'empty-field' : ''">
-              {{myFicheAchatDetails.annee ? myFicheAchatDetails.annee : messageEmptyField}}
-            </span>
-          </p>
-          <p *ngIf="!myFicheAchatGlobalExist">Année prod : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="myFicheAchatGlobalExist">Année prod : 
+              <span [ngClass]="!myFicheAchatDetails.annee ? 'empty-field' : ''">
+                {{myFicheAchatDetails.annee ? myFicheAchatDetails.annee : messageEmptyField}}
+              </span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Année prod : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
-          <p>N° Episode Prod : {{myFicheMateriel.NumEpisodeProd ? myFicheMateriel.NumEpisodeProd : '/'}}</p>
-          <p>N° Episode AB : {{myFicheMateriel.NumEpisodeAB ? myFicheMateriel.NumEpisodeAB : '/'}}</p>
-          <p>N° œuvre : {{myFicheMateriel.NumProgram ? myFicheMateriel.NumProgram : '/'}}</p>
-          <p *ngIf="myFicheAchatDetailsExist">Format œuvre : 
-            <span [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
-              {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisodes de '+myFicheAchatDetails.duree+'min' : messageEmptyField}}
-            </span>
-          </p>
-          <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p>N° Episode Prod : {{myFicheMateriel.NumEpisodeProd ? myFicheMateriel.NumEpisodeProd : '/'}}</p>
+            <p>N° Episode AB : {{myFicheMateriel.NumEpisodeAB ? myFicheMateriel.NumEpisodeAB : '/'}}</p>
+            <p>N° œuvre : {{myFicheMateriel.NumProgram ? myFicheMateriel.NumProgram : '/'}}</p>
+            <p *ngIf="myFicheAchatDetailsExist">Format œuvre : 
+              <span [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
+                {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisodes de '+myFicheAchatDetails.duree+'min' : messageEmptyField}}
+              </span>
+            </p>
+            <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
-          <p>Titre épisode VF : {{myFicheMateriel.TitreEpisodeVF ? myFicheMateriel.TitreEpisodeVF : messageEmptyField}}</p>
-          <p>Titre épisode VO : {{myFicheMateriel.TitreEpisodeVO ? myFicheMateriel.TitreEpisodeVO : messageEmptyField}}</p>
+            <p>Titre épisode VF : {{myFicheMateriel.TitreEpisodeVF ? myFicheMateriel.TitreEpisodeVF : messageEmptyField}}</p>
+            <p>Titre épisode VO : {{myFicheMateriel.TitreEpisodeVO ? myFicheMateriel.TitreEpisodeVO : messageEmptyField}}</p>
 
-          <p *ngIf="versionExist.length > 0">Version :
-            <span *ngFor="let item of versionFicheMateriel">
-              <span *ngFor="let version of versionLib">
-                <span *ngIf="version.id_version === item.IdFicheAch_Lib_Versions && item.Isvalid" class="label bg-info">
-                  {{version.version_mat}}
+            <p *ngIf="versionExist.length > 0">Version :
+              <span *ngFor="let item of versionFicheMateriel">
+                <span *ngFor="let version of versionLib">
+                  <span *ngIf="version.id_version === item.IdFicheAch_Lib_Versions && item.Isvalid" class="label bg-info">
+                    {{version.version_mat}}
+                  </span>
                 </span>
               </span>
-            </span>
-          </p>
-          <p *ngIf="!versionExist.length">Version : /</p>
+            </p>
+            <p *ngIf="!versionExist.length">Version : /</p>
 
-          <p *ngIf="qualiteExist.length > 0">Qualité :
-            <span *ngFor="let item of qualiteFM">
-              <span *ngFor="let qualite of qualiteLib">
-                <span *ngIf="qualite.Code === item.idLibQualiteSup && item.IsValid" class="label bg-info">
-                  {{qualite.Libelle}}
+            <p *ngIf="qualiteExist.length > 0">Qualité :
+              <span *ngFor="let item of qualiteFM">
+                <span *ngFor="let qualite of qualiteLib">
+                  <span *ngIf="qualite.Code === item.idLibQualiteSup && item.IsValid" class="label bg-info">
+                    {{qualite.Libelle}}
+                  </span>
                 </span>
               </span>
-            </span>
-          </p>
-          <p *ngIf="!qualiteExist.length">Qualité : /</p>
-          <p>Support : 
-            <span  [ngClass]="!myFicheMateriel.IdSupport ? 'empty-field' : ''">
-              {{myFicheMateriel.IdSupport ? myFicheMateriel.IdSupport : messageEmptyField}}
-            </span> 
-          </p>
-          <p *ngIf="myFicheAchatGlobal.chaines">Chaînes concernées :
-            <span *ngFor="let item of myFicheAchatGlobal.chaines; let x = index">
-              {{x === 0 ? item : ', '+item}}
-            </span>
-          </p>
-          <p *ngIf="!myFicheAchatGlobal.chaines">Chaînes concernées : 
-            <span class="empty-field">
-              {{messageEmptyField}}
-            </span>
-          </p>
+            </p>
+            <p *ngIf="!qualiteExist.length">Qualité : /</p>
+            <p>Support : 
+              <span  [ngClass]="!myFicheMateriel.IdSupport ? 'empty-field' : ''">
+                {{myFicheMateriel.IdSupport ? myFicheMateriel.IdSupport : messageEmptyField}}
+              </span> 
+            </p>
+            <p *ngIf="myFicheAchatGlobal.chaines">Chaînes concernées :
+              <span *ngFor="let item of myFicheAchatGlobal.chaines; let x = index">
+                {{x === 0 ? item : ', '+item}}
+              </span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobal.chaines">Chaînes concernées : 
+              <span class="empty-field">
+                {{messageEmptyField}}
+              </span>
+            </p>
+          </div>
         </div>
       </div>
 
       <div class="col-lg-4 fm-content">
         <div class="sections">
           <i class="icofont icofont-law section-icon"></i>
-          <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
-            <span [ngClass]="!myFicheAchatDetails.debut_des_droits ? 'empty-field' : ''">
-              <span *ngIf="myFicheAchatDetails.debut_des_droits !== null">
-                {{myFicheAchatDetails.debut_des_droits | date}}
-              </span>
-              <span *ngIf="myFicheAchatDetails.debut_des_droits === null">
-                {{messageEmptyField}}
-              </span>
-            </span>
-          </p>
-          <p *ngIf="!myFicheAchatDetailsExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-
-          <p *ngIf="myFicheAchatDetails.duree_droits_annee">Fin des droits : {{myFicheAchatDetails.duree_droits_annee}} an(s)</p>
-          <p *ngIf="myFicheAchatDetails.duree_droits_mois">Fin des droits : {{myFicheAchatDetails.duree_droits_mois}} mois</p>
-          <p *ngIf="!myFicheAchatDetails.duree_droits_annee && !myFicheAchatDetails.duree_droits_mois && myFicheAchatDetailsExist">Fin des droits : 
-            <span class="empty-field">{{messageEmptyField}}</span>
-          </p>
-          <p *ngIf="!myFicheAchatDetailsExist">Fin des droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-
-        </div>
-        <div class="sections">
-          <i class="icofont icofont-beaker section-icon"></i>
-          <p>Réception accès labo: 
-            <span [ngClass]="!myFicheMateriel.ReceptionAccesLabo ? 'empty-field' : ''">
-              <span *ngIf="myFicheMateriel.ReceptionAccesLabo !== null">
-                {{myFicheMateriel.ReceptionAccesLabo | date}}
-              </span>
-              <span *ngIf="myFicheMateriel.ReceptionAccesLabo === null">
-                {{messageEmptyField}}
-              </span>
-            </span>  
-          </p>
-          <p>Nom du labo: 
-            <span [ngClass]="!myFicheMateriel.NomLabo ? 'empty-field' : ''">
-              {{myFicheMateriel.NomLabo ? myFicheMateriel.NomLabo : messageEmptyField}}
-            </span>
-          </p>
-          <p>Coût labo: 
-            <span [ngClass]="myFicheMateriel.CoutLabo === null ? 'empty-field' : ''">
-              {{myFicheMateriel.CoutLabo !== null ? myFicheMateriel.CoutLabo : messageEmptyField}}
-            </span>
-          </p>
-        </div>
-        <div class="sections">
-          <i class="icofont icofont-clock-time section-icon"></i>
-          <div style="display: flex;">
-            <p>Dernière date de livraison :
-              <span [ngClass]="!myFicheMateriel.DateLivraison ? 'empty-field' : ''">
-                <span *ngIf="myFicheMateriel.DateLivraison !== null">
-                  {{myFicheMateriel.DateLivraison | date}}
+          <div class="section-content">
+            <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
+              <span [ngClass]="!myFicheAchatDetails.debut_des_droits ? 'empty-field' : ''">
+                <span *ngIf="myFicheAchatDetails.debut_des_droits !== null">
+                  {{myFicheAchatDetails.debut_des_droits | date}}
                 </span>
-                <span *ngIf="myFicheMateriel.DateLivraison === null">
+                <span *ngIf="myFicheAchatDetails.debut_des_droits === null">
                   {{messageEmptyField}}
                 </span>
               </span>
             </p>
-            <history-delivery-date-modal *ngIf="myFicheMateriel.DateLivraison !== null" [myFicheMateriel]="myFicheMateriel" ></history-delivery-date-modal>
+            <p *ngIf="!myFicheAchatDetailsExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+            <p *ngIf="myFicheAchatDetails.duree_droits_annee">Fin des droits : {{myFicheAchatDetails.duree_droits_annee}} an(s)</p>
+            <p *ngIf="myFicheAchatDetails.duree_droits_mois">Fin des droits : {{myFicheAchatDetails.duree_droits_mois}} mois</p>
+            <p *ngIf="!myFicheAchatDetails.duree_droits_annee && !myFicheAchatDetails.duree_droits_mois && myFicheAchatDetailsExist">Fin des droits : 
+              <span class="empty-field">{{messageEmptyField}}</span>
+            </p>
+            <p *ngIf="!myFicheAchatDetailsExist">Fin des droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
           </div>
-
-          <p *ngIf="myFicheAchatDetailsExist">Délai de vérif :
-            <span [ngClass]="!myFicheAchatDetails.delai_verification ? 'empty-field' : ''">
-              {{myFicheAchatDetails.delai_verification ? myFicheAchatDetails.delai_verification+' jours' : messageEmptyField}}
-            </span>
-          </p>
-          <p *ngIf="!myFicheAchatDetailsExist">Délai de vérif : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-
-          <p>Date Acceptation : 
-            <span [ngClass]="!myFicheMateriel.DateAcceptation ? 'empty-field' : ''">
-              <span *ngIf="myFicheMateriel.DateAcceptation !== null">
-                {{myFicheMateriel.DateAcceptation | date}}
-              </span>
-              <span *ngIf="myFicheMateriel.DateAcceptation === null">
-                {{messageEmptyField}}
-              </span>
-            </span>
-          </p>
-          <p>Date de première diff : 
-            <span [ngClass]="!myFicheMateriel.DatePremiereDiff ? 'empty-field' : ''">
-              <span *ngIf="myFicheMateriel.DatePremiereDiff !== null">
-                {{myFicheMateriel.DatePremiereDiff | date}}
-              </span>
-              <span *ngIf="myFicheMateriel.DatePremiereDiff === null">
-                {{messageEmptyField}}
-              </span>
-            </span>
-          </p>
         </div>
-        <div class="sections acces-vf">
+        <div class="sections">
+          <i class="icofont icofont-beaker section-icon"></i>
+          <div class="section-content">
+            <p>Réception accès labo: 
+              <span [ngClass]="!myFicheMateriel.ReceptionAccesLabo ? 'empty-field' : ''">
+                <span *ngIf="myFicheMateriel.ReceptionAccesLabo !== null">
+                  {{myFicheMateriel.ReceptionAccesLabo | date}}
+                </span>
+                <span *ngIf="myFicheMateriel.ReceptionAccesLabo === null">
+                  {{messageEmptyField}}
+                </span>
+              </span>  
+            </p>
+            <p>Nom du labo: 
+              <span [ngClass]="!myFicheMateriel.NomLabo ? 'empty-field' : ''">
+                {{myFicheMateriel.NomLabo ? myFicheMateriel.NomLabo : messageEmptyField}}
+              </span>
+            </p>
+            <p>Coût labo: 
+              <span [ngClass]="myFicheMateriel.CoutLabo === null ? 'empty-field' : ''">
+                {{myFicheMateriel.CoutLabo !== null ? myFicheMateriel.CoutLabo : messageEmptyField}}
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="sections">
+          <i class="icofont icofont-clock-time section-icon"></i>
+          <div class="section-content">
+            <div style="display: flex;">
+              <p>Dernière date de livraison :
+                <span [ngClass]="!myFicheMateriel.DateLivraison ? 'empty-field' : ''">
+                  <span *ngIf="myFicheMateriel.DateLivraison !== null">
+                    {{myFicheMateriel.DateLivraison | date}}
+                  </span>
+                  <span *ngIf="myFicheMateriel.DateLivraison === null">
+                    {{messageEmptyField}}
+                  </span>
+                </span>
+              </p>
+              <history-delivery-date-modal *ngIf="myFicheMateriel.DateLivraison !== null" [myFicheMateriel]="myFicheMateriel" ></history-delivery-date-modal>
+            </div>
+
+            <p *ngIf="myFicheAchatDetailsExist">Délai de vérif :
+              <span [ngClass]="!myFicheAchatDetails.delai_verification ? 'empty-field' : ''">
+                {{myFicheAchatDetails.delai_verification ? myFicheAchatDetails.delai_verification+' jours' : messageEmptyField}}
+              </span>
+            </p>
+            <p *ngIf="!myFicheAchatDetailsExist">Délai de vérif : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+
+            <p>Date Acceptation : 
+              <span [ngClass]="!myFicheMateriel.DateAcceptation ? 'empty-field' : ''">
+                <span *ngIf="myFicheMateriel.DateAcceptation !== null">
+                  {{myFicheMateriel.DateAcceptation | date}}
+                </span>
+                <span *ngIf="myFicheMateriel.DateAcceptation === null">
+                  {{messageEmptyField}}
+                </span>
+              </span>
+            </p>
+            <p>Date de première diff : 
+              <span [ngClass]="!myFicheMateriel.DatePremiereDiff ? 'empty-field' : ''">
+                <span *ngIf="myFicheMateriel.DatePremiereDiff !== null">
+                  {{myFicheMateriel.DatePremiereDiff | date}}
+                </span>
+                <span *ngIf="myFicheMateriel.DatePremiereDiff === null">
+                  {{messageEmptyField}}
+                </span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="sections">
           <i class="icofont icofont-unlock section-icon"></i>
-          <p>Accès VF :</p>
-          <p [ngClass]="!myFicheMateriel.AccesVF ? 'empty-field' : ''">{{myFicheMateriel.AccesVF ? myFicheMateriel.AccesVF : messageEmptyField}}</p>
+          <div class="section-content acces-vf">
+            <p>Accès VF :</p>
+            <p [ngClass]="!myFicheMateriel.AccesVF ? 'empty-field' : ''">{{myFicheMateriel.AccesVF ? myFicheMateriel.AccesVF : messageEmptyField}}</p>
+          </div>
         </div>
       </div>
       <div class="col-lg-4 fm-content">
-        <div class="sections press">
+        <div class="sections">
           <i class="icofont icofont-newspaper section-icon"></i>
-          <p *ngIf="annexElementsReady">Eléments annexes : {{myFicheMateriel.IdStatutElementsAnnexes ? diplayAnnexStatus(myFicheMateriel.IdStatutElementsAnnexes) : messageEmptyField}}</p> 
-          <!-- Eléments annexes => ajouter libellé plutot que number -->
-          <p>Détails :</p>
-          <annexes-elements-details-modal [IdFicheMateriel]="myFicheMateriel.IdFicheMateriel" ></annexes-elements-details-modal>
-          <!-- <div *ngIf="myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel">
-            <ul>
-              <li *ngFor="let element of myFicheMateriel.Fiche_Mat_ElementsAnnexes; let i = index">
-                <span *ngIf="i<6">{{element.libelle}}
-                  <i *ngIf="element.IsValid" class="icofont icofont-check-alt"></i>
-                </span>
-              </li>
-            </ul>
-            <ul>
-              <li *ngFor="let element of myFicheMateriel.Fiche_Mat_ElementsAnnexes; let i = index">
-                <span *ngIf="i>5">{{element.libelle}}
-                  <i *ngIf="element.IsValid" class="icofont icofont-check-alt"></i>
-                </span>
-              </li>
-            </ul>
+          <div class="section-content press">
+            <p *ngIf="annexElementsReady">Eléments annexes : {{myFicheMateriel.IdStatutElementsAnnexes ? diplayAnnexStatus(myFicheMateriel.IdStatutElementsAnnexes) : messageEmptyField}}</p> 
+            <!-- Eléments annexes => ajouter libellé plutot que number -->
+            <p>Détails :</p>
+            <annexes-elements-details-modal [IdFicheMateriel]="myFicheMateriel.IdFicheMateriel" ></annexes-elements-details-modal>
+            <!-- <div *ngIf="myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel">
+              <ul>
+                <li *ngFor="let element of myFicheMateriel.Fiche_Mat_ElementsAnnexes; let i = index">
+                  <span *ngIf="i<6">{{element.libelle}}
+                    <i *ngIf="element.IsValid" class="icofont icofont-check-alt"></i>
+                  </span>
+                </li>
+              </ul>
+              <ul>
+                <li *ngFor="let element of myFicheMateriel.Fiche_Mat_ElementsAnnexes; let i = index">
+                  <span *ngIf="i>5">{{element.libelle}}
+                    <i *ngIf="element.IsValid" class="icofont icofont-check-alt"></i>
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="!myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel materiel-no-data">
+              <span class="empty-field">Champ non renseigné dans la fiche Matériel</span>
+            </div> -->
+            <div class="materiel"></div>
+            <expected-package-modal *ngIf="dataDetailsReady" [myFicheAchatDetails]="myFicheAchatDetails"></expected-package-modal>
+            <!-- <p>Commentraires : <span class="empty-field">{{messageEmptyField}}</span></p>  -->
+            <!-- voir quel attribut correspond à ce commentaire -->
           </div>
-          <div *ngIf="!myFicheMateriel.Fiche_Mat_ElementsAnnexes" class="materiel materiel-no-data">
-            <span class="empty-field">Champ non renseigné dans la fiche Matériel</span>
-          </div> -->
-          <div class="materiel"></div>
-          <expected-package-modal *ngIf="dataDetailsReady" [myFicheAchatDetails]="myFicheAchatDetails"></expected-package-modal>
-          <!-- <p>Commentraires : <span class="empty-field">{{messageEmptyField}}</span></p>  -->
-          <!-- voir quel attribut correspond à ce commentaire -->
         </div>
-        <div class="sections ori">
+        <div class="sections">
           <i class="icofont icofont-space-shuttle section-icon"></i>
-          <p>Retour Ori : 
-            <span *ngIf="retourOriReady" [ngClass]="!myFicheMateriel.RetourOri ? 'empty-field' : ''">
-              {{myFicheMateriel.RetourOri ? diplayRetourOri(myFicheMateriel.RetourOri) : messageEmptyField}}
-            </span>
-          </p>
-          <!-- Retour Ori => ajouter libellé plutot que number -->
+          <div class="section-content ori">
+            <p>Retour Ori : 
+              <span *ngIf="retourOriReady" [ngClass]="!myFicheMateriel.RetourOri ? 'empty-field' : ''">
+                {{myFicheMateriel.RetourOri ? diplayRetourOri(myFicheMateriel.RetourOri) : messageEmptyField}}
+              </span>
+            </p>
+            <!-- Retour Ori => ajouter libellé plutot que number -->
 
-          <p *ngIf="myFicheAchatDetailsExist">Durée du prêt : 
-            <span [ngClass]="myFicheAchatDetails.duree_du_pret === null ? 'empty-field' : ''">
-              {{myFicheAchatDetails.duree_du_pret !== null ? myFicheAchatDetails.duree_du_pret + ' jour(s)' : messageEmptyField}}
-            </span>
-          </p>
-          <p *ngIf="!myFicheAchatDetailsExist">Durée du prêt : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-          
-          <p>Retour Ori dernier délai : 
-            <span [ngClass]="!myFicheMateriel.RetourOriDernierDelai ? 'empty-field' : ''">
-              <span *ngIf="myFicheMateriel.RetourOriDernierDelai !== null">
-                {{myFicheMateriel.RetourOriDernierDelai | date}}
+            <p *ngIf="myFicheAchatDetailsExist">Durée du prêt : 
+              <span [ngClass]="myFicheAchatDetails.duree_du_pret === null ? 'empty-field' : ''">
+                {{myFicheAchatDetails.duree_du_pret !== null ? myFicheAchatDetails.duree_du_pret + ' jour(s)' : messageEmptyField}}
               </span>
-              <span *ngIf="myFicheMateriel.RetourOriDernierDelai === null">
-                {{messageEmptyField}}
+            </p>
+            <p *ngIf="!myFicheAchatDetailsExist">Durée du prêt : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            
+            <p>Retour Ori dernier délai : 
+              <span [ngClass]="!myFicheMateriel.RetourOriDernierDelai ? 'empty-field' : ''">
+                <span *ngIf="myFicheMateriel.RetourOriDernierDelai !== null">
+                  {{myFicheMateriel.RetourOriDernierDelai | date}}
+                </span>
+                <span *ngIf="myFicheMateriel.RetourOriDernierDelai === null">
+                  {{messageEmptyField}}
+                </span>
               </span>
-            </span>
-          </p>
+            </p>
+          </div>
         </div>
       </div>
     </div>
