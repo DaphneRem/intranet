@@ -6,7 +6,7 @@
 
 <loader-animation *ngIf="!dataRegieReady" ></loader-animation>
 
-<div *ngIf="dataRegieReady" class="control-section card">
+<div *ngIf="dataRegieReady" class="control-section card" >
     <!-- <div class="autre-planinngs">
         <select class="form-control form-control-info mt-2 " placeholder="Autres plannings" #selectplan (change)="onSelectPlannig(selectplan.value)"
             style="width: 25%">
@@ -37,7 +37,7 @@
                     <option value={{this.idCoordinateur}}>Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" value={{libelle.Code}}>{{libelle.Libelle}} </option>
                 </select> -->
-                <ejs-dropdownlist id='games' class =" mt-2 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
+                <ejs-dropdownlist id='games' class =" mt-2 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='selectplan.value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
                 <input type="text" 
                 class="form-control form-control-info  e-input recherche" 
                 placeholder="Rechercher une régie..." 
@@ -60,7 +60,7 @@
                                 </ejs-checkbox>
                             </td>
                             <td style="width: 5%">
-                                <div style="text-align:center"> Intervalle <br> (Minutes)</div>          
+                                <div style="text-align:center" *ngIf="scheduleObj.currentView != 'TimelineMonth'  "> Intervalle <br> (Minutes)</div>          
                             </td>
                             <td  style="width: 10%"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
                                 <div style="width: 100%">
@@ -79,7 +79,7 @@
                             </td>
                             <td style="width: 10%">
                                 <div style="width:100%" >
-                                    <ejs-timepicker #ejStartTimePicker id="startTime" [value]="startdate" format='HH:mm'></ejs-timepicker>
+                                    <ejs-timepicker #ejStartTimePicker id="startTime" [value]="startdate"   [cssClass]='customClass'   format='HH:mm'></ejs-timepicker>
                                 </div>
                             </td >
                             <td style="width: 5%">
@@ -88,10 +88,14 @@
                             </td>
                             <td style="width:10%">
                                 <div style="width:100%"  >
-                                    <ejs-timepicker #ejEndTimePicker id="endTime" [value]="enddate" format='HH:mm' (change)="onSubmit()"></ejs-timepicker>
+                                    <ejs-timepicker #ejEndTimePicker id="endTime" [value]="enddate"  format='HH:mm'  [cssClass]='customClass' (change)="onSubmit()"></ejs-timepicker>
                                 </div>
                             </td> -->
-                       
+                            <!-- <td style="width: 70%;"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                                <div>
+                                    <ejs-datepicker #datepicker [(value)]='selectedDate' [showClearButton]=false></ejs-datepicker>
+                                </div>
+                            </td> -->
                         </tr>
                      
                     </tbody>
@@ -117,16 +121,18 @@
                     (renderCell)="onRenderCell($event)"
                     (navigating)="onNavigating($event)"
                     (resizeStart)="onResizing($event)"
-                    (created)="onCreated($event)"
-                
+                    (select)= "onSelectMultipleCell($event)"
+                    [enablePersistence]="false"
+                    [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
                     (change)="onChange($event)"
                     [showHeaderBar]='true'
+                    
                     width='auto'
                     height='100%'
                     >
-                 
+                    <!-- (created)="onCreated($event)" -->
                     <!-- (renderCell)="onRenderCell($event)" -->
                     <e-resources>
                         <e-resource 
@@ -154,7 +160,7 @@
                          
                         
                     <e-views>
-                        <e-view option='TimelineDay'  #scheduleObjDay [interval]="2" >
+                        <e-view option='TimelineDay'  #scheduleObjDay [interval]="2"  >
                             <ng-template #eventTemplate let-data  class="event">
                                 <div class='template-wrap ' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                     <div>
@@ -181,7 +187,7 @@
                             </div></ng-template> -->
                         </e-view>
                  
-                    <e-view option="TimelineWeek" class="e-icons e-search"    >
+                    <e-view option="TimelineWeek" class="e-icons e-search"  >
                             <ng-template #eventTemplate let-data  class="event">
                                     <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
                                         <div>
@@ -221,7 +227,7 @@
                                 </div>
                             </ng-template>
                 </e-view> -->
-                    <e-view option='TimelineMonth' >
+                    <e-view option='TimelineMonth'  >
                             <ng-template #eventTemplate let-data  class="event" >
                                 <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
                                     <div >
@@ -289,7 +295,8 @@
                                 (nodeSelecting)="onTreeSelecting($event)" 
                                 (nodeSelecting)="onTreeSelected($event)"
                                 (nodeExpanding)="onTreeExpanding($event)"
-                                (nodeDragging)="onItemDrag($event, 0)">
+                                (nodeDragging)="onItemDrag($event, 0)"
+                                [enablePersistence]="false">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""
                                 >
                                     <div id="waiting">
