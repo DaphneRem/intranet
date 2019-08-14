@@ -79,8 +79,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   ) {}
 
   ngOnInit() {
-    console.log(this.newObject);
-    console.log(this.comments);
+    // console.log(this.newObject);
+    // console.log(this.comments);
   }
 
   ngOnDestroy() {
@@ -95,17 +95,17 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       && this.premiereDiff
       && this.accesLabo
     ) {
-      console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
+      // console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
       return true;
     } else {
-      console.log('ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt');
+      // console.log('ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt');
       return false;
     }
   }
 
   modifFichesMateriel(closeAction) { // 1/
     let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
-    console.log('COMMENTS ================> ', this.comments);
+    // console.log('COMMENTS ================> ', this.comments);
     if (closeAction === 'close') {
       this.closeInterface = true;
     } else {
@@ -159,14 +159,14 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   }
 
   actionAfterSave() { // 10/
-    console.log('ACTION AFTER SAVE CALL !!!', this.newObject);
+    // console.log('ACTION AFTER SAVE CALL !!!', this.newObject);
     if (this.closeInterface) {
       this.goBack();
     } else {
       let now = new Date();
       let hours = now.getHours();
       let minutes = now.getMinutes();
-      console.log('this.changedValues ===> ', this.changedValues);
+      // console.log('this.changedValues ===> ', this.changedValues);
       this.modificationMessage.emit(`Dernières modifications enregistrées à ${hours}:${minutes}`);
       this.propertiesChanged.emit(this.changedValues);
     }
@@ -176,13 +176,13 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.qualiteService.putQualite(qualiteFM)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(qualite => {
-        console.log(qualite);
+        // console.log(qualite);
         if (qualite) {
-          console.log('PUT qualite with succes');
-          console.log(qualite);
+          // console.log('PUT qualite with succes');
+          // console.log(qualite);
         } else {
-          console.log('ERROR PUT qualite');
-          console.log(qualite);
+          // console.log('ERROR PUT qualite');
+          // console.log(qualite);
         }
       });
   }
@@ -191,13 +191,13 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.versionService.putVersion(versionFM)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(version => {
-        console.log(version);
+        // console.log(version);
         if (version) {
-          console.log('PUT version with succes');
-          console.log(version);
+          // console.log('PUT version with succes');
+          // console.log(version);
         } else {
-          console.log('ERROR PUT version');
-          console.log(version);
+          // console.log('ERROR PUT version');
+          // console.log(version);
         }
       });
   }
@@ -214,7 +214,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     ) {
       this.newObject.Deadline = null;
       this.newObject.isarchived = 1;
-      console.log('this.newObject.Deadline => ', this.newObject.Deadline);
+      // console.log('this.newObject.Deadline => ', this.newObject.Deadline);
     } else {
       let day = this.addZeroToDate(newObject.Deadline.day);
       let month = this.addZeroToDate(newObject.Deadline.month);
@@ -225,9 +225,9 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   }
 
   addZeroToDate(date) {
-    console.log('date => ', date);
+    // console.log('date => ', date);
     if (date) {
-      console.log(date.toString());
+      // console.log(date.toString());
       if (date.toString().length === 1) {
         return `0${date}`;
       } else {
@@ -237,14 +237,14 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   }
 
   resetDateFormat(newObject) { // 5/
-    console.log('before resetDateFormat : this.newObject => ', this.newObject);
-    console.log('newObject.Deadline => ', newObject.Deadline);
-    console.log('newObject.DateLivraison => ', newObject.DateLivraison);
-    console.log('newObject.DatePremiereDiff => ', newObject.DatePremiereDiff);
-    console.log('newObject.DateAcceptation => ', newObject.DateAcceptation);
-    console.log('newObject.ReceptionAccesLabo => ', newObject.ReceptionAccesLabo);
-    console.log('newObject.DateLivraison => ', newObject.DateRetourOri);
-    console.log('newObject.DateLivraison => ', newObject.RetourOriDernierDelai);
+    // console.log('before resetDateFormat : this.newObject => ', this.newObject);
+    // console.log('newObject.Deadline => ', newObject.Deadline);
+    // console.log('newObject.DateLivraison => ', newObject.DateLivraison);
+    // console.log('newObject.DatePremiereDiff => ', newObject.DatePremiereDiff);
+    // console.log('newObject.DateAcceptation => ', newObject.DateAcceptation);
+    // console.log('newObject.ReceptionAccesLabo => ', newObject.ReceptionAccesLabo);
+    // console.log('newObject.DateLivraison => ', newObject.DateRetourOri);
+    // console.log('newObject.DateLivraison => ', newObject.RetourOriDernierDelai);
 
     if (
       newObject.Deadline !== null &&
@@ -265,7 +265,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       newObject.DateLivraison = `${newObject.DateLivraison.year}-${
         month
       }-${day}T00:00:00`;
-      console.log('newObject.DateLivraison => ', newObject.DateLivraison);
+      // console.log('newObject.DateLivraison => ', newObject.DateLivraison);
     }
     if (
       newObject.DatePremiereDiff !== null &&
@@ -277,7 +277,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       newObject.DatePremiereDiff = `${newObject.DatePremiereDiff.year}-${
         month
       }-${day}T00:00:00`;
-      console.log('newObject.DatePremiereDiff => ', newObject.DatePremiereDiff);
+      // console.log('newObject.DatePremiereDiff => ', newObject.DatePremiereDiff);
     }
     if (
       newObject.DateAcceptation !== null &&
@@ -289,7 +289,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       newObject.DateAcceptation = `${newObject.DateAcceptation.year}-${
         month
       }-${day}T00:00:00`;
-      console.log('newObject.DateAcceptation => ', newObject.DateAcceptation);
+      // console.log('newObject.DateAcceptation => ', newObject.DateAcceptation);
     }
     if (
       newObject.ReceptionAccesLabo !== null &&
@@ -301,7 +301,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       newObject.ReceptionAccesLabo = `${newObject.ReceptionAccesLabo.year}-${
         month
       }-${day}T00:00:00`;
-      console.log('newObject.ReceptionAccesLabo => ', newObject.ReceptionAccesLabo);
+      // console.log('newObject.ReceptionAccesLabo => ', newObject.ReceptionAccesLabo);
       // newObject.ReceptionAccesLabo = new Date(newObject.ReceptionAccesLabo.year, newObject.ReceptionAccesLabo.month - 1, newObject.ReceptionAccesLabo.day).toDateString();
     }
     if (
@@ -337,18 +337,18 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.fichesMaterielService.getOneFicheMateriel(id)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        console.log(data);
+        // console.log(data);
         this.myFicheMateriel = data[0];
         if (
           JSON.stringify(this.newObject) === JSON.stringify(this.myFicheMateriel)
         ) {
-          console.log(this.newObject[0]);
-          console.log('true');
-          console.log(this.newObject === this.myFicheMateriel);
-          console.log(this.myFicheMateriel);
+          // console.log(this.newObject[0]);
+          // console.log('true');
+          // console.log(this.newObject === this.myFicheMateriel);
+          // console.log(this.myFicheMateriel);
         } else {
-          console.log('false');
-          console.log(this.newObject);
+          // console.log('false');
+          // console.log(this.newObject);
           // if (this.newObject.IdLibEtape !== this.newObject.IdLibEtape) {
           //   this.newObject.Fiche_Mat_LibEtape = null;
           // }
@@ -362,7 +362,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   }
 
   updatePutFicheMateriel(e) {
-    console.log(e);
+    // console.log(e);
     let now = moment().format('YYYY-MM-DDTHH:mm:ss');
     delete e.Fiche_Mat_LibEtape;
     delete e.Fiche_Mat_Qualite;
@@ -374,22 +374,22 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         if (data) {
-          console.log('succes PUT fiche materiel');
-          console.log('data to PUT : ', this.annexElementsFicheMateriel);
-          console.log(data);
-          console.log(this.annexElementsFicheMateriel);
+          // console.log('succes PUT fiche materiel');
+          // console.log('data to PUT : ', this.annexElementsFicheMateriel);
+          // console.log(data);
+          // console.log(this.annexElementsFicheMateriel);
           this.annexElementsService
             .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
             .pipe(takeUntil(this.onDestroy$))
             .subscribe(annexesElements => {
-              console.log(annexesElements);
+              // console.log(annexesElements);
               if (annexesElements) {
-                console.log('succes PUT annexesElements');
-                console.log(annexesElements);
+                // console.log('succes PUT annexesElements');
+                // console.log(annexesElements);
                 this.actionAfterSave();
               } else {
-                console.log('error PUT annexesElements');
-                console.log(annexesElements);
+                // console.log('error PUT annexesElements');
+                // console.log(annexesElements);
               }
             });
           this.putQualiteFicheMateriel(this.qualiteFM);
@@ -397,18 +397,18 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           // ICI
           this.updateCommentaireAnnexElementsFicheMateriel();
         } else {
-          console.log('error PUT fiche materiel');
-          console.log(data);
+          // console.log('error PUT fiche materiel');
+          // console.log(data);
         }
-        console.log(data);
+        // console.log(data);
       });
     // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
   }
 
   putAnnexElementReset() {
-    console.log(this.annexElementsNgModel);
-    console.log(this.allIdSelectedFichesMateriel);
-    console.log(this.allFichesMateriel);
+    // console.log(this.annexElementsNgModel);
+    // console.log(this.allIdSelectedFichesMateriel);
+    // console.log(this.allFichesMateriel);
     // this.annexElementsService
     //   .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
     //   .pipe(takeUntil(this.onDestroy$))
@@ -436,10 +436,10 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   checkChanges(allId) { // 4/
     // CALL IF SELECTION TYPE IS 'MULTI'
     // let changedValues = {};
-    console.log(allId);
-    console.log(this.newObject);
+    // console.log(allId);
+    // console.log(this.newObject);
     this.resetDateFormat(this.newObject);
-    console.log(this.newObject);
+    // console.log(this.newObject);
     for (let key in this.newObject) {
       if (this.newObject[key] !== this.valueNotToChangeLibelle) {
         if (typeof this.newObject[key] !== 'object') {
@@ -470,15 +470,15 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           });
           if (arrayChangedValues.length > 0) {
             this.changedValues[key] = this.newObject[key];
-            console.log(this.changedValues);
+            // console.log(this.changedValues);
           }
         }
       } else {
-        console.log('key => ', key);
-        console.log('this.newObject[key] (value) => ', this.newObject[key]);
+        // console.log('key => ', key);
+        // console.log('this.newObject[key] (value) => ', this.newObject[key]);
       }
     }
-    console.log(this.selectionType);
+    // console.log(this.selectionType);
     // if ((this.newObject.Deadline === null) && this.selectionType === 'multi') {
     //   let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
     //   console.log('nullDate => --------------------------------------- ', nullDate);
@@ -491,12 +491,12 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     //   this.changedValues['Deadline'] = this.newObject.Deadline;
     // }
     if (this.selectionType === 'multi') {
-        console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
-        console.log('this.newObject ===================================> ', this.newObject);
+        // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+        // console.log('this.newObject ===================================> ', this.newObject);
       if (this.newObject.Deadline === null) {
         let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
-        console.log('nullDate => --------------------------------------- ', nullDate);
-        console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+        // console.log('nullDate => --------------------------------------- ', nullDate);
+        // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
         this.changedValues['Deadline'] = nullDate;
         this.changedValues['isarchived'] = 1;
       } else if ((this.newObject.Deadline === this.valueNotToChangeLibelle) && (this.newObject.isarchived === 1)) {
@@ -506,11 +506,11 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         || this.newObject.IdLibstatut === 5 && this.newObject.IdLibEtape !== 24
         ) {
           this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
-          console.log('&&&&&&&&&&&&&&&&& La deadline doit disparaitre &&&&&&&&&&&&&&&&&&&&&& => ', this.changedValues);
+          // console.log('&&&&&&&&&&&&&&&&& La deadline doit disparaitre &&&&&&&&&&&&&&&&&&&&&& => ', this.changedValues);
           this.changedValues['isarchived'] = 0;
         }
       } else if (this.newObject.Deadline === this.valueNotToChangeLibelle) {
-        console.log('ERROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR => ', this.newObject.Deadline);
+        // console.log('ERROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR => ', this.newObject.Deadline);
         // this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
         // console.log('deadline error => ', this.changedValues['Deadline']);
       }
@@ -522,20 +522,20 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   }
 
   displaymultiDataToUpdate(allId) { // 6/
-    console.log('displaymultiDataToUpdate : this.newObject => ', this.newObject);
+    // console.log('displaymultiDataToUpdate : this.newObject => ', this.newObject);
     this.multiDataToUpdate = allId.map(item => {
       item = Object.assign({}, item, this.changedValues);
       return item;
     });
-    console.log('this.multiDataToUpdate : ', this.multiDataToUpdate);
+    // console.log('this.multiDataToUpdate : ', this.multiDataToUpdate);
     // this.multiDataToUpdate.map(item => { // patch sur chaque fiche Matériel
     //   this.patchFichesMateriel([item]);
     // });
-    console.log(this.allAnnexElementsFicheMateriel);
+    // console.log(this.allAnnexElementsFicheMateriel);
     if (!this.changedValues['IdLibstatut']) {
       this.multiDataToUpdate.map(e => {
         this.initialFichesMateriel.map(item => {
-          console.log('e.IdLibstatut => ', e.IdLibstatut);
+          // console.log('e.IdLibstatut => ', e.IdLibstatut);
           if (item.IdFicheMateriel === e.IdFicheMateriel) {
             e['IdLibstatut'] = item.IdLibstatut;
           }
@@ -545,7 +545,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     if (!this.changedValues['IdLibEtape']) {
       this.multiDataToUpdate.map(e => {
         this.initialFichesMateriel.map(item => {
-          console.log('e.IdLibEtape => ', e.IdLibEtape);
+          // console.log('e.IdLibEtape => ', e.IdLibEtape);
           if (item.IdFicheMateriel === e.IdFicheMateriel) {
             e['IdLibEtape'] = item.IdLibEtape;
           }
@@ -559,8 +559,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
 
 
   patchFichesMateriel(fichesMateriel) { // 7/
-    console.log('patch FM function => fichesMateriel (args) : ', fichesMateriel);
-    console.log('patch FM function => this.annexElementsNgModel : ', this.annexElementsNgModel);
+    // console.log('patch FM function => fichesMateriel (args) : ', fichesMateriel);
+    // console.log('patch FM function => this.annexElementsNgModel : ', this.annexElementsNgModel);
     this.fichesMaterielService
       .patchFicheMateriel(fichesMateriel)
       .pipe(takeUntil(this.onDestroy$))
@@ -574,10 +574,10 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           //   console.log(item);
           //   this.addIdFicheMaterielToElementAnnexReset(item);
           // });
-          console.log('this.newObject => ', this.newObject);
-            console.log('patch FM with success', data);
+          // console.log('this.newObject => ', this.newObject);
+          // console.log('patch FM with success', data);
           } else {
-            console.log('error patch FM');
+            // console.log('error patch FM');
           }
       });
   }
@@ -587,8 +587,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
 /************************************************/
 
   checkNeedChangeValueToVersion(): boolean {
-    console.log('this.allVersionFm => ', this.allVersionFm);
-    console.log('this.versionFmNgModel => ', this.versionFmNgModel);
+    // console.log('this.allVersionFm => ', this.allVersionFm);
+    // console.log('this.versionFmNgModel => ', this.versionFmNgModel);
     let versionChangements = [];
     this.allVersionFm.map(item => {
       this.versionFmNgModel.map(model => {
@@ -599,7 +599,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         });
       });
     });
-    console.log('versionChangements => ', versionChangements);
+    // console.log('versionChangements => ', versionChangements);
     if (versionChangements.length > 0) {
       return true;
     } else {
@@ -614,17 +614,17 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         this.versionFmNgModel.map(model => {
           item.forEach(versionFM => {
             if (versionFM.IdFicheAch_Lib_Versions === model.IdFicheAch_Lib_Versions && versionFM.Isvalid !== model.Isvalid) {
-              console.log('versionFM before change => ', versionFM);
+              // console.log('versionFM before change => ', versionFM);
               if (model.Isvalid !== 'same') {
                 versionFM.Isvalid = model.Isvalid;
               }
-              console.log('versionFM after change => ', versionFM);
+              // console.log('versionFM after change => ', versionFM);
             }
           });
         });
       });
     }
-    console.log('this.allVersionFm after change => ', this.allVersionFm);
+    // console.log('this.allVersionFm after change => ', this.allVersionFm);
     this.allVersionFm.map(item => {
       this.putVersionFicheMateriel(item);
     });
@@ -635,8 +635,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
 /************************************************/
 
   checkNeedChangeValueToQuality(): boolean {
-    console.log('this.allQualitiesFm => ', this.allQualitiesFm);
-    console.log('this.qualityFmNgModel => ', this.qualityFmNgModel);
+    // console.log('this.allQualitiesFm => ', this.allQualitiesFm);
+    // console.log('this.qualityFmNgModel => ', this.qualityFmNgModel);
     let qualityChangements = [];
     this.allQualitiesFm.map(item => {
       this.qualityFmNgModel.map(model => {
@@ -647,7 +647,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         });
       });
     });
-    console.log('qualityChangements => ', qualityChangements);
+    // console.log('qualityChangements => ', qualityChangements);
     if (qualityChangements.length > 0) {
       return true;
     } else {
@@ -662,17 +662,17 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         this.qualityFmNgModel.map(model => {
           item.forEach(qualityFM => {
             if (qualityFM.idLibQualiteSup === model.idLibQualiteSup && qualityFM.IsValid !== model.IsValid) {
-              console.log('qualityFM before change => ', qualityFM);
+              // console.log('qualityFM before change => ', qualityFM);
               if (model.IsValid !== 'same') {
                 qualityFM.IsValid = model.IsValid;
               }
-              console.log('qualityFM after change => ', qualityFM);
+              // console.log('qualityFM after change => ', qualityFM);
             }
           });
         });
       });
     }
-    console.log('this.allQualitiesFm after change => ', this.allQualitiesFm);
+    // console.log('this.allQualitiesFm after change => ', this.allQualitiesFm);
     this.allQualitiesFm.map(item => {
       this.putQualiteFicheMateriel(item);
     });
@@ -681,8 +681,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   checkChangeValueToEAComment() {
   let commentsToPut = [];
   let commentsToPost = [];
-   console.log('this.allEACommentsMultiSelect in action component => ', this.allEACommentsMultiSelect);
-   console.log('this.comments in action component => ', this.comments);
+  //  console.log('this.allEACommentsMultiSelect in action component => ', this.allEACommentsMultiSelect);
+  //  console.log('this.comments in action component => ', this.comments);
    this.allFichesMateriel.map(fm => {
      let category = [];
      this.comments.map(item => {
@@ -715,11 +715,11 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
        }
      });
    });
-    console.log('this.commentsToPut ================================================= ==> ', commentsToPut);
+    // console.log('this.commentsToPut ================================================= ==> ', commentsToPut);
     if (commentsToPut.length > 0) {
       this.putCommentaireAnnexElementsFicheMateriel(commentsToPut);
     }
-    console.log('this.commentsToPost ================================================= ==> ', commentsToPost);
+    // console.log('this.commentsToPost ================================================= ==> ', commentsToPost);
     if (commentsToPost.length > 0) {
       this.postCommentaireAnnexElementsFicheMateriel(commentsToPost);
     }
@@ -727,18 +727,18 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
 
   changeValueToAnnexElementsInFM() { // 8/
     let that = this;
-    console.log('PATCH FUNCTION : this.annexElementsNgModel => ', this.annexElementsNgModel);
-    console.log('PATCH FUNCTION : this.allAnnexElementsFicheMateriel => ', this.allAnnexElementsFicheMateriel);
+    // console.log('PATCH FUNCTION : this.annexElementsNgModel => ', this.annexElementsNgModel);
+    // console.log('PATCH FUNCTION : this.allAnnexElementsFicheMateriel => ', this.allAnnexElementsFicheMateriel);
     this.newElementSAnnex = this.allAnnexElementsFicheMateriel.map( array => {
-      console.log('array item from this.allAnnexElementsFicheMateriel : ', array);
+      // console.log('array item from this.allAnnexElementsFicheMateriel : ', array);
       let arr = array.map(object => {
-        console.log('object item from array : ', object);
+        // console.log('object item from array : ', object);
         let isValid;
-        console.log('this.annexElementsNgModel.length :', that.annexElementsNgModel.length);
+        // console.log('this.annexElementsNgModel.length :', that.annexElementsNgModel.length);
         let currentNgModel = that.annexElementsNgModel.filter(item => item.IdPackageAttendu === object.IdPackageAttendu);
-        console.log(currentNgModel);
-        console.log(currentNgModel[0].IdPackageAttendu);
-        console.log(object.IdPackageAttendu);
+        // console.log(currentNgModel);
+        // console.log(currentNgModel[0].IdPackageAttendu);
+        // console.log(object.IdPackageAttendu);
         if (currentNgModel[0].IsValid === 'same') {
           isValid = object.IsValid;
         } else {
@@ -753,36 +753,36 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           Fiche_Mat_Fichemateriel: null,
           Fiche_Mat_LibElementAnnexes: null
         };
-        console.log(newItemElementAnnex);
+        // console.log(newItemElementAnnex);
         return object = newItemElementAnnex;
       });
       return arr;
     });
-    console.log(this.newElementSAnnex);
+    // console.log(this.newElementSAnnex);
     this.newElementSAnnex.map(item => {
-      console.log(item);
+      // console.log(item);
         let index = this.newElementSAnnex.indexOf(item);
         this.putAnnexElementForFM(item, index, this.newElementSAnnex);
     });
   }
 
   putAnnexElementForFM(elementAnnexOfFM, index, newElementSAnnex) { // 9/
-    console.log(elementAnnexOfFM);
+    // console.log(elementAnnexOfFM);
     this.annexElementsService
       .putAnnexElementsFicheMateriel(elementAnnexOfFM)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        console.log(data);
+        // console.log(data);
         if (data) {
-          console.log('succes PUT annexesElements => MULTI');
-          console.log(data);
+          // console.log('succes PUT annexesElements => MULTI');
+          // console.log(data);
           if (index === newElementSAnnex.length - 1) {
-            console.log('Action after save');
+            // console.log('Action after save');
             this.actionAfterSave();
           }
         } else {
-          console.log('error PUT annexesElements => MULTI');
-          console.log(data);
+          // console.log('error PUT annexesElements => MULTI');
+          // console.log(data);
         }
       });
   }
@@ -799,8 +799,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         commentsToUpdate.push(item);
       }
     });
-    console.log('commentsToUpdate ==> ', commentsToUpdate);
-    console.log('commentToCreate ==> ', commentToCreate);
+    // console.log('commentsToUpdate ==> ', commentsToUpdate);
+    // console.log('commentToCreate ==> ', commentToCreate);
     if (commentToCreate.length > 0) {
       this.postCommentaireAnnexElementsFicheMateriel(commentToCreate);
     }
@@ -813,9 +813,9 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.annexElementsService.postCommentaireAnnexElementsFicheMateriel(comments)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        console.log('POST elements annexes comments with succes ! ', data);
+        // console.log('POST elements annexes comments with succes ! ', data);
       }, error => {
-        console.error('ERROR POST elements annexes comments !', error);
+        // console.error('ERROR POST elements annexes comments !', error);
       });
   }
 
@@ -823,9 +823,9 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.annexElementsService.putCommentaireAnnexElementsFicheMateriel(comments)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        console.log('PUT elements annexes comments with succes ! ', data);
+        // console.log('PUT elements annexes comments with succes ! ', data);
       }, error => {
-        console.error('ERROR PUT elements annexes comments !', error);
+        // console.error('ERROR PUT elements annexes comments !', error);
       });
   }
 

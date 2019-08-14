@@ -53,3 +53,44 @@ export class NewObject {
     IsValid: boolean;
     libelle: string;
 }
+
+const valueNoChanged = 'Valeur d\'origine';
+
+export const objectNoChanged: NewObject = {
+    IdFicheMateriel: valueNoChanged,
+    IdFicheAchat: valueNoChanged,
+    IdFicheDetail: valueNoChanged,
+    Deadline: valueNoChanged,
+    SuiviPar: valueNoChanged,
+    IdLibstatut: valueNoChanged,
+    IdLibEtape: valueNoChanged,
+    NumEpisodeProd: valueNoChanged,
+    NumEpisodeAB: valueNoChanged,
+    TitreEpisodeVF: valueNoChanged,
+    TitreEpisodeVO: valueNoChanged,
+    IdSupport: valueNoChanged,
+    NumProgram: valueNoChanged,
+    NumEpisode: valueNoChanged,
+    ReceptionAccesLabo: valueNoChanged,
+    Renouvellement: valueNoChanged,
+    NomLabo: valueNoChanged,
+    CoutLabo: valueNoChanged,
+    DateLivraison: valueNoChanged,
+    DelaiLivraison: valueNoChanged,
+    DateRetourOri: valueNoChanged,
+    UniteDelaiLivraison: valueNoChanged,
+    DateAcceptation: valueNoChanged,
+    DatePremiereDiff: valueNoChanged,
+    AccesVF: valueNoChanged,
+    Commentaires: valueNoChanged,
+    RetourOri: valueNoChanged,
+    RetourOriDernierDelai: valueNoChanged,
+    IdStatutElementsAnnexes: valueNoChanged,
+    UserCreation: valueNoChanged,
+    UserModification: valueNoChanged,
+    DateCreation: valueNoChanged,
+    DateModification: valueNoChanged,
+    CommentairesDateLivraison: valueNoChanged,
+    CommentairesStatutEtape: valueNoChanged,
+    isarchived: valueNoChanged
+  };
