@@ -73,6 +73,9 @@
                                     <ejs-dropdownlist   [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
+                            <td  style="width: 20%" >
+                         <ejs-dropdownlist class =" mt-1 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>                  
+                             </td>
                             <!-- <td  style="width: 5%" >
                                 <div style="width:100%" > Heur de <br> Début
                                 </div>
@@ -129,7 +132,7 @@
                     (change)="onChange($event)"
                     [showHeaderBar]='true'
                     
-                    width='auto'
+                    width='100%'
                     height='100%'
                     >
                     <!-- (created)="onCreated($event)" -->
@@ -337,6 +340,7 @@
                                     [fields]='fieldMonteur' 
                                     cssClass='treeview-external-drag'
                                     [allowDragAndDrop]='true'  
+                                    (nodeDragStart)="onTreeDragStart($event)"
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
                                     (nodeDragging)="onItemDrag($event, 1)">
                                     <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon="" >

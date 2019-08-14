@@ -144,7 +144,11 @@
           WorkOrderTempsReelService
       ]
   })
+
+
   
+
+
   export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
   
       @ViewChild('scheduleObj')
@@ -181,6 +185,8 @@
       public theorique: CheckBoxComponent;
       @ViewChild('selectplan')
       public listObj: DropDownListComponent;
+      @ViewChild('selectplage')
+      public selectplage: DropDownListComponent;
      @Input() isReady
      @Input() itemCoordinateur
   
@@ -253,7 +259,7 @@
           { Id: 2, Color: '#7FB3D5' },
           { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER JAUNE
           { Id: 4, Color: '#F3BE09' },
-          { Id: 5, Color: '#090778' }, //  STATUT_A_FINIR bleu foncé (pause)
+          { Id: 5, Color: '#D5E5FB' }, //  STATUT_A_FINIR(pause)
           { Id: 6, Color: '#3ba506' }, //  STATUT_TERMINE_OK VERT
           { Id: 7, Color: '#B01106' }, //   STATUT_TERMINE_KO ROUGE
           { Id: 8, Color: '#F39009' }, //   STATUT_EN_ATTENTE ORANGE
@@ -263,6 +269,15 @@
           { Id: 12, Color: '#17AAB2' },
           { Id: 13, Color: '#17AAB2' }
       ]
+//PLAGES HORAIRES
+      public plagesHoraires: Object[] = [
+        { text: 'Plage horaire matin', Code:1 },
+        { text: 'Plage horaire midi', Code:2 },
+        { text: 'Plage horaire soir', Code:3 },
+        { text: 'Toute la journée', Code:4 }
+    ]
+    public fieldPlagesHoraires = { text: 'text', value:'Code' };
+  public  choixPlagesHoraires = "Plages horaire"
       // BACKLOGS INIT
       public waitingList;
       public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
@@ -401,7 +416,7 @@
           setTimeout(() => {
             this.storeAppSubscription();
           }, 50);
-             
+    
           document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
               let btnrefresh = document.getElementById('btn-refresh');
               let btnrefreshWo = document.getElementById('btn-refreshWo');
@@ -418,7 +433,7 @@
                  
                       btnrefresh.click()
                       btnrefreshWo.click()
-                      this.scheduleObj.refresh()
+                 
                   }
                   eKey.preventDefault()
                   console.log(btnrefresh, btnrefreshWo)
@@ -435,29 +450,22 @@
           
             if (eKey.keyCode === 109   && this.value <= 180  && this.value >= 5  ) {
                 // -------------------------------------------------           
-              //   scheduleElement[0]['style'].zoom =this.value.toString() +"%"
-              //   scheduleElement[0]['style'].maxHeight ="1000px";
-              this.intervalChanged = true
+       
+                this.intervalChanged = true
                 this.value = this.value + this.valueAdd
-                
                 this.scheduleObj.timeScale.interval = this.value     
-           
                 this.scheduleObj.refreshEvents()   
                 console.log(this.value , this.valueMax)
-            console.log( "-----",this.scheduleObj,scheduleElement[0]['style'] )
+            console.log( "-----",this.scheduleObj,scheduleElement)
            } else {
       
-               if (eKey.keyCode === 107  && this.value >= 5  && this.value <= 180  ) {
+               if (eKey.keyCode === 107  && this.value >= 5  && this.value <= 181  ) {
                       //+++++++++++++++++++++++
                       this.intervalChanged = true
                       this.value = this.value - this.valueAdd
-                      // this.scheduleObj.timeScale.slotCount = this.value;
                       this.scheduleObj.timeScale.interval = this.value 
-            
                       this.scheduleObj.refreshEvents()                  
-              //   scheduleElement[0]['style'].transform ="scale(this.value/100,this.value/100)"
-              //   scheduleElement[0]['style'].zoom =this.value.toString() +"%"
-              //   scheduleElement[0]['style'].maxHeight ="1000px";
+
               if(this.value === 5){
                 this.scheduleObj.refresh()   
               }
@@ -472,10 +480,16 @@
             console.log(this.hourContainer)
            }
            if(eKey.keyCode === 107  || eKey.keyCode === 109 ){
+            //    this.scheduleObj.element["ej2_instances"][0].isAdaptive = true
+            //    this.scheduleObj.element["ej2_instances"][0].showQuickInfo = false
+               console.log("aaaaa")
            setTimeout(() => {
          if(this.scheduleObj.currentView != "TimelineWeek"){
             this.scheduleObj.scrollTo(this.hourContainer)  
-        }
+        }else{
+   
+           
+           }
         }, 50);
         }
         }, true);
@@ -582,7 +596,7 @@
           } else {
                  }
     
-
+                //  this.scheduleObj.dataBind();
       }
       public disabledrefreshBacklog:boolean =true
   
@@ -600,30 +614,7 @@
                   this.searchwo.value = ""
                  
                   console.log(this.searchString,valueSearch)
-                  //  this.onFilter(a,0,this.argsKeyboardEvent)
-          //     } 
-             
-          //   else   {
-     
-          //   }
-          //         if(this.argsKeyboardEvent.keyCode != undefined){
-          //             if(this.argsKeyboardEvent.keyCode === 8 ){
-                    
-          //             }else{
-                         
-          // setTimeout(() => {
-          //     // console.log(this.searchwo.value)
-          //     this.searchwo.value =  this.searchString
-          //     // console.log(this.searchwo.value)
-          //    this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
-          //     this.treeObj.fields['dataSource'] = this.treeObj.getTreeData()
-              
-          //     console.log("clic bouton navigation",  this.treeObj.fields['dataSource'],this.treeObj.getTreeData() ) 
-          // }, 100);
-          //     } 
-          // }
-          //   }
-          //   console.log(this.navigation, "²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²")
+         
           this.navigation = false      
      
       }}
@@ -975,7 +966,7 @@
                           let length = this.dataContainersByRessourceStartDateEndDate.length;
                  
                           console.log('--------------------------------------------------index  length => ', index , length);
-                          this.getWorkorderByContainerId(data.Id_Planning_Container, coderessource, index, length, indexSalle,debut,fin ,idGroup);
+                          this.getWorkorderByContainerId(data.Id_Planning_Container, coderessource, index, length, indexSalle,debut,fin ,data.LibelleRessourceOperateur);
                        
                           
                           
@@ -1040,7 +1031,7 @@
       }
       public allDataWorkorders = [];
       public libelleStatut
-      getWorkorderByContainerId(id, coderessource, index, containerArrayLength, indexSalle,debut,fin, idGroup) {
+      getWorkorderByContainerId(id, coderessource, index, containerArrayLength, indexSalle,debut,fin, Operateur) {
           console.log('CALL getWorkorderByContainerId() with idContainer : ', id);   
           // console.log('--------------------------------------------------indexSalle => ', indexSalle);
           // console.log('id container to check workorder => ', id)
@@ -1073,7 +1064,7 @@
                               Container: false,
                               numGroup: data.Id_Planning_Container,
                               Description: data.Commentaire,
-                              Operateur: data.LibelleRessourceOperateur,
+                              Operateur: Operateur,
                               coordinateurCreate: data.LibelleRessourceCoordinateur,
                               Statut: data.Statut,
                               AzaIsPere: false,
@@ -1238,7 +1229,7 @@
         .pipe(takeUntil(this.onDestroy$))
         .subscribe(res =>{
             console.log("call getWorkorderTempsReelByIdGroupeStartDateEndDate () ")
-        console.log(res, "<========================================== res temps reel")
+        console.log(res, "<========================================== res temps reel") 
         this.dataWorkorderTempsReelByIdGroupeStartDateEndDate = res;
     
         if (res.length > 0) {
@@ -1259,8 +1250,13 @@
               dateFin =moment().toDate()
             //   console.log(dateFin)
              }
-                  
-      
+       let operateur
+             this.monteurDataSource.map(item => {
+                if (item.CodeRessource === data.CodeRessourceOperateur) {
+                    operateur = item.Username;
+                }
+            });
+               
              if(data.CodeRessourceSalle === codeRessouceSalle){
                 // console.log(data.CodeRessourceSalle, "code ressource salle wotr")
                 // console.log(codeRessouceSalle ,"code  ressource salle")
@@ -1278,11 +1274,11 @@
                   Container: false,
                
                   Description: data.Commentaire,
-                  Operateur: data.LibelleRessourceOperateur,
+                  Operateur:operateur,
                   coordinateurCreate: data.LibelleRessourceCoordinateur,
                   Statut: data.Statut,
                   AzaIsPere: false,
-                  AzaNumGroupe: data.Id_Planning_Container,
+                //   AzaNumGroupe: data.Id_Planning_Container,
                   DepartmentID: data.CodeRessourceSalle,
                   ConsultantID: 2,
                   DepartmentName: '',
@@ -1302,7 +1298,7 @@
                   DateDebutTheo:dateDebutTheo,
                   DateFinTheo:dateFinTheo
               }
-              console.log(newWorkorderTempsReelEvent, "newWorkorderTempsReelEvent")
+           console.log(newWorkorderTempsReelEvent)
               this.timelineResourceDataOut.push(newWorkorderTempsReelEvent);
        }
             })
@@ -1355,10 +1351,10 @@
                   '${if( titreoeuvre != null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" >   Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${typetravail} <br> Libellé chaine : &nbsp; ${libchaine}  <br> Libellé WorkOrder : &nbsp; ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} <br> Statut :&nbsp; ${Statut} </>  </>  </div> ${/if}' +
                   '${if(   Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null)}<div> Description : &nbsp; ${Commentaire_Planning}  </>  </div> ${/if}' +
                   '${if (AzaIsPere  ) }<div class="time"> Titre: &nbsp;${Name} <br>  Coordinateur: &nbsp; ${coordinateurCreate}  </div> ${/if}' +
-                  '${if (AzaIsPere && Operateur != null && Operateur !== "" && Operateur !== undefined ) }<div class="time">Opérateur:&nbsp;${Operateur} </div> ${/if}' + 
+                  '${if ( Operateur != null && Operateur !== "" && Operateur !== undefined  ) }<div class="time">Opérateur:&nbsp;${Operateur} </div> ${/if}' + 
                   '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
                   '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ' +
-                  '${if (!AzaIsPere && isTempsReel === 1 ) }<div class="time">Début théorique &nbsp;:&nbsp; ${DateDebutTheo.toLocaleString()} <br>Fin théorique &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${DateFinTheo.toLocaleString()} </div> ${/if}';
+                  '${if (!AzaIsPere && isTempsReel === 1 ) }<div class="time">Début théorique &nbsp;:&nbsp; ${DateDebutTheo.toLocaleString()} <br>Fin théorique &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${DateFinTheo.toLocaleString()}  </div>  ${/if}';
   
           }
       }
@@ -1390,7 +1386,7 @@
                       Container: false,
                       numGroup:workOrder.Id_Planning_Events,
                       Description:workOrder.Commentaire,
-                      Operateur:workOrder.LibelleRessourceOperateur,
+                      Operateur:workOrder.UserMaj,
                       coordinateurCreate:workOrder.UserEnvoi,
                       Statut:workOrder.Statut,
                       AzaIsPere: false,
@@ -1869,7 +1865,8 @@
               .subscribe(res => {
                   console.log('succes update container. RES : ', res);
                   this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
-                  this.updateWorkorderInContainerUpdate(id, container, containerEvent);
+                  let Operateur =operateurObject.Username;
+                  this.updateWorkorderInContainerUpdate(id, container, containerEvent,Operateur);
                   this.onActionComplete('e');
               }, error => {
                   console.error('error updatecontainer', error);
@@ -1890,7 +1887,7 @@
   
       /*** PUT WORKORDER IN CONTAINER UPDATE ***/
   
-      updateWorkorderInContainerUpdate(id, container, event) { // RESIZE AND EDITOR
+      updateWorkorderInContainerUpdate(id, container, event,Operateur?) { // RESIZE AND EDITOR
           console.log('update workorer ! ==> id ==> ', id);
           console.log('update workorer ! ==> container ==> ', container);
           console.log('update workorer ! ==> event ==> ', event);
@@ -1908,7 +1905,7 @@
           if (workorderEventToUpdate.length > 0) {
               // this.createJustContainerAction = false;
               workorderEventToUpdate.map(item => {
-                  this.putWorkorderFromUpdateContainer(id, container, event, item);
+                  this.putWorkorderFromUpdateContainer(id, container, event, item,Operateur);
               });
           // } else if (workorderFromLastTime.length > 0) {
           //     workorderFromLastTime.map(item => {
@@ -1949,7 +1946,7 @@
           }
       }
   
-      putWorkorderFromUpdateContainer(id, container, eventContainer, eventWorkorder) { // RESIZE AND EDITOR
+      putWorkorderFromUpdateContainer(id, container, eventContainer, eventWorkorder,Operateur?) { // RESIZE AND EDITOR
           let now = moment().format('YYYY-MM-DDTHH:mm:ss');
           let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === eventWorkorder.Id);
           let workorderSelected = workorderResult[0];
@@ -1964,6 +1961,7 @@
               DateEnvoi: workorderSelected.DateEnvoi,
               CodeRessourceOperateur: container.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
               LibelleRessourceOperateur: container.LibelleRessourceOperateur,
+              Operateur : container.LibelleRessourceOperateur,
               CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
               LibelleRessourceCoordinateur: workorderSelected.LibelleRessourceCoordinateur,
               DateSoumission: workorderSelected.DateSoumission,
@@ -2001,9 +1999,7 @@
               IsReadonly:false,
               Id_Planning_Events_TempsReel:0
           }
-          console.log("newWorkorder => ", newWorkorder);
-          let classWorkorder = document.getElementsByClassName("ng-star-inserted")
-          console.log(classWorkorder)
+          console.log("newWorkorder => ", newWorkorder);         
           this.workorderService
               .updateWorkOrder(newWorkorder.Id_Planning_Events, newWorkorder)
               .pipe(takeUntil(this.onDestroy$))
@@ -2023,6 +2019,7 @@
                       enableTooltip: true, tooltipTemplate: this.temp
                   };
                   this.scheduleObj.dataBind();
+              
                   console.log(this.eventSettings.dataSource);
                   this.disabledrefresh = false
               }, error => {
@@ -2107,7 +2104,8 @@
               idwoprec: workorderSelected.idwoprec,
               isTempsReel:0,
               IsReadonly:false,
-              Id_Planning_Events_TempsReel:0
+              Id_Planning_Events_TempsReel:0,
+              Operateur:workorderSelected.LibelleRessourceOperateur
   
           }
           console.log('workorder data selected', newWorkorder);
@@ -2194,7 +2192,7 @@
               console.log('otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
               let checkIfCloture = false;
               otherWorkorderExistForCOntainer.map(item =>{
-                  if(item.Statut === 10 || item.Statut === 6){
+                  if(item.Statut != 3 ){
                     checkIfCloture = true
                   }else{
                     checkIfCloture = false
@@ -3098,10 +3096,12 @@
           // this.scheduleObj.refresh();
       }
   
-      onEventRendered(args: EventRenderedArgs): void {
+      onEventRendered(args: EventRenderedArgs): void {    
           let couleur
           let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-          scheduleElement[0]['style'].zoom ="90"+"%"
+            
+          scheduleElement[0]['style'].zoom = "100%"
+
           if (args.data.AzaIsPere) {
               return;
           } else {
@@ -3137,7 +3137,7 @@
                   }
               }
           }
-      
+       
       }
   
       /*************************************************************************/
@@ -3173,9 +3173,8 @@
           //         console.log(this.scheduleObj);
           //     }
           // }
-          this.hourContainer =  moment(args.data['StartTime']).format('HH:mm')
-          console.log(this.hourContainer)
-          if (args.type === 'QuickInfo') {
+         
+          if (args.type === 'QuickInfo'  ) {
           
           }
           this.statutWorkorder.map(statut => {
@@ -3224,7 +3223,7 @@
                   this.timelineResourceDataOut.map(item => {
                       if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
                           workOrders.push(item);
-                          if(item.Statut === 10 || item.Statut === 6 ){
+                          if(item.Statut !== 3   ){
                             let edit = document.getElementsByClassName('e-edit-icon'),
                                 deleteWorkorder = document.getElementsByClassName('e-delete-icon')
                             edit[0]['style'].display = 'none';
@@ -3280,7 +3279,7 @@
                       // ${workOrders[i].typetravail}
                       elementworkorder.innerHTML = `<div class='e-subject e-text-ellipsis' style="color : black"> ${workOrders[i].titreoeuvre} ep ${workOrders[i].numepisode} </div>`
                   }
-                  if(args.data.Statut === 10 || args.data.Statut === 6){
+                  if(args.data.Statut != 3){
                  
                       args.cancel = true
                       console.log(args, "==> statut")
@@ -3381,7 +3380,7 @@
                   repeat[0]['style'].display = 'none';
                   console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
                  this.updateWO = true
-                 if(args.data.Statut === 10 || args.data.Statut === 6){
+                 if(args.data.Statut != 3){
                  
                     args.cancel = true
                     console.log(args, "==> statut")
@@ -3547,7 +3546,7 @@
               this.timelineResourceDataOut.map(item => {
                 if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
                   
-                    if(item.Statut === 10 || item.Statut === 6 ){
+                    if(item.Statut != 3 ){
            
                       args.cancel = true
                       console.log(args, "==> statut")
@@ -3560,7 +3559,7 @@
               this.timelineResourceDataOut.map(item => {
                 if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
                   
-                    if(item.Statut === 10 || item.Statut === 6 ){
+                    if(item.Statut!= 3){
            
                       args.cancel = true
                       console.log(args, "==> statut")
@@ -3842,7 +3841,7 @@
                               AzaIsPere: false,
                               AzaNumGroupe: containerDataSelected.Id_Planning_Container,
                               coordinateurCreate: this.user.initials,
-                              Operateur: '',
+                              Operateur: containerSelected.Operateur,
                               Statut: filteredDataW[0].Statut,
                               libchaine: filteredDataW[0].libchaine,
                               typetravail: filteredDataW[0].typetravail,
@@ -4373,7 +4372,7 @@
           this.navigateTimelineDay = false;
           this.eventClick = false;
           console.log('onActionComplete() this.timelineResourceDataOut ==> ', this.timelineResourceDataOut);
-        
+     
       }
   
       /************************ DELETE ********************/
@@ -5047,6 +5046,7 @@
      
       /*************************************************************************************** */
       onRenderCell(args: RenderCellEventArgs): void {
+       
           if (this.scheduleObj.currentView == 'TimelineWeek') {
               if (args.element.classList.contains('e-work-cells') && ((args.date.getDay() % 2) != 0)) {
                   args.element['style'].background = '#E5FCFD';
@@ -5077,11 +5077,7 @@
                   target.innerHTML = '<div class="e-icons e-MT_Preview  icon-vue" ></div>';
               }
           }
-          if(this.timelineResourceDataOut.length === 0 || this.isnotMyGroup === true){
-            let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-            
-              scheduleElement[0]['style'].zoom = "90%"
-          }
+        
           // if(args.element.classList.contains('e-resource-cells')  ) {
           //     // args.element['style'].height = '160px' || args.element.classList.contains('e-work-cells ')
           //        console.log(args.element['style'].height)
@@ -5122,20 +5118,39 @@
         console.log(args,"on created !!!!!!!!!")
       }
    //plages horaires 
-   onSubmit(){
- 
-    this.scheduleObj.startHour = this.instance.formatDate(this.ejStartTimePicker.value, { skeleton: 'Hm' });
-    this.scheduleObj.endHour = this.instance.formatDate(this.ejEndTimePicker.value, { skeleton: 'Hm' });
-    console.log(this.ejStartTimePicker,"START");
-      console.log(this.ejEndTimePicker,"END")
+   onSelectPlageHoraire(val){
+ console.log(val, this.selectplage)
+ console.log(this.scheduleObj)
+ this.scheduleObj.showTimeIndicator = true
+ if(val === 1){
+    this.scheduleObj.startHour = "00:00"
+    this.scheduleObj.endHour = "09:00"
+    let scheduletable =  document.getElementsByClassName('e-table-container');
+    // scheduletable[0]['style'].width = "93vw"
+    console.log(this.scheduleObj.startHour,this.scheduleObj.endHour)
+}else if(val === 2){
+    this.scheduleObj.startHour = "06:00"
+    this.scheduleObj.endHour = "20:00"
+    console.log(this.scheduleObj.startHour,this.scheduleObj.endHour)
+} else if(val === 3){
+    this.scheduleObj.startHour = "16:00"
+    this.scheduleObj.endHour = "23:59"
+    console.log(this.scheduleObj.startHour,this.scheduleObj.endHour)
+
+}else{
+
+    this.scheduleObj.startHour = "00:00"
+    this.scheduleObj.endHour = "23:59"
+}
 }
   
 //Triggers when multiple cells or events are selected on the Scheduler.
 
 onSelectMultipleCell(args:SelectEventArgs){
 console.log("on select =====>",args )
-
-
+args["showQuickPopup"]  = true
+this.hourContainer =  moment(args["data"]['StartTime']).format('HH:mm')
+console.log(this.hourContainer)
 }
 
 

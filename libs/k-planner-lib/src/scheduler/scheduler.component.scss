@@ -107,7 +107,7 @@ $InfoBtnHoverColor :  #2eced6;
     }
 }
 /deep/ .schedule-drag-drop {
-    max-height: calc(100vh - 90px); // hauteur du schedule
+    max-height: calc(90vh - 50px); // hauteur du schedule
     // margin-left: 15px;
     // margin-right: 15px
     // height:80vh;
@@ -635,14 +635,14 @@ overflow: scroll
  
 }
 
-/deep/ .e-toolbar .e-toolbar-items .e-toolbar-item {
-    &.e-today {
-        display: none;
-    }
-    &.e-schedule-seperator {
-        display: none;
-    }
-}
+// /deep/ .e-toolbar .e-toolbar-items .e-toolbar-item {
+//     &.e-today {
+//         display: none;
+//     }
+//     &.e-schedule-seperator {
+//         display: none;
+//     }
+// }
 // BACKLOG
 /deep/ .e-treeview .e-list-item {
     .e-text-content {
