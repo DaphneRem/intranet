@@ -42,6 +42,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   @Output() dataRow = new EventEmitter();
   @Output() row = new EventEmitter();
   @Output() selectRows = new EventEmitter();
+  @Output() searchData = new EventEmitter();
 
   // rerender onchange variables
   public init = 0;
@@ -148,6 +149,14 @@ public test = 'ookok';
   ngOnInit(): void {
     // this.dataReady = true;
     this.initializeDatatable();
+    if (this.customdatatablesOptions.getSearchData) {
+      let that = this;
+      $('#datatable').on('search.dt', function() {
+        let value = $('.dataTables_filter input').val();
+        console.log(value); // <-- the value
+        that.searchData.emit(value);
+      });
+    }
   }
 
   // TODO : voir https://stackoverflow.com/questions/37966718/datatables-export-to-excel-button-is-not-showing pour les options des boutons
@@ -217,6 +226,9 @@ public test = 'ookok';
         lengthMenu : options.lenghtMenu,
         responsive : options.responsive,
         dom: 'Bfrtip',
+        search: {
+          search: ''
+        },
         buttons: options.selectionBtn ?
           [{
             extend: 'selected',
@@ -227,7 +239,17 @@ public test = 'ookok';
                       console.log(rows);
                       that.selectRows.emit(rows);
                     }
-          }]
+          },
+          // {
+          //   text: 'Enlever le filtre',
+          //   className: 'btn-clear-filter',
+          //   action: function (e, dt, node, config) {
+          //     let inputFields = dt.$('tr').closest('div.dataTables_scroll').find('div.dataTables_scrollHead').find('input');
+          //     dt.search('').columns().search('').draw(); // remove filters from table
+          //     inputFields.val('');
+          //   }
+          // }
+        ]
          : [],
         rowCallback: (row: Node, data: any[] | Object, index: number) => { // datatable function to display action on double click
             const self = this;

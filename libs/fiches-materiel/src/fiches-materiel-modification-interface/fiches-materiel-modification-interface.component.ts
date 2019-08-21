@@ -122,6 +122,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     'DateAcceptation',
     'ReceptionAccesLabo'
   ];
+  public oldDeadline;
   // fiches materiel :
   public initialFichesMateriel = [];
   public allFichesMateriel = [];
@@ -511,12 +512,11 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   clickStatusOptions() {
-    // console.log(this.status);
-    // console.log(
-    //   'this.newObject.IdLibstatut on click statut ==== >',
-    //   this.newObject.IdLibstatut
-    // );
+    // console.log('this.status => 'this.status);
+    console.log('this.newObject.IdLibstatut on click statut ==== >', this.newObject.IdLibstatut);
+    console.log('firstClick => ', this.firstClick);
     this.initValueStatus = false;
+    this.initValueSteps = false;
     if (this.firstClick) {
       if (this.steps['id' + this.newObject.IdLibstatut].length > 0) {
         // console.log(this.steps['id' + this.newObject.IdLibstatut]);
@@ -533,6 +533,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
             this.newObject.IdLibEtape = this.steps[
               'id' + this.newObject.IdLibstatut
             ][3].IdLibEtape; // IdLibEtape: 20, Libelle: 'Terminé'
+            console.log('this.newObject.IdLibEtape firstClick => ', this.newObject.IdLibEtape);
           }
         } else if (this.newObject.IdLibstatut === 3) {
           // STATUT ACCEPTE
@@ -557,11 +558,27 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
           ][0].IdLibEtape;
         }
       }
-      this.firstClick = false;
+      // this.firstClick = false;
     } else {
       this.firstClick = true;
+      if (this.selectionType === 'multi') {
+        console.log('this.newObject.IdLibstatut if multi => ', this.newObject.IdLibstatut);
+      }
     }
+    console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
+    console.log('this.allStep => ', this.allSteps);
+    console.log('this.allSteps[this.newObject.IdLibEtape] => ', this.allSteps[this.newObject.IdLibEtape]);
   }
+
+  // displayLibelleStepInMultiSelection(step) {
+  //   let libelle: string;
+  //   this.allSteps.map(item => {
+  //       if (item.IdLibEtape === step) {
+  //         libelle = item.Libelle;
+  //       }
+  //   });
+  //   return libelle;
+  // }
 
     addJustCommentSwal() {
     // console.log(this.newObject.CommentairesStatutEtape);
@@ -638,7 +655,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   displayStepValue(step) {
-    // console.log(step);
+    console.log('step =====> ', step);
     if (step.Libelle !== 'valueNotToChangeLibelle') {
       return step.IdLibEtape;
     } else {
@@ -651,6 +668,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /*************************************************************************************************************/
 
   checkValidDate(date): boolean {
+    console.log('date => ', date);
     if (date !== null) {
       if (typeof date === 'string') {
         if (date === 'dd-mm-yyyy' || date === this.valueNotToChangeLibelle) {
@@ -806,38 +824,45 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   changeToNgFormatDate(originDate) {
-    // console.log('originDate => ', originDate);
+    console.log('originDate => ', originDate);
     let newDate;
-    if (originDate !== null) {
+    if (originDate !== null && originDate !== 'dd-mm-yyyy') {
       newDate = {
         year: new Date(originDate).getFullYear(),
         month: new Date(originDate).getMonth() + 1,
         day: new Date(originDate).getDate()
       };
-      // console.log('newDate => ', newDate);
+      console.log('newDate => ', newDate);
     } else {
       newDate = 'dd-mm-yyyy';
-      // console.log('newDate => ', newDate);
+      console.log('newDate => ', newDate);
     }
     return newDate;
   }
 
-    disabledDeadline() {
+  disabledDeadline() {
+    console.log('this.newObject.Deadline in disabledDeadline function => ', this.newObject.Deadline);
     // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
     // console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
+    if (this.selectionType === 'multi' && this.newObject.Deadline !== 'dd-mm-yyyy') {
+      this.oldDeadline = this.newObject.Deadline;
+    }
     if (
       this.newObject.IdLibEtape === 20 || // Terminé (accepté)
       this.newObject.IdLibEtape === 21 || // Terminé (annulé)
       this.newObject.IdLibEtape === 24 // traité par un autre service
     ) {
       if (this.selectionType === 'multi') {
-        this.newObject.Deadline = null;
+        this.newObject.Deadline = 'dd-mm-yyyy';
       }
       return true;
     } else {
-      // if (this.selectionType === 'multi') {
-      //   this.newObject.Deadline = this.valueNotToChangeLibelle;
-      // }
+      if (this.selectionType === 'multi') {
+        console.log('oldDeadline => ', this.oldDeadline);
+        if (this.oldDeadline) {
+          this.newObject.Deadline = this.oldDeadline;
+        }
+      }
       return false;
     }
   }
@@ -1625,6 +1650,10 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   displayAcceptaionSelectionRadio() {
     this.newObject.Renouvellement = 0;
     this.disabledDateAcceptation = false;
+    console.log('this.newObject.DateAcceptation => ', this.newObject.DateAcceptation);
+    if (this.oldDateAcceptation) {
+      this.newObject.DateAcceptation = this.oldDateAcceptation;
+    }
     // console.log(this.newObject.Renouvellement);
   }
 
@@ -1636,12 +1665,15 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       this.disabledDateAcceptation = true;
     }
   }
-
+  public oldDateAcceptation;
   displayRenouvellementSelectionRadio() {
+    if (this.newObject.DateAcceptation !== 'dd-mm-yyyy') {
+      this.oldDateAcceptation = this.newObject.DateAcceptation;
+    }
     this.newObject.Renouvellement = 1;
     this.disabledDateAcceptation = true;
-    this.newObject.DateAcceptation = null;
-    // console.log(this.newObject.Renouvellement);
+    this.newObject.DateAcceptation = 'dd-mm-yyyy';
+    console.log('newObject.DateAcceptation => ', this.newObject.DateAcceptation);
   }
 
   /*************************************************************************************************************/

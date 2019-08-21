@@ -39,6 +39,7 @@
       [qualityFmNgModel]="qualityFmNgModel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
+    <!-- {{newObject | json}} -->
     <!-- {{annexElementsFicheMateriel | json}} -->
     <div class="row top">
       <div class="col-lg-3 left-infos">
@@ -110,7 +111,6 @@
         <span class="warning-no-fa"></span>
       </div>
     </div>
-     {{activeStatusLibelle}}
     <div class="row state-content" *ngIf="stepsReady && statusReady">
       <div class="col-lg-4"></div>
       <div class="col-lg-2 state form-group">
@@ -140,6 +140,7 @@
               <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{i+1}} - </span>{{step.Libelle}}
             </option>
           </select>
+  
           <div class="add-just-comment" (click)="addJustCommentSwal()"><i class="icofont icofont-comment"></i></div>
           <history-steps-status-modal
             class="history-steps-status-modal-component"
@@ -671,7 +672,11 @@
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker acceptation">
             <div class="form-check col-lg-5">
               <label class=" radio">
-                <input type="radio" name="radio" checked="{{checkAcceptationSelectionRadio() ? 'checked' : ''}}" (click)="displayAcceptaionSelectionRadio()" > 
+                <input type="radio" 
+                  name="radio" 
+                  checked="{{checkAcceptationSelectionRadio() ? 'checked' : ''}}" 
+                  [attr.disabled] = "newObject.IdLibstatut === 3 ? 'disabled' : null"
+                  (click)="displayAcceptaionSelectionRadio()" > 
                 <i class="helper"></i>Date d'acceptation :
               </label>
             </div>
@@ -697,7 +702,12 @@
           <div class="form-group row renouvellement">
             <div class="form-check col-lg-12">
               <label class=" radio">
-                <input type="radio" name="radio" (click)="displayRenouvellementSelectionRadio()" checked="{{checkRenouvellementSelectionRadio()}}">
+                <input 
+                  type="radio" 
+                  name="radio" 
+                  [attr.disabled] = "newObject.IdLibstatut === 3 ? 'disabled' : null"
+                  (click)="displayRenouvellementSelectionRadio()" 
+                  checked="{{checkRenouvellementSelectionRadio()}}">
                 <i class="helper"></i>Renouvellement
               </label>
             </div>

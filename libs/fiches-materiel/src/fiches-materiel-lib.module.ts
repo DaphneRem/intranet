@@ -79,7 +79,11 @@ import {
   AnnexesElementsDetailsModalComponent
 } from './fiche-materiel-details-view/annexes-elements-details-modal/annexes-elements-details-modal.component';
 import { FichesMaterielAllComponent } from './fiches-materiel-pages/fiches-materiel-all/fiches-materiel-all.component';
+import { DealInProgressComponent } from './fiches-materiel-pages/deal-in-progress/deal-in-progress.component';
 
+
+import { datatableFilteredDataInitialState } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.init';
+import { datatableFilteredDataReducer } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.reducer';
 
 @NgModule({
   imports: [
@@ -98,6 +102,11 @@ import { FichesMaterielAllComponent } from './fiches-materiel-pages/fiches-mater
       'ficheMaterielModification',
       ficheMaterielModificationReducer,
       { initialState: ficheMaterielModificationInitialState }
+    ),
+    StoreModule.forFeature(
+      'datatableFilteredData',
+      datatableFilteredDataReducer,
+      { initialState: datatableFilteredDataInitialState }
     )
   ],
   declarations: [
@@ -130,12 +139,14 @@ import { FichesMaterielAllComponent } from './fiches-materiel-pages/fiches-mater
     StepsStatusCommentModalComponent,
     WarningAcceptedStatusComponent,
     AnnexesElementsDetailsModalComponent,
+    DealInProgressComponent,
   ],
   exports: [
     AffectedEpisodesModalComponent,
     AnnexesElementsModificationModalComponent,
     CreativeFormFichesMaterielComponent,
     CreationFichesMaterielComponent,
+    DealInProgressComponent,
     DisplayFichesAchatsComponent,
     DeliveryDateCommentModalComponent,
     ExpectedPackageModalComponent,

@@ -493,7 +493,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     if (this.selectionType === 'multi') {
         // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
         // console.log('this.newObject ===================================> ', this.newObject);
-      if (this.newObject.Deadline === null) {
+      if (this.newObject.Deadline === null || this.newObject.Deadline === 'dd-mm-yyyy') {
         let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
         // console.log('nullDate => --------------------------------------- ', nullDate);
         // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
