@@ -227,7 +227,7 @@ public test = 'ookok';
         responsive : options.responsive,
         dom: 'Bfrtip',
         search: {
-          search: ''
+          search: options.searchRecordedOption ? options.searchRecordedData : ''
         },
         buttons: options.selectionBtn ?
           [{

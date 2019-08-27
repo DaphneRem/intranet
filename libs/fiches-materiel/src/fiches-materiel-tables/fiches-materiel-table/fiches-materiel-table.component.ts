@@ -35,6 +35,7 @@ import { Step } from '../../models/step';
 import { StatusLibService } from '../../services/status-lib.service';
 import { Status } from '../../models/status';
 
+import { PreviousRouteService } from '../../services/previous-route-service';
 @Component({
   selector: 'fiches-materiel-table',
   templateUrl: './fiches-materiel-table.component.html',
@@ -59,6 +60,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   public globalStore;
   public searchValue: string;
   public storeFichesToModif;
+  public storeDatatableSearchData;
   public selectedId = [];
   public selectedOeuvre;
   public idFicheAchatArray = [];
@@ -86,6 +88,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   public elementsAnnexesStatusLib: AnnexElementStatus[];
   public elementsAnnexesStatusLibReady: Boolean = false;
 
+  public previousUrl;
   public selectedRows = [];
   public sortingData;
   public deadline;
@@ -120,6 +123,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     multiSelection: true,
     selectionBtn: true,
     getSearchData: true,
+    searchRecordedOption: true,
+    searchRecordedData: '',
     buttons: {
       buttons: true,
       allButtons: true,
@@ -138,12 +143,15 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     private store: Store<FicheMaterielModification>,
     private stepsLibService: StepsLibService,
     private statusLibService: StatusLibService,
-    private annexElementsService: AnnexElementsService
-  ) {}
+    private annexElementsService: AnnexElementsService,
+    private previousRouteService: PreviousRouteService
+  ) {
+  }
 
   ngOnInit() {
+    this.previousUrl = this.previousRouteService.getPreviousUrl();
+    console.log(this.previousRouteService.getPreviousUrl());
     this.customdatatablesOptions.tableTitle = this.tableTitle;
-    console.log(this.route);
     this.sub = this.route.params.subscribe(params => {
       console.log(params);
       if (params.hasOwnProperty('columnIndex') && params.hasOwnProperty('order')) {
@@ -162,13 +170,25 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.displayAction();
     this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
+    this.storeDatatableSearchData = this.globalStore.datatableFilteredData;
+    this.displayFilterData();
     console.log(this.storeFichesToModif);
     // this.displaySwalModalActions();
     // this.displayBtnModifActions();
   }
 
-  getFilterDataInput() {
-    
+  displayFilterData() {
+    let detailUrl = 'details';
+    let modifUrl = 'modification';
+    console.log(this.previousUrl);
+    if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
+      this.customdatatablesOptions.searchRecordedData = this.storeDatatableSearchData.searchDatatableData;
+    } else {
+      this.customdatatablesOptions.searchRecordedData = '';
+      if (this.storeDatatableSearchData.searchDatatableData !== '') {
+        this.store.dispatch({type: 'DELETE_DATATABLE_FILTER_DATA'});
+      }
+    }
   }
 
   checkDeadline(data, fm) { // check DeadLine && display important data
@@ -235,6 +255,12 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   checkSearchData(searchValue) {
     this.searchValue = searchValue;
     console.log('search value => ', this.searchValue);
+    this.store.dispatch({
+      type: 'ADD_DATATABLE_FILTER_DATA',
+      payload: {
+        searchDatatableData: this.searchValue
+      }
+    });
   }
 
   // public allDatarows = [];
