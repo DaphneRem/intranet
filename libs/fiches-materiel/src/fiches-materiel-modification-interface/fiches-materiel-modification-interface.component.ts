@@ -198,7 +198,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   ) {}
 
   ngOnInit() {
-    this.newObject = objectNoChanged;
+    this.resetNewObjectValues();
+    console.log('this.newObject onInit => ', this.newObject);
     // this.browserRefresh = browserRefresh;
     // if (browserRefresh) {
     //   this.router.navigate(['/material-sheets/my-material-sheets/0/asc']);
@@ -213,6 +214,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.getLibs();
     this.displaySelectionMode(this.storeFichesToModif);
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
+    console.log('this.newObject onInit end => ', this.newObject);
   }
 
   ngOnDestroy() {
@@ -221,6 +223,15 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       payload: {}
     });
     this.onDestroy$.next();
+  }
+
+  resetNewObjectValues() {
+    for (let key in objectNoChanged) {
+      if (key) {
+        objectNoChanged[key] = this.valueNotToChangeLibelle;
+      }
+    }
+    this.newObject = objectNoChanged;
   }
 
   /*************************************************************************************************************/
@@ -394,6 +405,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   displayNewObject(length, ficheMateriel) {
     this.sameOriginalProperties = [];
     this.equalObject = {};
+    console.log('length => ', length);
     // console.log('this.newObject in displayNewObject() => ', this.newObject);
     if (length === 1) {
       this.newObject = ficheMateriel;
@@ -407,43 +419,52 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       this.fmInRecording = false;
       this.dataIdFicheMaterielReady = true;
     } else {
-      // console.log('this.dataIdFicheMaterielReady ==> ', this.dataIdFicheMaterielReady);
-      // console.log('call displayNewObject function !!!!!!!!!');
+      this.newObject = objectNoChanged;
+      for (let key in this.newObject) {
+        if (key) {
+          console.log(key, ' => ', this.newObject[key]);
+        }
+      }
+      console.log('this.dataIdFicheMaterielReady ==> ', this.dataIdFicheMaterielReady);
+      console.log('call displayNewObject function !!!!!!!!!');
       // CHECK ALL DATA TO FIND SAME PROPERTIES
       const allEqual = this.allFichesMateriel.every(item => item === this.allFichesMateriel[0]);
-      // console.log('allEqual ====>  ', allEqual);
-      // console.log('nombre de fiches materiel ==> ', this.allFichesMateriel.length);
-      // console.log('fiches matériel ==> ', this.allFichesMateriel);
+      console.log('allEqual ====>  ', allEqual);
+      console.log('nombre de fiches materiel ==> ', this.allFichesMateriel.length);
+      console.log('fiches matériel ==> ', this.allFichesMateriel);
       this.allFichesMateriel.map(item => {
         let index = this.allFichesMateriel.indexOf(item);
         for (let key in item) {
           if ((index + 1) < this.allFichesMateriel.length) {
             if (item[key] === this.allFichesMateriel[index + 1][key]) {
-              // console.log('keyyy same value (all)^^^^^^^ => ', key);
-              // console.log('same value ******** => ', item[key]);
+              console.log('Akeyyy same value (all)^^^^^^^ => ', key);
+              console.log('Asame value ******** => ', item[key]);
               if (!this.equalObject[key] || this.equalObject[key].length === 0) {
                 this.equalObject[key] = [];
                 this.equalObject[key].push(item[key]);
               }
               this.equalObject[key].push(item[key]);
             } else {
-              // console.log('keyyy different value (all) ^^^^^^^ => ', key);
-              // console.log('different value ******** => ', item[key]);
+              console.log('Bkeyyy different value (all) ^^^^^^^ => ', key);
+              console.log('Bdifferent value ******** => ', item[key]);
             }
           }
         }
       });
+      console.log('this.equalObject => ', this.equalObject);
+      console.log('this.newObject => ', this.newObject);
       for (let key in this.equalObject) {
         if (this.equalObject[key].length === this.allFichesMateriel.length) {
+          console.log('new values => ', key, this.equalObject[key][0]);
           this.newObject[key] = this.equalObject[key][0];
           this.sameOriginalProperties.push(key);
         }
       }
-      // console.log('this.newObject before chengeDateFormat ====> ', this.newObject);
+      console.log('this.newObject before chengeDateFormat ====> ', this.newObject);
       this.changeDateFormat('arg');
-      // console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
-      // console.log('this.newObject ====> ', this.newObject);
-      // console.log('equalObject ==> ', this.equalObject);
+      console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
+      console.log('this.newObject ====> ', this.newObject);
+      console.log('equalObject ==> ', this.equalObject);
       this.displayLibValueNotToChange();
       this.fmInRecording = false;
       this.dataIdFicheMaterielReady = true;
@@ -619,6 +640,17 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /*************************************************************************************************************/
   /********************************************** Step management **********************************************/
   /*************************************************************************************************************/
+
+  displayInitialStep(newObject) {
+    let libelle;
+    console.log('this.steps => ', this.allSteps);
+    this.allSteps.map(item => {
+      if (item.IdLibEtape === this.newObject.IdLibEtape) {
+        libelle = item.Libelle;
+      }
+    });
+    return libelle;
+  }
 
   getStepsLib() {
     this.stepsLibService.getStepsLib()

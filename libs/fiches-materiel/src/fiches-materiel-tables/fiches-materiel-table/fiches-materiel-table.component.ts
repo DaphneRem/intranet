@@ -618,11 +618,11 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
             }
           });
           if (data.IdLibstatut === 1) {
-            return `<span class="label bg-info">${currentItemLib.Libelle}</span>`;
+            return `<span class="label label-info">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 2) {
             return `<span class="label label-canceled">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 3) {
-            return `<span class="label bg-success">${currentItemLib.Libelle}</span>`;
+            return `<span class="label label-success">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 4) {
             return `<span class="label bg-danger">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 5) {
@@ -646,14 +646,14 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
             if (currentItemLib.IdLibEtape <= 6) {
               return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
             }  else if (currentItemLib.IdLibEtape > 6 && currentItemLib.IdLibEtape <= 10) {
-                return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>'; // color : blue;
+                return '<span class="label label-info">' + currentItemLib.Libelle + '</span>'; // color : blue; #0040FF
             } else if (currentItemLib.IdLibEtape === 25 || currentItemLib.IdLibEtape === 18) {
                 return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>'; // color : red;
             } else if (currentItemLib.IdLibEtape === 26) {
               return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
             }
           } else if (currentItemLib.IdLibstatut === 3) { // ACCEPTE
-            return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>'; // color : green;
+            return '<span class="label label-success">' + currentItemLib.Libelle + '</span>'; // color : green; #04B404
           } else if (currentItemLib.IdLibstatut === 2) { // ANNULE
             return '<span class="label label-canceled">' + currentItemLib.Libelle + '</span>';
           } else if (currentItemLib.IdLibstatut === 5) { // TRAITE PAR AUTRES SERVICES
@@ -690,9 +690,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
           if (currentItemLib.IdStatutElementsAnnexes === 1) {
             return '<span class="label label-default">' + currentItemLib.Libelle + '</span>';
           } else if (currentItemLib.IdStatutElementsAnnexes === 2) {
-            return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>';
+            return '<span class="label label-info">' + currentItemLib.Libelle + '</span>';
           } else if (currentItemLib.IdStatutElementsAnnexes === 3) {
-            return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>';
+            return '<span class="label label-success">' + currentItemLib.Libelle + '</span>';
           }
         }
       },

@@ -131,7 +131,7 @@
                   (click)="clickStepOptions()" 
                   *ngIf="stepsReady">
             <option *ngIf="initValueSteps" [ngValue]="newObject.IdLibEtape" [selected]="true">
-              <span *ngIf="newObject.IdLibEtape !== valueNotToChangeLibelle">{{newObject.IdLibEtape}} - {{allSteps[newObject.IdLibEtape-1].Libelle}}</span>
+              <span *ngIf="newObject.IdLibEtape !== valueNotToChangeLibelle">{{newObject.IdLibEtape}} - {{displayInitialStep(newObject)}}</span>
               <span *ngIf="newObject.IdLibEtape === valueNotToChangeLibelle">{{newObject.IdLibEtape}}</span>
             </option>
             <option 

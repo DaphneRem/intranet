@@ -42,6 +42,20 @@
     border: 1px solid #a8a8a8;
 }
 
+/deep/ .label-info {
+    background: #0040FF;
+    background-color: #0040FF !important;
+    color: #ffffff !important;
+    border: 1px solid #0040FF;
+}
+
+/deep/ .label-success {
+    background: #04B404;
+    background-color: #04B404 !important;
+    color: #ffffff !important;
+    border: 1px solid #04B404;
+}
+
 /deep/ .label-canceled {
     background: #a8a8a8;
     background-color: #a8a8a8 !important;
