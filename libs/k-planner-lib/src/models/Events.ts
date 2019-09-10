@@ -28,7 +28,7 @@ export class EventModel{
    IdGenerationWO:number;
    isTempsReel?:number;
    IsReadonly? : boolean;
-   Id_Planning_Events_TempsReel:number;
+   Id_Planning_Events_TempsReel?:number;
    DateDebutTheo?:Date;
    DateFinTheo?:Date
 }

@@ -483,11 +483,18 @@
             //    this.scheduleObj.element["ej2_instances"][0].isAdaptive = true
             //    this.scheduleObj.element["ej2_instances"][0].showQuickInfo = false
                console.log("aaaaa")
+               if(this.scheduleObj.currentView === "TimelineWeek"){
+                this.intervalValue = this.value.toString()
+            }else{
+                this.intervalValueDay = this.value.toString()
+               }
+           
+           
            setTimeout(() => {
          if(this.scheduleObj.currentView != "TimelineWeek"){
             this.scheduleObj.scrollTo(this.hourContainer)  
+            
         }else{
-   
            
            }
         }, 50);
@@ -516,7 +523,7 @@
           //  this.getWorkOrderByidGroup(1)
           // this.getWorkOrderByidGroup(3);
           //  this.getSalleByGroup(10);
-       
+    
       }
   
     @HostListener('mouseenter') onMouseEnter() {
@@ -675,7 +682,7 @@
         this.allDataWorkorders = [];
         console.log('get Current Coordinateur');
         let startofDay = moment().toDate()
-        let endofDay = moment().add(2, 'd').toDate();
+        let endofDay = moment().add(1, 'd').toDate();
      
                
               
@@ -992,15 +999,15 @@
                   
                       if (indexSalle === (this.salleDataSource.length - 1)) {
                           this.lastSalleCall = true;
-              console.log("pas de container")
+                        console.log("pas de container")
          
-                       console.log("length last call",length,indexSalle, this.lastContainerCallLength)
+                        console.log("length last call",length,indexSalle, this.lastContainerCallLength)
                                    this.disableNavigation = false;
                                   if(!this.disableNavigation){
                                let toolbar = document.getElementsByClassName('e-toolbar-items');
                                for(let i =0; i<toolbar.length; i++){
                                    toolbar[i]["style"].display = 'block'
-                               console.log(  toolbar[i]["style"],"block" )
+                         
                                }
                              }
                          
@@ -1233,7 +1240,7 @@
         this.dataWorkorderTempsReelByIdGroupeStartDateEndDate = res;
     
         if (res.length > 0) {
-       
+       this.createTooltipWorkorder()
             this.dataWorkorderTempsReelByIdGroupeStartDateEndDate.map(data => {
             
                 let dateDebut = moment(data.DateDebutReel, moment.defaultFormat).toDate(),
@@ -1280,7 +1287,7 @@
                   AzaIsPere: false,
                 //   AzaNumGroupe: data.Id_Planning_Container,
                   DepartmentID: data.CodeRessourceSalle,
-                  ConsultantID: 2,
+                //   ConsultantID: 2,
                   DepartmentName: '',
                   IsAllDay: false,
                   libchaine: data.libchaine,
@@ -1298,7 +1305,7 @@
                   DateDebutTheo:dateDebutTheo,
                   DateFinTheo:dateFinTheo
               }
-           console.log(newWorkorderTempsReelEvent)
+       
               this.timelineResourceDataOut.push(newWorkorderTempsReelEvent);
        }
             })
@@ -1791,14 +1798,14 @@
                   // this.timelineResourceDataOut.map(item => {
                   // })
                   this.calculDateGroup(this.timelineResourceDataOut, event.AzaNumGroupe, true, event, startDifferent, endDifferent);
-                  this.eventSettings = {
-                      dataSource: <Object[]>extend(
-                          [], this.timelineResourceDataOut, null, true
-                      ),
-                      enableTooltip: true, tooltipTemplate: this.temp
-                  };
+                  
                   this.updateWorkorderInContainerUpdate(id, container, event);
-  
+                  this.eventSettings = {
+                    dataSource: <Object[]>extend(
+                        [], this.timelineResourceDataOut, null, true
+                    ),
+                    enableTooltip: true, tooltipTemplate: this.temp
+                };
                   // this.eventSettings = {
                   //     dataSource: <Object[]>extend(
                   //         [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
@@ -1970,6 +1977,7 @@
               DateDebutTheo: startTime,
               DateFinTheo: endTime,
               CodeRessourceSalle: container.CodeRessourceSalle,
+              DepartmentID: container.CodeRessourceSalle,
               Commentaire: workorderSelected.Commentaire,
               Support1Cree: null,
               Support2Cree: null,
@@ -2834,7 +2842,7 @@
           console.log("this.scheduleObj.getEvents() after reset =>",this.scheduleObj.getEvents())
           console.log("this.scheduleObj.eventsProcessed() after reset =>",this.scheduleObj.eventsProcessed)
           console.log('this.timelineResourceDataOut after reset => ', this.timelineResourceDataOut);
-      
+       
           this.navigation = true
           // this.refreshWorkordersBacklog()
     
@@ -2865,13 +2873,13 @@
               let newStartOfDay = this.scheduleObj.selectedDate;
               console.log('selected Date => ', newStartOfDay);
               this.startofDay = moment(newStartOfDay).toDate();
-              this.endofDay =  moment(newStartOfDay).add(2, 'd').toDate();
+              this.endofDay =  moment(newStartOfDay).add(1, 'd').toDate();
           } else {
               this.startofDay = moment(args.currentDate).toDate();
-              this.endofDay =  moment(args.currentDate).add(2, 'd').toDate();
+              this.endofDay =  moment(args.currentDate).add(1, 'd').toDate();
           }
           this.startofWeek = moment(this.startofDay).startOf('week').add(1, 'd').toDate(); // LUNDI
-          this.endofWeek = moment(this.startofDay).endOf('week').add(2, 'd').toDate(); // LUNDI SUIVANT
+          this.endofWeek = moment(this.startofDay).endOf('week').add(1, 'd').toDate(); // LUNDI SUIVANT
           this.startofMonth = moment(this.startofDay).startOf('month').toDate();
           this.endofMonth = moment(this.startofDay).endOf('month').add(1, 'd').toDate();
           console.log('this.startofDay ==> ', this.startofDay);
@@ -2929,7 +2937,7 @@
               if(this.intervalChanged){
               this.scheduleObj.timeScale.interval = this.value 
             }else{
-                this.value = 60
+                this.value = this.scheduleObj.timeScale.interval
             }
               console.log('TIMELINEDAY !!!! => date contition');
               this.refreshDateStart = this.startofDay;
@@ -2959,7 +2967,7 @@
               // this.value = parseInt(this.intervalValue as string, 10)
               // this.valueMax = 240
               // this.valueAdd = 60     
-            
+         
               this.intervalData = ['10', '20', '30', '40', '50','60', '120'];
               this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValue as string, 10), slotCount: 1 }
               if(this.intervalChanged){
@@ -3099,7 +3107,7 @@
       onEventRendered(args: EventRenderedArgs): void {    
           let couleur
           let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-            
+        
           scheduleElement[0]['style'].zoom = "100%"
 
           if (args.data.AzaIsPere) {
@@ -4350,6 +4358,12 @@
               if(this.searchString != undefined){
               this.searchwo.value =""
           }
+          this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+            dataSource: <Object[]>extend(
+                [], this.timelineResourceDataOut, null, true
+            ),
+            enableTooltip: true, tooltipTemplate: this.temp
+        };
               // this.onFilter( this.searchwo.value , 0, this.argsKeyboardEvent)
           } else {
               this.eventSettings = { // Réinitialise les events affichés dans le scheduler
@@ -4659,10 +4673,10 @@
   
   
            let startofDay = moment().toDate()
-           let endofDay = moment().add(2, 'd').toDate();
+           let endofDay = moment().add(1, 'd').toDate();
            if ((this.refreshDateStart === undefined || this.refreshDateEnd === undefined) && this.scheduleObj.currentView === 'TimelineDay') {
               this.refreshDateStart = moment().toDate();
-              this.refreshDateEnd = moment().add(2, 'd').toDate();
+              this.refreshDateEnd = moment().add(1, 'd').toDate();
           }
            this.getSalleByGroup(this.listObj.value, this.refreshDateStart, this.refreshDateEnd);
            this.getWorkOrderByidGroup(this.listObj.value);
@@ -5038,9 +5052,12 @@
           this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
           this.intervalValueDay = e.value as string
           let value = parseInt(e.value as string, 10);
-       
-          console.log(this.intervalValueDay)
-          this.scheduleObj.dataBind();
+          setTimeout(() => {
+            this.scheduleObj.scrollTo(this.hourContainer)  
+          }, 50);
+  
+          console.log(this.intervalValueDay, e)
+        //   this.scheduleObj.dataBind();
       
       }
      
@@ -5124,23 +5141,34 @@
  this.scheduleObj.showTimeIndicator = true
  if(val === 1){
     this.scheduleObj.startHour = "00:00"
-    this.scheduleObj.endHour = "09:00"
-    let scheduletable =  document.getElementsByClassName('e-table-container');
-    // scheduletable[0]['style'].width = "93vw"
+    this.scheduleObj.endHour = "12:00"
+ 
+    //     this.value = 30
+  
+
+    // this.scheduleObj.timeScale.interval = this.value
     console.log(this.scheduleObj.startHour,this.scheduleObj.endHour)
 }else if(val === 2){
     this.scheduleObj.startHour = "06:00"
-    this.scheduleObj.endHour = "20:00"
+    this.scheduleObj.endHour = "21:00"
+  
+    //     this.value = 30
+   
+    // this.scheduleObj.timeScale.interval = this.value 
     console.log(this.scheduleObj.startHour,this.scheduleObj.endHour)
 } else if(val === 3){
     this.scheduleObj.startHour = "16:00"
     this.scheduleObj.endHour = "23:59"
+  
+    //     this.value = 30
+    
+    // this.scheduleObj.timeScale.interval = this.value 
     console.log(this.scheduleObj.startHour,this.scheduleObj.endHour)
 
 }else{
-
     this.scheduleObj.startHour = "00:00"
     this.scheduleObj.endHour = "23:59"
+    // this.scheduleObj.timeScale.interval = this.value
 }
 }
   
@@ -5149,8 +5177,10 @@
 onSelectMultipleCell(args:SelectEventArgs){
 console.log("on select =====>",args )
 args["showQuickPopup"]  = true
-this.hourContainer =  moment(args["data"]['StartTime']).format('HH:mm')
+this.hourContainer =  moment(args["data"]['StartTime']).subtract('h',1).format('HH:mm')
 console.log(this.hourContainer)
+console.log(this.scheduleObj)
+
 }
 
 
