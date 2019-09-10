@@ -12,7 +12,8 @@ import {
   DisplayFichesAchatsComponent,
   MyFichesMaterielComponent,
   MyFichesMaterielAllComponent,
-  FichesMaterielAllComponent
+  FichesMaterielAllComponent,
+  DealInProgressComponent
 } from '@ab/fiches-materiel';
 
 const routes: Routes = [
@@ -39,6 +40,16 @@ const routes: Routes = [
         path: 'my-material-sheets/:columnIndex/:order',
         component : MyFichesMaterielComponent,
         data : { title : 'Mes Fiches Matériel En Cours'}
+      },
+      {
+        path: 'my-deals-in-progress/:columnIndex/:order',
+        component : DealInProgressComponent,
+        data : { title : 'Mes Deals En Cours'}
+      },
+      {
+        path: 'my-deals-in-progress/details/:idFicheMateriel/:idFicheAchat/:idFicheAchatDetail',
+        component : FicheMaterielDetailsComponent,
+        data : { title : 'Détails Fiche Matériel'}
       },
       {
         path: 'my-material-sheets/archived/:columnIndex/:order',

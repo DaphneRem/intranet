@@ -26,6 +26,9 @@ export class CustomDatatablesOptions {
   multiSelection?: boolean;
   selectionBtn?: boolean;
   selectionBtnAction?: any;
+  getSearchData?: boolean;
+  searchRecordedOption?: boolean;
+  searchRecordedData?: string;
 }
 
 export class Columns {

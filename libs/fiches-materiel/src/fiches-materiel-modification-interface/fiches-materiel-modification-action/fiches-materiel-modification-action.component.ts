@@ -397,10 +397,23 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           // ICI
           this.updateCommentaireAnnexElementsFicheMateriel();
         } else {
-          // console.log('error PUT fiche materiel');
-          // console.log(data);
+          swal({
+            text: 'Un problème est survenu, impossible d\'enregistrer le changements apportés',
+            type: 'error',
+            showCancelButton: false,
+            confirmButtonText: 'Retour',
+            confirmButtonColor: '#aaaaaa',
+          });
+          // console.log('error patch FM');
         }
-        // console.log(data);
+      }, error => {
+        swal({
+          text: 'Un problème est survenu, impossible d\'enregistrer les changements apportés',
+          type: 'error',
+          showCancelButton: false,
+          confirmButtonText: 'Retour',
+          confirmButtonColor: '#aaaaaa',
+        });
       });
     // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
   }
@@ -493,7 +506,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     if (this.selectionType === 'multi') {
         // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
         // console.log('this.newObject ===================================> ', this.newObject);
-      if (this.newObject.Deadline === null) {
+      if (this.newObject.Deadline === null || this.newObject.Deadline === 'dd-mm-yyyy') {
         let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
         // console.log('nullDate => --------------------------------------- ', nullDate);
         // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
@@ -514,6 +527,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         // this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
         // console.log('deadline error => ', this.changedValues['Deadline']);
       }
+
     }
     let now = moment().format('YYYY-MM-DDTHH:mm:ss');
     this.changedValues['UserModification'] = this.user;
@@ -577,8 +591,23 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           // console.log('this.newObject => ', this.newObject);
           // console.log('patch FM with success', data);
           } else {
+            swal({
+              text: 'Un problème est survenu, impossible d\'enregistrer le changements apportés',
+              type: 'error',
+              showCancelButton: false,
+              confirmButtonText: 'Retour',
+              confirmButtonColor: '#aaaaaa',
+            });
             // console.log('error patch FM');
           }
+      }, error => {
+        swal({
+          text: 'Un problème est survenu, impossible d\'enregistrer les changements apportés',
+          type: 'error',
+          showCancelButton: false,
+          confirmButtonText: 'Retour',
+          confirmButtonColor: '#aaaaaa',
+        });
       });
   }
 

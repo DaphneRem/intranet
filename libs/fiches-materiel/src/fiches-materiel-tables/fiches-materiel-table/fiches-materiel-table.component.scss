@@ -1,3 +1,32 @@
+.add-btn {
+    position: fixed;
+    z-index: 9999;
+    right: 0;
+    bottom: 40%;
+    .one-selection {
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.5)
+    }
+}
+
+/deep/ .modif-fm-btn {
+    color: #ffffff;
+    height: 45px;
+    width: 210px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(23, 170, 178);
+    cursor: pointer;
+    border-radius: 2px 0 0 2px;
+    &:hover {
+        background-color: #2eced6;
+    }
+}
+
+/deep/ #one-selection, #all-oeuvres-selection {
+    display: none;
+}
+
 .modif-btns {
     margin: 20px 15px 10px 15px;
     padding-left: 20px;
@@ -11,6 +40,20 @@
     background-color: #ffffff !important;
     color: #a8a8a8 !important;
     border: 1px solid #a8a8a8;
+}
+
+/deep/ .label-info {
+    background: #0040FF;
+    background-color: #0040FF !important;
+    color: #ffffff !important;
+    border: 1px solid #0040FF;
+}
+
+/deep/ .label-success {
+    background: #04B404;
+    background-color: #04B404 !important;
+    color: #ffffff !important;
+    border: 1px solid #04B404;
 }
 
 /deep/ .label-canceled {

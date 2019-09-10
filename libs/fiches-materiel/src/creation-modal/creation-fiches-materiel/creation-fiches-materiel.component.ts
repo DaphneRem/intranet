@@ -238,7 +238,12 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   /* CHECK FICHE MATERIEL DEADLINE */
   deadlineCalcul(oeuvre) {
     const todayNewFormatDate = new Date().toJSON().slice(0, 19);
+    console.log('deadline : 1e date => ', todayNewFormatDate);
+    const td = new Date();
+    console.log('td => ', td.setHours(0, 0, 0));
+    console.log('new date td => ', new Date(td).toJSON());
     const todayDate = new Date(todayNewFormatDate);
+    console.log('deadline => ', todayDate);
     const diffTimezone = todayDate.getTimezoneOffset(); // get difference with local hour
     const timestampUtcTodayTime = todayDate.setMinutes(
       todayDate.getMinutes() - diffTimezone
@@ -248,7 +253,9 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
     )
       .toJSON()
       .slice(0, 19);
-    console.log(this.today);
+    console.log('this.today ==> ', this.today);
+    let arrayToday = this.today.split('').splice(0, 11);
+    this.today = `${arrayToday.join('')}00:00:00`;
     if (
       oeuvre.debut_des_droits === null ||
       oeuvre.debut_des_droits === undefined
@@ -265,6 +272,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
       } else {
         // if oeuvre.debut_des_droits is more than two months
         const twoMonthBefore = timestampOeuvre - timestampTwoMonths;
+        console.log('deadline => ', new Date(twoMonthBefore).toJSON().slice(0, 19));
         return new Date(twoMonthBefore).toJSON().slice(0, 19);
       }
     }

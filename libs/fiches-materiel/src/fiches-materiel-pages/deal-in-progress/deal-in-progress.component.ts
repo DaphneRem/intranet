@@ -5,32 +5,31 @@ import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 
 import { FicheMateriel } from '../../models/fiche-materiel';
-import { FichesMaterielService } from '../../services/fiches-materiel.service';
+import { DealsService } from '../../services/deals.service';
 
 import { App } from '../../../../../apps/fiches-materiel/src/app/+state/app.interfaces';
 import { Store } from '@ngrx/store';
 
 @Component({
-  selector: 'my-fiches-materiel-all',
-  templateUrl: './my-fiches-materiel-all.component.html',
-  styleUrls: ['./my-fiches-materiel-all.component.scss'],
+  selector: 'deal-in-progress',
+  templateUrl: './deal-in-progress.component.html',
+  styleUrls: ['./deal-in-progress.component.scss'],
   providers: [
-    FichesMaterielService,
+    DealsService,
     Store
   ]
 })
-export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
+export class DealInProgressComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<any> = new Subject();
 
-  public headerTableLinkExist: boolean = false;
-  public tableTitle: string = 'Toutes mes fiches Matériel';
-  public daysNumber: number = 100;
-  public isArchived: number = 2;
+  public headerTableLinkExist = false;
+  public tableTitle = 'Mes Deals en cours';
+  public globalStore;
+  public user;
 
   public data: FicheMateriel[];
   public dataReady: boolean;
-  public user: string;
 
   public widgetLink = '/';
   public icons = [];
@@ -68,30 +67,25 @@ export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private fichesMaterielService: FichesMaterielService,
+    private dealsService: DealsService,
     private store: Store<App>
   ) {}
 
   ngOnInit() {
+    this.store.subscribe(data => (this.globalStore = data));
+    console.log('this.globalStore => ', this.globalStore);
+    this.user = this.globalStore.app.user.shortUserName;
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
-    this.storeAppSubscription();
-    this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
+    this.getDealsInProgress(this.user);
   }
 
   ngOnDestroy() {
     this.onDestroy$.next();
   }
 
-  storeAppSubscription() {
-    this.store.subscribe(data => {
-        this.user = data['app'].user.shortUserName;
-        console.log(this.user);
-    });
-  }
-
-  getFichesMaterielByIntervalCreationSuiviParIsArchived(intervalModif: number, suiviPar: string, isArchived: number) {
-    this.fichesMaterielService
-      .getFichesMaterielByIntervalCreationSuiviParIsArchived(intervalModif, suiviPar, isArchived)
+  getDealsInProgress(user: string) {
+    this.dealsService
+      .getDealsInProgress(user)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         if (!data) {
@@ -106,4 +100,3 @@ export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
       });
   }
 }
-
