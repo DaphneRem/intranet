@@ -30,7 +30,11 @@ export class EventModel{
    IsReadonly? : boolean;
    Id_Planning_Events_TempsReel?:number;
    DateDebutTheo?:Date;
-   DateFinTheo?:Date
+   DateFinTheo?:Date;
+   titreepisode:string;
+   DateDebutReel?:Date;
+   DateFinReel?:Date;
+   libelleStatut?:string;
 }
 
     // Id: number;

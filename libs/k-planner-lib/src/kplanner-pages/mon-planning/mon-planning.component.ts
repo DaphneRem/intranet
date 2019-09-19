@@ -55,12 +55,14 @@ public errorUser
     this.coordinateurService.getCoordinateurByUsername(Username)
     .pipe(takeUntil(this.onDestroy$))
         .subscribe(item => {
+          this.isCoordinateurReady = true
+          console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );
             console.log('COORDINATEUR => ', item );     
             this.itemCoordinateur = item;
             this.groupCoordinateur = item.Groupe;
             console.log('COORDINATEUR GROUPE => ', this.groupCoordinateur  )
-            this.isCoordinateurReady = true
-            console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );
+      
+        
         },error => {
           console.log("user not found")
           this.errorUser = true

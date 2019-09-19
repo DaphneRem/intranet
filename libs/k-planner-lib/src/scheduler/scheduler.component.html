@@ -52,11 +52,11 @@
                           
                            
                             <td  style="width: 5%">
-                                <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="true" (change)="onChange()">
+                                <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="true" (change)="onChangeDataSource($event)">
                                 </ejs-checkbox>
                             </td>
                             <td  style="width: 5%">
-                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" (change)="onChange()">
+                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" (change)="onChangeDataSource($event)">
                                 </ejs-checkbox>
                             </td>
                             <td style="width: 5%">
@@ -129,7 +129,7 @@
                     [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
-                    (change)="onChange($event)"
+                    
                     [showHeaderBar]='true'
                     
                     width='100%'
@@ -169,7 +169,7 @@
                                     <div>
                                         <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                             <!-- <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div> -->
-                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
+                                            <u class="e-inner-wrap" id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
                                             <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                             <div *ngIf="data.Operateur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
@@ -180,7 +180,7 @@
                                             <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br> -->
                                         
-                                            <span class="mt-1" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
+                                            <span class="mt-1" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
                                             
                                         </div>
                                     </div>
@@ -205,7 +205,7 @@
                                             </div>
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                                 <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br> -->
-                                                <span  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span><br>
+                                                <span  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span><br>
                                                 
                                                 
                                             </div>
@@ -237,7 +237,7 @@
                                     <div >
                                         <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
                                    
-                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} </u> <br> 
+                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }}  </u> <br> 
                                       
                                             <div *ngIf="data.Operateur" class="operateur mt-1 " [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}" >{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
@@ -245,7 +245,7 @@
                                         </div>
                                         <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span> -->
-                                            <span  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
+                                            <span  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }} <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
                                         </div>
                                     </div>
                                 </div>
@@ -254,9 +254,9 @@
                                   <!-- <ng-template #dateHeaderTemplate let-data  >
                                         <div class="date-text">{{getDateHeaderText(data.date)}}</div> 
                                      </ng-template>   -->
-                            
+                         
                     </e-view>
-               
+                   
                 </e-views>
                 
             </ejs-schedule>
@@ -305,8 +305,8 @@
                                 >
                                     <div id="waiting">
                                         <div id="waitdetails" >
-                                            <div id="waitlist">  {{dataWorkOrder.titreoeuvre}}  {{dataWorkOrder.numepisode}} </div>
-                                            <div id="waitcategory">   {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
+                                            <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
+                                            <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}}
                                             </div>
                                         </div>
