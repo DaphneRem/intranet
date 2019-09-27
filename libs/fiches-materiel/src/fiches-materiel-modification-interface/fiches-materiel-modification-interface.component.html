@@ -1,5 +1,10 @@
+<!-- <div>dataIdFicheMaterielReady : {{dataIdFicheMaterielReady | json}}</div>
+<div>displayNewObjectReady : {{displayNewObjectReady | json}}</div>
+<div>allGetReady : {{allGetReady | json}}</div> -->
 <!-- {{newObject | json}} -->
-<div *ngIf="dataIdFicheMaterielReady" class="row form-group fm-details">
+<!-- {{fmInRecording | json}} -->
+<loader-animation *ngIf="!displayNewObjectReady || !allGetReady"></loader-animation>
+<div *ngIf="displayNewObjectReady && allGetReady" class="row form-group fm-details">
   <form class="card col-lg-12">
     <div class="row">
       <div class="col-lg-12 text-center modif-header">
@@ -10,7 +15,9 @@
     <fiches-materiel-modification-action
       (modificationMessage)="displayModificationMessage($event)"
       (propertiesChanged)="resetPropertiesChanged($event)"
-      (fmInRecording)="checkCurrentRecord($event)"
+      (fmInRecordingEvent)="checkCurrentRecord($event)"
+      [fmInRecording]="fmInRecording"
+      (modifInProgressMessage)="displayModifInProgressMessage($event)"
       class="creation-top"
       [showAffectedEps]="false"
       [annexElementsNgModel]="annexElementsNgModel"
@@ -41,6 +48,12 @@
     </fiches-materiel-modification-action>
     <!-- {{newObject | json}} -->
     <!-- {{annexElementsFicheMateriel | json}} -->
+  <div *ngIf="fmInRecording && selectionType === 'multi'" class="modif-in-progress">
+    <loader-animation ></loader-animation>
+    <div class="recording-message"><p>{{modifInProgressMessage}}</p></div>
+    <div class="warning-message"><p><i class="warning-icon icofont icofont-warning"></i>Quitter la page entrainera des pertes de données</p></div>
+  </div>
+  <div *ngIf="!fmInRecording">
     <div class="row top">
       <div class="col-lg-3 left-infos">
         <div *ngIf="!fmInRecording" class="form-group row">
@@ -141,7 +154,13 @@
             </option>
           </select>
   
-          <div class="add-just-comment" (click)="addJustCommentSwal()"><i class="icofont icofont-comment"></i></div>
+          <div 
+            class="add-just-comment"
+            [placement]="'right'" 
+            [ngbTooltip]="'Ajouter un commentaire'"
+            (click)="addJustCommentSwal()">
+            <i class="icofont icofont-comment"></i>
+          </div>
           <history-steps-status-modal
             class="history-steps-status-modal-component"
             *ngIf="selectionType === 'one'" 
@@ -619,9 +638,14 @@
             <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.debut_des_droits">/</span>
           </p>
-          <p class="fin-droits">Fin des droits :
+          <!-- <p class="fin-droits">Fin des droits :
             <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.expiration_droits">/</span>
+          </p> -->
+          <p *ngIf="ficheAchatDetail.duree_droits_annee">Fin des droits : {{ficheAchatDetail.duree_droits_annee}} an(s)</p>
+          <p *ngIf="ficheAchatDetail.duree_droits_mois">Fin des droits : {{ficheAchatDetail.duree_droits_mois}} mois</p>
+          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois">Fin des droits :
+            <span class="empty-field">/</span>
           </p>
 
         </div>
@@ -665,10 +689,9 @@
             (newComment)="displayDeliveryDateModelComment($event)"
             ></delivery-date-comment-modal>
           <p *ngIf="selectionType === 'one'">Délai de vérif :
-            
-            <span>Fiche Achat</span>
+            <span *ngIf="ficheAchatDetail.delai_verification">{{ficheAchatDetail.delai_verification}} jours</span>
+            <span *ngIf="!ficheAchatDetail.delai_verification">/</span>
           </p>
-
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker acceptation">
             <div class="form-check col-lg-5">
               <label class=" radio">
@@ -802,6 +825,7 @@
           </div>
           <div class="row form-group annexes-elements">
             <annexes-elements-modification-modal 
+              *ngIf="categoriesReady"
               [allIdSelectedFichesMateriel]="allIdSelectedFichesMateriel"
               (newStateElementsAnnexNgModel)="displayStateElementsAnnexNgModel($event)"
               (newComments)="displaynewEAComments($event)"
@@ -1071,6 +1095,7 @@
         </div>
       </div>
     </div>
+  </div>
     <!-- <div class="row fm-detail-footer">
       <div class="col-lg-2 offset-lg-10 footer-links">
         <custom-icon-badge *ngFor="let icon of icons" [littleIcon]="icon.littleIcon" [bigIcon]="icon.bigIcon" [link]="icon.link"
@@ -1078,10 +1103,13 @@
         </custom-icon-badge>
       </div>
     </div> -->
+
     <fiches-materiel-modification-action
       (modificationMessage)="displayModificationMessage($event)"
       (propertiesChanged)="resetPropertiesChanged($event)"
-      (fmInRecording)="checkCurrentRecord($event)"
+      (modifInProgressMessage)="displayModifInProgressMessage($event)"
+      (fmInRecordingEvent)="checkCurrentRecord($event)"
+      [fmInRecording]="fmInRecording"
       [showAffectedEps]="true"
       [annexElementsNgModel]="annexElementsNgModel"
       [allFichesMateriel]="allFichesMateriel"
@@ -1109,5 +1137,6 @@
       [qualityFmNgModel]="qualityFmNgModel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
+
   </form>
 </div>

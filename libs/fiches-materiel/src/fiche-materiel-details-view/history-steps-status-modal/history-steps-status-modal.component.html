@@ -28,7 +28,11 @@
     <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Retour</button>
   </div>
 </ng-template>
-<div class="history" (click)="openLg(content)">
+<div 
+  class="history" 
+  [placement]="'right'" 
+  [ngbTooltip]="'Historique des changements de statuts/étapes'"
+  (click)="openLg(content)">
   <i class="icofont icofont-history"></i>
 </div>
 

@@ -26,6 +26,10 @@
     <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Retour</button>
   </div>
 </ng-template>
-<div class="history" (click)="openLg(deliveryDateContent)">
+<div 
+  class="history" 
+  [placement]="'right'" 
+  [ngbTooltip]="'Historique des changements de date de livraison'"
+  (click)="openLg(deliveryDateContent)">
   <i class="icofont icofont-history"></i>
 </div>

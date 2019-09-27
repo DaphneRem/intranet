@@ -77,6 +77,7 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges, OnDestr
     const ficheAchat: SimpleChange = changes.ficheAchat;
     this.myFicheAchat = ficheAchat.currentValue;
     if (this.init > 1) {
+      this.detailsFicheAchat = null;
       this.getFicheAchatDetails(ficheAchat.currentValue.id_fiche);
     }
     this.init++;
@@ -91,6 +92,7 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges, OnDestr
       .getFichesAchatDetails(id)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe( data => {
+        console.log('getFicheAchatDétail res => ', data);
         this.detailsFicheAchat = data;
         this.dataReady = true;
       });

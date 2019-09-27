@@ -657,8 +657,12 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
           } else if (currentItemLib.IdLibstatut === 2) { // ANNULE
             return '<span class="label label-canceled">' + currentItemLib.Libelle + '</span>';
           } else if (currentItemLib.IdLibstatut === 5) { // TRAITE PAR AUTRES SERVICES
-            let shortLibelle = currentItemLib.Libelle.substring(14, currentItemLib.Libelle.length);
-            return '<span class="label label-other">' + shortLibelle + '</span>'; // color : #774aa4
+            if (currentItemLib.IdLibEtape === 24) {
+              let shortLibelle = currentItemLib.Libelle.substring(14, currentItemLib.Libelle.length);
+              return '<span class="label label-other">' + shortLibelle + '</span>'; // color : #774aa4
+            } else {
+              return '<span class="label label-other">' + currentItemLib.Libelle + '</span>'; // color : #774aa4
+            }
           } else {
             return '/';
           //                 return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8

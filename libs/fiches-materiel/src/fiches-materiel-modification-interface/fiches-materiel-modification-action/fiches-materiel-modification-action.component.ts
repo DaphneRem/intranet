@@ -53,13 +53,17 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   @Input() versionFmNgModel;
   @Input() allQualitiesFm;
   @Input() qualityFmNgModel;
+  @Input() fmInRecording;
 
   @Output() modificationMessage: EventEmitter<any> = new EventEmitter();
   @Output() propertiesChanged: EventEmitter<any> = new EventEmitter();
-  @Output() fmInRecording: EventEmitter<boolean> = new EventEmitter();
+  @Output() fmInRecordingEvent: EventEmitter<boolean> = new EventEmitter();
+
+  @Output() modifInProgressMessage: EventEmitter<string> = new EventEmitter();
 
   private onDestroy$: Subject<any> = new Subject();
 
+  public fmInRecordingLocal = false;
   public myFicheMateriel;
   public changedValues = {};
   public multiDataToUpdate;
@@ -87,23 +91,14 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.onDestroy$.next();
   }
 
-  checkAllValidDates(): boolean { // 2/
-    if (
-      this.deadlineIsValid
-      && this.livraisonIsValid
-      && this.acceptationIsValid
-      && this.premiereDiff
-      && this.accesLabo
-    ) {
-      // console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
-      return true;
-    } else {
-      // console.log('ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt');
-      return false;
-    }
-  }
+  /*************************************************************************************************************/
+  /************************************* ACTION ONCLICK 'ENREGISTER' BTN  **************************************/
+  /*************************************************************************************************************/
 
   modifFichesMateriel(closeAction) { // 1/
+    this.modifInProgressMessage.emit('Enregistrement des Fiches Matériel...');
+    this.fmInRecordingEvent.emit(true);
+    this.fmInRecordingLocal = true;
     let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
     // console.log('COMMENTS ================> ', this.comments);
     if (closeAction === 'close') {
@@ -112,119 +107,61 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       this.closeInterface = false;
     }
     if (this.checkAllValidDates()) {
-      this.fmInRecording.emit(true);
-      this.checkNewObjectModif();
+      if (this.selectionType === 'one') {
+        this.getFicheMaterielOriginal(this.newObject.IdFicheMateriel);
+      } else {
+        this.checkChanges(this.allIdSelectedFichesMateriel);
+      }
     } else {
       this.displayNotValidDateMessageModal();
     }
   }
 
-  displayNotValidDateMessageModal() {
-      let invalidDate = [];
-      if (!this.deadlineIsValid) {
-        invalidDate.push('Deadline');
-      }
-      if (!this.livraisonIsValid) {
-        invalidDate.push('date de livraison');
-      }
-      if (!this.acceptationIsValid) {
-        invalidDate.push('date d\'acceptation');
-      }
-      if (!this.premiereDiff) {
-        invalidDate.push('date de première diff');
-      }
-      if (!this.accesLabo) {
-        invalidDate.push('date d\'Accès labo');
-      }
-      if (invalidDate.length > 1) {
-        swal({
-          title: 'Plusieurs dates ne sont pas valides',
-          showCancelButton: false,
-          confirmButtonText: 'Retour',
-          confirmButtonColor: '#aaaaaa',
-        });
-      } else {
-        swal({
-          title: `La ${invalidDate[0]} n'est pas valide`,
-          showCancelButton: false,
-          confirmButtonText: 'Retour',
-          confirmButtonColor: '#aaaaaa',
-          // cancelButtonText: 'Retour',
-        });
-      }
-  }
+  /*************************************************************************************************************/
+  /****************************************** LAST ACTIONS AFTER SAVE  *****************************************/
+  /*************************************************************************************************************/
 
-  goBack() {
+  goBack() { // ONE
     this.location.back();
   }
 
-  actionAfterSave() { // 10/
+  actionAfterSave() { // 10/ ONE
     // console.log('ACTION AFTER SAVE CALL !!!', this.newObject);
+    console.log('ACTION AFTER SAVE CALL !!!');
     if (this.closeInterface) {
       this.goBack();
     } else {
+      this.fmInRecordingEvent.emit(false);
+      this.fmInRecordingLocal = false;
       let now = new Date();
       let hours = now.getHours();
       let minutes = now.getMinutes();
+      this.modifInProgressMessage.emit('');
       // console.log('this.changedValues ===> ', this.changedValues);
       this.modificationMessage.emit(`Dernières modifications enregistrées à ${hours}:${minutes}`);
       this.propertiesChanged.emit(this.changedValues);
     }
   }
 
-  putQualiteFicheMateriel(qualiteFM) {
-    this.qualiteService.putQualite(qualiteFM)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(qualite => {
-        // console.log(qualite);
-        if (qualite) {
-          // console.log('PUT qualite with succes');
-          // console.log(qualite);
-        } else {
-          // console.log('ERROR PUT qualite');
-          // console.log(qualite);
-        }
-      });
-  }
+  /*************************************************************************************************************/
+  /*********************************************** DATES MANAGEMENT ********************************************/
+  /*************************************************************************************************************/
 
-  putVersionFicheMateriel(versionFM) {
-    this.versionService.putVersion(versionFM)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(version => {
-        // console.log(version);
-        if (version) {
-          // console.log('PUT version with succes');
-          // console.log(version);
-        } else {
-          // console.log('ERROR PUT version');
-          // console.log(version);
-        }
-      });
-  }
-
-  checkDeadline(newObject) {
-    console.log('newObject.Deadline => ', newObject.Deadline);
+  checkAllValidDates(): boolean { // 2/
     if (
-      // newObject.IdLibEtape === 17 ||
-      // newObject.IdLibstatut === 3 ||
-      // newObject.IdLibstatut === 5
-      newObject.IdLibEtape === 20 || // Terminé (accepté)
-      newObject.IdLibEtape === 21 || // Terminé (annulé)
-      newObject.IdLibEtape === 24 // traité par un autre service
+      this.deadlineIsValid
+      && this.livraisonIsValid
+      && this.acceptationIsValid
+      && this.premiereDiff
+      && this.accesLabo
     ) {
-      this.newObject.Deadline = null;
-      this.newObject.isarchived = 1;
-      // console.log('this.newObject.Deadline => ', this.newObject.Deadline);
+      return true;
     } else {
-      let day = this.addZeroToDate(newObject.Deadline.day);
-      let month = this.addZeroToDate(newObject.Deadline.month);
-      newObject.Deadline = `${newObject.Deadline.year}-${
-        month
-      }-${day}T00:00:00`;
+      return false;
     }
   }
 
-  addZeroToDate(date) {
+  addZeroToDate(date) { // ONE
     // console.log('date => ', date);
     if (date) {
       // console.log(date.toString());
@@ -236,7 +173,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     }
   }
 
-  resetDateFormat(newObject) { // 5/
+  resetDateFormat(newObject) { // 5/ ONE & MULTI
     // console.log('before resetDateFormat : this.newObject => ', this.newObject);
     // console.log('newObject.Deadline => ', newObject.Deadline);
     // console.log('newObject.DateLivraison => ', newObject.DateLivraison);
@@ -245,7 +182,6 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     // console.log('newObject.ReceptionAccesLabo => ', newObject.ReceptionAccesLabo);
     // console.log('newObject.DateLivraison => ', newObject.DateRetourOri);
     // console.log('newObject.DateLivraison => ', newObject.RetourOriDernierDelai);
-
     if (
       newObject.Deadline !== null &&
       newObject.Deadline !== this.valueNotToChangeLibelle &&
@@ -333,120 +269,254 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     console.log('after resetDateFormat : this.newObject => ', this.newObject);
   }
 
-  getFicheMaterielOriginal(id) {
-    this.fichesMaterielService.getOneFicheMateriel(id)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
-        // console.log(data);
-        this.myFicheMateriel = data[0];
-        if (
-          JSON.stringify(this.newObject) === JSON.stringify(this.myFicheMateriel)
-        ) {
-          // console.log(this.newObject[0]);
-          // console.log('true');
-          // console.log(this.newObject === this.myFicheMateriel);
-          // console.log(this.myFicheMateriel);
-        } else {
-          // console.log('false');
-          // console.log(this.newObject);
-          // if (this.newObject.IdLibEtape !== this.newObject.IdLibEtape) {
-          //   this.newObject.Fiche_Mat_LibEtape = null;
-          // }
-          // if (this.newObject.Fiche_Mat_Libstatut.IdLibstatut !== this.newObject.IdLibstatut) {
-          //   this.newObject.Fiche_Mat_Libstatut = null;
-          // }
-          this.resetDateFormat(this.newObject);
-          this.updatePutFicheMateriel(this.newObject);
-        }
-      });
+  checkDeadline(newObject) { // ONE
+    console.log('newObject.Deadline => ', newObject.Deadline);
+    if (
+      // newObject.IdLibEtape === 17 ||
+      // newObject.IdLibstatut === 3 ||
+      // newObject.IdLibstatut === 5
+      newObject.IdLibEtape === 20 || // Terminé (accepté)
+      newObject.IdLibEtape === 21 || // Terminé (annulé)
+      newObject.IdLibEtape === 24 // traité par un autre service
+    ) {
+      this.newObject.Deadline = null;
+      this.newObject.isarchived = 1;
+      // console.log('this.newObject.Deadline => ', this.newObject.Deadline);
+    } else {
+      let day = this.addZeroToDate(newObject.Deadline.day);
+      let month = this.addZeroToDate(newObject.Deadline.month);
+      newObject.Deadline = `${newObject.Deadline.year}-${
+        month
+      }-${day}T00:00:00`;
+    }
   }
 
-  updatePutFicheMateriel(e) {
-    // console.log(e);
-    let now = moment().format('YYYY-MM-DDTHH:mm:ss');
-    delete e.Fiche_Mat_LibEtape;
-    delete e.Fiche_Mat_Qualite;
-    delete e.Fiche_Mat_Version;
-    e.UserModification = this.user;
-    e.DateModification = now;
-    // delete e.Fiche_Mat_ElementsAnnexes;
-    this.fichesMaterielService.updateFicheMateriel([e])
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
-        if (data) {
-          // console.log('succes PUT fiche materiel');
-          // console.log('data to PUT : ', this.annexElementsFicheMateriel);
-          // console.log(data);
-          // console.log(this.annexElementsFicheMateriel);
-          this.annexElementsService
-            .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
-            .pipe(takeUntil(this.onDestroy$))
-            .subscribe(annexesElements => {
-              // console.log(annexesElements);
-              if (annexesElements) {
-                // console.log('succes PUT annexesElements');
-                // console.log(annexesElements);
-                this.actionAfterSave();
-              } else {
-                // console.log('error PUT annexesElements');
-                // console.log(annexesElements);
-              }
-            });
-          this.putQualiteFicheMateriel(this.qualiteFM);
-          this.putVersionFicheMateriel(this.versionFicheMateriel);
-          // ICI
-          this.updateCommentaireAnnexElementsFicheMateriel();
-        } else {
-          swal({
-            text: 'Un problème est survenu, impossible d\'enregistrer le changements apportés',
-            type: 'error',
-            showCancelButton: false,
-            confirmButtonText: 'Retour',
-            confirmButtonColor: '#aaaaaa',
-          });
-          // console.log('error patch FM');
-        }
-      }, error => {
+  displayNotValidDateMessageModal() { // ONE
+      let invalidDate = [];
+      if (!this.deadlineIsValid) {
+        invalidDate.push('Deadline');
+      }
+      if (!this.livraisonIsValid) {
+        invalidDate.push('date de livraison');
+      }
+      if (!this.acceptationIsValid) {
+        invalidDate.push('date d\'acceptation');
+      }
+      if (!this.premiereDiff) {
+        invalidDate.push('date de première diff');
+      }
+      if (!this.accesLabo) {
+        invalidDate.push('date d\'Accès labo');
+      }
+      if (invalidDate.length > 1) {
         swal({
-          text: 'Un problème est survenu, impossible d\'enregistrer les changements apportés',
-          type: 'error',
+          title: 'Plusieurs dates ne sont pas valides',
           showCancelButton: false,
           confirmButtonText: 'Retour',
           confirmButtonColor: '#aaaaaa',
         });
+      } else {
+        swal({
+          title: `La ${invalidDate[0]} n'est pas valide`,
+          showCancelButton: false,
+          confirmButtonText: 'Retour',
+          confirmButtonColor: '#aaaaaa',
+          // cancelButtonText: 'Retour',
+        });
+      }
+  }
+
+  /*************************************************************************************************************/
+  /*********************************************** PUT REQUESTS  ***********************************************/
+  /*************************************************************************************************************/
+ public qualiteRecorded = []; // NEED TO RESET AFTER RECORDING
+  putQualiteFicheMateriel(qualiteFM) { // ONE & MULTI
+    let quality = null;
+    let that = this;
+    this.qualiteService.putQualite(qualiteFM)
+      // .pipe(takeUntil(this.onDestroy$))
+      // .subscribe(qualite => {
+      .then( qualite => {
+        // console.log(qualite);
+        quality = qualite;
+        if (qualite) {
+          console.log('PUT qualite with succes');
+          if (this.selectionType === 'multi') {
+            this.qualiteRecorded.push(qualite);
+            if (this.qualiteRecorded.length === this.allQualitiesFm.length) {
+              console.log('last quality to PUT, this.qualiteRecorded.length => ', this.qualiteRecorded.length);
+              this.qualityRecording = false;
+              this.updateVersionFM();
+            }
+          }
+          // console.log(qualite);
+        } else {
+          console.error('ERROR PUT qualite');
+          this.displaySwalError('Qualités');
+          // console.log(qualite);
+        }
+      }, error => {
+        this.displaySwalError('Qualités', error);
+      }
+      // , () => { // Reloead function until response exist (so that it is not stalled)
+      //   if (quality === null) {
+      //     console.log('canceled error quality => ', quality);
+      //     that.putQualiteFicheMateriel(qualiteFM);
+      //   }
+      //   console.log('QUALITE DONE');
+      // }
+    );
+  }
+
+  public versionsRecorded = [];
+  putVersionFicheMateriel(versionFM) { // ONE & MULTI
+    let versionData = null;
+    let that = this;
+    // await this.versionService.putAllVersions(versionFM)
+    this.versionService.putVersion(versionFM)
+      // .pipe(takeUntil(this.onDestroy$))
+      // .subscribe(version => {
+      .then(version => {
+        console.log(version);
+        versionData = version;
+        if (version) {
+          if (this.selectionType === 'multi') {
+            this.versionsRecorded.push(version);
+            if (this.versionsRecorded.length === this.allVersionFm.length) {
+               console.log('PUT ALL version with succes');
+               this.modifInProgressMessage.emit('Enregistrement Terminé');
+               this.actionAfterSave();
+            }
+          }
+          // console.log(version);
+        } else {
+          console.error('ERROR PUT version');
+          this.displaySwalError('Versions');
+          // console.log(version);
+        }
+      }
+      , error => {
+        this.displaySwalError('Versions', error);
+      }
+      // , () => { // Reloead function until response exist (so that it is not stalled)
+      //   if (versionData === null) {
+      //     console.log('canceled error versionData => ', versionData);
+      //     that.putVersionFicheMateriel(versionFM);
+      //   }
+      //   console.log('VERSION DONE');
+      // }
+    );
+  }
+
+
+  public annexesElementPut = [];
+  public fmRecorded = [];
+  putAnnexElementForFM(elementAnnexOfFM, index, newElementSAnnex) { // 9/ MULTI
+    console.log('elementAnnexOfFM ==> ', elementAnnexOfFM);
+    let annexElData = null;
+    let that = this;
+    this.annexElementsService
+      .putAnnexElementsFicheMateriel(elementAnnexOfFM)
+      // .pipe(takeUntil(this.onDestroy$))
+      // .subscribe(data => {
+      .then(data => {
+        // console.log(data);
+        annexElData = data;
+        if (data) {
+          console.log('succes PUT annexesElements => MULTI');
+          // console.log(data);
+          this.fmRecorded.push(data);
+          console.log('this.fmRecorded after push ==> ', this.fmRecorded);
+          if (this.fmRecorded.length === newElementSAnnex.length) {
+            console.log(
+              'this.fmRecorded.length === newElementSAnnex.length => ',
+              'this.fmRecorded.length = ',
+              this.fmRecorded.length,
+              ' newElementSAnnex.length = ',
+              newElementSAnnex.length
+            );
+            // this.actionAfterSave();
+            this.checkChangeValueToEAComment();
+          }
+          if (index === newElementSAnnex.length - 1) {
+            // this.checkChangeValueToEAComment();
+            // this.updateQualiteFM();
+            // this.updateVersionFM();
+            // console.log('Action after save');
+            // this.actionAfterSave();
+          }
+        } else {
+          console.error('error PUT annexesElements => MULTI');
+          this.displaySwalError('éléments annexes');
+          // console.log(data);
+        }
+      }, error => {
+        console.error('error PUT annexesElements => ', error);
+        this.displaySwalError('éléments annexes', error);
+      }
+      // , () => { // Reloead function until response exist (so that it is not stalled)
+      //   if (annexElData === null) {
+      //     console.log('canceled error annexElData => ', annexElData);
+      //     that.putAnnexElementForFM(elementAnnexOfFM, index, newElementSAnnex);
+      //   }
+      //   console.log('ELEMENTS ANNEXES DONE');
+      // }
+    );
+  }
+
+  putCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) { // ONE & MULTI
+    let comAnnexElData = null;
+    let that = this;
+    this.annexElementsService.putCommentaireAnnexElementsFicheMateriel(comments)
+      .then(data => {
+        console.log('PUT elements annexes comments with succes ! ', data);
+        comAnnexElData = data;
+        if (data) {
+          if (!this.qualityRecording) {
+            this.updateQualiteFM();
+          }
+        } else {
+          this.displaySwalError('commentaires des éléments annexes');
+        }
+      }, error => {
+        console.error('ERROR PUT elements annexes comments !', error);
+        this.displaySwalError('commentaires des éléments annexes', error);
+      }
+      // , () => { // Reloead function until response exist (so that it is not stalled)
+      //   if (comAnnexElData === null) {
+      //     console.log('canceled error comAnnexElData => ', comAnnexElData);
+      //     that.putCommentaireAnnexElementsFicheMateriel(comments);
+      //   }
+      //   console.log('comAnnexElData DONE');
+      // }
+      );
+  }
+
+  /*************************************************************************************************************/
+  /*********************************************** POST REQUESTS  **********************************************/
+  /*************************************************************************************************************/
+
+  postCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) { // ONE & MULTI
+    this.annexElementsService.postCommentaireAnnexElementsFicheMateriel(comments)
+      // .pipe(takeUntil(this.onDestroy$))
+      // .subscribe(data => {
+      .then(data => {
+        console.log('POST elements annexes comments with succes ! ', data);
+        if (data) {
+          if (!this.qualityRecording) { // si la qulité n'est pas déjà en train d'être enregistrer au PUT
+            this.updateQualiteFM();
+          }
+        }
+      }, error => {
+        console.error('ERROR POST elements annexes comments !', error);
       });
-    // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
   }
 
-  putAnnexElementReset() {
-    // console.log(this.annexElementsNgModel);
-    // console.log(this.allIdSelectedFichesMateriel);
-    // console.log(this.allFichesMateriel);
-    // this.annexElementsService
-    //   .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
-    //   .pipe(takeUntil(this.onDestroy$))
-    //   .subscribe(annexesElements => {
-    //     console.log(annexesElements);
-    //     if (annexesElements) {
-    //       console.log('succes PUT annexesElements');
-    //       console.log(annexesElements);
-    //       this.actionAfterSave();
-    //     } else {
-    //       console.log('error PUT annexesElements');
-    //       console.log(annexesElements);
-    //     }
-    //   });
-  }
+  /*************************************************************************************************************/
+  /****************************************** ONLY FOR 'MULTI' MODIF  ********************************************/
+  /*************************************************************************************************************/
 
-  checkNewObjectModif() { // 3/
-    if (this.selectionType === 'one') {
-      this.getFicheMaterielOriginal(this.newObject.IdFicheMateriel);
-    } else {
-      this.checkChanges(this.allIdSelectedFichesMateriel);
-    }
-  }
-
-  checkChanges(allId) { // 4/
+  checkChanges(allId) { // 4/ MULTI
     // CALL IF SELECTION TYPE IS 'MULTI'
     // let changedValues = {};
     // console.log(allId);
@@ -535,7 +605,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.displaymultiDataToUpdate(allId);
   }
 
-  displaymultiDataToUpdate(allId) { // 6/
+  displaymultiDataToUpdate(allId) { // 6/ MULTI
     // console.log('displaymultiDataToUpdate : this.newObject => ', this.newObject);
     this.multiDataToUpdate = allId.map(item => {
       item = Object.assign({}, item, this.changedValues);
@@ -570,9 +640,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     this.patchFichesMateriel(this.multiDataToUpdate); // patch sur tableau de fiches Matériel (partielles)
   }
 
-
-
-  patchFichesMateriel(fichesMateriel) { // 7/
+  patchFichesMateriel(fichesMateriel) { // 7/ MULTI
     // console.log('patch FM function => fichesMateriel (args) : ', fichesMateriel);
     // console.log('patch FM function => this.annexElementsNgModel : ', this.annexElementsNgModel);
     this.fichesMaterielService
@@ -580,10 +648,13 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         if (data) {
+          // C'EST ICI QU'IL FAUT IMBRIQUER LES FONCTIONS LES UNES DANS LES AUTRES
           this.changeValueToAnnexElementsInFM();
-          this.checkChangeValueToEAComment();
-          this.updateVersionFM();
-          this.updateQualiteFM();
+
+          // this.checkChangeValueToEAComment();
+          // this.updateQualiteFM();
+          // this.updateVersionFM();
+
           // fichesMateriel.map(item => {
           //   console.log(item);
           //   this.addIdFicheMaterielToElementAnnexReset(item);
@@ -611,18 +682,121 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       });
   }
 
-/************************************************/
-/*************** VERSION MANAGEMENT *************/
-/************************************************/
+  /*************************************************************************************************************/
+  /****************************************** ONLY FOR 'ONE' MODIF  ********************************************/
+  /*************************************************************************************************************/
+
+  getFicheMaterielOriginal(id) { // ONE
+    this.fichesMaterielService.getOneFicheMateriel(id)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        // console.log(data);
+        this.myFicheMateriel = data[0];
+        if (
+          JSON.stringify(this.newObject) === JSON.stringify(this.myFicheMateriel)
+        ) {
+          // console.log(this.newObject[0]);
+          // console.log('true');
+          // console.log(this.newObject === this.myFicheMateriel);
+          // console.log(this.myFicheMateriel);
+        } else {
+          // console.log('false');
+          // console.log(this.newObject);
+          // if (this.newObject.IdLibEtape !== this.newObject.IdLibEtape) {
+          //   this.newObject.Fiche_Mat_LibEtape = null;
+          // }
+          // if (this.newObject.Fiche_Mat_Libstatut.IdLibstatut !== this.newObject.IdLibstatut) {
+          //   this.newObject.Fiche_Mat_Libstatut = null;
+          // }
+          this.resetDateFormat(this.newObject);
+          this.updatePutFicheMateriel(this.newObject);
+        }
+      });
+  }
+
+  updatePutFicheMateriel(e) { // ONE
+    // console.log(e);
+    let now = moment().format('YYYY-MM-DDTHH:mm:ss');
+    delete e.Fiche_Mat_LibEtape;
+    delete e.Fiche_Mat_Qualite;
+    delete e.Fiche_Mat_Version;
+    e.UserModification = this.user;
+    e.DateModification = now;
+    // delete e.Fiche_Mat_ElementsAnnexes;
+    this.fichesMaterielService.updateFicheMateriel([e])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        if (data) {
+          // console.log('succes PUT fiche materiel');
+          // console.log('data to PUT : ', this.annexElementsFicheMateriel);
+          // console.log(data);
+          // console.log(this.annexElementsFicheMateriel);
+          this.annexElementsService
+            .putAnnexElementsFicheMateriel(this.annexElementsFicheMateriel)
+            .then(annexesElements => {
+            // .pipe(takeUntil(this.onDestroy$))
+            // .subscribe(annexesElements => {
+              // console.log(annexesElements);
+              if (annexesElements) {
+                // console.log('succes PUT annexesElements');
+                // console.log(annexesElements);
+                this.actionAfterSave();
+              } else {
+                console.error('error PUT annexesElements');
+                this.displaySwalError('éléments annexes');
+                // console.log(annexesElements);
+              }
+            }, error => {
+              this.displaySwalError('éléments annexes', error);
+            });
+          this.putQualiteFicheMateriel(this.qualiteFM);
+          this.putVersionFicheMateriel(this.versionFicheMateriel);
+          // ICI
+          this.updateCommentaireAnnexElementsFicheMateriel();
+        } else {
+          this.displaySwalError('fiche matériel');
+          // console.log('error patch FM');
+        }
+      }, error => {
+        this.displaySwalError('fiche matériel', error);
+      });
+    // -------------------------->>>>>>>>>>>>>>>>>>>> Résoudre problème
+  }
+
+  /*************************************************************************************************************/
+  /********************************************* SECURITY WARNING  *********************************************/
+  /*************************************************************************************************************/
+
+  displaySwalError(label: string, error?) { // ONE & MULTI
+    let swalText: string;
+    let labelText = `Un problème est survenu, impossible d\'enregistrer les changements apportés aux valeurs ${label}`;
+    if (error) {
+      let errorText = `, erreur : ${error}`;
+      swalText = labelText + errorText;
+    } else {
+      swalText = labelText;
+    }
+    swal({
+      text: swalText,
+      type: 'error',
+      showCancelButton: false,
+      confirmButtonText: 'Retour',
+      confirmButtonColor: '#aaaaaa',
+    });
+  }
+
+  /*************************************************************************************************************/
+  /******************************************* VERSION : CHECK & UPDATE  ***************************************/
+  /*************************************************************************************************************/
 
   checkNeedChangeValueToVersion(): boolean {
-    // console.log('this.allVersionFm => ', this.allVersionFm);
-    // console.log('this.versionFmNgModel => ', this.versionFmNgModel);
+    console.log('this.allVersionFm => ', this.allVersionFm);
+    console.log('this.versionFmNgModel => ', this.versionFmNgModel);
     let versionChangements = [];
     this.allVersionFm.map(item => {
       this.versionFmNgModel.map(model => {
         item.forEach(versionFM => {
-          if (versionFM.IdFicheAch_Lib_Versions === model.IdFicheAch_Lib_Versions && versionFM.Isvalid !== model.Isvalid) {
+          if (versionFM.IdFicheAch_Lib_Versions === model.IdFicheAch_Lib_Versions && versionFM.Isvalid !== model.Isvalid && versionFM.Isvalid !== 'same') {
             versionChangements.push(versionFM);
           }
         });
@@ -636,7 +810,8 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     }
   }
 
-  updateVersionFM() {
+  updateVersionFM() { // MULTI
+    this.modifInProgressMessage.emit('Versions en cours d\'enregistrement...');
     let needPutVersion: boolean = this.checkNeedChangeValueToVersion();
     if (needPutVersion) {
       this.allVersionFm.map(item => {
@@ -653,15 +828,16 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         });
       });
     }
-    // console.log('this.allVersionFm after change => ', this.allVersionFm);
+    console.log('this.allVersionFm after change => ', this.allVersionFm);
     this.allVersionFm.map(item => {
       this.putVersionFicheMateriel(item);
     });
+    // this.putVersionFicheMateriel(this.allVersionFm);
   }
 
-/************************************************/
-/************* QUALTITIES MANAGEMENT ************/
-/************************************************/
+  /*************************************************************************************************************/
+  /******************************************* QUALITY : CHECK & UPDATE  ***************************************/
+  /*************************************************************************************************************/
 
   checkNeedChangeValueToQuality(): boolean {
     // console.log('this.allQualitiesFm => ', this.allQualitiesFm);
@@ -683,8 +859,10 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       return false;
     }
   }
-
-  updateQualiteFM() {
+public qualityRecording = false;
+  updateQualiteFM() { // MULTI
+    this.qualityRecording = true;
+    this.modifInProgressMessage.emit('Qualités en cours d\'enregistrement...');
     let needPutQuality: boolean = this.checkNeedChangeValueToQuality();
     if (needPutQuality) {
       this.allQualitiesFm.map(item => {
@@ -707,7 +885,13 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     });
   }
 
-  checkChangeValueToEAComment() {
+
+  /*************************************************************************************************************/
+  /**************************************** EA COMMENTS : CHECK & UPDATE  **************************************/
+  /*************************************************************************************************************/
+
+  checkChangeValueToEAComment() { // MULTI
+  this.modifInProgressMessage.emit('Commentaires des éléments annexes en cours d\'enregistrement...');
   let commentsToPut = [];
   let commentsToPost = [];
   //  console.log('this.allEACommentsMultiSelect in action component => ', this.allEACommentsMultiSelect);
@@ -715,7 +899,11 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
    this.allFichesMateriel.map(fm => {
      let category = [];
      this.comments.map(item => {
-       if (item.Commentaire !== 'valeur d\'origine') {
+       console.log('item.commentaire => ', item.Commentaire);
+      //  if (item.Commentaire !== 'valeur d\'origine') {
+      if (item.Commentaire !== this.valueNotToChangeLibelle) {
+
+         console.log('item.commentaire !== "this.valueNotToChangeLibelle" => ', item.Commentaire);
          this.allEACommentsMultiSelect.map(com => {
            if ((com.IdFicheMateriel === fm.IdFicheMateriel) && (com.idLibCategorieElementsAnnexes === item.idLibCategorieElementsAnnexes)) {
               let newItem = {
@@ -744,17 +932,45 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
        }
      });
    });
-    // console.log('this.commentsToPut ================================================= ==> ', commentsToPut);
+    console.log('this.commentsToPut ================================================= ==> ', commentsToPut);
     if (commentsToPut.length > 0) {
       this.putCommentaireAnnexElementsFicheMateriel(commentsToPut);
     }
-    // console.log('this.commentsToPost ================================================= ==> ', commentsToPost);
+    console.log('this.commentsToPost ================================================= ==> ', commentsToPost);
     if (commentsToPost.length > 0) {
       this.postCommentaireAnnexElementsFicheMateriel(commentsToPost);
     }
+    if (commentsToPut.length === 0 && commentsToPost.length === 0) {
+      this.updateQualiteFM();
+    }
   }
 
-  changeValueToAnnexElementsInFM() { // 8/
+  updateCommentaireAnnexElementsFicheMateriel() { // ONE
+    let commentsToUpdate = [];
+    let commentToCreate = [];
+    this.comments.map(item => {
+      if (item.IdCategorieElementsAnnexesCommentaire === 0 && item.Commentaire !== '') {
+        commentToCreate.push(item);
+      } else if (item.IdCategorieElementsAnnexesCommentaire !== 0) {
+        commentsToUpdate.push(item);
+      }
+    });
+    // console.log('commentsToUpdate ==> ', commentsToUpdate);
+    // console.log('commentToCreate ==> ', commentToCreate);
+    if (commentToCreate.length > 0) {
+      this.postCommentaireAnnexElementsFicheMateriel(commentToCreate);
+    }
+    if (commentsToUpdate.length > 0) {
+      this.putCommentaireAnnexElementsFicheMateriel(commentsToUpdate);
+    }
+  }
+
+  /*************************************************************************************************************/
+  /************************************** ANNEXES ELEMENTS : CHECK & UPDATE  ***********************************/
+  /*************************************************************************************************************/
+
+  changeValueToAnnexElementsInFM() { // 8/ MULTI
+    this.modifInProgressMessage.emit('Eléments Annexes en cours d\'enregistrement...');
     let that = this;
     // console.log('PATCH FUNCTION : this.annexElementsNgModel => ', this.annexElementsNgModel);
     // console.log('PATCH FUNCTION : this.allAnnexElementsFicheMateriel => ', this.allAnnexElementsFicheMateriel);
@@ -793,69 +1009,6 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         let index = this.newElementSAnnex.indexOf(item);
         this.putAnnexElementForFM(item, index, this.newElementSAnnex);
     });
-  }
-
-  putAnnexElementForFM(elementAnnexOfFM, index, newElementSAnnex) { // 9/
-    // console.log(elementAnnexOfFM);
-    this.annexElementsService
-      .putAnnexElementsFicheMateriel(elementAnnexOfFM)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
-        // console.log(data);
-        if (data) {
-          // console.log('succes PUT annexesElements => MULTI');
-          // console.log(data);
-          if (index === newElementSAnnex.length - 1) {
-            // console.log('Action after save');
-            this.actionAfterSave();
-          }
-        } else {
-          // console.log('error PUT annexesElements => MULTI');
-          // console.log(data);
-        }
-      });
-  }
-
-  /** Elements Annexes Comments **/
-
-  updateCommentaireAnnexElementsFicheMateriel() {
-    let commentsToUpdate = [];
-    let commentToCreate = [];
-    this.comments.map(item => {
-      if (item.IdCategorieElementsAnnexesCommentaire === 0 && item.Commentaire !== '') {
-        commentToCreate.push(item);
-      } else if (item.IdCategorieElementsAnnexesCommentaire !== 0) {
-        commentsToUpdate.push(item);
-      }
-    });
-    // console.log('commentsToUpdate ==> ', commentsToUpdate);
-    // console.log('commentToCreate ==> ', commentToCreate);
-    if (commentToCreate.length > 0) {
-      this.postCommentaireAnnexElementsFicheMateriel(commentToCreate);
-    }
-    if (commentsToUpdate.length > 0) {
-      this.putCommentaireAnnexElementsFicheMateriel(commentsToUpdate);
-    }
-  }
-
-  postCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) {
-    this.annexElementsService.postCommentaireAnnexElementsFicheMateriel(comments)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
-        // console.log('POST elements annexes comments with succes ! ', data);
-      }, error => {
-        // console.error('ERROR POST elements annexes comments !', error);
-      });
-  }
-
-  putCommentaireAnnexElementsFicheMateriel(comments: AnnexElementCommentsFicheMAteriel[]) {
-    this.annexElementsService.putCommentaireAnnexElementsFicheMateriel(comments)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
-        // console.log('PUT elements annexes comments with succes ! ', data);
-      }, error => {
-        // console.error('ERROR PUT elements annexes comments !', error);
-      });
   }
 
 }

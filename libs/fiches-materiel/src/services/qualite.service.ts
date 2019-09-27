@@ -25,6 +25,12 @@ const httpOptions = {
 export class QualiteService {
   constructor(private http: HttpClient) {}
 
+  private extractData(res: Response) {
+    let body = res;
+    console.log('res api request versions => ', body);
+    return body || [];
+  }
+
   /* GET ONE FICHE MATERIEL BY ID */
   getQualiteLib(): Observable<QualiteLib[]> {
     return this.http
@@ -44,14 +50,18 @@ export class QualiteService {
       });
   }
 
-  postQualite(qualite) {
-    return this.http
-      .post(
-        urlFicheMateriel + urlQualite,
-        qualite
-      )
-      .pipe(catchError(this.handleError));
-  }
+  /***************** Requests with Promises ***************/
+
+  // postQualite(qualite) {
+  //   return this.http
+  //     .post(
+  //       urlFicheMateriel + urlQualite,
+  //       qualite
+  //     )
+  //     .toPromise()
+  //     .then(this.extractData)
+  //     .catch(this.handleError);
+  // }
 
   putQualite(qualite) {
     return this.http
@@ -59,14 +69,47 @@ export class QualiteService {
         urlFicheMateriel + urlQualite,
         qualite
       )
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleError);
+  }
+
+  // patchQualite(qualite) {
+  //   return this.http
+  //     .patch(
+  //       urlFicheMateriel + urlQualite,
+  //       qualite
+  //     )
+  //     .toPromise()
+  //     .then(this.extractData)
+  //     .catch(this.handleError);
+  // }
+
+  /***************** Requests with Observables ***************/
+
+  postQualite(qualite) {
+    return this.http
+      .post(
+      urlFicheMateriel + urlQualite,
+      qualite
+      )
       .pipe(catchError(this.handleError));
   }
+
+  // putQualite(qualite) {
+  //   return this.http
+  //     .put(
+  //     urlFicheMateriel + urlQualite,
+  //     qualite
+  //     )
+  //     .pipe(catchError(this.handleError));
+  // }
 
   patchQualite(qualite) {
     return this.http
       .patch(
-        urlFicheMateriel + urlQualite,
-        qualite
+      urlFicheMateriel + urlQualite,
+      qualite
       )
       .pipe(catchError(this.handleError));
   }
