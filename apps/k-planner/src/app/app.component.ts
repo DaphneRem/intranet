@@ -17,6 +17,7 @@ import { App } from 'apps/fiches-materiel/src/app/+state/app.interfaces';
 
 import { Coordinateur } from '@ab/k-planner-lib/src/models/coordinateur';
 import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur.service';
+import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur
   styleUrls: ['./app.component.scss'],
   providers : [
     CoordinateurService,
+    UtilisateurService,
     Store,
     AuthService,
     // AuthAdalService
@@ -36,6 +38,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: AuthService,
     private compiler: Compiler,
     private coordinateurService: CoordinateurService,
+    private utilisateurService : UtilisateurService,
     private store: Store<Navbar>,
     private appStore: Store<App>,
     // private authAdalService: AuthAdalService,
@@ -74,8 +77,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     if (!this.authService.authenticated) {
+      console.log(this.authService.authenticated,"this.authService.authenticated")
       this.signIn();
     }
+   console.log(this.authService,"this.authService")
     // console.log(this.adal5Service);
     // console.log(this.authAdalService);
     // console.log(this.adal5Service.userInfo);
@@ -91,7 +96,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.store.subscribe(data => (this.globalStore = data));
     this.navbarState = this.globalStore.navbar.open;
     this.checkHeader(this.navbarState);
-
 
 
     // Check if the user is authenticated. If not, call the login() method
@@ -130,18 +134,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.authService);
     if (this.authService) {
         console.log(this.authService);
+       
       if (this.authService.user !== null && this.authService.user !== undefined) {
          this.displayUser();
-      } else {
-        setTimeout(() => {
-           this.displayUser();
-        }, 10000);
-      }
+      } 
     }
+   
+
   }
 
   ngOnDestroy() {
       this.onDestroy$.next();
+      
   }
 
   // async signIn(): Promise<void> {
@@ -153,19 +157,20 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       this.authService.signIn();
       console.log(this.authService);
       // this.addUser(this.authService.user);
+      
   }
 
   displayUser() {
     console.log(this.authService);
-    console.log(this.authService.user);
-    this.userName = this.authService.user.email; // prenom.nom@mediawan.com
-    this.name = this.authService.user['displayName']; // NOM Prénom
-
+  
+    this.userName = this.authService.user["displayableId"]; // prenom.nom@mediawan.com
+    this.name = this.authService.user['name']; // NOM Prénom
+    console.log(this.userName,this.name  );
     let arrName = this.name.split(' ');
     this.firstName = arrName[1]; // Prénom
     this.lastName = arrName[0]; // Nom
     this.initials = `${this.firstName.slice(0, 1).toUpperCase()}${this.lastName.slice(0, 1).toUpperCase()}`;
-    this.shortUserName = this.authService.user['samaccountname'];
+    // this.shortUserName = this.authService.user['samaccountname'];
     // console.log(this.adal5Service);
     // console.log(this.authAdalService);
     // console.log(this.adal5Service.userInfo);
@@ -173,53 +178,75 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     // Handle callback if this is a redirect from Azure
     // this.adal5Service.handleWindowCallback(); // ajouter condition
     // check navbar.open state from store
-
+    let email = encodeURIComponent(this.userName)
+    this.getUtilisateurByLogin(email)
     console.log(this.store);
     console.log(this.appStore);
-    this.user = {
-      name: this.name,
-      userName: this.userName,
-      initials: this.initials,
-      shortUserName: this.shortUserName
-    };
-    this.appStore.dispatch({
-      type: 'ADD_USER',
-      payload: {
-        user : {
-          username: this.userName,
-          name: this.name,
-          initials: this.initials,
-          shortUserName: this.shortUserName,
-          numGroup: ''
-        }
-      }
-    });
+   
     this.userIsReady = true;
     // this.getAllCoordinateurs();
+
+
+    
   }
 
-  getAllCoordinateurs() {
-    this.coordinateurService.getAllCoordinateurs()
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
-          data.map(item => {
-              if (item.Username === this.user.shortUserName) {
-                  this.currentCoordinateur = item;
-                  this.appStore.dispatch({
-                    type: 'ADD_USER',
-                    payload: {
-                      user : {
-                        username: this.userName,
-                        name: this.name,
-                        initials: this.initials,
-                        shortUserName: this.shortUserName,
-                        numGroup: this.currentCoordinateur.Groupe
-                      }
-                    }
-                  });
-                }
-          });
-    });
+  // getAllCoordinateurs() {
+  //   this.coordinateurService.getAllCoordinateurs()
+  //     .pipe(takeUntil(this.onDestroy$))
+  //     .subscribe(data => {
+  //         data.map(item => {
+  //             if (item.Username === this.user.shortUserName) {
+  //                 this.currentCoordinateur = item;
+  //                 this.appStore.dispatch({
+  //                   type: 'ADD_USER',
+  //                   payload: {
+  //                     user : {
+  //                       username: this.userName,
+  //                       name: this.name,
+  //                       initials: this.initials,
+  //                       shortUserName: this.shortUserName,
+  //                       numGroup: this.currentCoordinateur.Groupe
+  //                     }
+  //                   }
+  //                 });
+  //               }
+  //         });
+  //   });
+  // }
+
+
+  getUtilisateurByLogin(email) {
+      
+    this.utilisateurService
+    .getUtilisateurByLogin(email)
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(data => {
+        console.log(data , "Utilisateur  ");       
+        this.shortUserName = data["UTI_USERNAME"]
+        
+        this.user = {
+          name: this.name,
+          userName: this.userName,
+          initials: this.initials,
+          shortUserName: data["UTI_USERNAME"]
+        };
+      
+        this.appStore.dispatch({
+          type: 'ADD_USER',
+          payload: {
+            user : {
+              username: this.userName,
+              name: this.name,
+              initials: this.initials,
+              shortUserName:  data["UTI_USERNAME"],
+              numGroup: ''
+            }
+          }
+        });
+        console.log("appStore",this.appStore)
+        console.log( this.shortUserName)
+    });     
+
   }
 
   logout(event) {

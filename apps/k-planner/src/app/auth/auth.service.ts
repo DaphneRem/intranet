@@ -14,11 +14,23 @@ export class AuthService {
   public authenticated: boolean;
   public user: User;
   public samaccountname: OnPremisesSamAccountName;
-
+  public usermasal
   constructor(private msalService: MsalService) {
 
-    this.authenticated = this.msalService.getUser() != null;
-    this.getUser().then((user) => {this.user = user;});
+
+    this.authenticated = this.msalService.getUser() != null; //.getaccesstoken
+    this.getAccessToken()
+    // this.getUser().then((user) => {this.user = user;});
+   this.usermasal =this.msalService.getUser() ;
+
+   console.log(  this.usermasal,'auth service user')
+//    let user = new User();
+//     this.user.displayName =   this.usermasal.name;
+//     this.user.email =  this.usermasal.displayableId ;
+this.user = this.usermasal
+console.log(this.user,'auth service user')
+
+
   }
 
   // Prompt the user to sign in and
@@ -29,11 +41,11 @@ export class AuthService {
       //   console.log('Login failed', JSON.stringify(reason, null, 2))
       //   //this.alertsService.add('Login failed', JSON.stringify(reason, null, 2));
       // });
-
+      console.log(result)
     if (result) {
       this.authenticated = true;
-      
-      this.user = await this.getUser();
+    
+     
     }
   }
 
@@ -68,38 +80,40 @@ export class AuthService {
     }
   }
 
-  private async getUser(): Promise<User> {
-    if (!this.authenticated) return null;
+  // private async getUser(): Promise<User> {
+  //   if (!this.authenticated) return null;
 
-    let graphClient = Client.init({
-      // Initialize the Graph client with an auth
-      // provider that requests the token from the
-      // auth service
-      authProvider: async(done) => {
-        let token = await this.getAccessToken()
-          .catch((reason) => {
-            done(reason, null);
-          })
 
-        if (token)
-        {
-          done(null, token);
-        } else {
-          done('Could not get an access token', null);
-        }
-      }
-    });
 
-    this.samaccountname = await this.getonPremisesSamAccountName(graphClient);
-    // Get the user from Graph (GET /me)
-    let graphUser = await graphClient.api('/me').get();
-    let user = new User();
-    user.samaccountname=this.samaccountname.onPremisesSamAccountName;
-    user.displayName = graphUser.displayName;
+    // let graphClient = Client.init({
+    //   // Initialize the Graph client with an auth
+    //   // provider that requests the token from the
+    //   // auth service
+    //   authProvider: async(done) => {
+    //     let token = await this.getAccessToken()
+    //       .catch((reason) => {
+    //         done(reason, null);
+    //       })
+
+    //     if (token)
+    //     {
+    //       done(null, token);
+    //     } else {
+    //       done('Could not get an access token', null);
+    //     }
+    //   }
+    // });
+
+    // this.samaccountname = await this.getonPremisesSamAccountName(graphClient);
+    // // Get the user from Graph (GET /me)
+    // let graphUser = await graphClient.api('/me').get();
+  
+    // user.samaccountname=this.samaccountname.onPremisesSamAccountName;
+  
     // Prefer the mail property, but fall back to userPrincipalName
-    user.email = graphUser.mail || graphUser.userPrincipalName;
 
-    return user;
-  }
+  
+   
+  // }
 
 }
