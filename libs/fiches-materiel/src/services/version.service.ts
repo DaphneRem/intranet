@@ -6,8 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
-import { catchError, retry } from 'rxjs/operators';
-
+import { catchError, retry, tap } from 'rxjs/operators';
+import 'rxjs/add/operator/toPromise';
 import { VersionFM, VersionLib } from '../models/version';
 
 // temporary imports :
@@ -25,6 +25,12 @@ const httpOptions = {
 @Injectable()
 export class VersionService {
   constructor(private http: HttpClient) {}
+
+  private extractData(res: Response) {
+    let body = res;
+    console.log('res api request versions => ', body);
+    return body || [];
+  }
 
   getVersionLib(): Observable<VersionLib[]> {
     return this.http
@@ -44,20 +50,57 @@ export class VersionService {
       });
   }
 
-  putVersion(version) {
-    return this.http
-      .put(
-        urlFicheMateriel + urlVersion,
-        version
-      )
-      .pipe(catchError(this.handleError));
+  /***************** Requests with Promises ***************/
+
+  putVersion(version: VersionFM[]) {
+    console.log('PUT version with promise => ', version);
+      return this.http
+        .put(
+          urlFicheMateriel + urlVersion,
+          version
+        )
+        .toPromise()
+        .then(this.extractData)
+        .catch(this.handleError);
   }
+
+  // postVersion(version) {
+  //   return this.http
+  //     .post(
+  //       urlFicheMateriel + urlVersion,
+  //       version
+  //     )
+  //     .toPromise()
+  //     .then(this.extractData)
+  //     .catch(this.handleError);
+  // }
+
+  // patchVersion(version) {
+  //   return this.http
+  //     .patch(
+  //       urlFicheMateriel + urlVersion,
+  //       version
+  //     )
+  //     .toPromise()
+  //     .then(this.extractData)
+  //     .catch(this.handleError);
+  // }
+
+  /***************** Requests with Observables ***************/
+
+  // putVersion(version) {
+  //   return this.http
+  //     .put(
+  //       urlFicheMateriel + urlVersion,
+  //       version
+  //   ).pipe(catchError(this.handleError));
+  // }
 
   postVersion(version) {
     return this.http
       .post(
-        urlFicheMateriel + urlVersion,
-        version
+      urlFicheMateriel + urlVersion,
+      version
       )
       .pipe(catchError(this.handleError));
   }
@@ -65,8 +108,8 @@ export class VersionService {
   patchVersion(version) {
     return this.http
       .patch(
-        urlFicheMateriel + urlVersion,
-        version
+      urlFicheMateriel + urlVersion,
+      version
       )
       .pipe(catchError(this.handleError));
   }

@@ -199,6 +199,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
 
   ngOnInit() {
     this.resetNewObjectValues();
+    this.getLibs();
+    this.allEACommentsMultiSelect = [];
     console.log('this.newObject onInit => ', this.newObject);
     // this.browserRefresh = browserRefresh;
     // if (browserRefresh) {
@@ -211,7 +213,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     // }
     this.user = this.globalStore.app.user.shortUserName;
     this.checkAllIdSelected();
-    this.getLibs();
+    this.categoriesReady = false;
     this.displaySelectionMode(this.storeFichesToModif);
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
     console.log('this.newObject onInit end => ', this.newObject);
@@ -250,17 +252,24 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
           this.initialFichesMateriel.push(data[0]);
           if (length === 1) {
             // selectionType === 'one
+            this.getAnnexElementsFicheMateriel(id, index, length);
+            this.getCommentaireAnnexElementsFicheMateriel(id);
             this.getQualiteFicheMateriel(id);
             this.getVersionFicheMateriel(id);
-            this.getAnnexElementsFicheMateriel(id, index, length);
+            if (index === length - 1) {
+              // console.log('call displayNewObject function !!!!!!!!!');
+              this.displayNewObjectSelectionTypeOne(length, data[0]);
+              // this.dataIdFicheMaterielReady = true;
+            }
           } else {
             this.getAnnexElementsFicheMateriel(id, index, length);
-            this.getVersionFicheMateriel(id);
-            this.getQualiteFicheMateriel(id);
+            // this.getCommentaireAnnexElementsFicheMateriel(id);
+            // this.getQualiteFicheMateriel(id);
+            // this.getVersionFicheMateriel(id);
           }
           if (index === length - 1) {
             // console.log('call displayNewObject function !!!!!!!!!');
-            this.displayNewObject(length, data[0]);
+            // this.displayNewObject(length, data[0]);
             // this.dataIdFicheMaterielReady = true;
           }
         }
@@ -280,16 +289,16 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         allIdFichesMateriel.length
       );
     });
-    this.getStatusLib();
-    if (this.storeFichesToModif.modificationType !== 'multi') {
-      // console.log('CALL GET COMMENTS FUNCTION AFTER GETallFICHESMATERIEL !!!!!!!');
-        this.getCommentaireAnnexElementsFicheMateriel(this.storeFichesToModif.selectedFichesMateriel[0]);
-    } else {
-      // console.log('this.storeFichesToModif.modificationType === multi => ', this.storeFichesToModif);
-      this.storeFichesToModif.selectedFichesMateriel.map(item => {
-        this.getCommentaireAnnexElementsFicheMateriel(item);
-      });
-    }
+    // this.getStatusLib();
+    // if (this.storeFichesToModif.modificationType !== 'multi') {
+    //   // console.log('CALL GET COMMENTS FUNCTION AFTER GETallFICHESMATERIEL !!!!!!!');
+    //     this.getCommentaireAnnexElementsFicheMateriel(this.storeFichesToModif.selectedFichesMateriel[0]);
+    // } else {
+    //   // console.log('this.storeFichesToModif.modificationType === multi => ', this.storeFichesToModif);
+    //   this.storeFichesToModif.selectedFichesMateriel.map(item => {
+    //     this.getCommentaireAnnexElementsFicheMateriel(item);
+    //   });
+    // }
   }
 
   getFicheAchat(id) {
@@ -302,23 +311,33 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
-  getFicheAchatDetail(id) {
+  getFicheAchatDetail(id, ficheMateriel) {
     this.fichesAchatService.getFichesAchatDetails(id)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        this.ficheAchatDetail = data[0];
-        // console.log('ficheAchatDetail => ', this.ficheAchatDetail);
+        if (data.length > 1) {
+          data.map(item => {
+            if (item.id_fiche_det === ficheMateriel.IdFicheDetail) {
+              this.ficheAchatDetail = item;
+            }
+          });
+        } else {
+          this.ficheAchatDetail = data[0];
+        }
+        console.log('ficheAchatDetail => ', this.ficheAchatDetail);
         this.ficheAchatDetailReady = true;
         this.displayOriLastDeadline(this.livraisonDateNgFormat);
       });
   }
 
   getLibs() {
+    this.categoriesReady = false;
+    this.getStatusLib();
     this.getAnnexStatus();
     this.getRetourOriLib();
     this.getQualiteLib();
     this.getVersionLib();
-    // this.getAnnexElementsCategories();
+    this.getAnnexElementsCategories();
     // this.getAnnexElementsAllSubCategories();
   }
 
@@ -402,7 +421,77 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /********************************************* Display NewObject *********************************************/
   /*************************************************************************************************************/
 
-  displayNewObject(length, ficheMateriel) {
+  displayNewObjectSelectionTypeOne(length, ficheMateriel) {
+    this.newObject = ficheMateriel;
+    this.detailedReportLink = `${urlDetailedReportFicheAchat}${
+      ficheMateriel.IdFicheAchat
+    }`;
+    this.getFicheAchat(ficheMateriel.IdFicheAchat);
+    this.getFicheAchatDetail(ficheMateriel.IdFicheAchat, ficheMateriel);
+    this.changeDateFormat('arg');
+    // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
+    // this.fmInRecording = false;
+    this.dataIdFicheMaterielReady = true;
+    this.displayNewObjectReady = true;
+  }
+
+  public displayNewObjectReady = false;
+  displayNewObjectSelectionTypeMulti() {
+    this.newObject = objectNoChanged;
+    for (let key in this.newObject) {
+      if (key) {
+        console.log(key, ' => ', this.newObject[key]);
+      }
+    }
+    console.log('this.dataIdFicheMaterielReady ==> ', this.dataIdFicheMaterielReady);
+    console.log('call displayNewObject function !!!!!!!!!');
+    // CHECK ALL DATA TO FIND SAME PROPERTIES
+    const allEqual = this.allFichesMateriel.every(item => item === this.allFichesMateriel[0]);
+    console.log('allEqual ====>  ', allEqual);
+    console.log('nombre de fiches materiel ==> ', this.allFichesMateriel.length);
+    console.log('fiches matériel ==> ', this.allFichesMateriel);
+    this.allFichesMateriel.map(item => {
+      let index = this.allFichesMateriel.indexOf(item);
+      for (let key in item) {
+        if ((index + 1) < this.allFichesMateriel.length) {
+          if (item[key] === this.allFichesMateriel[index + 1][key]) {
+            console.log('Akeyyy same value (all)^^^^^^^ => ', key);
+            console.log('Asame value ******** => ', item[key]);
+            if (!this.equalObject[key] || this.equalObject[key].length === 0) {
+              this.equalObject[key] = [];
+              this.equalObject[key].push(item[key]);
+            }
+            this.equalObject[key].push(item[key]);
+          } else {
+            console.log('Bkeyyy different value (all) ^^^^^^^ => ', key);
+            console.log('Bdifferent value ******** => ', item[key]);
+          }
+        }
+      }
+    });
+    console.log('this.equalObject => ', this.equalObject);
+    console.log('this.newObject => ', this.newObject);
+    for (let key in this.equalObject) {
+      if (this.equalObject[key].length === this.allFichesMateriel.length) {
+        console.log('new values => ', key, this.equalObject[key][0]);
+        this.newObject[key] = this.equalObject[key][0];
+        this.sameOriginalProperties.push(key);
+      }
+    }
+    console.log('this.newObject before chengeDateFormat ====> ', this.newObject);
+    this.changeDateFormat('arg');
+    console.log('this.sameOriginalProperties => ', this.sameOriginalProperties);
+    console.log('this.newObject ====> ', this.newObject);
+    console.log('equalObject ==> ', this.equalObject);
+    this.displayLibValueNotToChange();
+    // this.fmInRecording = false;
+    this.dataIdFicheMaterielReady = true;
+    this.displayNewObjectReady = true;
+  }
+
+
+
+  displayNewObject(length, ficheMateriel) { // à supprimer 
     this.sameOriginalProperties = [];
     this.equalObject = {};
     console.log('length => ', length);
@@ -413,10 +502,10 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         ficheMateriel.IdFicheAchat
       }`;
       this.getFicheAchat(ficheMateriel.IdFicheAchat);
-      this.getFicheAchatDetail(ficheMateriel.IdFicheAchat);
+      this.getFicheAchatDetail(ficheMateriel.IdFicheAchat, ficheMateriel);
       this.changeDateFormat('arg');
       // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
-      this.fmInRecording = false;
+      // this.fmInRecording = false;
       this.dataIdFicheMaterielReady = true;
     } else {
       this.newObject = objectNoChanged;
@@ -466,7 +555,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       console.log('this.newObject ====> ', this.newObject);
       console.log('equalObject ==> ', this.equalObject);
       this.displayLibValueNotToChange();
-      this.fmInRecording = false;
+      // this.fmInRecording = false;
       this.dataIdFicheMaterielReady = true;
     }
   }
@@ -939,10 +1028,14 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   displayModificationMessage(event) {
+    this.displayNewObjectReady = false;
+    this.allGetReady = false;
     this.dataIdFicheMaterielReady = false;
     this.modificationMessage = event;
     this.allAnnexElementsFicheMateriel = [];
     this.allEACommentsMultiSelect = [];
+    this.sameEAComments = []; // if !== [] => double all comments
+    this.sameComments = [];
     // console.log(this.storeFichesToModif.selectedFichesMateriel);
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
     this.reload = true;
@@ -954,6 +1047,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   resetPropertiesChanged(event) {
+    console.log('PROPERTIES CHANGED ++++>  !!!!!!!! ', event);
     // let propertiesToReset = event;
     // let datesInFM = ['DateAcceptation', 'DateLivraison', 'DatePremiereDiff', 'DateRetourOri', 'Deadline', 'ReceptionAccesLabo'];
     // console.log('Properties changed to RESET ====> ', event);
@@ -980,6 +1074,11 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.fmInRecording = event;
   }
 
+  public modifInProgressMessage = '';
+  displayModifInProgressMessage(event) {
+    this.modifInProgressMessage = event;
+  }
+
   displaynewEAComments(event) {
     // console.log('displaynewEAComments EVENT COMMENTS FROM ANNEXES ELEMENTS MODIF COMPONENT => ', event);
     this.comments = event;
@@ -989,20 +1088,22 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /*************************************** Annexes elements management *****************************************/
   /*************************************************************************************************************/
 
-    getAnnexElementsFicheMateriel(IdFicheMateriel, index, length) { // ISCALL
-    // lancée en même temps que le get FM
+  getAnnexElementsFicheMateriel(IdFicheMateriel, index, length) { // ISCALL
     // console.log('IdFicheMateriel =>', IdFicheMateriel);
-    // console.log('CALL GET ELEMENTS ANNEXES FICHES MATERIEL ------------------- !!!');
+    console.log('CALL GET ELEMENTS ANNEXES FICHES MATERIEL ------------------- !!!');
     this.annexElementsService
       .getAnnexElementsFicheMateriel(IdFicheMateriel)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.annexElementsFicheMateriel = data;
-        // console.log('this.annexElementsFicheMateriel => ', this.annexElementsFicheMateriel);
+        console.log('this.annexElementsFicheMateriel => ', this.annexElementsFicheMateriel);
         this.allAnnexElementsFicheMateriel.push(data);
-        if (index === length - 1) {
-          // console.log('this.allAnnexElementsFicheMateriel ==> ', this.allAnnexElementsFicheMateriel);
+        this.getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel);
+        if (this.allAnnexElementsFicheMateriel.length === length) {
+          console.log('this.allAnnexElementsFicheMateriel ==> ', this.allAnnexElementsFicheMateriel);
           // console.log('iciiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+          console.log('this.allAnnexElementsFicheMateriel.length => ', this.allAnnexElementsFicheMateriel.length);
+          console.log('length => ', length);
           this.displayAnnexElementNgModel();
         }
       });
@@ -1022,11 +1123,11 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     // console.log('coooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
     // console.log('this.allAnnexElementsFicheMateriel =>', this.allAnnexElementsFicheMateriel);
     // console.log('this.annexElementsFicheMateriel => ', this.annexElementsFicheMateriel);
-    this.allAnnexElementsFicheMateriel.map(item => {
+    this.allAnnexElementsFicheMateriel.map(item => { // Array of multi arrays
       // console.log('item in this.allAnnexElementsFicheMateriel => ', item);
       let index = this.allAnnexElementsFicheMateriel.indexOf(item);
       // console.log('index => ', index);
-      if (index + 1 < this.allFichesMateriel.length) {
+      if (index < this.allFichesMateriel.length && index > 0) {
         // console.log('this.allAnnexElementsFicheMateriel[index + 1] => ', this.allAnnexElementsFicheMateriel[index + 1]);
         item.map(object => {
           let i = item.indexOf(object);
@@ -1063,14 +1164,15 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     // console.log('this.originalsValuesElementsAnnexes => ', this.originalsValuesElementsAnnexes);
     // console.log('this.annexElementsNgModel', this.annexElementsNgModel);
   }
-
-  getAnnexElementsCategories() { // DONT CALL
-    // console.log('getAnnexElementsCategories() CALL');
+public categoriesReady: Boolean = false;
+  getAnnexElementsCategories() { // CALL
+    console.log('getAnnexElementsCategories() CALL/ this.annexElementsCategories => ', this.annexElementsCategories);
     this.annexElementsService.getAnnexElementsCategories()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.annexElementsCategories = data;
-        // console.log('annexElementsCategories => ', this.annexElementsCategories);
+        console.log('annexElementsCategories => ', this.annexElementsCategories);
+        this.categoriesReady = true;
       });
   }
 
@@ -1128,62 +1230,118 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   /************ Comments ************/
-
+  public sameId = [];
+  public allEACommentsMultiSelectUniqueValues = [];
+  public commentsEAChecked = 0;
   getCommentaireAnnexElementsFicheMateriel(selectedId) {
     // console.log('call comment GET function');
-    let IdFicheMateriel = selectedId.idFicheMateriel;
-    this.annexElementsService.getCommentaireAnnexElementsFicheMateriel(IdFicheMateriel)
+    // let IdFicheMateriel = selectedId.idFicheMateriel;
+    this.annexElementsService.getCommentaireAnnexElementsFicheMateriel(selectedId)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         if (this.storeFichesToModif.modificationType !== 'multi') { // DISPLAY COMMENTS TO SIMPLE MODIF
-          this.comments = data;
-          this.refreshEACommentModel = this.refreshEACommentModel++;
-        } else {  // GET allEACommentsMultiSelect (all comments) TO MULTI MODIF
-          console.log('GET allEACommentsMultiSelect (all comments) TO MULTI MODIF');
-          let allFmlength = this.storeFichesToModif.selectedFichesMateriel.length;
-          let index = this.storeFichesToModif.selectedFichesMateriel.indexOf(selectedId);
-          console.log('this.allEACommentsMultiSelect before push => ', this.allEACommentsMultiSelect);
-          data.map(item => {
-            this.allEACommentsMultiSelect.push(item);
-          });
-          this.allEACommentsMultiSelect = [...new Set(this.allEACommentsMultiSelect)]; // remove same value
-          console.log('this.allEACommentsMultiSelect => ', this.allEACommentsMultiSelect);
-          this.refreshEACommentModel = this.refreshEACommentModel++;
-          if (index === allFmlength - 1) {
-            this.allEACommentsMultiSelect.map(item => {
-              if (this.sameComments[item.idLibCategorieElementsAnnexes]) {
-                this.sameComments[item.idLibCategorieElementsAnnexes].push(item.Commentaire);
-              } else {
-                this.sameComments[item.idLibCategorieElementsAnnexes] = [];
-                this.sameComments[item.idLibCategorieElementsAnnexes].push(item.Commentaire);
-              }
+          if (data.length > 0) {
+            this.comments = data;
+            console.log('this.comments width data.length > 0 => ', this.comments);
+          } else {
+            this.comments = [];
+            this.annexElementsCategories.map(item => {
+              this.comments.push({
+                IdCategorieElementsAnnexesCommentaire: 0,
+                idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+                IdFicheMateriel: selectedId,
+                Commentaire: ''
+              });
             });
-            let newnew = {};
-            for (let key in this.sameComments) {
-              if (this.sameComments[key].length === allFmlength) {
-                this.sameComments[key].map(item => {
-                  if (item === this.sameComments[key][0]) {
-                    if (newnew[key]) {
-                      newnew[key].push(item);
-                    } else {
-                      newnew[key] = [];
-                      newnew[key].push(item);
-                    }
-                  }
-                });
-                if (newnew[key].length === allFmlength) {
-                  this.sameEAComments.push({
-                    IdCategorieElementsAnnexesCommentaire: 'same',
-                    idLibCategorieElementsAnnexes: +key,
-                    IdFicheMateriel: 'same',
-                    Commentaire: this.sameComments[key][0]
-                  });
-                }
-
-              }
-            }
-            // console.log('this.sameEAComments =>', this.sameEAComments);
+            console.log('this.comments width data = [] => ', this.comments);
           }
+          this.refreshEACommentModel = this.refreshEACommentModel++;
+          this.getQualiteFicheMateriel(selectedId);
+        } else {  // GET allEACommentsMultiSelect (all comments) TO MULTI MODIF
+          this.commentsEAChecked++;
+          console.log('GET allEACommentsMultiSelect (all comments) TO MULTI MODIF');
+          console.log('getCommentaireAnnexElementsFicheMateriel data => ', data);
+          let index = this.storeFichesToModif.selectedFichesMateriel.indexOf(selectedId);
+          let allFmlength = this.storeFichesToModif.selectedFichesMateriel.length;
+          if (data.length > 0) { // IF DATA !== []
+            // this.sameComments = [];
+            console.log('this.allEACommentsMultiSelect before push => ', this.allEACommentsMultiSelect); // 
+            data.map(item => {
+              console.log('getCommentaireAnnexElementsFicheMateriel data item => ', item);
+              this.allEACommentsMultiSelect.push(item);
+            });
+            // this.allEACommentsMultiSelect = [...new Set(this.allEACommentsMultiSelect)]; // remove same value
+            // this.allEACommentsMultiSelect.map(item => {
+            //   console.log('this.sameId.indexOf(item.idLibCategorieElementsAnnexes) => ', this.sameId.indexOf(item.idLibCategorieElementsAnnexes));
+            //   if (this.sameId.indexOf(item.idLibCategorieElementsAnnexes) === -1) {
+            //     this.sameId.push(item.idLibCategorieElementsAnnexes);
+            //     console.log('this.sameId   m => ', this.sameId);
+            //     this.allEACommentsMultiSelectUniqueValues
+            //   }
+            // });
+            console.log('this.sameId => ', this.sameId);
+
+            console.log('this.allEACommentsMultiSelect => ', this.allEACommentsMultiSelect); 
+            this.refreshEACommentModel = this.refreshEACommentModel++;
+            if (this.commentsEAChecked === allFmlength) {
+              this.allEACommentsMultiSelect.map(item => {
+                if (this.sameComments[item.idLibCategorieElementsAnnexes]) {
+                  this.sameComments[item.idLibCategorieElementsAnnexes].push(item.Commentaire);
+                } else {
+                  this.sameComments[item.idLibCategorieElementsAnnexes] = [];
+                  this.sameComments[item.idLibCategorieElementsAnnexes].push(item.Commentaire);
+                }
+              });
+              let newnew = {};
+              for (let key in this.sameComments) {
+                if (this.sameComments[key].length === allFmlength) {
+                  this.sameComments[key].map(item => {
+                    if (item === this.sameComments[key][0]) {
+                      if (newnew[key]) {
+                        newnew[key].push(item);
+                      } else {
+                        newnew[key] = [];
+                        newnew[key].push(item);
+                      }
+                    }
+                  });
+                  console.log('newnew => ', newnew);
+                  if (newnew[key].length === allFmlength) {
+                    this.sameEAComments.push({
+                      IdCategorieElementsAnnexesCommentaire: 'same',
+                      idLibCategorieElementsAnnexes: +key,
+                      IdFicheMateriel: 'same',
+                      Commentaire: this.sameComments[key][0]
+                    });
+                    console.log('this.sameEAComments => ', this.sameEAComments);
+                  }
+  
+                }
+              }
+              console.log('this.sameEAComments =>', this.sameEAComments);
+              console.log('this.allEACommentsMultiSelect 2 => ', this.allEACommentsMultiSelect);
+              this.commentsEAChecked = 0;
+            }
+          } else {
+            console.log('getCommentaireAnnexElementsFicheMateriel data = [] => ', data);
+            if (this.commentsEAChecked === allFmlength) {
+              this.sameEAComments = [];
+              console.log('push to sameEAComments =>');
+              this.annexElementsCategories.map(item => {
+                this.sameEAComments.push({
+                  IdCategorieElementsAnnexesCommentaire: 'same',
+                  idLibCategorieElementsAnnexes: item.IdLibCategorieElementsAnnexes,
+                  IdFicheMateriel: 'same',
+                  Commentaire: ''
+                });
+                console.log('this.sameEAComments => ', this.sameEAComments);
+              });
+              this.commentsEAChecked = 0;
+            } else {
+              this.sameEAComments = [];
+            }
+          }
+          this.getQualiteFicheMateriel(selectedId);
         }
       });
   }
@@ -1193,6 +1351,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   /*************************************************************************************************************/
 
   // versionArrayIdExist
+  public allGetReady = false;
   getVersionFicheMateriel(id) {
     // Get Version from Fiche Materiel
     this.versionService.getVersionFicheMateriel(id)
@@ -1201,11 +1360,12 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         if (this.selectionType !== 'multi') {
           // console.log('getVersionFicheMateriel() => data : ', data);
           this.versionFicheMateriel = data;
+          this.allGetReady = true;
           // console.log(data);
         } else {
           this.allVersionFm.push(data);
           if (this.allVersionFm.length === this.allIdSelectedFichesMateriel.length) {
-            // console.log('this.allVersionFm => ', this.allVersionFm);
+            console.log('this.allVersionFm => ', this.allVersionFm);
             this.checkSameValuesVersionMultiSelection();
           }
         }
@@ -1213,8 +1373,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
-  checkSameValuesVersionMultiSelection() { // TODO 08/07/2019
-    // console.log('this.allVersionFm => ', this.allVersionFm);
+  checkSameValuesVersionMultiSelection() {
+    console.log('this.allVersionFm => ', this.allVersionFm);
     this.sameValuesVersionFm = {};
     this.originVersionValues = this.allVersionFm[0].map(item => ({
       IdFicheAch_Lib_Versions: item.IdFicheAch_Lib_Versions,
@@ -1235,11 +1395,11 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     // console.log('this.allVersionFm => ', this.allVersionFm);
     this.sameValuesVersionFm = {};
     this.allVersionFm.map(item => {
-      // console.log('allVersionFm item => ', item);
+      console.log('allVersionFm item => ', item);
       let index = this.allVersionFm.indexOf(item);
-      // console.log('index allVersionFm item => ', index);
+      console.log('index allVersionFm item => ', index);
       if (index < this.allFichesMateriel.length) {
-        // console.log('this.allVersionFm[index + 1] => ', this.allVersionFm[index + 1]);
+        console.log('this.allVersionFm[index + 1] => ', this.allVersionFm[index + 1]);
          item.map(object => {
           let i = item.indexOf(object);
           let isPushed = false;
@@ -1283,9 +1443,11 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         }
       }
     }
-    // console.log('this.versionFmNgModel : end to function to display samevalues => ', this.versionFmNgModel);
-    // console.log('this.originVersionValues => ', this.originVersionValues);
+    console.log('this.versionFmNgModel : end to function to display samevalues => ', this.versionFmNgModel);
+    console.log('this.originVersionValues => ', this.originVersionValues);
     this.versionMultiReady = true;
+    this.allGetReady = true;
+    this.displayNewObjectSelectionTypeMulti();
   }
 
 // ACTIONS FOR ICONS CLICK
@@ -1442,12 +1604,13 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         if (this.selectionType !== 'multi') {
           this.qualiteFM = data;
           this.qualiteFmReady = true;
+          this.getVersionFicheMateriel(id);
         } else {
           this.allQualitiesFm.push(data);
+          this.getVersionFicheMateriel(id);
           if (this.allQualitiesFm.length === this.allIdSelectedFichesMateriel.length) {
             // console.log('this.allQualitiesFm => ', this.allQualitiesFm);
             this.checkSameValuesQualitiesMultiSelection();
-            this.qualiteFmReady = true;
           }
         }
         // console.log('qualité from FM :');
@@ -1529,6 +1692,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     // console.log('this.qualityFmNgModel : end to function to display samevalues => ', this.qualityFmNgModel);
     // console.log('this.originQualityValues => ', this.originQualityValues);
     this.qualityMultiReady = true;
+    this.qualiteFmReady = true;
   }
 
 // ACTIONS FOR ICONS CLICK

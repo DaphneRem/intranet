@@ -47,6 +47,8 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   public annexElementsAllSubCategories;
   public newEAComments: AnnexElementCommentsFicheMAteriel[] = [];
   public originValuesEAComments;
+  public dataEAReady: Boolean = false;
+  public dataEACommentsReady: Boolean = false;
   public init = 0;
   constructor(
     private modalService: NgbModal,
@@ -56,6 +58,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   ngOnInit() {
     this.getAnnexElementsCategories();
     this.getAnnexElementsAllSubCategories();
+    console.log('this.comments => ', this.comments);
     // console.log('onInit modification interface this.annexElementsNgModel : ', this.annexElementsNgModel);
     // console.log('this.annexElementsFicheMateriel --------------------', this.annexElementsFicheMateriel);
     // console.log('this.allIdSelectedFichesMateriel', this.allIdSelectedFichesMateriel);
@@ -83,7 +86,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
           this.displayNewObjectEAComments(this.annexElementsCategories);
         } else {
           // console.log('change comment multi => ', this.comments);
-          this.displayOriginValuesEAComments(this.annexElementsCategories)
+          this.displayOriginValuesEAComments(this.annexElementsCategories);
         }
         this.init++;
     } else if (this.init > 1 && this.selectionType === 'multi') {
@@ -109,7 +112,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
 /*****************************************************************************************/
   displayCheckedElements(id) {
     let checked = [];
-    // console.log(this.annexElementsFicheMateriel);
+    console.log('this.annexElementsFicheMateriel => ', this.annexElementsFicheMateriel);
     this.annexElementsFicheMateriel.map(item => {
       if (item.IdPackageAttendu === id && item.IsValid) {
         console.log(item);
@@ -145,9 +148,10 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   displayCheckedOption(id) {
     // console.log('displayCheckedOption CALL');
     let checked = [];
+    console.log('this.annexElementsNgModel => ', this.annexElementsNgModel);
     this.annexElementsNgModel.map(item => {
       if ((item.IdPackageAttendu === id) && (item.IsValid !== 'same') && (item.IsValid !== false)) {
-        // console.log(item);
+        console.log(item);
         checked.push(item);
       }
     });
@@ -315,9 +319,9 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
       }
      });
     this.comments = this.newEAComments;
-    // console.log('changement de comments = ', this.comments)
+    console.log('changement de comments = ', this.comments);
     this.newComments.emit(this.newEAComments);
-
+    this.dataEAReady = true;
 
 
 
@@ -367,25 +371,27 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   public allComments = []; 
   public odlSameComments = [];
   displayOriginValuesEAComments(annexElementsCategories) { // ISCALL
-    // console.log('sameEAComments => ', this.sameEAComments);
-    // console.log('displayOriginValuesEAComments() call from action component ');
+    this.dataEAReady = false;
+    console.log('sameEAComments => ', this.sameEAComments);
+    console.log('displayOriginValuesEAComments() call from action component ');
     this.originValuesEAComments = [];
-    // console.log('this.comments ==> ', this.comments);
-    // console.log('annexElementsCategories ==> ', annexElementsCategories);
-    // console.log('this.newEAComments ==> ', this.newEAComments);
+    console.log('this.comments ==> ', this.comments);
+    console.log('annexElementsCategories ==> ', annexElementsCategories);
+    console.log('this.newEAComments ==> ', this.newEAComments);
     this.sameEAComments.map(item => {
       this.odlSameComments.push({
         id: item.idLibCategorieElementsAnnexes,
         value: item.Commentaire
       });
     });
+    console.log('this.odlSameComments => ', this.odlSameComments);
     this.originValuesEAComments = this.sameEAComments;
     this.allComments = [];
     let sameValueIdLibCategorieElementsAnnexes = [];
     this.originValuesEAComments.map(e => {
       sameValueIdLibCategorieElementsAnnexes.push(e.idLibCategorieElementsAnnexes);
     });
-    // console.log('sameValueIdLibCategorieElementsAnnexes => ', sameValueIdLibCategorieElementsAnnexes);
+    console.log('sameValueIdLibCategorieElementsAnnexes => ', sameValueIdLibCategorieElementsAnnexes);
 
     this.annexElementsCategories.map(item => {
       if (!sameValueIdLibCategorieElementsAnnexes.includes(item.IdLibCategorieElementsAnnexes)) {
@@ -414,11 +420,12 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
     this.sameEAComments.map(item => {
       this.allComments.push(item);
     });
-    // console.log('this.sameEAComments => ', this.sameEAComments);
-    // this.comments = this.originValuesEAComments;
-    // console.log('this.originValuesEAComments => ', this.originValuesEAComments);
-    // console.log('allComments => ', this.allComments);
+    console.log('this.sameEAComments => ', this.sameEAComments);
+    this.comments = this.originValuesEAComments;
+    console.log('this.originValuesEAComments => ', this.originValuesEAComments);
+    console.log('allComments => ', this.allComments);
     this.newComments.emit(this.allComments);
+    this.dataEAReady = true;
   }
 
 

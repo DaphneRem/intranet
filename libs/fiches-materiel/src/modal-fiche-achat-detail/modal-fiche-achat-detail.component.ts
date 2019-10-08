@@ -68,8 +68,12 @@ export class ModalFicheAchatDetailComponent implements OnInit, OnChanges, OnDest
       .subscribe(data => {
         console.log(data);
         data.map(e => {
-          this.debutDesDroitsDate = new Date(e.debut_des_droits);
-          e.debut_des_droits = this.debutDesDroitsDate.toLocaleString();
+          console.log('debut des droits ===> ', e.debut_des_droits);
+          if (e.debut_des_droits !== null) {
+            this.debutDesDroitsDate = new Date(e.debut_des_droits);
+            e.debut_des_droits = this.debutDesDroitsDate.toLocaleString().split('').slice(0, 10).join('');
+            console.log('e.debut_des_droits => ', e.debut_des_droits);
+          }
         });
         this.detailsFicheAchat = data;
         this.dataReady = true;

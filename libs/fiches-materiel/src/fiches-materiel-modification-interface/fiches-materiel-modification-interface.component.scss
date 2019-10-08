@@ -1,6 +1,7 @@
 $navbarColor : #3b4650;
 $creationBtnColor :  #17AAB2;
 $creationBtnHoverColor :  #2eced6;
+$infoRecordingColor : #41bc9c;
 $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
 $iconColor : #7f7f7f;
@@ -11,6 +12,30 @@ $modificationColor: #FFB64D;
     .card {
         // padding-bottom: 20px;
         border: 1px solid $modificationColor;
+        .modif-in-progress {
+            margin-top: 100px;
+            display: flex;
+            flex-direction: column;
+            width: 450px;
+            align-self: center;
+            align-items: center;
+            .recording-message {
+                p {
+                    color: $infoRecordingColor;
+                }
+            }
+            .warning-message {
+                margin-top: 50px;
+                margin-bottom: 50px;
+                p {
+                    i {
+                        font-size: 2.2em;
+                        color: $importantColor;
+                        margin-right : 13px;
+                    }
+                }
+            }
+        }
         .modif-header {
             font-size: 1.3em;
             background-color: $modificationColor;

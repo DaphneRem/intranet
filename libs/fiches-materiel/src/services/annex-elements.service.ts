@@ -39,6 +39,12 @@ const httpOptions = {
 export class AnnexElementsService {
   constructor(private http: HttpClient) {}
 
+  private extractData(res: Response) {
+    // let body = res.json();
+    console.log('res api request versions => ', res);
+    return res || [];
+  }
+
   /* GET ANNEXES ELEMENTS STATUS */
   getAnnexElementsStatus(): Observable<AnnexElementStatus[]> {
     return this.http
@@ -92,14 +98,14 @@ export class AnnexElementsService {
   }
 
   /* PUT ANNEXES ELEMENTS TO FM */
-  putAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementFicheMAteriel[]> {
-    return this.http
-      .put<AnnexElementFicheMAteriel[]>(
-        urlFicheMateriel + urlFicheMatAnnexElements,
-        annexesElements
-      )
-      .pipe(catchError(this.handleError));
-  }
+  // putAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementFicheMAteriel[]> {
+  //   return this.http
+  //     .put<AnnexElementFicheMAteriel[]>(
+  //       urlFicheMateriel + urlFicheMatAnnexElements,
+  //       annexesElements
+  //     )
+  //     .pipe(catchError(this.handleError));
+  // }
 
 
   /* COMMENTAIRES CATEGORY EA */
@@ -112,23 +118,62 @@ export class AnnexElementsService {
       });
   }
 
-  putCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementCommentsFicheMAteriel[]> {
+  // putCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementCommentsFicheMAteriel[]> {
+  //   return this.http
+  //     .put<AnnexElementCommentsFicheMAteriel[]>(
+  //       urlFicheMateriel + urlCategoryCommentAnnexElements,
+  //       annexesElements
+  //     )
+  //     .pipe(catchError(this.handleError));
+  // }
+
+  // postCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementCommentsFicheMAteriel[]> {
+  //   return this.http
+  //     .post<AnnexElementCommentsFicheMAteriel[]>(
+  //       urlFicheMateriel + urlCategoryCommentAnnexElements,
+  //       annexesElements
+  //     )
+  //     .pipe(catchError(this.handleError));
+  // }
+
+  /***************** Requests with Promises ***************/
+
+  /* PUT ANNEXES ELEMENTS TO FM */
+  putAnnexElementsFicheMateriel(annexesElements) {
     return this.http
-      .put<AnnexElementCommentsFicheMAteriel[]>(
-        urlFicheMateriel + urlCategoryCommentAnnexElements,
-        annexesElements
+      .put(
+      urlFicheMateriel + urlFicheMatAnnexElements,
+      annexesElements
       )
-      .pipe(catchError(this.handleError));
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleError);
   }
 
-  postCommentaireAnnexElementsFicheMateriel(annexesElements): Observable<AnnexElementCommentsFicheMAteriel[]> {
+ /* COMMENTAIRES CATEGORY EA */
+  putCommentaireAnnexElementsFicheMateriel(annexesElements) {
     return this.http
-      .post<AnnexElementCommentsFicheMAteriel[]>(
-        urlFicheMateriel + urlCategoryCommentAnnexElements,
-        annexesElements
+      .put(
+      urlFicheMateriel + urlCategoryCommentAnnexElements,
+      annexesElements
       )
-      .pipe(catchError(this.handleError));
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleError);
   }
+
+
+  postCommentaireAnnexElementsFicheMateriel(annexesElements) {
+    return this.http
+      .post(
+      urlFicheMateriel + urlCategoryCommentAnnexElements,
+      annexesElements
+      )
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleError);
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     console.log(error);

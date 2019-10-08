@@ -13,33 +13,33 @@
         de 
         <input type="text" 
           (input)="gap.last ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
-          maxlength="3"
+          [maxlength]="3"
           [readonly]="!gap.modif" 
           [ngClass]="!gap.modif ? 'disabled' : ''" 
           [disabled]="!gap.modif" 
           name="a{{index}}" 
           [(ngModel)]="gap.first" 
           placeholder="{{gap.first}}"
-          #first="ngModel"
-          pattern="^[0-9]*$">
+          #first="ngModel">
+          <!-- pattern="^[0-9]*$" -->
         à
         <input type="text" 
           (input)="gap.first ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
-          maxlength="3" 
+          [maxlength]="3" 
           [readonly]="!gap.modif" 
           [ngClass]="!gap.modif ? 'disabled' : ''"  
           [disabled]="!gap.modif" 
           name="b{{index}}" 
           [(ngModel)]="gap.last" 
           placeholder="{{gap.last}}"
-          #last="ngModel"
-          pattern="^[0-9]*$">
+          #last="ngModel">
+          <!-- pattern="^[0-9]*$" -->
       </div>
       <div *ngIf="oeuvre.typeficheMateriel === 'oneEpisode'" class="oeuvre-details">
         <input type="text" 
           (input)="gap.last ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
-          maxlength="3"
-          minlength="1"
+          [maxlength]="3"
+          [minlength]="1"
           [readonly]="!gap.modif" 
           [ngClass]="!gap.modif ? 'disabled' : ''" 
           [disabled]="!gap.modif" 
@@ -47,8 +47,8 @@
           [(ngModel)]="gap.first"
           [(ngModel)]="gap.last"
           placeholder="{{gap.first}}"
-          #first="ngModel"
-          pattern="^[0-9]*$">
+          #first="ngModel">
+          <!-- pattern="^[0-9]*$" -->
       </div>
       <div class="modif" (click)="modifGaps(gap)" *ngIf="displayModifGapBtn(oeuvre.gaps, gap)">
         <i class="icofont icofont-pencil-alt-5"></i>
