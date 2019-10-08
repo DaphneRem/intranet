@@ -39,6 +39,7 @@
                 </select> -->
                 <ejs-dropdownlist id='games' class =" mt-2 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='selectplan.value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
                 <input type="text" 
+                id="searchregie"
                 class="form-control form-control-info  e-input recherche" 
                 placeholder="Rechercher une régie..." 
                 #search 
@@ -52,11 +53,11 @@
                           
                            
                             <td  style="width: 5%">
-                                <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="true" (change)="onChangeDataSource($event)">
+                                <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="false" (change)="onChangeDataSource()">
                                 </ejs-checkbox>
                             </td>
                             <td  style="width: 5%">
-                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" (change)="onChangeDataSource($event)">
+                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" (change)="onChangeDataSource()">
                                 </ejs-checkbox>
                             </td>
                             <td style="width: 5%">
@@ -70,11 +71,11 @@
                           
                             <td  style="width: 10%" *ngIf="scheduleObj.currentView =='TimelineDay'" class ="mr-2">
                                 <div style="width: 100%">
-                                    <ejs-dropdownlist   [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
+                                    <ejs-dropdownlist class =" mt-2 ml-3"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
                             <td  style="width: 20%" >
-                         <ejs-dropdownlist class =" mt-1 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>                  
+                         <ejs-dropdownlist class =" mt-2 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>                  
                              </td>
                             <!-- <td  style="width: 5%" >
                                 <div style="width:100%" > Heur de <br> Début
@@ -109,7 +110,7 @@
                 <ejs-schedule #scheduleObj 
                     (dragStart) = "onDragStart($event)"
                     locale="fr-CH"
-                    (eventClick)="onEventClick()"
+                    (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
                     cssClass='schedule-drag-drop' 
                     [group]="group" 
@@ -125,15 +126,14 @@
                     (navigating)="onNavigating($event)"
                     (resizeStart)="onResizing($event)"
                     (select)= "onSelectMultipleCell($event)"
+                 
                     [enablePersistence]="false"
                     [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
-                    
                     [showHeaderBar]='true'
                     
-                    width='100%'
-                    height='100%'
+                 
                     >
                     <!-- (created)="onCreated($event)" -->
                     <!-- (renderCell)="onRenderCell($event)" -->
@@ -161,7 +161,6 @@
                                 </div>
                             </ng-template > -->  
                          
-                        
                     <e-views>
                         <e-view option='TimelineDay'  #scheduleObjDay   >
                             <ng-template #eventTemplate let-data  class="event">
@@ -286,7 +285,7 @@
                                 <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search  [(ngModel)]="search.value"  (keyup)="onFilter(search.value,0,$event)" (mousedown)="Filter()" value="{{this.searchString}}" >
                                 <!-- <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span> -->
                             </div>
-
+                            <div class="treeview">
                          
                             <ejs-treeview 
                                 #treeObj 
@@ -314,6 +313,7 @@
                                 </ng-template>
                              
                             </ejs-treeview>
+                        </div>
                             <div id="grid"></div>
 
 
@@ -323,28 +323,33 @@
                 </e-tabitem>
                 <e-tabitem [header]='headerText[1]'>
                     <ng-template #content>
-                        <div class="treeview-container">
-                            <div class="title-container">
-                            </div>
+                        <div class="treeview-container" >
+                            <div class="header-treeviewMonteur">
+                           
                             <div class="input-group">
-                                <input type="text" id="searchoperateur" class="form-control recherche" placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1,$event)" (mousedown)="Filter()" >
+                                <input type="text" id="searchoperateur" class="form-control recherche"  placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1,$event)" (mousedown)="Filter()" >
                                 <!-- <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span> -->
                             </div>
-                            <select class="form-control form-control-info" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
+                            <!-- <select class="form-control form-control-info" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
                                 <option >Plus de monteurs </option>
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
-                            </select>
-                            <div>
+                            </select> -->
+
+                            <ejs-dropdownlist id='monteur' class =" mt-2 mb-2 mr-1 ml-1" #select [dataSource]='monteurListe' (change)="onSelect(select.value)"  [value]='fieldsMonteur.Username' [fields]='fieldsMonteur' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
+                        </div>
+                            <div class="treeview">
                                 <ejs-treeview *ngIf="selectedValue!='Plus de monteurs'"
                                     id="treeMonteur"
                                     #treeObjMonteur 
                                     [fields]='fieldMonteur' 
                                     cssClass='treeview-external-drag'
-                                    [allowDragAndDrop]='true'  
+                                    [allowDragAndDrop]='true'
+                                
                                     (nodeDragStart)="onTreeDragStart($event)"
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
                                     (nodeDragging)="onItemDrag($event, 1)">
-                                    <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon="" >
+
+                               <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon=""  class="ngtemplate-Monteur">
                                       
                                    <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe), 'background-color': getBackgroundColor(dataMon.Username, dataMon.codegroupe)}">
                                         <div id="waitdetails" class="monteurs">

@@ -36,7 +36,7 @@
   import { ChangeEventArgs as DropDownChangeArgs, DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
   import { TimePickerComponent } from '@syncfusion/ej2-angular-calendars';
   // Syncfusion Angular
-  import { ButtonComponent, ChangeEventArgs, CheckBoxComponent } from '@syncfusion/ej2-angular-buttons';
+  import { ButtonComponent, ChangeEventArgs, CheckBoxComponent, Button } from '@syncfusion/ej2-angular-buttons';
   import {
       TabComponent,
        TreeViewComponent,
@@ -110,7 +110,8 @@
   import { StatutService } from "../services/statut.service";
   import { Statut } from "../models/statuts";
   import { WorkOrderTempsReelService } from "../services/workorder-tempsReel.service";
-  
+
+import { UtilisateurService } from "../services/utilisateur.service";
   const localeFrenchData = require('./scheduler-fr.json');
   const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
   const gregorian = require('cldr-data/main/fr-CH/ca-gregorian.json');
@@ -136,11 +137,12 @@
           MonteursService,
           Store,
           WorkOrderService,
-          MonthAgendaService,
+        //   MonthAgendaService,
           LibGroupeService,
-          WeekService,
-          DayService,
-          MonthService,
+          UtilisateurService,
+        //   WeekService,
+        //   DayService,
+        //   MonthService,
           ResizeService, 
           DragAndDropService,
           TimelineViewsService,
@@ -190,9 +192,9 @@
       public listObj: DropDownListComponent;
       @ViewChild('selectplage')
       public selectplage: DropDownListComponent;
-     @Input() isReady
+     @Input() groupeCoordinateur
      @Input() itemCoordinateur
-  
+     @Input() userStore
       
       private onDestroy$: Subject<any> = new Subject();
   
@@ -327,6 +329,7 @@
       public libelleGroupe
       public filtermonteurListeArray;
       public otherSchedule : string = "Autres plannings" ;
+      public otherMonteur : string = "Autres Monteurs" ;
       public sorting: string = 'Ascending';
       public addMonteur: boolean;
       public fieldArray = this.field['dataSource'];
@@ -336,7 +339,8 @@
       public count: number = 0;
       public groupeCharger: number;
       public workOrderColor: string;
-      public fieldsPlanning
+      public fieldsPlanning  
+      public fieldsMonteur
       // public SelectDateDebut: Date = new Date();
       // public SelectDateFin: Date = new Date();
       public SelectDateDebut: Date = new Date(2019, 0, 1);
@@ -415,12 +419,8 @@
        
       ) {
           console.log('******* constructor start *******');
-          this.isnotMyGroup = false;
-          setTimeout(() => {
-            this.storeAppSubscription();
-            console.log("storeappSubscription")
-          }, 200);
-    
+          this.isnotMyGroup = false;     
+            
           document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
               let btnrefresh = document.getElementById('btn-refresh');
               let btnrefreshWo = document.getElementById('btn-refreshWo');
@@ -455,25 +455,27 @@
             if (eKey.keyCode === 109     && this.value >= 5  ) {
                 // -------------------------------------------------           
        
-                this.intervalChanged = true
-                this.value = this.value + this.valueAdd
-                this.scheduleObj.timeScale.interval = this.value     
-                this.scheduleObj.refreshEvents()   
+                this.intervalChanged = true;
+                this.value = this.value + this.valueAdd;
+                this.scheduleObj.timeScale.interval = this.value;     
+                this.scheduleObj.refreshEvents();
+           
                 console.log(this.value , this.valueMax)
             console.log( "-----",this.scheduleObj,scheduleElement)
            } else {
       
                if (eKey.keyCode === 107  && this.value >= 5    ) {
                       //+++++++++++++++++++++++
-                      this.intervalChanged = true
-                      this.value = this.value - this.valueAdd
-                      this.scheduleObj.timeScale.interval = this.value 
-                      this.scheduleObj.refreshEvents()                  
-
+                      this.intervalChanged = true;
+                      this.value = this.value - this.valueAdd;
+                      this.scheduleObj.timeScale.interval = this.value ;
+                      this.scheduleObj.refreshEvents() ; 
+                                  
+                    //   (document.querySelectorAll('.e-content-wrap')[0]).scrollLeft = this.offsetxEvent
               if(this.value === 5){
                 this.scheduleObj.refresh()   
               }
-              console.log( "+++++++",this.scheduleObj, this.value )
+              console.log( "+++++++",this.scheduleObj, this.value,eKey )
               console.log(this.argsOnActionComplete)
             
                }
@@ -499,7 +501,7 @@
             this.scheduleObj.scrollTo(this.hourContainer)  
             
         }else{
-           
+         
            }
         }, 50);
         }
@@ -528,9 +530,8 @@
           // this.getWorkOrderByidGroup(3);
           //  this.getSalleByGroup(10);
          
-          
-          window.addEventListener('scroll', this.scroll, true);
-          console.log(window.scrollX,"scrooll left ")
+          this.storeAppSubscription();
+          window.addEventListener('scroll', this.scroll, true);    
       }
   
     @HostListener('mouseenter') onMouseEnter() {
@@ -554,7 +555,7 @@
       ngOnDestroy() {
           this.onDestroy$.next();
           window.removeEventListener('scroll', this.scroll, true);
-          document.body.removeEventListener('keyup', (eKey: KeyboardEvent)=>{})
+        //   document.body.removeEventListener('keyup', (eKey: KeyboardEvent)=>{})
         //   document.body.removeEventListener('keydown', (eKey: KeyboardEvent) => {})
       }
   
@@ -562,7 +563,7 @@
       public disabledrefresh: boolean 
       public hiderefresh: boolean 
       refreshScheduler() {
-          console.log(this.scheduleObj);
+          console.log(this.scheduleObj,this.disabledrefresh);
           this.disabledrefresh = true;
           this.hiderefresh = true
           console.log('refresh scheduler click in refreshScheduler() => ', this.disabledrefresh);
@@ -588,12 +589,8 @@
               this.refreshDateStart = moment().toDate();
               this.refreshDateEnd = moment().add(1, 'd').toDate();
           }
-          // if (this.isClicked) {
-          //     console.log('refresh scheduler with all regies');
-          //     this.toggleBtn.content = 'Voir mes Régies  ';
-          //     this.getSalleAll(this.currentCoordinateur.Groupe, this.refreshDateStart, this.refreshDateEnd);
-          // } else {
-  
+       
+           
   
           console.log('refresh scheduler with my regies group');
           console.log(this.timelineResourceDataOut)
@@ -605,16 +602,64 @@
   
           // this.scheduleObj.refresh();
           this.openEditorCount = 0;
-  
-          if ( this.searchString != undefined) {
+  // garder l'etat des barre de recherche
+          if (this.searchString != undefined) {
               console.log("clic bouton refresh ")
               this.searchwo.value = this.searchString
-               this.onFilter(this.searchwo.value,0,this.argsKeyboardEvent)
+              this.onFilter(this.searchwo.value, 0, this.argsKeyboardEvent)
           } else {
-                 }
-    
+          }
+
+          setTimeout(() => {
+
+              if (this.searchRegie != undefined) {
+                  console.log("clic bouton refresh ")
+                  this.rechercheRegieByID.value = this.searchRegie
+                  console.log(this.rechercheRegieByID.value)
+                  this.onFilterRegie(this.rechercheRegieByID.value)
+              } else {
+              }
+              this.onChangeDataSource()
+          }, 500);
+         
+               
                 //  this.scheduleObj.dataBind();
-      }
+               
+        // garder l'etat des checkboxs 
+          this.Check = 0
+
+          this.salleDataSource.forEach(salle => {
+              let indexSalle = this.salleDataSource.indexOf(salle);
+              console.log('--------------------------------------------------indexSalle => ', indexSalle);
+
+              if (this.firstCallGetContainersByRessourceStartDateEndDate == 1 && this.theorique.checked) {
+                  console.log(this.firstCallGetContainersByRessourceStartDateEndDate, " call when we refresh")
+                  this.getContainersByRessourceStartDateEndDate(
+                      salle.CodeRessource,
+                      this.refreshDateStart,
+                      this.refreshDateEnd,
+                      salle.CodeSalle,
+                      indexSalle,
+                      this.groupCoordinateur
+                  );
+              }
+
+              //   if( this.disabledrefresh){  
+              //   this.getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroup, debut,fin,salle.CodeRessource,salle.CodeSalle) 
+              // }
+          });
+
+
+          if (this.theorique.checked == false) {
+              this.CheckTheoriqueNavig = false
+
+          }
+
+
+
+
+      
+            }
       public disabledrefreshBacklog:boolean =true
   
       refreshWorkordersBacklog() {
@@ -632,59 +677,13 @@
                  
                   console.log(this.searchString,valueSearch)
          
-          this.navigation = false      
-     
+         
       }}
   
-      // getAllCoordinateurs() {
-      //     console.log('this.user => ', this.user);
-      //     this.timelineResourceDataOut = [];
-      //     this.departmentGroupDataSource = [];
-      //     this.allDataContainers = [];
-      //     this.allDataWorkorders = [];
-      //     console.log('get ALL Coordinateurs');
-      //     let startofDay = moment().toDate()
-      //     let endofDay = moment().add(1, 'd').toDate();
-      //     this.coordinateurService.getAllCoordinateurs()
-      //         .subscribe(data => {
-      //             console.log('all coordinateurs : ', data);
-      //             data.forEach(item => {
-      //                 if (item.Username === this.user.shortUserName) {
-      //                     console.log('COORDINATEUR => ', item);
-      //                     this.getSalleByGroup(item.Groupe, startofDay, endofDay);
-      //                     // ID PROVISOIRE !!!
-      //                     this.getMonteursByGroup(item.Groupe);
-      //                     this.getWorkOrderByidGroup(item.Groupe);
-      //                     this.getAllMonteurs(item.Groupe);
-      //                     this.currentCoordinateur = item;
-      //                     this.getLibGroupe(item.Groupe)
-      //                 }
-      //             });
-      //         });
-      // }
+   
       public idCoordinateur
       public groupCoordinateur
-    //   getCoordinateurByUsername(Username) {
-    //       this.timelineResourceDataOut = [];
-    //       this.departmentGroupDataSource = [];
-    //       this.allDataContainers = [];
-    //       this.allDataWorkorders = [];
-    //       console.log('get Current Coordinateur');
-    //       let startofDay = moment().toDate()
-    //       let endofDay = moment().add(2, 'd').toDate();
-    //  console.log('COORDINATEUR => ',this.itemCoordinateur);
-    //               this.getSalleByGroup(this.idGroupeCoordinateur, startofDay, endofDay);
-    //               this.getMonteursByGroup(this.idGroupeCoordinateur);
-    //               this.getWorkOrderByidGroup(this.idGroupeCoordinateur);
-    //               this.getAllMonteurs(this.idGroupeCoordinateur);
-    //               this.currentCoordinateur = this.itemCoordinateur;
-    //               this.getLibGroupe(this.idGroupeCoordinateur)
-    //               this.groupCoordinateur =this.idGroupeCoordinateur
-              
-        
   
-  
-    //   }
       getCoordinateurByUsername() {
         this.timelineResourceDataOut = [];
         this.departmentGroupDataSource = [];
@@ -694,42 +693,35 @@
         let startofDay = moment().toDate()
         let endofDay = moment().add(1, 'd').toDate();
      
-               
+            
               
                     console.log('COORDINATEUR => ', this.itemCoordinateur);
                 this.getStatut()
-                this.getSalleByGroup(this.itemCoordinateur.Groupe, startofDay, endofDay);
-                this.getMonteursByGroup(this.itemCoordinateur.Groupe);
-                this.getWorkOrderByidGroup(this.itemCoordinateur.Groupe);
-                this.getAllMonteurs(this.itemCoordinateur.Groupe);
+                this.getSalleByGroup(this.groupeCoordinateur, startofDay, endofDay);
+                this.getMonteursByGroup(this.groupeCoordinateur);
+                this.getWorkOrderByidGroup(this.groupeCoordinateur);
+                this.getAllMonteurs(this.groupeCoordinateur);
                 this.currentCoordinateur = this.itemCoordinateur;
-                this.getLibGroupe(this.itemCoordinateur.Groupe)
-                this.groupCoordinateur = this.itemCoordinateur.Groupe
-   
+                this.getLibGroupe(this.groupeCoordinateur)
+                this.groupCoordinateur = this.groupeCoordinateur
+     
            
 
     }
   
-      storeAppSubscription() {
-          this.store
-              .pipe(takeUntil(this.onDestroy$))
-              .subscribe(data => {
-                  console.log(data);
-                  this.user = data["app"].user;            
+      storeAppSubscription() {        
+                  this.user = this.userStore;            
                   console.log(this.user);
-              });     
-             setTimeout(() => {
-                this.getCoordinateurByUsername();    
-             }, 500);
-         
-           
-           
+                  if(this.user.shortUserName === this.itemCoordinateur.Username){
+                  this.getCoordinateurByUsername();
+                }        
       }
-  
+   public offsetxEvent
       onEventClick(e: ActionEventArgs) {
           console.log('event clicked !!!!!!!!!!!',e);
-  
+     
           this.eventClick = true;
+          console.log(this.offsetxEvent)
       }
   
   
@@ -740,7 +732,7 @@
       /************************************************************/
       /**************************** GET ***************************/
   
-  
+      public firstCallGetContainersByRessourceStartDateEndDate = 0
       getSalleByGroup(idGroup, start, end) {
           // this.toggleBtn.content = 'Voir autres Régies';
           
@@ -771,15 +763,16 @@
                       console.log('regie departmentDataSource', this.departmentDataSource);
                       console.log('item code salle fot container request : ', item.CodeSalle);
                       // this.getContainersByRessource(item.CodeRessource);
-                  });
+                  }); 
                   // let startofDay = moment().toDate()
                   // let endofDay = moment().add(1, 'd').toDate();
                   this.timelineResourceDataOut = []
                   this.salleDataSource.forEach(salle => {
+                    if(this.firstCallGetContainersByRessourceStartDateEndDate == 0 ){
                       let indexSalle = this.salleDataSource.indexOf(salle);
                       console.log('--------------------------------------------------indexSalle => ', indexSalle);
-  
                     
+                  // lors du demmarage de l'application 
                       this.getContainersByRessourceStartDateEndDate(
                           salle.CodeRessource,
                           start,
@@ -788,17 +781,21 @@
                           indexSalle,
                           idGroup
                       );
+                   
+                    } 
+          
                       let debut = moment(start).format('YYYY-MM-DD').toString();
                       let fin = moment(end).format('YYYY-MM-DD').toString();
-                 console.log(debut , fin)
-                      this.getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroup, debut,fin,salle.CodeRessource,salle.CodeSalle) 
+
+                    //   if( this.disabledrefresh){  
+                    //   this.getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroup, debut,fin,salle.CodeRessource,salle.CodeSalle) 
+                    // }
                   });
-             
-  
+              
+                  this.firstCallGetContainersByRessourceStartDateEndDate = 1
               })
               this.listeRegies = this.departmentGroupDataSource
-         
-               
+  
       }
   
       getSalleAll(currentGroup, start, end) {
@@ -840,7 +837,7 @@
       }
   
   
-  
+    public monteurUsername
       getAllMonteurs(group) {
           let monteurDataSource;
           this.monteursService
@@ -852,6 +849,8 @@
                       if (item.codegroupe !== group) {
                           this.monteurListe.push(item);
                           this.codegroupe = item.codegroupe;
+                          this.monteurUsername = item.Username
+                          this.fieldsMonteur = { text: "Username", value: "Username"}
                       }
                   });
               });
@@ -1168,7 +1167,7 @@
                                   }
                                   this.disabledrefresh = false
                                   this.hiderefresh = false
-                                 
+                               
                               }
                                
                           }
@@ -1227,7 +1226,7 @@
                               for (let i = 0; i < toolbar.length; i++) {
                                   toolbar[i]["style"].display = 'block'
                                   console.log(toolbar[i]["style"], "block")
-                              }
+                              }         
                           }
                           this.disabledrefresh = false
                           this.hiderefresh = false
@@ -1251,8 +1250,9 @@
       }
   public dataWorkorderTempsReelByIdGroupeStartDateEndDate
   public EndTimeReel; StartTimeReel
+  public newWorkorderTempsReelEvent =[]
       getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroupe, dateDebut,dateFin,codeRessouceSalle,codeSalle){
-         
+     
         this.workOrderTempsReelService 
         .getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroupe, dateDebut,dateFin)
         .pipe(takeUntil(this.onDestroy$))
@@ -1338,13 +1338,41 @@
                   DateFinReel:dateFin,
                   libelleStatut: libelleStatut
               }
-       
+              this.newWorkorderTempsReelEvent.push(newWorkorderTempsReelEvent) 
+          
               this.timelineResourceDataOut.push(newWorkorderTempsReelEvent);
-       }
+              let workorderReelEvent = this.timelineResourceDataOut.filter(item =>  item.isTempsReel ===1);
+              let indexWorkorderReel
+              workorderReelEvent.map(data => {
+                  indexWorkorderReel = workorderReelEvent.indexOf(data)
+              })
+              if (indexWorkorderReel === (workorderReelEvent.length - 1)) {
+                this.disableNavigation = false;
+                if (!this.disableNavigation) {
+                    let toolbar = document.getElementsByClassName('e-toolbar-items');
+                    for (let i = 0; i < toolbar.length; i++) {
+                        toolbar[i]["style"].display = 'block'
+                        console.log(toolbar[i]["style"], "block")
+                    }
+                }
+         this.disabledrefresh = false
+            this.hiderefresh = false
+            }
+         console.log(this.disabledrefresh)
+            }
             })
      
           }else{
-              
+            // this.disableNavigation = false;
+            // if (!this.disableNavigation) {
+            //     let toolbar = document.getElementsByClassName('e-toolbar-items');
+            //     for (let i = 0; i < toolbar.length; i++) {
+            //         toolbar[i]["style"].display = 'block'
+            //         console.log(toolbar[i]["style"], "block")
+            //     }
+            // }
+            
+            // console.log(this.disabledrefresh)
           }
       })
    
@@ -1658,7 +1686,7 @@
               Id_Planning_Container: 0,
               UserEnvoi: this.user.shortUserName,
               DateEnvoi: now,
-              Titre: event.Name, // (aucun titre) 
+              Titre: (event.Titre === null || typeof (event.Titre) === 'undefined') ? 'Titre' : event.Titre, // (aucun titre) 
               CodeRessourceOperateur: codeRessourceOperateur,
               LibelleRessourceOperateur: event.Operateur,
               CodeRessourceCoordinateur: codeRessourceCoordinateur,
@@ -2926,8 +2954,8 @@
           console.log("this.scheduleObj.getEvents() after reset =>",this.scheduleObj.getEvents())
           console.log("this.scheduleObj.eventsProcessed() after reset =>",this.scheduleObj.eventsProcessed)
           console.log('this.timelineResourceDataOut after reset => ', this.timelineResourceDataOut);
-         
-          this.navigation = true
+       
+          this.navigation = true   
           // this.refreshWorkordersBacklog()
    
           // this.newTreeObj = this.treeObj;
@@ -3028,6 +3056,7 @@
               this.refreshDateEnd = this.endofDay;
               this.salleDataSource.forEach(salle => {
                   let indexSalle = this.salleDataSource.indexOf(salle);
+                  if(this.theorique.checked){
                   this.getContainersByRessourceStartDateEndDate(
                       salle.CodeRessource,
                       this.startofDay,
@@ -3036,9 +3065,14 @@
                       indexSalle,
                       this.groupCoordinateur
                   );
+                }
                   let debut = moment(this.startofDay).format('YYYY-MM-DD').toString();
                   let fin = moment(this.endofDay).format('YYYY-MM-DD').toString();
-                  this.getWorkorderTempsReelByIdGroupeStartDateEndDate(this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
+                  if(this.reel.checked){
+                    this.getWorkorderTempsReelByIdGroupeStartDateEndDate(   this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
+              }
+                    // this.getWorkorderTempsReelByIdGroupeStartDateEndDate(this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
+                 
               });
               this.scheduleObj.refreshEvents();
               console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);    
@@ -3065,6 +3099,7 @@
               this.refreshDateEnd = this.endofWeek;
               this.salleDataSource.forEach(salle => {
                   let indexSalle = this.salleDataSource.indexOf(salle);
+                  if(this.theorique.checked){
                   this.getContainersByRessourceStartDateEndDate(
                       salle.CodeRessource,
                       this.startofWeek,
@@ -3074,9 +3109,13 @@
                       this.groupCoordinateur
                       
                   );
+                  }
                  let debut = moment(this.startofWeek).format('YYYY-MM-DD').toString();
                   let fin = moment(this.endofWeek).format('YYYY-MM-DD').toString();
-                  this.getWorkorderTempsReelByIdGroupeStartDateEndDate(   this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
+                  if(this.reel.checked){
+                    this.getWorkorderTempsReelByIdGroupeStartDateEndDate(   this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
+              }
+                    // this.getWorkorderTempsReelByIdGroupeStartDateEndDate(   this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle)   
               });
               this.scheduleObj.refreshEvents();
               console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
@@ -3095,6 +3134,7 @@
               this.refreshDateEnd = this.endofMonth;
               this.salleDataSource.forEach(salle => {
                   let indexSalle = this.salleDataSource.indexOf(salle);
+                  if(this.theorique.checked){
                   this.getContainersByRessourceStartDateEndDate(
                       salle.CodeRessource,
                       this.startofMonth,
@@ -3103,10 +3143,12 @@
                       indexSalle,
                       this.groupCoordinateur
                   );
-  
+                  }
                   let debut = moment(this.startofMonth).format('YYYY-MM-DD').toString();
-                  let fin = moment(this.endofMonth).format('YYYY-MM-DD').toString();
+                  let fin = moment(this.endofMonth).format('YYYY-MM-DD').toString(); 
+                  if(this.reel.checked){
                   this.getWorkorderTempsReelByIdGroupeStartDateEndDate(   this.groupCoordinateur, debut ,fin,salle.CodeRessource,salle.CodeSalle) 
+            }
               });
               this.scheduleObj.refreshEvents();
               console.log("this.scheduleObj.getEvents() =>",this.scheduleObj.getEvents())
@@ -3194,7 +3236,15 @@
         //       }
   
         //   }
-          // this.scheduleObj.refresh();
+       
+          if(this.theorique.checked == false){
+          this.CheckTheoriqueNavig = false
+          console.log('$$$$$$$$$$$$$$$$$', this.CheckTheoriqueNavig)
+        }
+        if(this.reel.checked == false){
+      this.Check =0
+        }
+        // this.scheduleObj.refresh();
       }
   
       onEventRendered(args: EventRenderedArgs): void {    
@@ -3218,8 +3268,8 @@
                       couleur = statut['Color'] 
            
                   }
+                  this.workOrderColor = couleur
               })
-              this.workOrderColor = couleur
               if (this.scheduleObj.currentView === 'MonthAgenda') {
                   (args.element.firstChild as HTMLElement).style.borderLeftColor = this.workOrderColor;
                   (args.element.firstChild as HTMLElement).style.marginLeft = '30px'
@@ -3238,7 +3288,7 @@
                   }
               }
           }
-       
+         
       }
   
       /*************************************************************************/
@@ -3336,29 +3386,32 @@
                   elementParent.style.maxHeight = '40vh'
                   elementParent.appendChild(row);
                   for (let i = 0; i < workOrders.length; i++) {
-                      let idRegie = workOrders[i].DepartmentID;
-                      let colorRegie: string;
-  
-                      this.departmentDataSource.map(item => {
-                          if (item['Id'] === idRegie) {
-                              colorRegie = item['Color'];
-                          }
-                      });
-                      console.log(this.couleur, this.workOrderColor, '**********************************couleur*************************************')
-                      row.innerHTML += `<div id='id${i}' style="color : black; font-size:10px">${workOrders[i].titreoeuvre}&nbsp;/&nbsp;${workOrders[i].titreepisode} ep ${workOrders[i].numepisode}</div>`;
-                     let element = document.getElementById('id' + i)
-                  if(this.workOrderColor != undefined){
-                      element.style.backgroundColor = this.couleur
-                  }else{
-                      element.style.backgroundColor = '#95b9'
-                  }
-                  }
+                    let idRegie = workOrders[i].DepartmentID;
+                    let colorRegie: string;
+
+                    this.departmentDataSource.map(item => {
+                        if (item['Id'] === idRegie) {
+                            colorRegie = item['Color'];
+                        }
+                    });
+                    console.log(this.couleur, this.workOrderColor, '**********************************couleur*************************************')
+                    row.innerHTML += `<div id='id${i}' style="color : black; font-size:10px">${workOrders[i].titreoeuvre}&nbsp;/&nbsp;${workOrders[i].titreepisode} ep ${workOrders[i].numepisode}</div>`;
+                   let element = document.getElementById('id' + i)
+                   let couleur 
+                   this.statutWorkorder.map(statut => {
+                    if (workOrders[i].Statut === statut["Code"] ) {
+                        couleur = statut['Color']            
+                    }
+                    element.style.backgroundColor =couleur
+                    this.workOrderColor = couleur
+                })
+                }
                   for (let e = 0; e < workOrders.length; e++) {
                       let child = document.getElementById(`id${e}`);
                       child.addEventListener('click', () => {
                           args.cancel = true;
                           args.element.hidden = true;
-                          this.openDialog(args, args.data, workOrders[e], this.departmentDataSource);
+                          this.openDialog( this.workOrderColor  , args.data, workOrders[e], this.departmentDataSource);
                           console.log(child)
                       }, true);
                   }
@@ -3685,6 +3738,23 @@
             }
            }
           }
+
+   /// désactiver le bouton edit uniquement 
+        //   this.timelineResourceDataOut.map(item => {
+        //     if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
+              
+        //         if(item.Statut == 10 ){
+       
+        //             var buttonElement = args.type === "QuickInfo" ? ".e-event-popup .e-edit" : ".e-schedule-dialog .e-event-edit";
+        //             var editButton = document.querySelector(buttonElement);
+        //             if (editButton && (editButton as EJ2Instance).ej2_instances) {
+        //               ((editButton as EJ2Instance).ej2_instances[0] as Button).disabled = true;
+        //             }
+        //          }
+        //     }
+        // });
+
+         
       }
   
       checkIfContainerAlreadyExists(args): boolean {
@@ -3741,7 +3811,7 @@
           this.drowDownExist = true;
       }
   
-      openDialog(args, object, subObject, categories): void { // open workorder modal from container list
+      openDialog(couleurWorkorder, object, subObject, categories): void { // open workorder modal from container list
           let category;
           let containerModal = document.getElementsByClassName('cdk-overlay-container');
           for (let i = 0; i < containerModal.length; i++) {
@@ -3753,28 +3823,31 @@
               }
   
           });
+          let couleur
+          this.statutWorkorder.map(statut =>{
+              if(statut['Code'] === subObject.Statut ){
+                couleur = statut['Color']
+              }
+          })
           const dialogRef = this.dialog.open(WorkorderDetailsModalComponent, {
               width: '365px',
               data: {
                   workorder: subObject,
                   regie: category,
-                  color: this.couleur
+                  color: couleur
               }
           });
       }
   
       /*************************************************************************/
-      /********************** DRAG AND DROP M1ANAGEMENT ***********************/
-  public dateDebutDragStart
-  public datefinDragStart
-  public IdDragStart
+   /********************** DRAG AND DROP M1ANAGEMENT ***********************/
       onDragStart(args: DragEventArgs): void {
         if(!args.data['AzaIsPere']  ) {
             args.cancel = true
         }
           args.interval = 5; // drag interval time is changed to 10 minutes 
           console.log('onDragStart args =======> ', args);
-          args.navigation = { enable: true, timeDelay: 20 };
+        //   args.navigation = { enable: true, timeDelay: 20 };
         //   args.element["ej2_instances"][0].enableAutoScroll = true
         //   args.scroll.scrollBy = 5
     
@@ -3808,7 +3881,7 @@
           this.onTreeDragStartCountDevTool++;
           console.log('call onTreeDragStart() / event => ', event);
           console.log(this.treeObj);
-          event.draggedParentNode.ej2_instances[1].enableAutoScroll = false 
+          event.draggedParentNode.ej2_instances[1].enableAutoScroll = false      
       }
   
       selectTabWitoutSwip (e: SelectEventArgs) {
@@ -4140,7 +4213,7 @@
          
           //     this.firstZoom= 1
           // }
-       
+        
           console.log( event.cancel, "onActionBegin(e)")
           if(event.requestType === 'viewNavigate'){
             //   this.scheduleObj.enablePersistence = false;
@@ -4286,7 +4359,7 @@
           }
           // console.log('customActionBegin()');
           // this.customActionBegin(event); 
-     
+    
       }
   
       customActionBegin(args: any) { // CUSTOM ACTION BEGIN
@@ -4734,10 +4807,12 @@
   public searchoperateur
   
       onSelect(value) {
+          console.log(value)
           let monteurListArray;
           let fieldMonteur
-          for (let i = 0; i < this.monteurListe.length; i++) {
+          for (let i = 0; i < this.monteurListe.length; i++) {    
               if (value === this.monteurListe[i].Username) {
+                console.log(this.monteurListe[i].Username)
                   fieldMonteur = this.fieldMonteur['dataSource'].concat(this.fieldMonteur['dataSource'].unshift(this.monteurListe[i])) //pour l'affichage dans le treeview
                   fieldMonteur.pop()
                   this.monteurDataSource.unshift(this.monteurListe[i])
@@ -4863,9 +4938,14 @@
   
       /************************************************************ Filter Monteur et régies ***********************************************************************************/
    public listeRegies
-      onFilterRegie(search, args: KeyboardEvent) {
+   public rechercheRegieByID 
+   public searchRegie
+   public resultRegie
+      onFilterRegie(search, args?: KeyboardEvent) {
           this.filtreRegie = true
-
+          this.rechercheRegieByID  = document.getElementById("searchregie") 
+          this.searchRegie = search
+          console.log( this.rechercheRegieByID.value , search)
           console.log(this.listeRegies, '*******************************************')
           if (search.length >= 0) {
               this.zoom = false
@@ -4885,15 +4965,15 @@
           // this.departmentDataSource = this.dataRegie
 
           // console.log(this.dataRegie)
-          let searchString = (args.target as HTMLInputElement).value;
-          if (searchString !== "") {
+  
+          if ( search  !== "") {
               new DataManager(this.departmentGroupDataSource).executeQuery(new Query().
-                  search(searchString, ['Text', 'libelletype'], null, true, true)).then((e: ReturnOption) => {
+                  search( search  , ['Text', 'libelletype'], null, true, true)).then((e: ReturnOption) => {
                       console.log(e.result)
                       if ((e.result as any).length > 0) {
                           console.log(e.result)
                           this.departmentDataSource = e.result as any
-
+                          this.resultRegie =  e.result as any
                       } else {
                           this.departmentDataSource = []
                       }
@@ -5083,7 +5163,7 @@
           console.log('slidebar', this.sidebar)
           console.log('button', this.togglebtnslide)
           console.log('scheduler element', this.scheduleObj)
-          console.log(this.treeObj,'11111111111111111111111')
+          console.log(this.treeObjMonteur,'11111111111111111111111')
       }
   
       /********************************** Remove Monteur *************************************/
@@ -5239,44 +5319,109 @@
           console.log(this.scheduleObj, "this.scheduleObj..................")
           args.interval = 5
       }
+      //****** change data source displayed  *********/
       public items: object[];
-      onChangeDataSource(args: ChangeEventArgs) { //a essayer avec la nouvelle méthode 
-          let predicate: Predicate;
-          let checkBoxes: CheckBoxComponent[] = [this.reel, this.theorique];
-          checkBoxes.forEach((checkBoxObj: CheckBoxComponent) => {
-              if (checkBoxObj.checked) {
-                  if (predicate) {
-                      predicate = predicate.or('isTempsReel', 'equal', parseInt(checkBoxObj.value, 10));
-                      console.log("IF")
-                  } else {
-                      predicate = new Predicate('isTempsReel', 'equal', parseInt(checkBoxObj.value, 10));
-                      console.log("ELSE")
-                  }
+      public Check = 0
+      public CheckTheoriqueNavig = true
 
-                  new DataManager(this.timelineResourceDataOut)
-                      .executeQuery(new Query().where(predicate))
-                      .then((e: ReturnOption) => {
-                          this.items = e.result as object[]
-                          checkBoxes.forEach((checkBoxObj: CheckBoxComponent) => {
-                              if (checkBoxObj.checked) {
-                                  this.scheduleObj.element["ej2_instances"][0].eventSettings.dataSource = this.items
-                              }
+    onChangeDataSource() { //a essayer avec la nouvelle méthode 
+        let predicate: Predicate;
+        let checkBoxes: CheckBoxComponent[] = [this.reel, this.theorique];
 
-                          });
-                      }
-                      )
-              }
-          });
-     
-
-
-    
+        if(this.reel.checked == true && this.Check== 0 )
+        {
+            if ((this.refreshDateStart === undefined || this.refreshDateEnd === undefined) && this.scheduleObj.currentView === 'TimelineDay') {
+                this.refreshDateStart = moment().toDate();
+                this.refreshDateEnd = moment().add(1, 'd').toDate();
+            }
+            console.log("call get workorder temps reel ", this.timelineResourceDataOut)
+            this.salleDataSource.forEach(salle => {
+                let indexSalle = this.salleDataSource.indexOf(salle);
+                let debut = moment( this.refreshDateStart).format('YYYY-MM-DD').toString(),
+                fin =moment(  this.refreshDateEnd ).format('YYYY-MM-DD').toString();
+               
+                this.getWorkorderTempsReelByIdGroupeStartDateEndDate( this.groupCoordinateur,debut,fin,salle.CodeRessource,salle.CodeSalle) 
+         
+            });
+             this.Check= 1
+        
+        } 
+ 
+            if( this.CheckTheoriqueNavig == false  )
+           
+            {
+                console.log("call get workorder théorique ", this.timelineResourceDataOut)
+                if ((this.refreshDateStart === undefined || this.refreshDateEnd === undefined) && this.scheduleObj.currentView === 'TimelineDay') {
+                    this.refreshDateStart = moment().toDate();
+                    this.refreshDateEnd = moment().add(1, 'd').toDate();
+                }
           
+                this.salleDataSource.forEach(salle => {
+                    let indexSalle = this.salleDataSource.indexOf(salle);
+                  
+                    this.getContainersByRessourceStartDateEndDate(
+                        salle.CodeRessource,
+                        this.refreshDateStart ,
+                        this.refreshDateEnd,
+                        salle.CodeSalle,
+                        indexSalle,
+                        this.groupCoordinateur
+                    );
+             
+                });
+                this.CheckTheoriqueNavig = true
+                
+            }
+        
+        checkBoxes.forEach((checkBoxObj: CheckBoxComponent) => {
+            if (checkBoxObj.checked) {
+            
+              console.log(checkBoxObj.value,checkBoxObj,"checkBoxObj" )
+                if (predicate  ) {
+                    predicate = predicate.or('isTempsReel', 'equal', parseInt(checkBoxObj.value, 10));
+                    console.log("IF",checkBoxObj.value)
+                } else {
+                    predicate = new Predicate('isTempsReel', 'equal', parseInt(checkBoxObj.value, 10));
+                    console.log("ELSE",checkBoxObj.value)
+                }
+             
+                setTimeout(() => {      
+                    new DataManager(this.timelineResourceDataOut)
+                    .executeQuery(new Query().where(predicate))
+                    .then((e: ReturnOption) => {
+                        this.items = e.result as object[]
+                        console.log("timelineressourcedataout ", this.timelineResourceDataOut)
+                        // this.timelineResourceDataOut = this.items
+                        checkBoxes.forEach((checkBoxObj: CheckBoxComponent) => {
+                            if (checkBoxObj.checked) {                  
+                                this.scheduleObj.element["ej2_instances"][0].eventSettings.dataSource = this.items
+                                // this.timelineResourceDataOut = this.items
+                          console.log("item",this.items)
+                          console.log("timelineressourcedataout item ", this.timelineResourceDataOut)
+                            }else{
+                                // this.scheduleObj.element["ej2_instances"][0].eventSettings.dataSource = this.timelineResourceDataOut
+                                this.scheduleObj.element["ej2_instances"][0].eventSettings.dataSource = this.items
+                                console.log(" no check item",this.items ,'reel', this.reel.checked, 'theo',this.theorique.checked)
+                            }
 
-        this.scheduleObj.dataBind();
-        console.log (this.reel, this.theorique)
-        console.log (   this.scheduleObj.eventSettings.query)
+                        });
+                    }) 
+                }, 500);     
+            } 
+            else{
+              console.log(this.theorique.checked ,"théorique checked")
+
+             
+       
+            }
+        });
+        
+        console.log(this.reel, this.theorique)
     }
+        
+     
+    
+        
       onCreated(args: Object) {
 
           let currTime: Date = new Date();
@@ -5326,11 +5471,13 @@
       }
 
 //Triggers when multiple cells or events are selected on the Scheduler.
-
+public scrollLeftValue = -1
       onSelectMultipleCell(args: SelectEventArgs) {
           console.log("on select =====>", args)
           args["showQuickPopup"] = true
+          if(args["data"]['StartTime'] != undefined) {
           this.hourContainer = moment(args["data"]['StartTime']).subtract('h', 1).format('HH:mm')
+        }
           console.log(this.hourContainer)
           console.log(this.scheduleObj)
 
@@ -5338,11 +5485,9 @@
       }
 
       scroll = (): void => {
-
-          if (document.querySelector('.e-appointment')) {
+           console.log('====>>>',this.scheduleObj)
               let left = document.querySelector('.e-content-wrap').scrollLeft;
               let length = document.querySelectorAll('.e-appointment').length;
-              console.log(left)
               let wrapLeft
               for (let i = 0; i < length; i++) {
                   let appWidth = (document.querySelectorAll('.e-appointment')[i] as any).offsetWidth
@@ -5358,12 +5503,17 @@
                       (document.querySelectorAll('.template-wrap')[i])["style"].left = "0px";
 
                   }
+            //       if(this.scheduleObj.currentView === "TimelineWeek"){
+            //         if( this.scrollLeftValue != -1 && this.intervalChanged){
+            //       (document.querySelectorAll('.e-content-wrap')[i])["style"].left =  this.scrollLeftValue
+            //       console.log(document.querySelectorAll('.e-content-wrap')[i]["style"].left)
+            //   }
+            //     }
               }
-
-
+           
+          
           }
-
-      };
-
+            
+   
 
   }
