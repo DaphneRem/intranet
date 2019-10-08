@@ -19,7 +19,8 @@ import { Subject } from 'rxjs';
 export class MonPlanningComponent implements OnInit {
 public groupCoordinateur 
 public itemCoordinateur
-public isCoordinateurReady = true
+public isCoordinateurReady = true  
+public notGotUsername = true
 public user;
 private onDestroy$: Subject<any> = new Subject();
   constructor( private coordinateurService: CoordinateurService,
@@ -39,11 +40,14 @@ private onDestroy$: Subject<any> = new Subject();
         .subscribe(data => {
             console.log(data);
             this.user = data["app"].user;
-            
+            if(this.user.shortUserName != ""){
+            this.getCoordinateurByUsername(this.user.shortUserName);
+          }
             console.log(this.user);
         });
-    
-          this.getCoordinateurByUsername(this.user.shortUserName);
+       
+ 
+         
      
      
   
@@ -55,14 +59,20 @@ public errorUser
     this.coordinateurService.getCoordinateurByUsername(Username)
     .pipe(takeUntil(this.onDestroy$))
         .subscribe(item => {
-          this.isCoordinateurReady = true
-          console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );
             console.log('COORDINATEUR => ', item );     
             this.itemCoordinateur = item;
             this.groupCoordinateur = item.Groupe;
             console.log('COORDINATEUR GROUPE => ', this.groupCoordinateur  )
-      
+          
+            this.isCoordinateurReady = true
+            if(this.itemCoordinateur !== undefined){
+            this.notGotUsername = false
+          }
+            console.log(' this.isCoordinateurReady => ',  this.isCoordinateurReady  );
+  
+            
         
+          
         },error => {
           console.log("user not found")
           this.errorUser = true

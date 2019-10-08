@@ -1,7 +1,7 @@
 <!-- <sub-header></sub-header> -->
 <!-- <div class="card ml-2 mr-2 mt-2">
     <div class="card-body" > -->
-<scheduler *ngIf="this.isCoordinateurReady == true"  [itemCoordinateur]="this.itemCoordinateur" ></scheduler>
-<page-404 *ngIf="!this.isCoordinateurReady "></page-404>
+<scheduler *ngIf=" notGotUsername == false"  [itemCoordinateur]="itemCoordinateur" [groupeCoordinateur]= "groupCoordinateur" [userStore] ="user"></scheduler>
+<page-404 *ngIf="!isCoordinateurReady "></page-404>
 <!-- </div>
 </div> -->
