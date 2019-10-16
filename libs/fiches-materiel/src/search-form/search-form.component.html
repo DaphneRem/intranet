@@ -1,21 +1,95 @@
 <form class="form-group row justify-content-center">
     <div class="field col-lg-2">
       <label for="titreVO">Titre VO :</label>
-      <input pattern="^[0-9]*$" disabled required minlength="8" id="titreVO" name="titreVO" class="form-control">
+      <input 
+        pattern="^[0-9]*$" 
+        autocomplete="off" 
+        minlength="8" 
+        type="text" 
+        id="titreVO" 
+        name="titreVO" 
+        class="form-control" 
+        [(ngModel)]="complexSearchModel.TitreEpisodeVO">
     </div>
     <div class="field col-lg-2">
       <label for="titreVF">Titre VF :</label>
-      <input pattern="^[0-9]*$" disabled required minlength="8" id="titreVF" name="titreVF" class="form-control">
+      <input 
+        pattern="^[0-9]*$" 
+        autocomplete="off" 
+        minlength="8" 
+        type="text" 
+        id="titreVF" 
+        name="titreVF" 
+        class="form-control" 
+        [(ngModel)]="complexSearchModel.TitreEpisodeVF">
+    </div>
+    <div class="field col-lg-2">
+      <label for="distributeur">Suivi par :</label>
+      <input 
+        pattern="^[0-9]*$" 
+        [disabled]="autofields.SuiviPar !== ''" 
+        autocomplete="off" 
+        minlength="2" 
+        type="search" 
+        id="suidiPar" 
+        name="suiviPar" 
+        class="form-control" 
+        [(ngModel)]="complexSearchModel.SuiviPar">
     </div>
     <div class="field col-lg-2">
       <label for="distributeur">Distributeur :</label>
-      <input pattern="^[0-9]*$" disabled required minlength="2" id="distributeur" name="distributeur" class="form-control">
+      <input 
+        pattern="^[0-9]*$" 
+        autocomplete="off" 
+        minlength="2" 
+        type="text" 
+        id="distributeur" 
+        name="distributeur" 
+        class="form-control" 
+        [(ngModel)]="complexSearchModel.distributeur">
     </div>
     <div class="field col-lg-3">
       <label for="numFicheAchat">N° fiche Achat :</label>
-      <input pattern="^[0-9]*$" disabled required minlength="8" maxlength="8" id="numFicheAchat" name="numFicheAchat" class="form-control">
+      <input 
+        pattern="^[0-9]*$" 
+        autocomplete="off" 
+        minlength="13" 
+        type="text" 
+        maxlength="13" 
+        id="numFicheAchat" 
+        name="numFicheAchat" 
+        class="form-control" 
+        [(ngModel)]="complexSearchModel.numficheachat">
     </div>
-    <div class="field button col-lg-2">
-      <button class="btn">Rechercher</button>
+    <div class="field button col-lg-1">
+      <button 
+        class="btn search" 
+        (click)="displaySearchForm()"
+        [placement]="'right'" 
+        [ngbTooltip]="'Rechercher dans l\'historique'">
+        <i class="icofont icofont-search"></i>
+      </button>
+      <button 
+        class="btn reply"
+        (click)="replyOriginalData()"
+        [placement]="'right'"
+        [ngbTooltip]="'Retour aux données d\'origine'">
+        <i class="icofont icofont-ui-reply"></i>
+      </button>
     </div>
 </form>
+<div *ngIf="!resultComplexSearchExist" class="row no-data-row">
+  <div class="col-lg-12 no-data-message">
+    <p>{{errorMesssage}}</p>
+  </div>
+</div>
+<div *ngIf="displayOldComplexSearch" class="row data-row">
+  <div class="col-lg-12 data-message">
+    <p>Résultat de la recherche dans {{title | lowercase}} : 
+      <span *ngIf="oldComplexSearch.TitreEpisodeVO !== ''"><i class="icofont icofont-tick-boxed"></i> Titre VO : {{oldComplexSearch.TitreEpisodeVO}}</span>
+      <span *ngIf="oldComplexSearch.TitreEpisodeVF !== ''"><i class="icofont icofont-tick-boxed"></i> Titre VF : {{oldComplexSearch.TitreEpisodeVF}}</span>
+      <span *ngIf="oldComplexSearch.SuiviPar !== ''"><i class="icofont icofont-tick-boxed"></i> Suivi par : {{oldComplexSearch.SuiviPar}}</span>
+      <span *ngIf="oldComplexSearch.distributeur !== ''"><i class="icofont icofont-tick-boxed"></i> Distributeur : {{oldComplexSearch.distributeur}}</span>
+      <span *ngIf="oldComplexSearch.numficheachat !== ''"><i class="icofont icofont-tick-boxed"></i> N° fiche Achat : {{oldComplexSearch.numficheachat}}</span>
+  </div>
+</div>

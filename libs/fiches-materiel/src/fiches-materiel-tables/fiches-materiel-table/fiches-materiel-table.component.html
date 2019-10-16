@@ -10,7 +10,8 @@
 <loader-animation *ngIf="!dataReady"></loader-animation>
 <div *ngIf="dataReady" class="table-custom">
   <custom-datatables 
-    [customdatatablesOptions]="customdatatablesOptions" 
+    [customdatatablesOptions]="customdatatablesOptions"
+    [rerenderData]="rerenderData"
     (selectRows)="AllSelectedRows($event)" 
     (dataRow)="checkDataRow($event)"
     (searchData)="checkSearchData($event)"

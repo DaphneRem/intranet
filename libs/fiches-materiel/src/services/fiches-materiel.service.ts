@@ -9,6 +9,7 @@ import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
 import { FicheMateriel } from '../models/fiche-materiel';
+import { FicheMaterielComplexSearch } from '../models/fiche-materiel-complex-search';
 import { FicheMaterielCreation } from '../models/fiche-materiel-creation';
 
 // temporary imports :
@@ -22,9 +23,9 @@ import {
   urlFicheMaterielIsArchived,
   urlFicheMaterielSuiviPar,
   urlFicheMaterielTitreVo,
-  urlFicheMaterielTitreVf
+  urlFicheMaterielTitreVf,
+  urlFicheMeterielcomplexesearch
 } from '../../../../.privates-url';
-
 // /ficheMateriels/IdFicheMateriel/{IdFicheMateriel}
 
 
@@ -186,6 +187,31 @@ export class FichesMaterielService {
         return res as FicheMateriel[];
       })
       .catch(this.handleError);
+  }
+
+  // WARNING !! => the request is POST in real
+  getFichesMAterielWithComplexSearch(searchObject: FicheMaterielComplexSearch): Observable<FicheMateriel[]> {
+    // searchObject = {
+    //       IdFicheMateriel: string;
+    //       SuiviPar: string;
+    //       TitreEpisodeVO: string;
+    //       TitreEpisodeVF: string;
+    //       isarchived: number;
+    //       distributeur: string;
+    //       IdFicheAchat: string;
+    // }
+    let url = urlFicheMateriel + urlAllFichesMateriel + urlFicheMeterielcomplexesearch;
+    return this.http
+      .post(url, searchObject)
+      .map((res: any) => {
+        if (!res) {
+          res = 0;
+          return res;
+        }
+        // console.log(res);
+        return res as FicheMateriel[];
+      })
+      .pipe(catchError(this.handleError));
   }
 
 

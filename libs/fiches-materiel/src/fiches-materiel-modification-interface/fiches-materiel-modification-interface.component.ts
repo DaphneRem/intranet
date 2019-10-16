@@ -330,6 +330,29 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
+  displayDurCom(durCom: string): string {
+    console.log(durCom);
+    let arrayDurCom = durCom.split(':');
+    console.log(arrayDurCom);
+    let labels = ['heure', 'minute', 'seconde'];
+    let result = '';
+    arrayDurCom.map((item, index) => {
+      console.log(+item)
+      if (+item === 0) {
+        item = '';
+      } else {
+        let multiple = '';
+        if (+item > 1) {
+          multiple = 's';
+        }
+        item = ` ${+item} ${labels[index]}${multiple}`;
+      }
+      console.log(item);
+      result += item;
+    });
+    return result;
+  }
+
   getLibs() {
     this.categoriesReady = false;
     this.getStatusLib();
@@ -621,6 +644,23 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
+  displayPreviousStatusStep(event) {
+    // this.initValueSteps = true;
+    // this.initValueStatus = true;
+    console.log('displayPreviousStatusStep event => ', event);
+
+    console.log('this.oldStatus after event => ',  this.oldStatus);
+    console.log('this.oldStep after event => ', this.oldStep);
+    if (event === 'status') {
+      this.newObject.IdLibstatut = this.oldStatus;
+      this.newObject.IdLibEtape = this.oldStep;
+    } else if (event === 'step') {
+      this.newObject.IdLibEtape = this.oldStep;
+    }
+  }
+
+  public oldStatus;
+  public oldStep;
   clickStatusOptions() {
     // console.log('this.status => 'this.status);
     console.log('this.newObject.IdLibstatut on click statut ==== >', this.newObject.IdLibstatut);
@@ -671,6 +711,10 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       // this.firstClick = false;
     } else {
       this.firstClick = true;
+      this.oldStatus = this.newObject.IdLibstatut;
+      this.oldStep = this.newObject.IdLibEtape;
+      console.log('this.oldStatus on clickStatusOptions => ',  this.oldStatus);
+      console.log('this.oldStep on clickStatusOptions => ', this.oldStep);
       if (this.selectionType === 'multi') {
         console.log('this.newObject.IdLibstatut if multi => ', this.newObject.IdLibstatut);
       }
@@ -718,12 +762,19 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       }
     });
   }
+
+
   displayStepsStatusModelComment(comment) {
     this.newObject.CommentairesStatutEtape = comment;
+    console.log('this.newObject.CommentairesStatutEtape after event from swal comment modal => ', this.newObject.CommentairesStatutEtape);
   }
 
   displayPreviousStatus(lastStatus) {
     this.newObject.IdLibstatut = lastStatus;
+  }
+
+  displayPreviousStep(lastStep) {
+    this.newObject.IdLibEtape = lastStep;
   }
 
   /*************************************************************************************************************/
@@ -769,10 +820,20 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         // console.log(this.steps);
       });
   }
-
+public firtsClickStep = true;
   clickStepOptions() {
     this.initValueSteps = false;
+
     console.log(this.initValueSteps);
+    if (this.firtsClickStep) {
+      this.firtsClickStep = false;
+    } else {
+      this.firtsClickStep = true;
+      this.oldStatus = this.newObject.IdLibstatut;
+      this.oldStep = this.newObject.IdLibEtape;
+      console.log('this.oldStatus on clickStatusOptions => ',  this.oldStatus);
+      console.log('this.oldStep on clickStatusOptions => ', this.oldStep);
+    }
   }
 
   displayStepValue(step) {

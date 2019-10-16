@@ -1,16 +1,15 @@
 <sub-header [tableView]="true" [changeView]="true" [link]="widgetLink"></sub-header>
 
 <div class="row card">
-  <div class="col-lg-11 search-form">
-    <search-form></search-form>
+  <div class="col-lg-11 buttons">
+    <button class="btn btn-info btn-outline-info" [routerLink]="['/material-sheets/my-material-sheets/0/asc']">Mes fiches Matériel en cours</button>
+    <button class="btn btn-success btn-outline-success" [routerLink]="['/material-sheets/my-material-sheets/archived/0/desc']">Mes Fiches Matériel Archivées</button>
+    <button class="btn btn-primary btn-outline-primary" [routerLink]="['/material-sheets/my-material-sheets/all/0/asc']">Toutes mes fiches Matériel</button>
+    <button class="btn btn-inverse btn-outline-inverse" [routerLink]="['/material-sheets/all/0/asc']">Toutes les fiches Matériel</button>
   </div>
   <div class="table-top col-lg-1">
-    <custom-icon-badge *ngFor="let icon of icons" 
-      [littleIcon]="icon.littleIcon"  
-      [bigIcon]="icon.bigIcon" 
-      [link]="icon.link"
-      [tooltip]="icon.tooltip"
-      [tooltipMessage]="icon.tooltipMessage">
+    <custom-icon-badge *ngFor="let icon of icons" [littleIcon]="icon.littleIcon" [bigIcon]="icon.bigIcon" [link]="icon.link"
+      [tooltip]="icon.tooltip" [tooltipMessage]="icon.tooltipMessage">
     </custom-icon-badge>
   </div>
 </div>

@@ -19,6 +19,7 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<any> = new Subject();
 
+  public reloadOriginalData: boolean;
   public headerTableLinkExist = false;
   public tableTitle = 'Toutes les fiches Matériel';
   public daysNumber = 100;
@@ -62,6 +63,15 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
     tooltipMessage: 'Voir les fiches Achat'
   };
 
+  public autofields = {
+      SuiviPar: '',
+      TitreEpisodeVO: '',
+      TitreEpisodeVF: '',
+      isarchived: this.isArchived,
+      distributeur: '',
+      numficheachat: ''
+  };
+
   constructor( private fichesMaterielService: FichesMaterielService ) {}
 
   ngOnInit() {
@@ -88,5 +98,22 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
           console.log(data);
         }
       });
+  }
+
+  displayReloadOriginalData(event: boolean) {
+    this.reloadOriginalData = event;
+    this.dataReady = false;
+    this.getFichesMaterielByIntervalCreationIsArchived(this.daysNumber, this.isArchived);
+  }
+
+  displayNewDataFromComplexSearch(event: FicheMateriel[]) {
+    console.log('displayNewDataFromComplexSearch => ', this.dataReady);
+    this.dataReady = false;
+    this.data = event;
+    console.log('displayNewDataFromComplexSearch 2 => ', this.dataReady);
+    console.log('data event  => ', this.data);
+    this.dataReady = true;
+    console.log('displayNewDataFromComplexSearch 3 => ', this.dataReady);
+
   }
 }

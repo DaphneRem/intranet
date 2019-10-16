@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
@@ -49,7 +49,7 @@ import { PreviousRouteService } from '../../services/previous-route-service';
     Store
   ]
 })
-export class FichesMaterielTableComponent implements OnInit, OnDestroy {
+export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChanges {
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
   @Input() tableTitle?: string;
@@ -57,6 +57,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<any> = new Subject();
 
+  public rerenderData;
   public globalStore;
   public searchValue: string;
   public storeFichesToModif;
@@ -111,13 +112,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     theme: 'blue theme',
     responsive : true,
     defaultOrder: [],
-    // importantData : [
-    //   {
-    //     index : 0,
-    //     className: 'warning',
-    //     cellData: []
-    //   }
-    // ],
+    reRenderOption: true,
     renderOption: true,
     dbClickActionExist: true,
     multiSelection: true,
@@ -149,6 +144,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.customdatatablesOptions.renderOption = true;
     this.previousUrl = this.previousRouteService.getPreviousUrl();
     console.log(this.previousRouteService.getPreviousUrl());
     this.customdatatablesOptions.tableTitle = this.tableTitle;
@@ -164,6 +160,12 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.todayTime = this.todayDate.getTime();
     console.log(this.columnParams);
     console.log(this.orderParams);
+    this.displayDatatable();
+    // this.displaySwalModalActions();
+    // this.displayBtnModifActions();
+  }
+
+  displayDatatable() {
     this.getElementsAnnexesStatusLib();
     this.getStatusLib();
     this.checkLinks();
@@ -173,9 +175,26 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
     this.storeDatatableSearchData = this.globalStore.datatableFilteredData;
     this.displayFilterData();
     console.log(this.storeFichesToModif);
-    // this.displaySwalModalActions();
-    // this.displayBtnModifActions();
   }
+
+  public init = 0;
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('this.data before => ', this.data);
+    if (this.init) {
+      this.dataReady = false;
+      console.log('function onchange from table call');
+      const data: SimpleChange = changes.data;
+      console.log('data.currentValue ngOnChanges => ', data.currentValue);
+      console.log('this.data after => ', this.data);
+      this.rerenderData = this.data;
+      this.getFichesMateriel();
+      // this.customdatatablesOptions = this.data;
+      // this.customdatatablesOptions.renderOption = true;
+    } else {
+      this.init++;
+    }
+  }
+
 
   displayFilterData() {
     let detailUrl = 'details';
@@ -559,6 +578,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy {
 
   getFichesMateriel() {
     this.customdatatablesOptions.data = this.data;
+    console.log('this.customdatatablesOptions.data => ', this.customdatatablesOptions.data);
     this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
     this.displayColumns();
     // this.fichesMaterielService

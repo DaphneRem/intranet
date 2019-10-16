@@ -385,6 +385,29 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
       });
   }
 
+  displayDurCom(durCom: string): string {
+    console.log(durCom);
+    let arrayDurCom = durCom.split(':');
+    console.log(arrayDurCom);
+    let labels = ['heure', 'minute', 'seconde'];
+    let result = '';
+    arrayDurCom.map((item, index) => {
+      console.log(+item)
+      if (+item === 0) {
+        item = '';
+      } else {
+        let multiple = '';
+        if (+item > 1) {
+          multiple = 's';
+        }
+        item = ` ${+item} ${labels[index]}${multiple}`;
+      }
+      console.log(item);
+      result += item;
+    });
+    return result;
+  }
+
   getFicheAchatGlobal(id: number) {
     this.fichesAchatService
       .getGlobalFIcheAchat(id)

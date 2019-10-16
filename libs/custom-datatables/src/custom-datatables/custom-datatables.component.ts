@@ -176,8 +176,8 @@ public test = 'ookok';
   }
 
   rerender(): void {
-    // console.log('rerender function');
-    this.dataReady = false;
+    console.log('rerender function');
+    // this.dataReady = false;
     document.querySelector('#datatable').classList.add('hiden');
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.destroy(); // Destroy the table first
@@ -192,9 +192,11 @@ public test = 'ookok';
 
  ngOnChanges(changes: SimpleChanges) { // observe @Input() rerenderData
     const changeData: SimpleChange = changes.rerenderData;
+   console.log('this.customdatatablesOptions.renderOption => ', this.customdatatablesOptions.renderOption);
     if (this.customdatatablesOptions.renderOption) { // execute function if renderOptions from customDatatablesOptions is true
       if (this.init) { // does not execute rerender function onInit
         this.newData = changeData.currentValue;
+        console.log('newData => ', this.newData);
         this.dataReady = false;
         this.rerender();
       } else {
@@ -328,6 +330,7 @@ public test = 'ookok';
 
   displayCustomOptions() {
     const options = this.customdatatablesOptions;
+    // console.log('options.renderOption => ', options.renderOption);
       this.themeName = options.theme;
       this.data = options.data;
       this.paging = options.paging;

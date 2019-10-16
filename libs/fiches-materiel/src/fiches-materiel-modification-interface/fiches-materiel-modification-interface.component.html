@@ -172,9 +172,13 @@
       </div>
 
     </div>
+     <!-- {{newObject.IdLibstatut}}
+     {{newObject.IdLibEtape}} -->
     <steps-status-comment-modal
       (newComment)="displayStepsStatusModelComment($event)"
       (lastStatus)="displayPreviousStatus($event)"
+      (lastStep)="displayPreviousStep($event)"
+      (backToOldStepStatus)="displayPreviousStatusStep($event)"
       [selectionType]="selectionType"
       [step]="newObject.IdLibEtape"
       [status]="newObject.IdLibstatut" 
@@ -297,10 +301,17 @@
               </div>
           </div>
 
-          <p *ngIf="selectionType === 'one'">Format œuvre :
-            <span *ngIf="ficheAchatDetailReady">
-              {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisodes de ' + ficheAchatDetail.duree+'min' : '/'}}
-            </span>
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Format œuvre :
+              <span *ngIf="ficheAchatDetail.nombre_episodes">
+                {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisode(s)' : '/'}}
+              </span>
+              <span *ngIf="!ficheAchatDetail.nombre_episodes">
+                /
+              </span>
+              <span *ngIf="ficheAchatDetail.nombre_episodes && ficheAchatDetail.DurCom !== ''"> de {{displayDurCom(ficheAchatDetail.DurCom)}}</span>
+          </p>
+          <p *ngIf="selectionType === 'one' && !ficheAchatDetailReady">Format œuvre :
+            <span>/</span>
           </p>
           <div class="row form-group">
             <label class="col-form-label col-lg-4">N° œuvre : </label>

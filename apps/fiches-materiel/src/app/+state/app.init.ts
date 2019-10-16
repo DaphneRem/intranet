@@ -8,3 +8,7 @@ export const appInitialState: App = {
     shortUserName: ''
   }
 };
+
+// name: "NOM Prenom"
+// userName: "prenom.nom@mediawan.com"
+// shortUserName: "NOM-P"
