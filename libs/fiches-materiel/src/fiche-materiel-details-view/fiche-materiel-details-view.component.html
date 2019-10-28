@@ -64,13 +64,13 @@
     <div class="row state-content">
       <div class="col-lg-6 state">
         <label for="">Statut : </label>
-        <span *ngIf="statusActiveExist">
+        <span *ngIf="statusActiveExist" [ngClass]="displayStatusClassColor(statusActive)">
           {{statusActive.Libelle}}
         </span>
       </div>
       <div class="col-lg-6 step">
         <label for="">Etape : </label>
-        <span *ngIf="stepActiveExist">
+        <span *ngIf="stepActiveExist" [ngClass]="displayStepClassColor(statusActive, stepActive)">
           {{stepActive.Libelle}}
         </span>
         <history-steps-status-modal 
@@ -127,7 +127,7 @@
               <span *ngIf="myFicheAchatDetails.nombre_episodes" [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
                 {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisode(s)' : '/'}}
               </span>
-              <span *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.DurCom !== ''"> de {{displayDurCom(myFicheAchatDetails.DurCom)}}</span>
+              <span *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.Format_serie !== ''"> de {{myFicheAchatDetails.Format_serie}}</span>
             </p>
             <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
@@ -156,8 +156,8 @@
             </p>
             <p *ngIf="!qualiteExist.length">Qualité : /</p>
             <p>Support : 
-              <span  [ngClass]="!myFicheMateriel.IdSupport ? 'empty-field' : ''">
-                {{myFicheMateriel.IdSupport ? myFicheMateriel.IdSupport : messageEmptyField}}
+              <span  [ngClass]="!myFicheMateriel.NomSupport ? 'empty-field' : ''">
+                {{myFicheMateriel.NomSupport ? myFicheMateriel.NomSupport : messageEmptyField}}
               </span> 
             </p>
             <p *ngIf="myFicheAchatGlobal.chaines">Chaînes concernées :
