@@ -87,6 +87,7 @@ import { DealInProgressComponent } from './fiches-materiel-pages/deal-in-progres
 
 import { datatableFilteredDataInitialState } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.init';
 import { datatableFilteredDataReducer } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.reducer';
+import { FichesMaterielBtnLinksComponent } from './fiches-materiel-btn-links/fiches-materiel-btn-links.component';
 
 @NgModule({
   imports: [
@@ -143,6 +144,7 @@ import { datatableFilteredDataReducer } from './fiches-materiel-tables/fiches-ma
     WarningAcceptedStatusComponent,
     AnnexesElementsDetailsModalComponent,
     DealInProgressComponent,
+    FichesMaterielBtnLinksComponent,
   ],
   exports: [
     AffectedEpisodesModalComponent,

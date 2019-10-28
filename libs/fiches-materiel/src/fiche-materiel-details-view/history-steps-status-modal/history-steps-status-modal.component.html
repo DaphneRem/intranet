@@ -9,11 +9,13 @@
     <ngb-accordion [closeOthers]="true" onchange="historyStepsStatus" *ngIf="historyStepsStatus.length">
       <ngb-panel id="static-{{i}}" *ngFor="let item of historyStepsStatus; let i = index;">
         <ng-template ngbPanelTitle>
-          <span>{{item.DateModification | date:'shortDate'}} 
-            par {{item.UserModification.length > 0 ? item.UserModification : 'utilisateur non spécifié'}} – 
-            Statut {{item.IdLibstatut}} : {{item.libelleStatus}} - 
-            Etape {{item.IdEtape}} : {{item.libelleStep}}
-          </span>
+          <div class="title-content">
+            <!-- {{item | json}} -->
+            <span>{{item.DateModification | date:'shortDate'}} </span>
+            <span>par {{item.UserModification.length > 0 ? item.UserModification : 'utilisateur non spécifié'}} – </span>
+            <span>Statut : </span><span [ngClass]="displayStatusClassColor(item)">{{item.libelleStatus}}</span>
+            <span> - Etape : </span><span [ngClass]="displayStepClassColor(item)">{{item.libelleStep}}</span>
+          </div>
         </ng-template>
         <ng-template ngbPanelContent>
            {{item.Commentaires === null || item.commentaires === '' ? 'Aucun commentaire' : item.Commentaires}}
@@ -35,4 +37,3 @@
   (click)="openLg(content)">
   <i class="icofont icofont-history"></i>
 </div>
-

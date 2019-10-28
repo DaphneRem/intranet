@@ -29,6 +29,13 @@ $creationBtnHoverColor :  #2eced6;
     }
 }
 
+/deep/ .title-content {
+    display: flex;
+    span {
+        margin-left: 5px;
+    }
+}
+
 .history {
     margin-left: 20px;
     margin-top: -10px;

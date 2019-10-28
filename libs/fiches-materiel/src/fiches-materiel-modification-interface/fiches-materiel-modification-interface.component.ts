@@ -123,6 +123,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     'ReceptionAccesLabo'
   ];
   public oldDeadline;
+  public warningDeadlineExist: boolean;
+  public deadlineDaysDiff: number;
   // fiches materiel :
   public initialFichesMateriel = [];
   public allFichesMateriel = [];
@@ -330,28 +332,28 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
-  displayDurCom(durCom: string): string {
-    console.log(durCom);
-    let arrayDurCom = durCom.split(':');
-    console.log(arrayDurCom);
-    let labels = ['heure', 'minute', 'seconde'];
-    let result = '';
-    arrayDurCom.map((item, index) => {
-      console.log(+item)
-      if (+item === 0) {
-        item = '';
-      } else {
-        let multiple = '';
-        if (+item > 1) {
-          multiple = 's';
-        }
-        item = ` ${+item} ${labels[index]}${multiple}`;
-      }
-      console.log(item);
-      result += item;
-    });
-    return result;
-  }
+  // displayDurCom(durCom: string): string {
+  //   console.log(durCom);
+  //   let arrayDurCom = durCom.split(':');
+  //   console.log(arrayDurCom);
+  //   let labels = ['heure', 'minute', 'seconde'];
+  //   let result = '';
+  //   arrayDurCom.map((item, index) => {
+  //     console.log(+item)
+  //     if (+item === 0) {
+  //       item = '';
+  //     } else {
+  //       let multiple = '';
+  //       if (+item > 1) {
+  //         multiple = 's';
+  //       }
+  //       item = ` ${+item} ${labels[index]}${multiple}`;
+  //     }
+  //     console.log(item);
+  //     result += item;
+  //   });
+  //   return result;
+  // }
 
   getLibs() {
     this.categoriesReady = false;
@@ -708,7 +710,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
           ][0].IdLibEtape;
         }
       }
-      // this.firstClick = false;
+      this.firstClick = false;
     } else {
       this.firstClick = true;
       this.oldStatus = this.newObject.IdLibstatut;
@@ -752,20 +754,38 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       title: title,
       input: 'textarea',
       showCancelButton: true,
+      html: `<button id="backToOldValue2" class="btn swal-btn-cancel" >Annuler</button>`,
       cancelButtonText: cancelMessage,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      reverseButtons: true,
       confirmButtonText: 'Valider',
-      confirmButtonColor: 'rgb(23, 170, 178)'
+      confirmButtonColor: 'rgb(23, 170, 178)',
+      cancelButtonColor: 'rgb(23, 170, 178)',
+      onBeforeOpen: () => {
+        const content = swal.getContent();
+        const $ = content.querySelector.bind(content);
+        const backToOldValue = $('#backToOldValue2');
+        backToOldValue.addEventListener('click', () => {
+          swal.close();
+        });
+      }
     }).then(result => {
-      if (result.value) {
+      console.log('result for comment swal => ', result);
+      if (result.value || result.value === '') {
         this.newObject.CommentairesStatutEtape = result.value;
         // console.log('this.newObject.CommentairesStatutEtape', this.newObject.CommentairesStatutEtape);
+      } else if (result.dismiss) {
+        this.newObject.CommentairesStatutEtape = '';
+        console.log('annuler le click');
       }
     });
   }
 
-
   displayStepsStatusModelComment(comment) {
     this.newObject.CommentairesStatutEtape = comment;
+    this.oldStatus = this.newObject.IdLibstatut;
+    this.oldStep = this.newObject.IdLibEtape;
     console.log('this.newObject.CommentairesStatutEtape after event from swal comment modal => ', this.newObject.CommentairesStatutEtape);
   }
 
@@ -838,7 +858,7 @@ public firtsClickStep = true;
 
   displayStepValue(step) {
     console.log('step =====> ', step);
-    if (step.Libelle !== 'valueNotToChangeLibelle') {
+    if (step.Libelle !== this.valueNotToChangeLibelle) {
       return step.IdLibEtape;
     } else {
       return step.Libelle;
@@ -901,10 +921,47 @@ public firtsClickStep = true;
     }
   }
 
+  displayWarningDeadline(deadline) {
+    console.log('deadline => ', deadline);
+    if (this.checkValidDate(deadline)) {
+      let today  = moment([moment().year(), moment().month(), moment().date()]);
+      let deadlineDate = moment([deadline.year, deadline.month-1, deadline.day]);
+      let timestampDiff = today.diff(deadlineDate);
+      let daysDiff = today.diff(deadlineDate, 'days');
+      console.log('today ===> ', today);
+      console.log('deadlineDate =>', deadlineDate);
+      console.log('timestampDiff => ', timestampDiff);
+      console.log('daysDiff => ', daysDiff);
+      this.deadlineDaysDiff = daysDiff;
+      this.warningDeadlineExist = daysDiff >= 0;
+      console.log('this.warningDeadlineExist => ', this.warningDeadlineExist);
+    }
+  }
+
+  public dateDiffDaysDiff: number;
+  public warningDateDiffExist: boolean;
+
+  displayWarningDateDiff(dateDiff) {
+    if (this.checkValidDate(dateDiff)) {
+      let today = moment([moment().year(), moment().month(), moment().date()]);
+      let diffDate = moment([dateDiff.year, dateDiff.month - 1, dateDiff.day]);
+      let timestampDiff = today.diff(diffDate);
+      let daysDiff = diffDate.diff(today, 'days');
+      console.log('dateDiff today ===> ', today);
+      console.log('dateDiff deadlineDate =>', diffDate);
+      console.log('dateDiff timestampDiff => ', timestampDiff);
+      console.log('dateDiff daysDiff => ', daysDiff);
+      this.dateDiffDaysDiff = daysDiff;
+      this.warningDateDiffExist = daysDiff <= 30;
+      console.log('dateDiff this.warningDateDiffExist => ', this.warningDateDiffExist);
+    }
+  }
+
   displayValidDate(date, type) {
     // console.log(this.selectionType);
     if (type === 'deadline') {
       this.deadlineIsValid = this.checkValidDate(date);
+      this.displayWarningDeadline(date);
     } else if (type === 'livraison') {
       this.livraisonIsValid = this.checkValidDate(date);
     } else if (type === 'acceptation') {
@@ -936,6 +993,7 @@ public firtsClickStep = true;
       ) {
         // DATE DEADLINE
         this.newObject.Deadline = this.changeToNgFormatDate(this.newObject.Deadline);
+        this.displayWarningDeadline(this.newObject.Deadline);
       } else {
         this.newObject.Deadline = defaultFormat;
       }
@@ -981,6 +1039,7 @@ public firtsClickStep = true;
       }
       if (this.newObject.Deadline !== this.valueNotToChangeLibelle) {
         this.newObject.Deadline = this.changeToNgFormatDate(this.newObject.Deadline);
+        this.displayWarningDeadline(this.newObject.Deadline);
       }
       if (this.newObject.DateLivraison !== this.valueNotToChangeLibelle) {
         this.newObject.DateLivraison = this.changeToNgFormatDate(this.newObject.DateLivraison);

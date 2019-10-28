@@ -12,3 +12,9 @@
         background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
     }
 }
+
+/deep/ .swal2-popup .swal2-actions {
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin: 40px 0 0;
+}

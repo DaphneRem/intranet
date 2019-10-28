@@ -65,7 +65,7 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges, OnDe
       .getHistoryStepsStatus(idFicheMateriel)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        console.log(data);
+        console.log('historyStepsStatus data => ', data);
         if (data === null || data === []) {
           this.historyStepsStatus = [];
           this.historyStepsStatusReady = true;
@@ -82,6 +82,7 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges, OnDe
   }
 
   addStepStatusLibelleToHistory() {
+    console.log('addStepStatusLibelleToHistory()');
     this.historyStepsStatus.forEach(history => {
       this.statusLib.forEach(status => {
         if (status.IdLibstatut === history.IdLibstatut) {
@@ -92,9 +93,45 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges, OnDe
       this.stepLib.forEach(step => {
         if (step.IdLibEtape === history.IdEtape) {
           Object.assign(this.historyStepsStatus[this.historyStepsStatus.indexOf(history)], { libelleStep: step.Libelle });
+          console.log('this.historyStepsStatus after add libelleStep => ', this.historyStepsStatus);
         }
       });
     });
+  }
+
+  displayStatusClassColor(item) {
+    if (item.IdLibstatut === 1) {
+      return 'label label-info';
+    } else if (item.IdLibstatut === 2) {
+      return 'label label-canceled';
+    } else if (item.IdLibstatut === 3) {
+      return 'label label-success';
+    } else if (item.IdLibstatut === 4) {
+      return 'label bg-danger';
+    } else if (item.IdLibstatut === 5) {
+      return'label label-other';
+    }
+  }
+
+  displayStepClassColor(item) {
+    console.log(item);
+    if (item.IdEtape <= 6) { // color: #a8a8a8 && #FFFFFF
+      return 'label label-default';
+    } else if (item.IdEtape > 6 && item.IdEtape <= 10) { // color : blue; #0040FF
+      return 'label label-info';
+    } else if (item.IdEtape === 25 || item.IdEtape === 18) { // color : red;
+      return 'label bg-danger';
+    } else if (item.IdEtape === 26) {
+      return 'label label-default';
+    } else if (item.IdEtape === 5) {
+      return 'label label-other';
+    } else if (item.IdLibstatut === 3) {
+      return 'label label-success';
+    } else if (item.IdLibstatut === 2) {
+      return 'label label-canceled';
+    } else if (item.IdLibstatut === 5) {
+      return 'label label-other';
+    }
   }
 
 }
