@@ -785,6 +785,16 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
           }
         }
       },
+      {
+        title: 'Chaînes',
+        data: function (data, type, row, meta) {
+          if (data.chaines !== null && data.chaines !== undefined && data.chaines !== '') {
+            return data.chaines;
+          } else {
+            return '/';
+          }
+        }
+      },
     ];
     console.log('display columns ok');
     this.dataReady = true;
