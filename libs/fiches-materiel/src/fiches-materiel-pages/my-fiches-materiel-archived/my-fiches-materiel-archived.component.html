@@ -2,10 +2,7 @@
 
 <div class="row card">
   <div class="col-lg-11 buttons">
-    <button class="btn btn-info btn-outline-info" [routerLink]="['/material-sheets/my-material-sheets/0/asc']">Mes fiches Matériel en cours</button>
-    <button class="btn btn-info btn-outline-info" [routerLink]="['/material-sheets/my-deals-in-progress/0/asc']">Mes deals en Cours</button>
-    <button class="btn btn-primary btn-outline-primary" [routerLink]="['/material-sheets/my-material-sheets/all/0/asc']">Toutes mes fiches Matériel</button>
-    <button class="btn btn-inverse btn-outline-inverse" [routerLink]="['/material-sheets/all/0/asc']">Toutes les fiches Matériel</button>
+    <fiches-materiel-btn-links></fiches-materiel-btn-links>
   </div>
   <div class="table-top col-lg-1">
     <custom-icon-badge *ngFor="let icon of icons" 

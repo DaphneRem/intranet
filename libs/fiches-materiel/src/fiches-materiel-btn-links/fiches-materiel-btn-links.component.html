@@ -1,0 +1,25 @@
+<button class="btn btn-info btn-outline-info"
+    [routerLinkActive]="['in-progress-active']"
+    [routerLink]="['/material-sheets/my-material-sheets/0/asc']">
+    Mes fiches Matériel en cours
+</button>
+<button class="btn btn-info btn-outline-info"
+    [routerLinkActive]="['in-progress-deals-active']"
+    [routerLink]="['/material-sheets/my-deals-in-progress/0/asc']">
+    Mes deals en Cours
+</button>
+<button class="btn btn-success btn-outline-success"
+    [routerLinkActive]="['archived-active']"
+    [routerLink]="['/material-sheets/my-material-sheets/archived/0/desc']">
+    Mes Fiches Matériel Archivées
+</button>
+<button class="btn btn-primary btn-outline-primary"
+    [routerLinkActive]="['all-my-active']"
+    [routerLink]="['/material-sheets/my-material-sheets/all/0/asc']">
+    Toutes mes fiches Matériel
+</button>
+<button class="btn btn-inverse btn-outline-inverse"
+    [routerLinkActive]="['all-active']"
+    [routerLink]="['/material-sheets/all/0/asc']">
+    Toutes les fiches Matériel
+</button>
