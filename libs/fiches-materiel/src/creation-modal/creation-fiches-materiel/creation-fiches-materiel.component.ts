@@ -38,7 +38,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   public fichesMaterielCreated: FicheMaterielCreation[] = [];
   public fichesMateriel: any;
   public creationState: Boolean = false;
-
+  public retourOri: number;
   public user;
 
   // dealine calcul
@@ -190,12 +190,34 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
     // this.createFichesMateriel(this.fichesMateriel);
   }
 
+  displayRetourOri(oeuvre) {
+    if ( // if FA statut matériel : "acces labo", "materiel présent AB" ou "vendu"
+      oeuvre.Code_statut_materiel === 2 ||
+      oeuvre.Code_statut_materiel === 3 ||
+      oeuvre.Code_statut_materiel === 4
+    ) {
+      this.retourOri = 2; // Retour ori : "Matériel AB"
+    } else if (oeuvre.Code_statut_materiel === 1) { // if FA statut matériel : "prêté"
+      this.retourOri = 1; // Retour ori : "A faire"
+    } else {
+      this.retourOri = 1; // Retour ori : "A faire"
+    }
+  }
+
   /** CHANGE OEUVRE WITH GAPS TO FICHES MATERIEL OEUVRE WITH EPS ARRAY **/
   displayFichesMateriel() {
     this.oeuvreWithGaps.forEach(oeuvre => {
       this.fichesMateriel = [];
       this.checkAllNumbers(oeuvre, oeuvre.gaps);
       console.log(oeuvre.numFichesMateriel);
+      console.log('oeuvre => ', oeuvre);
+      this.displayRetourOri(oeuvre);
+      this.detailsFicheAchat.map(item => {
+        if (item.id_fiche_det === oeuvre.id_fiche_det) {
+          console.log('item fiche achat detail => ', item);
+          this.displayRetourOri(item);
+        }
+      });
       for (let i = 0; i < oeuvre.numFichesMateriel.length; i++) {
         console.log(this.user);
         this.fichesMateriel.push(
@@ -212,7 +234,8 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
             NumEpisode: oeuvre.numFichesMateriel[i], // calcul automatique : erreur
             DateCreation: new Date().toJSON().slice(0, 19),
             UserCreation: this.user,
-            SuiviPar: this.user
+            SuiviPar: this.user,
+            RetourOri: this.retourOri
           })
         );
       }
