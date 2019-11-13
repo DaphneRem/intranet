@@ -1,3 +1,6 @@
+$searchBtnColor :  #17AAB2;
+$searchBtnHoverColor :  #2eced6;
+
 form {
     padding-top :10px;
     margin-top : 30px;
@@ -5,12 +8,58 @@ form {
     .field {
         display : flex;
         margin : auto;
-        margin-top: 10px;
+        // margin-top: 10px;
         label {
             width: 70%;
             margin-bottom: 0;
             padding-top : 5px;
         }
+        button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            font-size: 19px;
+            border-radius: 100px;
+            &.search {
+                background: $searchBtnColor;
+                &:hover {
+                    background: $searchBtnHoverColor;
+                }
+            }
+            &.reply {
+                background: #b5b3b3;
+                &:hover {
+                    background: #c6c4c4;
+                }
+            }
+            i {
+                color: #ffffff;
+                margin: 0;
+                cursor: pointer;
+            }
+        }
     }
 }
-
+.no-data-row {
+    .no-data-message {
+        display: flex;
+        justify-content: center;
+        p {
+            color: red;
+        }
+    }
+}
+.data-row {
+    .data-message {
+        display: flex;
+        justify-content: center;
+        p {
+            color: #000000;
+            span {
+                margin-left: 10px;
+                i {
+                    color : $searchBtnColor;
+                }
+            }
+        }
+    }
+}

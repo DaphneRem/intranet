@@ -1,0 +1,50 @@
+$inProgressColor : rgb(57, 173, 181);
+$archivedColor : rgb(23, 185, 120);
+$allMyColor : rgb(94, 212, 255);
+$allColor : #3844b5;
+
+button {
+    &.btn-outline-info {
+
+    }
+    &.btn-outline-success {
+        transition: all ease-in 0.3s;
+    }
+    &.btn-outline-primary {
+        color: $allMyColor !important;
+        border-color: $allMyColor !important;
+        transition: all ease-in 0.3s;
+    }
+    &.btn-outline-inverse {
+        color: $allColor;
+        border-color: $allColor;
+    }
+    &.in-progress-active { // ACTIVE
+        color: #ffffff;
+        background-color: $inProgressColor !important;
+        border-color: $inProgressColor !important;
+        transition: all ease-in 0.3s;
+    }
+    &.in-progress-deals-active { // ACTIVE
+        color: #ffffff;
+        background-color: $inProgressColor !important;
+        border-color: $inProgressColor !important;
+        transition: all ease-in 0.3s;
+    }
+    &.archived-active { // ACTIVE
+        color: #ffffff;
+        background-color: $archivedColor !important;
+        transition: all ease-in 0.3s;
+    }
+    &.all-my-active { // ACTIVE
+        color: #ffffff !important;
+        border-color: $allMyColor !important;
+        background-color: $allMyColor !important;
+    }
+    &.all-active { // ACTIVE
+        background-color: $allColor !important;
+        border-color: $allColor !important;
+        color: #ffffff;
+    }
+}
+

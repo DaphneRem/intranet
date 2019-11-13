@@ -1,0 +1,20 @@
+/deep/ .swal-btn-cancel {
+    background-color: #aaaaaa;
+    color: #ffffff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 0 20px 20px 26px;
+    font-weight: 500;
+    font-size: 17px;
+    border-radius: 5px;
+    &:hover {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
+    }
+}
+
+/deep/ .swal2-popup .swal2-actions {
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin: 40px 0 0;
+}

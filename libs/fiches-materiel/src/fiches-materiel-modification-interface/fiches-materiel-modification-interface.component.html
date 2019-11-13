@@ -57,26 +57,33 @@
     <div class="row top">
       <div class="col-lg-3 left-infos">
         <div *ngIf="!fmInRecording" class="form-group row">
+          <i *ngIf="warningDeadlineExist" class="deadline-warning warning-icon icofont icofont-warning"></i>
           <label class="deadline clo-lg-4 col-form-label">
             Deadline :</label>
-              <div *ngIf="!fmInRecording" class="input-group col-lg-8">
-                <input class="form-control"
+              <div *ngIf="!fmInRecording" class="input-group deadline-datepicker col-lg-8">
+                <input class="form-control input-deadline"
                   [ngClass]="!checkValidDate(newObject.Deadline) && !fmInRecording ? 'form-control-danger' : ''"
                   placeholder="{{newObject.Deadline}}" 
                   name="deadlineDate" 
                   [(ngModel)]="newObject.Deadline" 
                   [disabled]="disabledDeadline()"
                   ngbDatepicker
+                  (dateSelect)="displayWarningDeadline(newObject.Deadline)"
                   (keyup)="selectionType === 'one' ? displayValidDate(newObject.Deadline, 'deadline') : displayValidDate(deadline.value, 'deadline')"
                   #deadline="ngModel"
                   #deadlineDate="ngbDatepicker">
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" (click)="deadlineDate.toggle()" type="button">
-                    <i class="icofont icofont-calendar"></i>
+                <div class="input-group-append deadline-calendar">
+                  <button class="btn btn-outline-secondary" (click)="deadlineDate.toggle()" type="button" [ngClass]="warningDeadlineExist ? 'warning-btn' : ''" >
+                    <i class="icofont icofont-calendar" [ngClass]="warningDeadlineExist ? 'warning-color' : ''"></i>
                   </button>
                 </div>
               </div>
               <div *ngIf="!checkValidDate(newObject.Deadline) && !fmInRecording" class="col-form-label invalid-form">La Deadline n'est pas valide</div>
+              <div *ngIf="warningDeadlineExist && !fmInRecording && deadlineDaysDiff > 0" class="deadline-message">La Deadline est dépassée depuis 
+                <span class="deadline-day-past">{{deadlineDaysDiff}}</span>
+                <span *ngIf="deadlineDaysDiff > 1">jours</span>
+                <span *ngIf="deadlineDaysDiff === 1">jour</span>
+              </div>
         </div>
         <div class="form-group row">
           <label class="user clo-lg-4 col-form-label">
@@ -124,6 +131,9 @@
         <span class="warning-no-fa"></span>
       </div>
     </div>
+     <!-- {{newObject.IdLibstatut | json}}
+     {{newObject.IdLibEtape | json}}
+     {{stepsReady}} -->
     <div class="row state-content" *ngIf="stepsReady && statusReady">
       <div class="col-lg-4"></div>
       <div class="col-lg-2 state form-group">
@@ -153,7 +163,7 @@
               <span *ngIf="step.Libelle !== valueNotToChangeLibelle">{{i+1}} - </span>{{step.Libelle}}
             </option>
           </select>
-  
+<!-- {{newObject | json }} -->
           <div 
             class="add-just-comment"
             [placement]="'right'" 
@@ -172,9 +182,13 @@
       </div>
 
     </div>
+     <!-- {{newObject.IdLibstatut}}
+     {{newObject.IdLibEtape}} -->
     <steps-status-comment-modal
       (newComment)="displayStepsStatusModelComment($event)"
       (lastStatus)="displayPreviousStatus($event)"
+      (lastStep)="displayPreviousStep($event)"
+      (backToOldStepStatus)="displayPreviousStatusStep($event)"
       [selectionType]="selectionType"
       [step]="newObject.IdLibEtape"
       [status]="newObject.IdLibstatut" 
@@ -297,10 +311,17 @@
               </div>
           </div>
 
-          <p *ngIf="selectionType === 'one'">Format œuvre :
-            <span *ngIf="ficheAchatDetailReady">
-              {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisodes de ' + ficheAchatDetail.duree+'min' : '/'}}
-            </span>
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Format œuvre :
+              <span *ngIf="ficheAchatDetail.nombre_episodes">
+                {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisode(s)' : '/'}}
+              </span>
+              <span *ngIf="!ficheAchatDetail.nombre_episodes">
+                /
+              </span>
+              <span *ngIf="ficheAchatDetail.nombre_episodes && ficheAchatDetail.Format_serie !== ''"> de {{ficheAchatDetail.Format_serie}}</span>
+          </p>
+          <p *ngIf="selectionType === 'one' && !ficheAchatDetailReady">Format œuvre :
+            <span>/</span>
           </p>
           <div class="row form-group">
             <label class="col-form-label col-lg-4">N° œuvre : </label>
@@ -525,40 +546,40 @@
           <div class="row form-group">
             <label class="col-form-label col-lg-4">Support :</label>
             <input 
-              [(ngModel)]="newObject.IdSupport"
+              [(ngModel)]="newObject.NomSupport"
               type="text" 
               class="form-control col-lg-4"
               id="support" 
               name="support"
               autocomplete="off">
               <div class="icons col-lg-2" *ngIf="selectionType === 'multi'">
-                <i *ngIf="newObject.IdSupport !== ''"
+                <i *ngIf="newObject.NomSupport !== ''"
                   class="icofont icofont-close-line-circled delete"
                   [placement]="'right'" 
                   [ngbTooltip]="resetTooltipMessage"
-                  (click)="newObject.IdSupport = ''">
+                  (click)="newObject.NomSupport = ''">
                 </i>
-                <!-- <i *ngIf="newObject.IdSupport !== valueNotToChangeLibelle"
+                <!-- <i *ngIf="newObject.NomSupport !== valueNotToChangeLibelle"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.IdSupport = valueNotToChangeLibelle">
+                  (click)="newObject.NomSupport = valueNotToChangeLibelle">
                 </i> -->
-                <i *ngIf="(newObject.IdSupport !== valueNotToChangeLibelle) && !checkIsOriginalProperty('IdSupport', newObject.IdSupport)"
+                <i *ngIf="(newObject.NomSupport !== valueNotToChangeLibelle) && !checkIsOriginalProperty('NomSupport', newObject.NomSupport)"
                   class="icofont icofont-ui-reply reply"
                   [placement]="'right'" 
                   [ngbTooltip]="replyTooltipMessage"
-                  (click)="newObject.IdSupport = valueNotToChangeLibelle">
+                  (click)="newObject.NomSupport = valueNotToChangeLibelle">
                 </i>
-                <i *ngIf="(newObject.IdSupport !== valueNotToChangeLibelle) 
-                  && (checkIsOriginalProperty('IdSupport', newObject.IdSupport)
-                  && newObject.IdSupport !== equalObject.IdSupport[0])" 
+                <i *ngIf="(newObject.NomSupport !== valueNotToChangeLibelle) 
+                  && (checkIsOriginalProperty('NomSupport', newObject.NomSupport)
+                  && newObject.NomSupport !== equalObject.NomSupport[0])" 
                   class="icofont icofont-ui-reply reply" 
                   [placement]="'right'"
                   [ngbTooltip]="replyTooltipMessage" 
-                  (click)="checkIsOriginalProperty('IdSupport', newObject.IdSupport) ? 
-                  newObject.IdSupport = equalObject.IdSupport[0] : 
-                  newObject.IdSupport = valueNotToChangeLibelle">
+                  (click)="checkIsOriginalProperty('NomSupport', newObject.NomSupport) ? 
+                  newObject.NomSupport = equalObject.NomSupport[0] : 
+                  newObject.NomSupport = valueNotToChangeLibelle">
                 </i>
               </div>
           </div>
@@ -746,19 +767,26 @@
                 class="form-control" 
                 placeholder="{{newObject.DatePremiereDiff}}" 
                 name="diffDate"
-                [(ngModel)]="newObject.DatePremiereDiff" 
+                [(ngModel)]="newObject.DatePremiereDiff"
+                (dateSelect)="displayWarningDateDiff(newObject.DatePremiereDiff)"
                 ngbDatepicker 
                 (keyup)="displayValidDate(newObject.DatePremiereDiff, 'diff')"
                 #diff="ngModel"
                 #diffDate="ngbDatepicker">
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="diffDate.toggle()" type="button">
+                <button class="btn btn-outline-secondary" (click)="diffDate.toggle()" type="button" [ngClass]="warningDateDiffExist ? 'warning-btn' : ''">
                   <i class="icofont icofont-calendar"></i>
                 </button>
               </div>
             </div>
           </div>
           <div *ngIf="!checkValidDate(newObject.DatePremiereDiff) && !fmInRecording" class="col-form-label invalid-form">La date de première diff n'est pas valide</div>
+          <div *ngIf="warningDateDiffExist && !fmInRecording && dateDiffDaysDiff > 0 && dateDiffDaysDiff <= 30" class="diff-message">La date de première diff est dans   
+            <span class="day-diff">{{dateDiffDaysDiff}}</span>
+            <span *ngIf="dateDiffDaysDiff > 1">jours</span>
+            <span *ngIf="dateDiffDaysDiff === 1">jour</span>
+          </div>
+          <div *ngIf="warningDateDiffExist && !fmInRecording && dateDiffDaysDiff < 0" class="diff-message">La date de première diff est dépassée</div>
         </div>
         <div class="sections acces-vf" [ngStyle]="selectionType === 'multi' ? {'min-height': '220px'} : {'min-height': '265px'}">
           <i class="icofont icofont-unlock section-icon"></i>

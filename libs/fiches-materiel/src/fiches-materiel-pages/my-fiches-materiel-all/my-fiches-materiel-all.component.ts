@@ -22,7 +22,7 @@ import { Store } from '@ngrx/store';
 export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<any> = new Subject();
-
+  public reloadOriginalData: boolean;
   public headerTableLinkExist: boolean = false;
   public tableTitle: string = 'Toutes mes fiches Matériel';
   public daysNumber: number = 100;
@@ -67,6 +67,15 @@ export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
     tooltipMessage: 'Voir les fiches Achat'
   };
 
+  public autofields = {
+    SuiviPar: '',
+    TitreEpisodeVO: '',
+    TitreEpisodeVF: '',
+    isarchived: this.isArchived,
+    distributeur: '',
+    numficheachat: ''
+  };
+
   constructor(
     private fichesMaterielService: FichesMaterielService,
     private store: Store<App>
@@ -85,6 +94,7 @@ export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
   storeAppSubscription() {
     this.store.subscribe(data => {
         this.user = data['app'].user.shortUserName;
+        this.autofields.SuiviPar = this.user;
         console.log(this.user);
     });
   }
@@ -105,5 +115,18 @@ export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  displayReloadOriginalData(event: boolean) {
+    this.reloadOriginalData = event;
+    this.dataReady = false;
+    this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
+  }
+
+  displayNewDataFromComplexSearch(event: FicheMateriel[]) {
+    this.dataReady = false;
+    this.data = event;
+    this.dataReady = true;
+  }
+
 }
 

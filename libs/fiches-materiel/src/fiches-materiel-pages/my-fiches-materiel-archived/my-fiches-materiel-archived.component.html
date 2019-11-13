@@ -1,8 +1,8 @@
 <sub-header [tableView]="true" [changeView]="true" [link]="widgetLink"></sub-header>
 
 <div class="row card">
-  <div class="col-lg-11 search-form">
-    <search-form></search-form>
+  <div class="col-lg-11 buttons">
+    <fiches-materiel-btn-links></fiches-materiel-btn-links>
   </div>
   <div class="table-top col-lg-1">
     <custom-icon-badge *ngFor="let icon of icons" 
@@ -13,6 +13,26 @@
       [tooltipMessage]="icon.tooltipMessage">
     </custom-icon-badge>
   </div>
+</div>
+<div class="row card">
+  <div class="col-lg-11 search-form">
+    <search-form 
+      *ngIf="user" 
+      [autofields]="autofields"
+      [title]="tableTitle"
+      (reloadOriginalData)="displayReloadOriginalData($event)"
+      (dataResult)="displayNewDataFromComplexSearch($event)"
+      ></search-form>
+  </div>
+  <!-- <div class="table-top col-lg-1">
+    <custom-icon-badge *ngFor="let icon of icons" 
+      [littleIcon]="icon.littleIcon"  
+      [bigIcon]="icon.bigIcon" 
+      [link]="icon.link"
+      [tooltip]="icon.tooltip"
+      [tooltipMessage]="icon.tooltipMessage">
+    </custom-icon-badge>
+  </div> -->
 </div>
 <fiches-materiel-table 
   *ngIf="dataReady"

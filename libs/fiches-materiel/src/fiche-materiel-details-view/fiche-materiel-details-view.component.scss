@@ -5,6 +5,14 @@ $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
 $iconColor : #7f7f7f;
 
+// $label-color: #ffffff;
+// $in-progress-color-background:  #0040FF;
+// $success-color-background: #04B404;
+// $canceled-color-background: #a8a8a8;
+// $default-color: #a8a8a8;
+// $default-color-background: #ffffff;
+// $other-color-background: #774aa4;
+
 .fm-details {
     padding : 15px 30px;
     .card {
@@ -87,6 +95,8 @@ $iconColor : #7f7f7f;
                 display: flex;
                 span {
                     margin-left: 10px;
+                    height: 25px;
+                    padding: 5px 7px 4px 7px !important;
                 }
                 .empty-field {
                     color :  $creationBtnColor;
@@ -247,4 +257,10 @@ $iconColor : #7f7f7f;
             }
         }
     }
+}
+
+/deep/ .swal2-popup .swal2-actions {
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin: 40px 0 0;
 }

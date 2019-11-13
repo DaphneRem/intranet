@@ -1,6 +1,9 @@
 .card {
     flex-direction: inherit;
     margin : 10px;
+    .buttons {
+        padding: 15px;
+    }
     .table-top {
         display : flex;
         padding-left: 0;

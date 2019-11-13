@@ -49,12 +49,18 @@ $modificationColor: #FFB64D;
         .top {
             padding-top : 100px;
             .left-infos {
+                padding-left: 40px;
                 .input-group {
                     padding : 0;
                 }
                 .form-group {
                     display : flex;
                     justify-content: flex-end;
+                    .deadline-warning {
+                        font-size: 2.2em;
+                        color: #fd5f5f;
+                        margin-right: 5px; 
+                    }
                     label {
                         font-size: 1.1em;
                         margin-left: 20px;
@@ -66,6 +72,7 @@ $modificationColor: #FFB64D;
                             }
                         }
                         &.deadline {
+                            margin-left: 2px;
                             i {
                                 font-size: 2.2em;
                                 color: $importantColor;
@@ -74,6 +81,47 @@ $modificationColor: #FFB64D;
                             .empty-field {
                                 color : $creationBtnColor;
                             }
+                        }
+                    }
+                    .deadline-datepicker {
+                        .input-deadline {
+                            max-width: 250px;
+                            max-height: 40px;
+                        }
+                        .deadline-calendar {
+                            button {
+                                background-color: $creationBtnColor;
+                                border-color: $creationBtnColor;
+                                color: #ffffff;
+                                background-image: none;
+                                transition: all ease-in 0.3s;
+                                font-size: 1em;
+                                padding: 8px 10px;
+                                margin-bottom : 20px;
+                                &:hover {
+                                    transition: all ease-in 0.3s;
+                                    background-color: $creationBtnHoverColor;
+                                    border-color: $creationBtnHoverColor;
+                                }
+                                i {
+                                    font-size: 1.4em;
+                                }
+                                &.warning-btn {
+                                    border: 1px solid $importantColor;
+                                    background-color: $importantColor;
+                                    &:hover {
+                                        transition: all ease-in 0.3s;
+                                        background-color: #f47a7a;
+                                        border-color: #f47a7a;
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                    .deadline-message {
+                        margin-top: -20px;
+                        .deadline-day-past {
+                            font-weight: bold;
                         }
                     }
                     .invalid-form {
@@ -121,6 +169,7 @@ $modificationColor: #FFB64D;
         }
         .state-content {
             font-size: 1.2em;
+            margin-top: 10px;
             .state {
                 // text-align: right;
                 padding-left: 0;
@@ -193,6 +242,21 @@ $modificationColor: #FFB64D;
                         // margin-bottom : 0;
                         &.livraison-datepicker {
                             margin-bottom: -25px;
+                            .input-group {
+                                .input-group-append {
+                                    button {
+                                        &.warning-btn {
+                                            border: 1px solid $importantColor;
+                                            background-color: $importantColor;
+                                            &:hover {
+                                                transition: all ease-in 0.3s;
+                                                background-color: #f47a7a;
+                                                border-color: #f47a7a;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                         .form-check {
                             margin-left: 10px;
@@ -237,6 +301,15 @@ $modificationColor: #FFB64D;
                                 color: $iconColor;
                                 font-size: 18px;
                             }
+                        }
+                    }
+                    .diff-message {
+                        display: flex;
+                        justify-content: flex-end;
+                        padding-right: 10px;
+                        .day-diff {
+                            font-weight: bold;
+                            margin: 0 5px;
                         }
                     }
                     &.livraison {
@@ -529,4 +602,10 @@ $modificationColor: #FFB64D;
             }
         }
     }
+}
+
+/deep/ .swal2-popup .swal2-actions {
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    margin: 40px 0 0 !important;
 }

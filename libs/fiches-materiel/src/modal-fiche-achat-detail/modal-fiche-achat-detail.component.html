@@ -18,8 +18,8 @@
             <span [ngClass]="oeuvre.nombre_episodes !== 1 ? 'important' : ''">{{oeuvre.nombre_episodes}}</span>
           </p>
           <p class="oeuvre-details" *ngIf="oeuvre.nombre_episodes === null">Nombre d'épisodes : Donnée non renseignée</p>
-          <p class="oeuvre-details">Année : {{oeuvre.annee}}</p>
-          <p class="oeuvre-details">Durée : {{oeuvre.duree ? (oeuvre.duree + ' minutes') : 'Donnée non renseignée'}}</p>
+          <p class="oeuvre-details">Année : {{oeuvre.annee ? oeuvre.annee : 'Donnée non renseignée'}}</p>
+          <p class="oeuvre-details">Durée : {{oeuvre.Format_serie ? oeuvre.Format_serie : 'Donnée non renseignée'}}</p>
         </div>
       </div>
     </div>

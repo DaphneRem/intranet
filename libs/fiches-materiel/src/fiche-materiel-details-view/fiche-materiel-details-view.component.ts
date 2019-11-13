@@ -385,6 +385,29 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
       });
   }
 
+  // displayDurCom(durCom: string): string {
+  //   console.log(durCom);
+  //   let arrayDurCom = durCom.split(':');
+  //   console.log(arrayDurCom);
+  //   let labels = ['heure', 'minute', 'seconde'];
+  //   let result = '';
+  //   arrayDurCom.map((item, index) => {
+  //     console.log(+item)
+  //     if (+item === 0) {
+  //       item = '';
+  //     } else {
+  //       let multiple = '';
+  //       if (+item > 1) {
+  //         multiple = 's';
+  //       }
+  //       item = ` ${+item} ${labels[index]}${multiple}`;
+  //     }
+  //     console.log(item);
+  //     result += item;
+  //   });
+  //   return result;
+  // }
+
   getFicheAchatGlobal(id: number) {
     this.fichesAchatService
       .getGlobalFIcheAchat(id)
@@ -418,6 +441,42 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
           }]
         }
       });
+  }
+
+  displayStatusClassColor(status) {
+    if (status.IdLibstatut === 1) {
+      return 'label label-info';
+    } else if (status.IdLibstatut === 2) {
+      return 'label label-canceled';
+    } else if (status.IdLibstatut === 3) {
+      return 'label label-success';
+    } else if (status.IdLibstatut === 4) {
+      return 'label bg-danger';
+    } else if (status.IdLibstatut === 5) {
+      return'label label-other';
+    }
+  }
+
+  displayStepClassColor(status, step) {
+    console.log('status => ', status);
+    console.log('step => ', step);
+    if (step.IdLibEtape <= 6) { // color: #a8a8a8 && #FFFFFF
+      return 'label label-default';
+    } else if (step.IdLibEtape > 6 && step.IdLibEtape <= 10) { // color : blue; #0040FF
+      return 'label label-info';
+    } else if (step.IdLibEtape === 25 || step.IdLibEtape === 18) { // color : red;
+      return 'label bg-danger';
+    } else if (step.IdLibEtape === 26) {
+      return 'label label-default';
+    } else if (step.IdLibEtape === 5) {
+      return 'label label-other';
+    } else if (status.IdLibstatut === 3) {
+      return 'label label-success';
+    } else if (status.IdLibstatut === 2) {
+      return 'label label-canceled';
+    } else if (status.IdLibstatut === 5) {
+      return 'label label-other';
+    }
   }
 
 }
