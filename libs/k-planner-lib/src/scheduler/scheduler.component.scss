@@ -315,7 +315,6 @@ $InfoBtnHoverColor :  #2eced6;
 
 // /deep/ .e-schedule .e-schedule-table > tbody > tr > td{
 //     // overflow: visible;
-   
 // }
 
 /deep/  .e-sidebar.e-right{
@@ -323,7 +322,7 @@ $InfoBtnHoverColor :  #2eced6;
     height: 910px;
     // min-height: calc(100vh - 200px);
     // max-height: calc(100vh - 200px);
-  
+//   visibility: visible;
     overflow: hidden;
     margin-top: 60px;
     border: 1px solid rgba(0, 0, 0, 0.12);
@@ -511,7 +510,11 @@ $InfoBtnHoverColor :  #2eced6;
 }
 
 /deep/ .e-schedule .e-timeline-view .e-content-wrap{
-overflow: scroll
+    width: 100%;
+    // overflow: scroll;
+    height: 100vh;
+
+
 }
 
 /deep/ .icon-vue{
@@ -669,9 +672,9 @@ overflow: scroll
 }
 
 // +n : TIMELINEDAY & TIMELINEWEEK
-/deep/ .e-schedule .e-timeline-view .e-more-indicator{
-    display:none
-}
+// /deep/ .e-schedule .e-timeline-view .e-more-indicator{
+//     display:none
+// }
 
 /deep/ .e-schedule  .e-resource-text { // centrer les régies
 text-align: center;
@@ -679,15 +682,16 @@ padding: 0
   }
 
 
-  /deep/ .e-schedule .e-table-container{
-      height: 100vh;
+//   /deep/ .e-schedule .e-table-container{
+//       height: 100vh;
      
-  }
+//   }
+
   //affichage de l'overflow dans le treeview
    /deep/ .treeview {
      
       overflow-y: scroll;
-      height: 75vh;
+      height: 73vh;
  
   }
  /deep/ #e-content_1{
@@ -700,3 +704,31 @@ padding: 0
   
 }
 
+/deep/ .e-toolbar-right {
+      width: 33vh
+}
+.e-checkbox-disabled{
+   /deep/.e-label{
+        color: #e3165b;
+        font-weight : bold
+        
+    }
+  
+}
+
+/deep/ .content{
+    visibility: visible
+}
+
+/deep/.e-more-popup-wrapper 
+{
+    width : 25%
+}
+
+
+/deep/ .e-more-appointment-wrapper{
+    .e-appointment{
+        height: 50px;
+        position:relative
+    }
+}

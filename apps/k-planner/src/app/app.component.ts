@@ -182,8 +182,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getUtilisateurByLogin(email)
     console.log(this.store);
     console.log(this.appStore);
-   
-    this.userIsReady = true;
+  
     // this.getAllCoordinateurs();
 
 
@@ -243,6 +242,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           }
         });
+         
+    this.userIsReady = true;
         console.log("appStore",this.appStore)
         console.log( this.shortUserName)
     });     
