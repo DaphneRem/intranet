@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { MonteursData } from '../models/monteurs-data';
-import { urlKPlanner, urlMonteurs, urlGroupMonteurs } from '.privates-url';
+import { urlKPlanner, urlMonteurs, urlGroupMonteurs, urlTypeRessources } from '.privates-url';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { TypeRessources } from '../models/type-ressource-user';
 
 
 @Injectable()
@@ -32,7 +33,14 @@ getGroupMonteur(id: number): Observable<MonteursData[]> {
     return res as MonteursData[];
   });
 }
-
+ getTypeRessource(): Observable<TypeRessources[]>{
+  return this.http
+  .get(urlKPlanner + urlTypeRessources )
+  .map((res: any) => {
+    console.log(res);
+    return res as TypeRessources[];
+  });
+ }
 
 private handleError(error: HttpErrorResponse) {
     console.log(error);
