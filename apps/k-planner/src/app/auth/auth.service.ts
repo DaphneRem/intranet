@@ -67,18 +67,18 @@ console.log(this.user,'auth service user')
     return result;
   }
 
-  async getonPremisesSamAccountName(graphClient:Client): Promise<OnPremisesSamAccountName> {
-    try {
-      let result =
-      graphClient.api('/me/')
-        .select('onPremisesSamAccountName')
-        .get();
-      return result;
-    } catch (error) {
-      console.log('Could not get events', JSON.stringify(error, null, 2));
-     // this.alertsService.add('Could not get events', JSON.stringify(error, null, 2));
-    }
-  }
+  // async getonPremisesSamAccountName(graphClient:Client): Promise<OnPremisesSamAccountName> {
+  //   try {
+  //     let result =
+  //     graphClient.api('/me/')
+  //       .select('onPremisesSamAccountName')
+  //       .get();
+  //     return result;
+  //   } catch (error) {
+  //     console.log('Could not get events', JSON.stringify(error, null, 2));
+  //    // this.alertsService.add('Could not get events', JSON.stringify(error, null, 2));
+  //   }
+  // }
 
   // private async getUser(): Promise<User> {
   //   if (!this.authenticated) return null;

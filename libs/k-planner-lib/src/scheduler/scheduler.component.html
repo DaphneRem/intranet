@@ -21,7 +21,7 @@
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
                 <button  
                   #btnrefresh
-                    class="btn btn-info regie refresh-btn ml-3 mr-3 mt-1 btn-refresh " 
+                    class="btn btn-info regie refresh-btn ml-3 mr-3 mt-3 btn-refresh " 
                     (click)="refreshScheduler()" 
                     [disabled]="disabledrefresh" 
                     id="btn-refresh"
@@ -29,7 +29,7 @@
                    >
                     <i class="icofont icofont-refresh"></i>Rafraichir
                 </button>
-            
+              
                 <!-- <select class="form-control form-control-info m-0 select-plannings float-right mt-1  " 
                     placeholder="Autres plannings" 
                     #selectplan 
@@ -37,10 +37,10 @@
                     <option value={{this.idCoordinateur}}>Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" value={{libelle.Code}}>{{libelle.Libelle}} </option>
                 </select> -->
-                <ejs-dropdownlist id='games' class =" mt-2 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='selectplan.value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
+                <ejs-dropdownlist  class =" mt-3 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='selectplan.value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
                 <input type="text" 
                 id="searchregie"
-                class="form-control form-control-info  e-input recherche" 
+                class="form-control form-control-info  e-input recherche " 
                 placeholder="Rechercher une régie..." 
                 #search 
                 (keyup)="onFilterRegie(search.value,$event )" 
@@ -53,11 +53,11 @@
                           
                            
                             <td  style="width: 5%">
-                                <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="false" (change)="onChangeDataSource()">
+                                <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="false" (change)="onChangeDataSource()" >
                                 </ejs-checkbox>
                             </td>
                             <td  style="width: 5%">
-                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" (change)="onChangeDataSource()">
+                                <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" [disabled]="true" (change)="onChangeDataSource()">
                                 </ejs-checkbox>
                             </td>
                             <td style="width: 5%">
@@ -74,7 +74,7 @@
                                     <ejs-dropdownlist class =" mt-2 ml-3"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
-                            <td  style="width: 20%" >
+                            <td  style="width: 30%" >
                          <ejs-dropdownlist class =" mt-2 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>                  
                              </td>
                             <!-- <td  style="width: 5%" >
@@ -109,6 +109,7 @@
             <div class="schedule" id="schedule">
                 <ejs-schedule #scheduleObj 
                     (dragStart) = "onDragStart($event)"
+                   (dragStop) = "onDragStop($event)"
                     locale="fr-CH"
                     (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
@@ -125,15 +126,15 @@
                     (renderCell)="onRenderCell($event)"
                     (navigating)="onNavigating($event)"
                     (resizeStart)="onResizing($event)"
+                    (resizeStop)="onResizingStop($event)"
                     (select)= "onSelectMultipleCell($event)"
-                 
+                   (moreEventsClick) = "moreEventsClick($event) "
                     [enablePersistence]="false"
                     [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
                     [showHeaderBar]='true'
-                    
-                 
+                   
                     >
                     <!-- (created)="onCreated($event)" -->
                     <!-- (renderCell)="onRenderCell($event)" -->
@@ -179,7 +180,7 @@
                                             <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br> -->
                                         
-                                            <span class="mt-1" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
+                                            <span class="mt-1 workorders" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
                                             
                                         </div>
                                     </div>
@@ -230,21 +231,21 @@
                                 </div>
                             </ng-template>
                 </e-view> -->
-                    <e-view option='TimelineMonth'  >
+                    <e-view option='TimelineMonth'>
                             <ng-template #eventTemplate let-data  class="event" >
                                 <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
                                     <div >
                                         <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
                                    
-                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }}  </u> <br> 
+                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} / <span  >{{data.coordinateurCreate}}</span> </u> <br> 
                                       
-                                            <div *ngIf="data.Operateur" class="operateur mt-1 " [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}" >{{data.Operateur}}</div>
+                                            <div *ngIf="data.Operateur " class="operateur mt-1 " [ngStyle]="{'color': user.initials=== data.coordinateurCreate ? ' #FFFFFF':'#000000'}" >{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
-                                        <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
+                                        <div *ngIf="!data.AzaIsPere" class="show-user mb-1" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span> -->
-                                            <span  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }} <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
+                                            <span  style="padding-top: 5px; width: 100%; z-index: 2 !important; text-overflow: ellipsis;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }} <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
                                         </div>
                                     </div>
                                 </div>
@@ -289,6 +290,7 @@
                          
                             <ejs-treeview 
                                 #treeObj 
+                                id="treeEvents"
                                 [fields]='field' 
                                 cssClass='treeview-external-drag'
                                 [allowMultiSelection]='false'
@@ -298,27 +300,34 @@
                                 (nodeSelecting)="onTreeSelecting($event)" 
                                 (nodeSelecting)="onTreeSelected($event)"
                                 (nodeExpanding)="onTreeExpanding($event)"
-                                (nodeDragging)="onItemDrag($event, 0)"
+                                (nodeDragging)="onItemDrag($event, 0)"                        
                                 [enablePersistence]="false">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""
                                 >
-                                    <div id="waiting">
-                                        <div id="waitdetails" >
+                                    <div id="waiting" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
+                                        <div id="waitdetails"   >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
                                             <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
-                                                 {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}}
+                                                 {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}} 
                                             </div>
                                         </div>
                                     </div>
                                 </ng-template>
                              
                             </ejs-treeview>
+                            <!-- <ejs-contextmenu
+                            id='contentmenutree'
+                             target='#treeEvents'
+                              [items]='menuItems' 
+                              (beforeOpen)='beforeopen($event)' 
+                              (select)='menuclick($event)'>
+                            </ejs-contextmenu> -->
                         </div>
-                            <div id="grid"></div>
 
-
+                   
 
                         </div>
+                    
                     </ng-template>
                 </e-tabitem>
                 <e-tabitem [header]='headerText[1]'>
@@ -327,7 +336,7 @@
                             <div class="header-treeviewMonteur">
                            
                             <div class="input-group">
-                                <input type="text" id="searchoperateur" class="form-control recherche"  placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1,$event)" (mousedown)="Filter()" >
+                                <input type="text" id="searchoperateur" class="form-control recherche mt-2"  placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1,$event)" (mousedown)="Filter()" >
                                 <!-- <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span> -->
                             </div>
                             <!-- <select class="form-control form-control-info" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
@@ -335,26 +344,29 @@
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select> -->
 
-                            <ejs-dropdownlist id='monteur' class =" mt-2 mb-2 mr-1 ml-1" #select [dataSource]='monteurListe' (change)="onSelect(select.value)"  [value]='fieldsMonteur.Username' [fields]='fieldsMonteur' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
+                            <ejs-dropdownlist id='monteur' class =" mt-2 mb-3 mr-1 ml-1" #selectOperateur     [dataSource]='monteurListe' (change)="onSelect(selectOperateur.value, $event)"  [value]='fieldsMonteur.Username' [fields]='fieldsMonteur' [sortOrder]='sorting' [placeholder]='otherMonteur' ></ejs-dropdownlist>
                         </div>
-                            <div class="treeview">
+                            <div class="treeview mt-2 ">
                                 <ejs-treeview *ngIf="selectedValue!='Plus de monteurs'"
                                     id="treeMonteur"
                                     #treeObjMonteur 
                                     [fields]='fieldMonteur' 
                                     cssClass='treeview-external-drag'
                                     [allowDragAndDrop]='true'
-                                
+                                    (nodeSelecting) = "onClickedNode($event)"        
                                     (nodeDragStart)="onTreeDragStart($event)"
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
-                                    (nodeDragging)="onItemDrag($event, 1)">
+                                    (nodeDragging)="onItemDrag($event, 1)"
+                                    
+                                    >
 
                                <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon=""  class="ngtemplate-Monteur">
                                       
                                    <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe), 'background-color': getBackgroundColor(dataMon.Username, dataMon.codegroupe)}">
                                         <div id="waitdetails" class="monteurs">
-                                           <div id="waitlist" class=" {{dataMon.Username}} " >{{dataMon.Username}}   </div> 
-                                            <div id="waitcategory">   {{dataMon.libelletype }} - {{dataMon.libellecategorie }}
+                                           <div id="waitlist" class=" {{dataMon.Username}} " >{{dataMon.Username}}.   </div> 
+                                            <div id="waitcategory">   {{dataMon.libelletype }}<span *ngFor = "let libelle of this.statutMonteur ">  
+                                              <span *ngIf="libelle.Name === dataMon.Username  ">   - {{libelle.Libelle }}</span></span> 
                                                 
                                        </div>
                                         </div>
