@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { ContainerKP } from '../models/container';
 import {
@@ -85,7 +85,28 @@ export class ContainersService {
       )
       .pipe(catchError(this.handleError));
   }
+/************************************ Put onPromise**************************/
+ extractData(res: HttpResponse<Object>) {
+  return res || [];
 
+//   var array = new Array();
+//   var key, count = 0;
+//   for(key in res.body) {
+//       array.push(res.body[count++]);
+//   }
+//   return array;
+// }
+}
+updateContainerPromise(id, container) {
+  return this.http
+    .put(
+      urlKPlanner + urlOnePlanningContainers + id,
+      container
+    )
+    .toPromise()
+    .then(this.extractData)
+    .catch(this.handleError)
+}
   /************************ POST *************************/
 
   postContainer(container: ContainerKP): Observable<ContainerKP> {

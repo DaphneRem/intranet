@@ -35,6 +35,7 @@ export class EventModel{
    DateDebutReel?:Date;
    DateFinReel?:Date;
    libelleStatut?:string;
+   CodeRessourceCoordinateur:number
 }
 
     // Id: number;

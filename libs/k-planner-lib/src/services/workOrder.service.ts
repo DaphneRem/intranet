@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Observable } from 'rxjs/Observable';
@@ -48,6 +48,30 @@ export class WorkOrderService {
       )
       .pipe(catchError(this.handleError));
   }
+  
+  /************************* PUT onPromise  ************************/
+  extractData(res: HttpResponse<Object>) {
+    return res || [];
+  }
+  updateWorkOrderPromise(id: number, workorder){
+    return this.http
+      .put(
+        urlKPlanner + urlPanningEventsById + id,
+        workorder
+      )
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleError);
+  }
+  
+
+
+/***************************DELETE**************************************** */
+deleteWorkOrderByidGroup(id: number): Observable<{}> {
+  return this.http
+    .delete(urlKPlanner + urlPanningEventsById + id)
+    .pipe(catchError(this.handleError));
+}
 
   /*********************** ERROR ************************/
 
