@@ -262,10 +262,12 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       {
         title : 'Distributeur', // ayant droit
         data : 'Distributeur',
+        className: 'datatable-fa-distributeur'
       },
       {
         title : 'chaines',
-        data : 'lib_chaines'
+        data : 'lib_chaines',
+        className: 'datatable-fa-chaines'
         // data: 'id_fiche'
       },
       {
@@ -274,7 +276,8 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       },
       {
         title : 'Nom Cessionnaire',
-        data : 'nom_cessionnaire'
+        data : 'nom_cessionnaire',
+        className: 'datatable-fa-cessionnaire'
       },
       {
         title : 'Date Modif',

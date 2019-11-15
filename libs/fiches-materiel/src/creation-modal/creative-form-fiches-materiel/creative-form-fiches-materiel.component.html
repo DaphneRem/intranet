@@ -13,7 +13,7 @@
         de 
         <input type="text" 
           (input)="gap.last ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
-          [maxlength]="3"
+          maxlength="3"
           [readonly]="!gap.modif" 
           [ngClass]="!gap.modif ? 'disabled' : ''" 
           [disabled]="!gap.modif" 
@@ -25,7 +25,7 @@
         à
         <input type="text" 
           (input)="gap.first ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
-          [maxlength]="3" 
+          maxlength="3" 
           [readonly]="!gap.modif" 
           [ngClass]="!gap.modif ? 'disabled' : ''"  
           [disabled]="!gap.modif" 
@@ -38,8 +38,8 @@
       <div *ngIf="oeuvre.typeficheMateriel === 'oneEpisode'" class="oeuvre-details">
         <input type="text" 
           (input)="gap.last ? checkTotal(oeuvre, oeuvre.gaps, gap) : ''"
-          [maxlength]="3"
-          [minlength]="1"
+          maxlength="3"
+          minlength="1"
           [readonly]="!gap.modif" 
           [ngClass]="!gap.modif ? 'disabled' : ''" 
           [disabled]="!gap.modif" 

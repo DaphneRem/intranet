@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { allMyFmColor, fmInProgress, fmArchived, allFm } from '../../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'fiches-materiel-widget-view',
@@ -18,7 +19,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-4',
       link: './my-material-sheets/0/asc',
-      color: '#39ADB5'
+      color: fmInProgress
     },
     {
       title: 'Mes Deals en cours',
@@ -26,7 +27,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-4',
       link: './my-deals-in-progress/0/asc',
-      color: '#39ADB5'
+      color: fmInProgress
     },
     {
       title: 'Mes Fiches Matériel archivées',
@@ -34,14 +35,14 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       icon: 'icofont icofont-archive',
       size: 'col-md-12 col-lg-4',
       link: './my-material-sheets/archived/0/desc',
-      color: '#17B978'
+      color: fmArchived
     },
     {
       title: 'Toutes mes Fiches Matériel',
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
       link: './my-material-sheets/all/0/asc',
-      color: '#5ED4FF'
+      color: allMyFmColor
     },
     {
       title: 'Toutes les Fiches Matériel',
@@ -49,7 +50,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
       link: './all/0/asc',
-      color: '#1C2799'
+      color: allFm
     },
   ];
 

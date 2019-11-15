@@ -91,8 +91,16 @@
             </p>
             <p *ngIf="!myFicheAchatGlobalExist">N° fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
-            <p *ngIf="myFicheAchatGlobalExist">Type de fiche Achat : 
-              <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}</span>
+            <p *ngIf="myFicheAchatGlobalExist">Nom cessionnaire : 
+              <span [ngClass]="!myFicheAchatGlobal.nom_cessionnaire ? 'empty-field' : ''">
+                {{myFicheAchatGlobal.nom_cessionnaire ? myFicheAchatGlobal.nom_cessionnaire : messageEmptyField}}
+              </span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Nom cessionnaire : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="myFicheAchatGlobalExist">Type de fiche Achat :
+              <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">
+                {{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}
+              </span>
             </p>
             <p *ngIf="!myFicheAchatGlobalExist">Type de fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
             <p *ngIf="myFicheAchatGlobalExist">
@@ -225,7 +233,7 @@
         </div>
         <div class="sections">
           <i class="icofont icofont-clock-time section-icon"></i>
-          <div class="section-content">
+          <div class="section-content livraison">
             <div style="display: flex;">
               <p>Dernière date de livraison :
                 <span [ngClass]="!myFicheMateriel.DateLivraison ? 'empty-field' : ''">

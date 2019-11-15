@@ -74,4 +74,4 @@ registerLocaleData(localeFr, 'fr');
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

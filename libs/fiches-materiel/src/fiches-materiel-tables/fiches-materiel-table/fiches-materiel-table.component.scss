@@ -1,3 +1,6 @@
+
+@import "../../../fiches-materiel-common-theme";
+
 .add-btn {
     position: fixed;
     z-index: 9999;
@@ -8,99 +11,49 @@
     }
 }
 
-/deep/ .modif-fm-btn {
-    color: #ffffff;
-    height: 45px;
-    width: 210px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(23, 170, 178);
-    cursor: pointer;
-    border-radius: 2px 0 0 2px;
-    &:hover {
-        background-color: #2eced6;
-    }
-}
 
-/deep/ #one-selection, #all-oeuvres-selection {
-    display: none;
-}
-
-.modif-btns {
-    margin: 20px 15px 10px 15px;
-    padding-left: 20px;
-    .modif {
-        margin-right: 10px;
-    }
-}
+/****************************************************************************************/
+/************************************* LABEL STYLE **************************************/
+/****************************************************************************************/
 
 /deep/ .label-default {
-    background: #ffffff;
-    background-color: #ffffff !important;
-    color: #a8a8a8 !important;
-    border: 1px solid #a8a8a8;
+    background: $label-default-color-background;
+    background-color: $label-default-color-background !important;
+    color: $label-default-color !important;
+    border: 1px solid $label-default-color;
 }
 
 /deep/ .label-info {
-    background: #0040FF;
-    background-color: #0040FF !important;
-    color: #ffffff !important;
-    border: 1px solid #0040FF;
+    background: $label-in-progress-color-background;
+    background-color: $label-in-progress-color-background !important;
+    color: $label-color !important;
+    border: 1px solid $label-in-progress-color-background;
 }
 
 /deep/ .label-success {
-    background: #04B404;
-    background-color: #04B404 !important;
-    color: #ffffff !important;
-    border: 1px solid #04B404;
+    background: $label-success-color-background;
+    background-color: $label-success-color-background !important;
+    color: $label-color !important;
+    border: 1px solid $label-success-color-background;
 }
 
 /deep/ .label-canceled {
-    background: #a8a8a8;
-    background-color: #a8a8a8 !important;
-    color: #ffffff !important;
-    border: 1px solid #a8a8a8;
+    background: $label-canceled-color-background;
+    background-color: $label-canceled-color-background !important;
+    color: $label-color !important;
+    border: 1px solid $label-canceled-color-background;
 }
 
 /deep/ .label-other {
-    background: #774aa4;
-    background-color: #774aa4 !important;
-    color: #ffffff !important;
-    border: 1px solid #774aa4;
+    background: $label-other-color-background;
+    background-color: $label-other-color-background !important;
+    color: $label-color !important;
+    border: 1px solid $label-other-color-background;
 }
 
-/deep/ .customSwalBtn{
-    background-color: rgb(23, 170, 178);
-    border-left-color: rgb(23, 170, 178);
-    border-right-color: rgb(23, 170, 178);
-    padding: 13px 30px;
-    border: 0;
-    border-radius: 3px;
-    box-shadow: none;
-    color: #fff;
-    cursor: pointer;
-    font-size: 17px;
-    font-weight: 500;
-    margin: 30px 5px 0px 5px;
-    // padding: 10px 32px;
-    &:hover {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
-    }
-}
-
-/deep/ .swal2-popup .swal2-actions {
-    align-items: flex-end;
-    justify-content: flex-end;
-    margin: 40px 0 0;
-}
-
-/deep/ .swal2-close {
-    &:focus, &:active {
-        border: 0px solid;
-        outline: none;
-    }
-}
+/****************************************************************************************/
+/********************************** DATATABLE STYLE *************************************/
+/****************************************************************************************/
 
 /deep/ .datatable-fm-title {
     min-width: 150px;
@@ -117,3 +70,70 @@
 /deep/ .red {
     color: red;
 }
+
+/****************************************************************************************/
+/************************************* SWAL STYLE ***************************************/
+/****************************************************************************************/
+
+// /deep/ .customSwalBtn{
+//     background-color: $main-color;
+//     border-left-color: $main-color;
+//     border-right-color: $main-color;
+//     padding: 13px 30px;
+//     border: 0;
+//     border-radius: 3px;
+//     box-shadow: none;
+//     color: #ffffff;
+//     cursor: pointer;
+//     font-size: 17px;
+//     font-weight: 500;
+//     margin: 30px 5px 0px 5px;
+//     // padding: 10px 32px;
+//     &:hover {
+//         background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
+//     }
+// }
+
+// /deep/ .swal2-popup .swal2-actions {
+//     align-items: flex-end;
+//     justify-content: flex-end;
+//     margin: 40px 0 0;
+// }
+
+// /deep/ .swal2-close {
+//     &:focus, &:active {
+//         border: 0px solid;
+//         outline: none;
+//     }
+// }
+
+/****************************************************************************************/
+/****************************** MODIF SELECTION BTN STYLE *******************************/
+/****************************************************************************************/
+
+// /deep/ .modif-fm-btn {
+//     color: #ffffff;
+//     height: 45px;
+//     width: 210px;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     background-color: $main-color;
+//     cursor: pointer;
+//     border-radius: 2px 0 0 2px;
+//     &:hover {
+//         background-color: $main-color-hover;
+//     }
+// }
+
+// /deep/ #one-selection, #all-oeuvres-selection {
+//     display: none;
+// }
+
+// .modif-btns {
+//     margin: 20px 15px 10px 15px;
+//     padding-left: 20px;
+//     .modif {
+//         margin-right: 10px;
+//     }
+// }

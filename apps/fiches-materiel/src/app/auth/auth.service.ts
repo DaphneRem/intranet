@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MsalService} from '@azure/msal-angular';
+import { MsalService } from '@azure/msal-angular';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { OAuthSettings } from './../../../../../.privates-url';
 import { UserMSAL } from './user-msal';
@@ -28,10 +28,10 @@ export class AuthService {
   // grant consent to the requested permission scopes
   async signIn(): Promise<void> {
     let result = await this.msalService.loginRedirect(OAuthSettings.scopes)
-      // .catch((reason) => {
-      //   console.log('Login failed', JSON.stringify(reason, null, 2))
-      //   //this.alertsService.add('Login failed', JSON.stringify(reason, null, 2));
-      // });
+    // .catch((reason) => {
+    //   console.log('Login failed', JSON.stringify(reason, null, 2))
+    //   //this.alertsService.add('Login failed', JSON.stringify(reason, null, 2));
+    // });
 
     if (result) {
       this.authenticated = true;
@@ -42,7 +42,7 @@ export class AuthService {
   // Sign out
   signOut(): void {
     this.msalService.logout();
-    this.userMSAL= null;
+    this.userMSAL = null;
     this.authenticated = false;
   }
 
@@ -50,8 +50,8 @@ export class AuthService {
   async getAccessToken(): Promise<string> {
     let result = await this.msalService.acquireTokenSilent(OAuthSettings.scopes)
       .catch((reason) => {
-      //  this.alertsService.add('Get token failed', JSON.stringify(reason, null, 2));
-      console.log('Get token failed', JSON.stringify(reason, null, 2));
+        //  this.alertsService.add('Get token failed', JSON.stringify(reason, null, 2));
+        console.log('Get token failed', JSON.stringify(reason, null, 2));
       });
 
     return result;

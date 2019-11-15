@@ -25,6 +25,7 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
 
   public headerTableLinkExist: boolean = false;
   public tableTitle: string = 'Mes fiches Matériel en cours';
+  public tableTheme: string = 'light blue theme';
   public daysNumber: number = 100;
   public isArchived: number = 0;
 
@@ -32,6 +33,7 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
   public dataReady: boolean;
   public user: string;
 
+  public reloadOriginalData: boolean;
   public widgetLink = '/';
   public icons = [];
   public fichesMaterielCreation: CustomIconBadge = {
@@ -67,6 +69,15 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
     tooltipMessage: 'Voir les fiches Achat'
   };
 
+  public autofields = {
+    SuiviPar: this.user,
+    TitreEpisodeVO: '',
+    TitreEpisodeVF: '',
+    isarchived: this.isArchived,
+    distributeur: '',
+    numficheachat: ''
+  };
+
   constructor(
     private fichesMaterielService: FichesMaterielService,
     private store: Store<App>
@@ -86,6 +97,7 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
     this.store
       .subscribe(data => {
         this.user = data['app'].user.shortUserName;
+        this.autofields.SuiviPar = this.user;
         console.log(this.user);
     });
   }
@@ -110,4 +122,18 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+
+  displayReloadOriginalData(event: boolean) {
+    this.reloadOriginalData = event;
+    this.dataReady = false;
+    this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
+  }
+
+  displayNewDataFromComplexSearch(event: FicheMateriel[]) {
+    this.dataReady = false;
+    this.data = event;
+    this.dataReady = true;
+  }
+
 }

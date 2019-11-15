@@ -1,4 +1,13 @@
-import { blueThemeColor, greenThemeColor, redThemeColor, yellowThemeColor, errorThemeColor } from '@ab/shared';
+import {
+    blueThemeColor,
+    darkBlueThemeColor,
+    defaultThemeColor,
+    errorThemeColor,
+    greenThemeColor,
+    lightblueThemeColor,
+    redThemeColor,
+    yellowThemeColor,
+} from '@ab/shared';
 
 export const CustomThemes = [
     {
@@ -94,6 +103,63 @@ export const CustomThemes = [
         },
         alertColor :  {
             'background' : '#ebebeb'
+        }
+    },
+    {
+        name: 'light blue theme',
+        firstColumnColor: {
+            'background': lightblueThemeColor
+        },
+        headerColor: {
+            'background': '#fff',
+            'border': '1px solid',
+            'border-color': lightblueThemeColor,
+            'color': lightblueThemeColor
+        },
+        buttonViewMore: {
+            'color': lightblueThemeColor,
+            'border-color': lightblueThemeColor,
+        },
+        alertColor: {
+            'background': '#ebebeb'
+        }
+    },
+    {
+        name: 'dark blue theme',
+        firstColumnColor: {
+            'background': darkBlueThemeColor
+        },
+        headerColor: {
+            'background': '#fff',
+            'border': '1px solid',
+            'border-color': darkBlueThemeColor,
+            'color': darkBlueThemeColor
+        },
+        buttonViewMore: {
+            'color': darkBlueThemeColor,
+            'border-color': darkBlueThemeColor,
+        },
+        alertColor: {
+            'background': '#ebebeb'
+        }
+    },
+    {
+        name: 'default theme',
+        firstColumnColor: {
+            'background': defaultThemeColor
+        },
+        headerColor: {
+            'background': '#fff',
+            'border': '1px solid',
+            'border-color': defaultThemeColor,
+            'color': defaultThemeColor
+        },
+        buttonViewMore: {
+            'color': defaultThemeColor,
+            'border-color': defaultThemeColor,
+        },
+        alertColor: {
+            'background': '#ebebeb'
         }
     },
 ];

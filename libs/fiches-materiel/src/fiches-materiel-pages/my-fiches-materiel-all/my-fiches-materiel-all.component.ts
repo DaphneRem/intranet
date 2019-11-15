@@ -25,6 +25,7 @@ export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
   public reloadOriginalData: boolean;
   public headerTableLinkExist: boolean = false;
   public tableTitle: string = 'Toutes mes fiches Matériel';
+  public tableTheme: string = 'blue theme';
   public daysNumber: number = 100;
   public isArchived: number = 2;
 

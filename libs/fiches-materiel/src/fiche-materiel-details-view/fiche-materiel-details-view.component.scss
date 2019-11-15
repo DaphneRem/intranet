@@ -140,6 +140,10 @@ $iconColor : #7f7f7f;
                         &.info {
                             min-height : 460px;
                         }
+                        &.livraison {
+                            min-height: 195px;
+                            max-height: 195px;
+                        }
                         &.acces-vf {
                             min-height: 150px;
                             max-height: 150px;
@@ -149,8 +153,8 @@ $iconColor : #7f7f7f;
                             max-height: 395px;
                         }
                         &.ori {
-                            min-height: 190px;
-                            max-height: 190px;
+                            min-height: 230px;
+                            max-height: 230px;
                         }
                     }
                     .section-icon {

@@ -179,6 +179,9 @@
             [statusLib]="status"
             [stepLib]="allSteps">
           </history-steps-status-modal>
+          <div class="history" *ngIf="selectionType === 'multi'">
+            <i class="icofont icofont-history"></i>
+          </div>
       </div>
 
     </div>
@@ -203,6 +206,11 @@
           <i class="icofont icofont-info-circle section-icon"></i>
           <p *ngIf="selectionType === 'one'"> N° fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.numero_fiche}}</span>
+          </p>
+          <p *ngIf="selectionType === 'one'">Nom cessionnaire : 
+            <span *ngIf="ficheAchatReady">
+              {{ficheAchat.nom_cessionnaire}}
+            </span>
           </p>
           <p *ngIf="selectionType === 'one'">Type de fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.libelle_type_fiche}}</span>
