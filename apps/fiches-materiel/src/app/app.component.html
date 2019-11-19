@@ -17,7 +17,7 @@
       <div class="pcoded-wrapper">
         <div class="main-body" *ngIf="userIsReady">
           <router-outlet></router-outlet>
-          <root-footer></root-footer>
+          <root-footer [versionApp]="versionApp" ></root-footer>
         </div>
       </div>
     </div>

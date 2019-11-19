@@ -4,6 +4,10 @@ import { Store } from '@ngrx/store';
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+/****** Version import ******/
+// const version: string = require('../../../../package.json').version; // FROM PACKAGE.JSON
+import { environment } from '../environments/environment'; // FROM ENVIRONEMENT
+
 // import { AuthAdalService } from './auth-adal.service';
 // import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
 import { AuthService } from './auth/auth.service';
@@ -44,6 +48,7 @@ subscription: Subscription;
     // private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
+    this.displayVersionApp();
     // this.subscription = router.events.subscribe(event => {
     //   console.log(event);
     //   if (event instanceof NavigationStart) {
@@ -52,6 +57,8 @@ subscription: Subscription;
     // });
     // this.adal5Service.init(config);
   }
+
+  public versionApp: string;
   public userMediawan: UserMediawan;
   public globalStore;
   public navbarStoreOpen;
@@ -108,6 +115,10 @@ subscription: Subscription;
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  displayVersionApp() {
+    this.versionApp = environment.version;
   }
 
   getUserMediawan(user) {
