@@ -135,7 +135,7 @@
               <span *ngIf="myFicheAchatDetails.nombre_episodes" [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
                 {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisode(s)' : '/'}}
               </span>
-              <span *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.Format_serie !== ''"> de {{myFicheAchatDetails.Format_serie}}</span>
+              <span *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.Format_serie !== '' && myFicheAchatDetails.Format_serie !== null"> de {{myFicheAchatDetails.Format_serie}}</span>
             </p>
             <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
@@ -185,7 +185,7 @@
       <div class="col-lg-4 fm-content">
         <div class="sections">
           <i class="icofont icofont-law section-icon"></i>
-          <div class="section-content">
+          <div class="section-content droits">
             <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
               <span [ngClass]="!myFicheAchatDetails.debut_des_droits ? 'empty-field' : ''">
                 <span *ngIf="myFicheAchatDetails.debut_des_droits !== null">

@@ -1,8 +1,16 @@
-<!-- MODIF SELECTION BTN (OEUVRE) :-->
-<!-- <div class="add-btn">
+
+<!-- SWAL MODAL MODIF SELECTION BTN (OLD VERSION) :-->
+<!-- <div class="row modif-btns">
+  <button *ngIf="showModifBtn" class="btn btn-warning modif">Modifier</button>
+  <button *ngIf="showModifAllEps" class="btn btn-warning eps-modif">Modifier tous les épisodes</button>
+</div> -->
+<!-- ********************************************* -->
+<!-- ****** MODIF SELECTION BTN (OEUVRE) : ******* -->
+<div class="add-btn">
   <button class="btn modif-fm-btn one-selection" id="one-selection" (click)="oneSelectionAction()">Modifier la fiche</button>
   <button class="btn modif-fm-btn all-oeuvres-selection" id="all-oeuvres-selection" (click)="allOeuvresSelection()">Modifier fiches de l'oeuvre</button>
-</div> -->
+</div>
+<!-- ********************************************* -->
 
 <loader-animation *ngIf="!dataReady"></loader-animation>
 <div *ngIf="dataReady" class="table-custom">
@@ -11,8 +19,8 @@
     [rerenderData]="rerenderData"
     (selectRows)="AllSelectedRows($event)" 
     (searchData)="checkSearchData($event)"
+    (dataRow)="checkDataRow($event)"
     ></custom-datatables>
 </div>
-<!-- (dataRow)="checkDataRow($event)" -->
 
 

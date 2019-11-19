@@ -111,29 +111,29 @@
 /****************************** MODIF SELECTION BTN STYLE *******************************/
 /****************************************************************************************/
 
-// /deep/ .modif-fm-btn {
-//     color: #ffffff;
-//     height: 45px;
-//     width: 210px;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     background-color: $main-color;
-//     cursor: pointer;
-//     border-radius: 2px 0 0 2px;
-//     &:hover {
-//         background-color: $main-color-hover;
-//     }
-// }
+/deep/ .modif-fm-btn {
+    color: #ffffff;
+    height: 45px;
+    width: 210px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $main-color;
+    cursor: pointer;
+    border-radius: 2px 0 0 2px;
+    &:hover {
+        background-color: $main-color-hover;
+    }
+}
 
-// /deep/ #one-selection, #all-oeuvres-selection {
-//     display: none;
-// }
+/deep/ #one-selection, #all-oeuvres-selection {
+    display: none;
+}
 
-// .modif-btns {
-//     margin: 20px 15px 10px 15px;
-//     padding-left: 20px;
-//     .modif {
-//         margin-right: 10px;
-//     }
-// }
+.modif-btns {
+    margin: 20px 15px 10px 15px;
+    padding-left: 20px;
+    .modif {
+        margin-right: 10px;
+    }
+}

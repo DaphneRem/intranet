@@ -346,12 +346,14 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       //   tableCustom[0].innerHTML = `<div class="modif-fm-btn one-selection">Modifier la fiche</div><div class="modif-fm-btn all-oeuvres-selection">Modifier fiches de l'oeuvre</div>`;
       //   this.displayOptionsBtnModif = true;
       // }
-      this.oneSelectionAction();
+      /***************** PERMET UNIQUEMENT L'AFFICHAGE DE L4OPTION "MODIFIER" : ****************/ // code à conserver
+      // this.oneSelectionAction();
+      /*****************************************************************************************/
       /****** PERMET L'AFFICHAGE DE L'OPTION DE MODIF "TOUTES LES FICHES DE L'OEUVRES" : *******/ // code à conserver
-      // let oneSelectionBtn = document.getElementById('one-selection');
-      // let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
-      // oneSelectionBtn.style.display = 'flex';
-      // multiSelectionBtn.style.display = 'flex';
+      let oneSelectionBtn = document.getElementById('one-selection');
+      let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
+      oneSelectionBtn.style.display = 'flex';
+      multiSelectionBtn.style.display = 'flex';
       /*****************************************************************************************/
     }
   }
@@ -777,25 +779,25 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     // }
 
 
-    // checkDataRow(dataRow) {
-    //   console.log('dataRow => ', dataRow);
-    //   let oneSelectionBtn = document.getElementById('one-selection');
-    //   let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
-    //   oneSelectionBtn.style.display = 'none';
-    //   multiSelectionBtn.style.display = 'none';
-    //   // let divToRemove = document.getElementsByClassName('modif-fm-btn');
-    //   // let dblFm = [];
-    //   // this.allDatarows.map(item => {
-    //   //   if (item.IdFicheMateriel === dataRow.IdFicheMateriel) {
-    //   //     dblFm.push(item);
-    //   //   }
-    //   // });
-    //   // if (dblFm.length === 0) {
-    //   //   this.allDatarows.push(dataRow);
-    //   // } else {
-    //   //   this.allDatarows = this.allDatarows.filter(item => item.IdFicheMateriel !== dataRow.IdFicheMateriel);
-    //   // }
-    //   // console.log('this.allDatarows after filter or push => ', this.allDatarows);
-    // }
+    checkDataRow(dataRow) {
+      console.log('dataRow => ', dataRow);
+      let oneSelectionBtn = document.getElementById('one-selection');
+      let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
+      oneSelectionBtn.style.display = 'none';
+      multiSelectionBtn.style.display = 'none';
+      // let divToRemove = document.getElementsByClassName('modif-fm-btn');
+      // let dblFm = [];
+      // this.allDatarows.map(item => {
+      //   if (item.IdFicheMateriel === dataRow.IdFicheMateriel) {
+      //     dblFm.push(item);
+      //   }
+      // });
+      // if (dblFm.length === 0) {
+      //   this.allDatarows.push(dataRow);
+      // } else {
+      //   this.allDatarows = this.allDatarows.filter(item => item.IdFicheMateriel !== dataRow.IdFicheMateriel);
+      // }
+      // console.log('this.allDatarows after filter or push => ', this.allDatarows);
+    }
 
 }
