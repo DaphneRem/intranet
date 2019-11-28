@@ -2,8 +2,9 @@
 <div class= "custom-datatables row" id="datatable">
   <!-- ************** If data exist ************** -->
   <div *ngIf="data.length" class="card">
+    <loader-animation *ngIf="!checkDataFilterReady"></loader-animation>
     <!-- Header Buttons -->
-    <div class="header-buttons">
+    <div class="header-buttons" *ngIf="checkDataFilterReady">
       <a *ngIf="headerTableLinkExist" 
           class="btn btn-primary btn-outline-primary" 
           [ngStyle]="buttonViewMore"
@@ -14,7 +15,8 @@
       </a>
     </div> 
     <!-- Header Table -->
-    <div 
+    <div
+      *ngIf="checkDataFilterReady"
       class="datatables-header text-center middle" 
       [ngStyle]="headerColor"
       [ngClass]="paging || search ? 'down-header' : ''">

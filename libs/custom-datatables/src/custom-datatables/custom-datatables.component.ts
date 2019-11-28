@@ -76,7 +76,7 @@ public test = 'ookok';
   public headerTableLink: string;
   public buttons: any;
   public tooltipHeader: string;
-
+  public checkDataFilterReady: boolean = false;
   public trTagName;
 
   // custom the text of the buttons
@@ -148,18 +148,25 @@ public test = 'ookok';
 
   ngOnInit(): void {
     // this.dataReady = true;
+    this.checkFilterData();
     this.initializeDatatable();
-    if (this.customdatatablesOptions.getSearchData) {
-      let that = this;
-      $('#datatable').on('search.dt', function() {
-        let value = $('.dataTables_filter input').val();
-        console.log(value); // <-- the value
-        that.searchData.emit(value);
-      });
-    }
   }
 
   // TODO : voir https://stackoverflow.com/questions/37966718/datatables-export-to-excel-button-is-not-showing pour les options des boutons
+
+  checkFilterData() {
+    if (this.customdatatablesOptions.getSearchData) {
+      let that = this;
+      $('#datatable').on('search.dt', function () {
+        let value = $('.dataTables_filter input').val();
+        console.log('.dataTables_filter input value => ', value);
+        that.searchData.emit(value);
+        that.checkDataFilterReady = true;
+      });
+    } else {
+      this.checkDataFilterReady = true;
+    }
+  }
 
   initializeDatatable() {
     this.displayDatatables(); // display datatables if data.length
