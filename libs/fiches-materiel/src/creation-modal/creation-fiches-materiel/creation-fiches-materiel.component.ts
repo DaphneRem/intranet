@@ -77,7 +77,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(
         res => {
-          console.log(res);
+          console.log('newFM POST => ', res);
           this.creationState = true;
           this.create(this.creationState);
           this.disabled = false;
@@ -196,26 +196,28 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
       oeuvre.Code_statut_materiel === 3 ||
       oeuvre.Code_statut_materiel === 4
     ) {
-      this.retourOri = 2; // Retour ori : "Matériel AB"
+      return 2; // Retour ori : "Matériel AB"
     } else if (oeuvre.Code_statut_materiel === 1) { // if FA statut matériel : "prêté"
-      this.retourOri = 1; // Retour ori : "A faire"
+      return 1; // Retour ori : "A faire"
     } else {
-      this.retourOri = 1; // Retour ori : "A faire"
+      return 1; // Retour ori : "A faire"
     }
   }
 
   /** CHANGE OEUVRE WITH GAPS TO FICHES MATERIEL OEUVRE WITH EPS ARRAY **/
   displayFichesMateriel() {
     this.oeuvreWithGaps.forEach(oeuvre => {
+      let oeuvreFicheDetail;
+      let retourOriOeuvre;
       this.fichesMateriel = [];
       this.checkAllNumbers(oeuvre, oeuvre.gaps);
       console.log(oeuvre.numFichesMateriel);
       console.log('oeuvre => ', oeuvre);
-      this.displayRetourOri(oeuvre);
       this.detailsFicheAchat.map(item => {
         if (item.id_fiche_det === oeuvre.id_fiche_det) {
-          console.log('item fiche achat detail => ', item);
-          this.displayRetourOri(item);
+          oeuvreFicheDetail = item;
+          console.log('item fiche achat detail => ', oeuvreFicheDetail);
+          retourOriOeuvre = this.displayRetourOri(oeuvreFicheDetail);
         }
       });
       for (let i = 0; i < oeuvre.numFichesMateriel.length; i++) {
@@ -230,12 +232,12 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
             TitreEpisodeVF: oeuvre.titre_vf, // récupéré de la FA
             TitreEpisodeVO: oeuvre.titre_vo, // récupéré de la FA
             IdSupport: '',
-            NumProgram: '',
+            NumProgram: oeuvreFicheDetail.numprogram,
             NumEpisode: oeuvre.numFichesMateriel[i], // calcul automatique : erreur
             DateCreation: new Date().toJSON().slice(0, 19),
             UserCreation: this.user,
             SuiviPar: this.user,
-            RetourOri: this.retourOri
+            RetourOri: retourOriOeuvre
           })
         );
       }
