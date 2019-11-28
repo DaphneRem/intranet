@@ -22,22 +22,22 @@ export class FichesMaterielCreationComponent implements OnInit {
   };
 
   public icons = [];
-  public fichesMaterielView: CustomIconBadge = {
-      littleIcon : {
-        circleColor: '#3383FF',
-        icon : 'icofont icofont-eye',
-        iconSize: '1.5em',
-        iconMargin: '2px',
-      },
-      bigIcon : {
-        icon: 'icofont icofont-file-text',
-      circleColor: '#999898',
-      circleColorHover: '#b5b3b3',
-      },
-      link : '../material-sheets/my-material-sheets/0/asc',
-      tooltip : true,
-      tooltipMessage : 'Voir les fiches Matériel'
-  };
+  // public fichesMaterielView: CustomIconBadge = {
+  //     littleIcon : {
+  //       circleColor: '#3383FF',
+  //       icon : 'icofont icofont-eye',
+  //       iconSize: '1.5em',
+  //       iconMargin: '2px',
+  //     },
+  //     bigIcon : {
+  //       icon: 'icofont icofont-file-text',
+  //     circleColor: '#999898',
+  //     circleColorHover: '#b5b3b3',
+  //     },
+  //     link : '../material-sheets/my-material-sheets/0/asc',
+  //     tooltip : true,
+  //     tooltipMessage : 'Voir les fiches Matériel'
+  // };
   public fichesAchatView: CustomIconBadge = {
       littleIcon : {
         circleColor: '#3383FF',
@@ -58,7 +58,8 @@ export class FichesMaterielCreationComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.icons = [this.fichesMaterielView, this.fichesAchatView];
+    this.icons = [this.fichesAchatView];
+    // this.icons = [this.fichesMaterielView, this.fichesAchatView];
   }
 
 }

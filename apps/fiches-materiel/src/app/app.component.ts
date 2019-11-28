@@ -4,6 +4,8 @@ import { Store } from '@ngrx/store';
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import { RoutingState } from '@ab/fiches-materiel';
+
 /****** Version import ******/
 // const version: string = require('../../../../package.json').version; // FROM PACKAGE.JSON
 import { environment } from '../environments/environment'; // FROM ENVIRONEMENT
@@ -29,7 +31,8 @@ import { config } from './../../../../.privates-url';
   providers : [
     Store,
     AuthService,
-    UserMediawanService
+    UserMediawanService,
+    RoutingState
     // AuthAdalService
   ]
 })
@@ -43,7 +46,8 @@ subscription: Subscription;
     private appStore: Store<App>,
     private authService: AuthService,
     private router: Router,
-    private userMediawanService: UserMediawanService
+    private userMediawanService: UserMediawanService,
+    private routingState: RoutingState
     // private authAdalService: AuthAdalService,
     // private adal5Service: Adal5Service,
   ) {
@@ -86,6 +90,7 @@ subscription: Subscription;
     if (!this.authService.authenticated) {
       this.signIn();
     }
+    this.routingState.loadRouting();
     console.log(this.store);
     console.log(this.appStore);
     this.store.subscribe(data => (this.globalStore = data));

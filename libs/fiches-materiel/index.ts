@@ -15,3 +15,5 @@ export {
 } from './src/fiches-materiel-pages/fiches-materiel-modification/fiches-materiel-modification.component';
 export { FichesMaterielAllComponent } from './src/fiches-materiel-pages/fiches-materiel-all/fiches-materiel-all.component';
 export { DealInProgressComponent } from './src/fiches-materiel-pages/deal-in-progress/deal-in-progress.component';
+
+export { RoutingState } from './src/services/routing-state.service';
