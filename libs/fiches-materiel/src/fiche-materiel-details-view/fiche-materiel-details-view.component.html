@@ -135,7 +135,15 @@
               <span *ngIf="myFicheAchatDetails.nombre_episodes" [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
                 {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisode(s)' : '/'}}
               </span>
-              <span *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.Format_serie !== '' && myFicheAchatDetails.Format_serie !== null"> de {{myFicheAchatDetails.Format_serie}}</span>
+              <span *ngIf="!myFicheAchatDetails.nombre_episodes">
+                /
+              </span>
+              <span 
+                [placement]="'right'" 
+                [ngbTooltip]="myFicheAchatDetails.DurCom"
+                *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.DurCom !== '' && myFicheAchatDetails.DurCom !== null">
+                de {{displayDurCom(myFicheAchatDetails.DurCom)}}
+              </span>
             </p>
             <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
@@ -168,12 +176,12 @@
                 {{myFicheMateriel.NomSupport ? myFicheMateriel.NomSupport : messageEmptyField}}
               </span> 
             </p>
-            <p *ngIf="myFicheAchatGlobal.chaines">Chaînes concernées :
-              <span *ngFor="let item of myFicheAchatGlobal.chaines; let x = index">
-                {{x === 0 ? item : ', '+item}}
+            <p *ngIf="myFicheAchatGlobal.lib_chaines">Chaînes concernées :
+              <span *ngFor="let item of myFicheAchatGlobal.lib_chaines; let x = index">
+                {{x === 0 ? item : ', ' + item}}
               </span>
             </p>
-            <p *ngIf="!myFicheAchatGlobal.chaines">Chaînes concernées : 
+            <p *ngIf="!myFicheAchatGlobal.lib_chaines">Chaînes concernées : 
               <span class="empty-field">
                 {{messageEmptyField}}
               </span>
