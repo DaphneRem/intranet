@@ -35,6 +35,9 @@
     background-color: $label-success-color-background !important;
     color: $label-color !important;
     border: 1px solid $label-success-color-background;
+    &.acceptation {
+        font-size: 14px;
+    }
 }
 
 /deep/ .label-canceled {

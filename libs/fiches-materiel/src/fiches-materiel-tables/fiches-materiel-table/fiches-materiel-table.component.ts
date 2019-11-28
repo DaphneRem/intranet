@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { RoutingState } from '../../services/routing-state.service';
+
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
@@ -35,7 +37,6 @@ import { Step } from '../../models/step';
 import { StatusLibService } from '../../services/status-lib.service';
 import { Status } from '../../models/status';
 
-import { PreviousRouteService } from '../../services/previous-route-service';
 @Component({
   selector: 'fiches-materiel-table',
   templateUrl: './fiches-materiel-table.component.html',
@@ -141,7 +142,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     private stepsLibService: StepsLibService,
     private statusLibService: StatusLibService,
     private annexElementsService: AnnexElementsService,
-    private previousRouteService: PreviousRouteService
+    private routingState: RoutingState
   ) {
   }
 
@@ -150,8 +151,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       this.customdatatablesOptions.theme = this.tableTheme;
     }
     this.customdatatablesOptions.renderOption = true;
-    this.previousUrl = this.previousRouteService.getPreviousUrl();
-    console.log('this.previousUrl => ', this.previousRouteService.getPreviousUrl());
+    this.previousUrl = this.routingState.getPreviousUrl();
+    console.log('this.previousUrl => ', this.previousUrl);
     this.customdatatablesOptions.tableTitle = this.tableTitle;
     this.sub = this.route.params.subscribe(params => {
       console.log(params);
@@ -204,9 +205,14 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   displayFilterData() {
     let detailUrl = 'details';
     let modifUrl = 'modification';
+    let creationUrl = 'creation';
     console.log(this.previousUrl);
     if ((typeof this.previousUrl !== 'undefined') || (this.previousUrl)) {
-      if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
+      if (
+        this.previousUrl.includes(detailUrl)
+        || this.previousUrl.includes(modifUrl)
+        || this.previousUrl.includes(creationUrl)
+      ) {
         this.customdatatablesOptions.searchRecordedData = this.storeDatatableSearchData.searchDatatableData;
       } else {
         this.customdatatablesOptions.searchRecordedData = '';
@@ -347,13 +353,13 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       //   this.displayOptionsBtnModif = true;
       // }
       /***************** PERMET UNIQUEMENT L'AFFICHAGE DE L4OPTION "MODIFIER" : ****************/ // code à conserver
-      // this.oneSelectionAction();
+      this.oneSelectionAction();
       /*****************************************************************************************/
       /****** PERMET L'AFFICHAGE DE L'OPTION DE MODIF "TOUTES LES FICHES DE L'OEUVRES" : *******/ // code à conserver
-      let oneSelectionBtn = document.getElementById('one-selection');
-      let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
-      oneSelectionBtn.style.display = 'flex';
-      multiSelectionBtn.style.display = 'flex';
+      // let oneSelectionBtn = document.getElementById('one-selection');
+      // let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
+      // oneSelectionBtn.style.display = 'flex';
+      // multiSelectionBtn.style.display = 'flex';
       /*****************************************************************************************/
     }
   }
@@ -373,33 +379,33 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
   }
 
-  allOeuvresSelection() {
-    this.checkOtherFmInOeuvre();
-    console.log('this.selectedOeuvre => ', this.selectedOeuvre);
-    if (this.selectedOeuvre.length > 1) {
-      this.store.dispatch({
-        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-        payload: {
-          modificationType: 'multi',
-          multiFicheAchat: false,
-          multiOeuvre: false,
-          selectedFichesMateriel: this.selectedOeuvre
-        }
-      });
-      this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-    } else {
-      this.store.dispatch({
-        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-        payload: {
-          modificationType: 'one',
-          multiFicheAchat: false,
-          multiOeuvre: false,
-          selectedFichesMateriel: this.selectedId
-        }
-      });
-      this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-    }
-  }
+  // allOeuvresSelection() {
+  //   this.checkOtherFmInOeuvre();
+  //   console.log('this.selectedOeuvre => ', this.selectedOeuvre);
+  //   if (this.selectedOeuvre.length > 1) {
+  //     this.store.dispatch({
+  //       type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+  //       payload: {
+  //         modificationType: 'multi',
+  //         multiFicheAchat: false,
+  //         multiOeuvre: false,
+  //         selectedFichesMateriel: this.selectedOeuvre
+  //       }
+  //     });
+  //     this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+  //   } else {
+  //     this.store.dispatch({
+  //       type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+  //       payload: {
+  //         modificationType: 'one',
+  //         multiFicheAchat: false,
+  //         multiOeuvre: false,
+  //         selectedFichesMateriel: this.selectedId
+  //       }
+  //     });
+  //     this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+  //   }
+  // }
 
   checkOtherFmInOeuvre() {
     this.selectedOeuvre = [];
@@ -608,7 +614,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         title : 'Acceptation',
         data : function ( data, type, row, meta ) {
           if (data.DateAcceptation !== null && data.DateAcceptation !== undefined) {
-            return data.DateAcceptation.slice(0, 10);
+            return '<span class="label label-success acceptation">' + data.DateAcceptation.slice(0, 10) + '</span>'; // color : green; #04B404
           } else {
             return data.DateAcceptation;
           }

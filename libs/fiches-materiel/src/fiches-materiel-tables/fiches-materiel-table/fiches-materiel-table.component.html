@@ -6,10 +6,10 @@
 </div> -->
 <!-- ********************************************* -->
 <!-- ****** MODIF SELECTION BTN (OEUVRE) : ******* -->
-<div class="add-btn">
+<!-- <div class="add-btn">
   <button class="btn modif-fm-btn one-selection" id="one-selection" (click)="oneSelectionAction()">Modifier la fiche</button>
   <button class="btn modif-fm-btn all-oeuvres-selection" id="all-oeuvres-selection" (click)="allOeuvresSelection()">Modifier fiches de l'oeuvre</button>
-</div>
+</div> -->
 <!-- ********************************************* -->
 
 <loader-animation *ngIf="!dataReady"></loader-animation>
@@ -19,8 +19,10 @@
     [rerenderData]="rerenderData"
     (selectRows)="AllSelectedRows($event)" 
     (searchData)="checkSearchData($event)"
-    (dataRow)="checkDataRow($event)"
     ></custom-datatables>
+    <!-- add to custom-datatables tag : -->
+    <!-- (dataRow)="checkDataRow($event)" -->
+
 </div>
 
 
