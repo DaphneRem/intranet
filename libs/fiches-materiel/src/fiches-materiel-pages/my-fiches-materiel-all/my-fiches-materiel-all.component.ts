@@ -85,7 +85,8 @@ export class MyFichesMaterielAllComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
     this.storeAppSubscription();
-    this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
+    /********** GET ON COMPONENT INIT FOR DISPLAYING TABLE (OLD VERSION) **********/
+    // this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
   }
 
   ngOnDestroy() {
