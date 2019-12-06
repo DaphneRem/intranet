@@ -37,7 +37,7 @@
                     <option value={{this.idCoordinateur}}>Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" value={{libelle.Code}}>{{libelle.Libelle}} </option>
                 </select> -->
-                <ejs-dropdownlist  class =" mt-3 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='selectplan.value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' ></ejs-dropdownlist>
+                <ejs-dropdownlist  class =" mt-3 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='selectplan.value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' [allowFiltering]='true' ></ejs-dropdownlist>
                 <input type="text" 
                 id="searchregie"
                 class="form-control form-control-info  e-input recherche " 
@@ -128,13 +128,14 @@
                     (resizeStart)="onResizing($event)"
                     (resizeStop)="onResizingStop($event)"
                     (select)= "onSelectMultipleCell($event)"
-                   (moreEventsClick) = "moreEventsClick($event) "
+                    (hover) = "onHover($event)"
+                   (cellClick) = "cellClick($event) "
                     [enablePersistence]="false"
                     [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
                     [rowAutoHeight]="rowAutoHeight"
                     [showHeaderBar]='true'
-                   
+                    timezone="Europe/Paris"
                     >
                     <!-- (created)="onCreated($event)" -->
                     <!-- (renderCell)="onRenderCell($event)" -->
@@ -293,7 +294,7 @@
                                 id="treeEvents"
                                 [fields]='field' 
                                 cssClass='treeview-external-drag'
-                                [allowMultiSelection]='false'
+                                [allowMultiSelection]='true'
                                 [allowDragAndDrop]='true'
                                 (nodeDragStart)="onTreeDragStart($event)"
                                 (nodeDragStop)="onTreeDragStop($event)"
@@ -304,7 +305,7 @@
                                 [enablePersistence]="false">
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""
                                 >
-                                    <div id="waiting" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
+                                    <div id="waiting" class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
                                         <div id="waitdetails"   >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
                                             <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
@@ -344,7 +345,7 @@
                                 <option *ngFor="let liste of monteurListe"  >{{liste.Username}}</option>
                             </select> -->
 
-                            <ejs-dropdownlist id='monteur' class =" mt-2 mb-3 mr-1 ml-1" #selectOperateur     [dataSource]='monteurListe' (change)="onSelect(selectOperateur.value, $event)"  [value]='fieldsMonteur.Username' [fields]='fieldsMonteur' [sortOrder]='sorting' [placeholder]='otherMonteur' ></ejs-dropdownlist>
+                            <ejs-dropdownlist id='monteur' class =" mt-2 mb-3 mr-1 ml-1" #selectOperateur     [dataSource]='monteurListe' (change)="onSelect(selectOperateur.value, $event)"  [value]='fieldsMonteur.Username' [fields]='fieldsMonteur' [sortOrder]='sorting' [placeholder]='otherMonteur'  [allowFiltering]='true'  ></ejs-dropdownlist>
                         </div>
                             <div class="treeview mt-2 ">
                                 <ejs-treeview *ngIf="selectedValue!='Plus de monteurs'"
