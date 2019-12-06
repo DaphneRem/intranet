@@ -326,8 +326,13 @@ $InfoBtnHoverColor :  #2eced6;
     overflow: hidden;
     margin-top: 60px;
     border: 1px solid rgba(0, 0, 0, 0.12);
+    width : 100%
 }
+/deep/ .treeview-container {
+    position: absolute;
+    width:100%;
 
+}
 .btn-backlog{
     margin-left: -140px;
     margin-top: 10px;
@@ -692,7 +697,7 @@ padding: 0
      
       overflow-y: scroll;
       height: 73vh;
- 
+   overflow-x: hidden
   }
  /deep/ #e-content_1{
     height:100vh;

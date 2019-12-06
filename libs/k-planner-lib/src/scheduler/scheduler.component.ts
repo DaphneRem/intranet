@@ -108,7 +108,7 @@
   import { LibGroupeService } from '../services/libGroupe.service';
   import { LibelleGroupe } from '../models/libelle-groupe';
   import { DataManager, ReturnOption, Query, Predicate, } from '@syncfusion/ej2-data';
-  import { Grid } from '@syncfusion/ej2-angular-grids';
+//   import { Grid } from '@syncfusion/ej2-angular-grids';
   import { SpinSettingsModel } from "@syncfusion/ej2-splitbuttons";
   import { splitClasses, ConditionalExpr } from "@angular/compiler";
   import { CustomIconsModule } from "@ab/custom-icons";
@@ -271,10 +271,10 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public colorStatut: Object[] = [
           { Id: 0, Color: '#e8e2ae' },
           { Id: 1, Color: '#e8e2ae' },
-          { Id: 2, Color: '#7FB3D5' },
+          { Id: 2, Color: '#2471A3' }, // pise en charge
           { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER JAUNE
           { Id: 4, Color: '#F3BE09' },
-          { Id: 5, Color: '#D5E5FB' }, //  STATUT_A_FINIR(pause)
+          { Id: 5, Color: '#7FB3D5' }, //  STATUT_A_FINIR(pause)
           { Id: 6, Color: '#3ba506' }, //  STATUT_TERMINE_OK VERT
           { Id: 7, Color: '#B01106' }, //   STATUT_TERMINE_KO ROUGE
           { Id: 8, Color: '#F39009' }, //   STATUT_EN_ATTENTE ORANGE
@@ -402,13 +402,14 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public zoomCont: number = 0
       public valueMax: number = 60
       public value: number =60
-      public valueAdd: number =5
+      public valueAdd: number =10
       public refreshF4 : boolean
       public navigation: boolean = false;
       public intervalChanged: boolean = false
       public isStrictMode: boolean = true;
       public statutMonteur = []
-
+    public isClickZoom = true 
+    public offsetCell
       // public fistCallAction: boolean = false;
       // public deleteWorkorderAction: boolean = false;
       // public deleteContainerAction: boolean = false;
@@ -439,7 +440,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               let btnrefresh = document.getElementById('btn-refresh');
               let btnrefreshWo = document.getElementById('btn-refreshWo');
               let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-         
+       
               if (eKey.keyCode === 115) {
              
   
@@ -460,66 +461,80 @@ import { UtilisateurService } from "../services/utilisateur.service";
        
   
           })
-          let scheduleElement = document.getElementsByClassName('e-table-container');
-           let scheduletable = document.getElementsByClassName('schedule-drag-drop');
+        //   let schedule+++--+-+-+--Element = document.getElementsByClassName('e-table-container');
+           let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
   
-           document.body.addEventListener('keyup', (eKey: KeyboardEvent) => {
+           document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
             // let idSchedule  = document.getElementById('schedule');
-          
-            if (eKey.keyCode === 109     && this.value >= 5  ) {
+            if(this.isClickZoom){
+            if (eKey.key === '-' ) {
                 // -------------------------------------------------           
-       
+            this.isClickZoom = false
                 this.intervalChanged = true;
                 this.value = this.value + this.valueAdd;
                 this.scheduleObj.timeScale.interval = this.value;     
-                this.scheduleObj.refreshEvents();
-           
+                let cell = document.querySelectorAll('.e-work-cells') as any;
+                // this.offsetCell = this.offsetCell 0
+                console.log(  this.offsetCell ,"====> ++++")
+  
+                // this.scheduleObj.refreshEvents();
+                setTimeout(() => {
+                    this.zoomWithScroll()
+                }, 100);
+                this.eventSettings.dataSource = this.timelineResourceDataOut
                 console.log(this.value , this.valueMax)
-            console.log( "-----",this.scheduleObj,scheduleElement)
+           
            } else {
       
-               if (eKey.keyCode === 107  && this.value >= 5    ) {
-                      //+++++++++++++++++++++++
+               if (eKey.key === '+' && this.value > 5 ) {
+                      //+++++++++++++++++++++++             
                       this.intervalChanged = true;
                       this.value = this.value - this.valueAdd;
                       this.scheduleObj.timeScale.interval = this.value ;
-                      this.scheduleObj.refreshEvents() ; 
-                      
+                    //   this.scheduleObj.refreshEvents() ; 
+                    let cell = document.querySelectorAll('.e-work-cells') as any;
+                    // this.offsetCell =this.offsetCell + 100
+                    console.log(  this.offsetCell ,cell[0],"====> ----")
+                    setTimeout(() => {
+                        this.zoomWithScroll()
+                    }, 100);
                      
                     //   (document.querySelectorAll('.e-content-wrap')[0]).scrollLeft = this.offsetxEvent
-              if(this.value === 5){
-                this.scheduleObj.refresh()   
+              if(this.value === 5){    
+
               }
-              console.log( "+++++++",this.scheduleObj, this.value,eKey )
-              console.log(this.argsOnActionComplete)
-            
+              console.log( "+++++++",eKey )
+  
+              this.eventSettings.dataSource = this.timelineResourceDataOut
                }
+
            }
-          
-           if(this.hourContainer == undefined){
-            this.hourContainer =moment().subtract(1,'hour').format('HH:mm'); 
-            console.log(this.hourContainer)
-           }
-           if(eKey.keyCode === 107  || eKey.keyCode === 109 ){
-            //    this.scheduleObj.element["ej2_instances"][0].isAdaptive = true
-            //    this.scheduleObj.element["ej2_instances"][0].showQuickInfo = false
-               console.log("aaaaa")
-               if(this.scheduleObj.currentView === "TimelineWeek"){
-                this.intervalValue = this.value.toString()
-            }else{
-                this.intervalValueDay = this.value.toString()
-               }
-           
-           
-           setTimeout(() => {
-         if(this.scheduleObj.currentView != "TimelineWeek"){
-            this.scheduleObj.scrollTo(this.hourContainer)  
-            
-        }else{
-            
-           }
-        }, 50);
         }
+        //    if(this.hourContainer == undefined){
+        //     this.hourContainer =moment().subtract(1,'hour').format('HH:mm'); 
+        //     console.log(this.hourContainer)
+        //    }
+    //        if(eKey.keyCode === 107  || eKey.keyCode === 109 ){
+    //         //    this.scheduleObj.element["ej2_instances"][0].isAdaptive = true
+    //         //    this.scheduleObj.element["ej2_instances"][0].showQuickInfo = false
+    //            console.log("aaaaa")   
+    //            if(this.scheduleObj.currentView === "TimelineWeek"){
+    //             this.intervalValue = this.value.toString()
+    //         }else{
+    //             this.intervalValueDay = this.value.toString()
+    //            }
+              
+   
+    //      if(this.scheduleObj.currentView != "TimelineWeek"){
+    //         // this.scheduleObj.scrollTo(this.hourContainer)  
+            
+    //     }else{
+           
+     
+    //    }
+      
+    //     }
+
         }, true);
        
      
@@ -548,15 +563,26 @@ import { UtilisateurService } from "../services/utilisateur.service";
          
           this.storeAppSubscription();
           window.addEventListener('scroll', this.scroll, true);    
-    
-        
+         
+        //    window.addEventListener('beforeunload', function (e) {
+        //     // Cancel the event
+        //     e.preventDefault();
+        //     // Chrome requires returnValue to be set
+        //     e.returnValue = '';
+        //     // return "Êtes-vous sure de vouloir quitter le k-planner ?"
+        //   });
       }
   
     @HostListener('mouseenter') onMouseEnter() {
       // alert("Don't touch my bacon!");
     }
-   
-  
+    @HostListener('window:beforeunload', ['$event'])
+    beforeunloadHandler(event) {
+        console.log(event)
+        return event.returnValue = "Êtes-vous sure de vouloir quitter le k-planner ?";
+
+   }
+ 
       onTreeSelecting(event) {
           console.log('ON TREE SELECTING ====> ', event);
       }
@@ -612,12 +638,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log('isClicked : ', this.isClicked);
           console.log('this.refreshDateStart => ', this.refreshDateStart);
           console.log('this.refreshDateEnd => ', this.refreshDateEnd);
-            this.refreshDate()
-          
-      
-        this.getSalleByGroup( this.idGroupeCoordinateur, this.refreshDateStart, this.refreshDateEnd);
-          if(this.timelineResourceDataOut.length === 0){
-     
+          this.refreshDate()
+          this.getSalleByGroup( this.idGroupeCoordinateur, this.refreshDateStart, this.refreshDateEnd);
+        
           console.log('this.refreshDateStart : ', this.refreshDateStart);
           console.log('this.refreshDateEnd : ', this.refreshDateEnd);
           console.log('refresh scheduler with my regies group');
@@ -636,7 +659,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       
         
                
-        //*****************************************************/garder l'etat des checkboxs *************************************************************
+        //*****************************************************garder l'etat des checkboxs *************************************************************
           this.Check = 0
        setTimeout(() => {                   
               if (this.theorique.checked == false) {
@@ -649,13 +672,13 @@ import { UtilisateurService } from "../services/utilisateur.service";
               }, 800);
 
 
-            }
-            this.eventSettings = {
-                dataSource: <Object[]>extend(
-                    [], this.timelineResourceDataOut, null, true
-                ),
-                enableTooltip: true, tooltipTemplate: this.temp
-            };
+            
+            // this.eventSettings = {
+            //     dataSource: <Object[]>extend(
+            //         [], this.timelineResourceDataOut, null, true
+            //     ),
+            //     enableTooltip: true, tooltipTemplate: this.temp
+            // };
             }
       public disabledrefreshBacklog:boolean =true
   
@@ -720,14 +743,74 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.getCoordinateurByUsername();
                 }        
       }
-   public offsetxEvent
+
 
       onEventClick(e: ActionEventArgs) {
           console.log('event clicked !!!!!!!!!!!',e);
      
           this.eventClick = true;
-          console.log(this.offsetxEvent)
+
       }
+      public eventHoverData
+      onHover(args :HoverEventArgs ){
+        // console.log(args)
+        this.offsetCell = args.element["offsetLeft"]
+        if(args.element.className === "e-appointment e-lib e-draggable"){
+        //   console.log(args)
+          this.eventHoverData = args.element
+        //   console.log( this.eventHoverData)
+      
+      } else {
+
+        // this.eventHoverData = args.element.dataset 
+           
+     }
+    }
+ 
+  
+      zoomWithScroll(){
+        console.log(this.offsetLeftCell)
+     
+        let len = document.querySelectorAll('.e-appointment').length;  
+        if(!this.isCellClick){
+        for (let i = 0; i < len; i++) {
+          let event = document.querySelectorAll('.e-appointment')[i] as any;
+      
+        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+
+          if (event.getAttribute("data-id") === this.eventHoverData.dataset.id) { 
+            console.log(event,'event ')
+            // console.log((event.getAttribute("aria-label") === this.eventClickData['Name']))
+            // document.querySelector('.e-content-wrap').scrollTop = document.querySelector('.e-content-wrap').scrollTop;
+            document.querySelector('.e-content-wrap').scrollLeft = event.offsetLeft ;
+            this.isClickZoom = true
+          }else {
+            // document.querySelector('.e-content-wrap').scrollLeft = this.offsetLeftCell
+            this.isClickZoom = true
+          }
+
+        } }else{
+            let cell = document.querySelectorAll('.e-work-cells') as any;
+            console.log("Cell click",this.offsetCell  )
+      
+                    
+            for(let i = 0 ; i<cell.length ; i++){
+                      if (this.offsetLeftCell.dataset.date === cell[i].dataset.date && this.offsetLeftCell.dataset.groupIndex === cell[i].dataset.groupIndex ){
+                        console.log(cell[i],'event ')
+                        // document.querySelector('.e-content-wrap').scrollLeft = 
+                        document.querySelector('.e-content-wrap').scrollLeft = cell[i].offsetLeft || cell[i].offsetLeft +100 || cell[i].offsetLeft -100   
+                        console.log( document.querySelector('.e-content-wrap').scrollLeft)
+                    }
+                    if(i === cell.length - 1){
+                        this.isClickZoom = true
+                    }
+                      }
+            
+                   
+         }
+      } 
+   
+//    
   
   
       /****************************************************************************************************************************************/
@@ -912,26 +995,22 @@ import { UtilisateurService } from "../services/utilisateur.service";
               
 
                           for( let i = 0; i < this.statutMonteur.length - 1 ; i++){
-                             console.log(this.statutMonteur[i].Name == this.statutMonteur[i + 1].Name )
-                          
+                               
                           if(this.statutMonteur[i].Name == this.statutMonteur[i + 1].Name  ){
 
                                 this.statutMonteur.splice(i,1)
                                      if(this.statutMonteur[i + 1] != undefined ){
-                                let operateur = this.statutMonteur.filter(item=> item.Name == this.statutMonteur[i + 1].Name )
-                                console.log(operateur )
+                                let operateur = this.statutMonteur.filter(item=> item.Name == this.statutMonteur[i + 1].Name )                     
                                       if(operateur.length>= 2){
                                         this.statutMonteur.splice(i,1)
                                        }
                                     }
-                               
-                                //    this.statutMonteur[i] = this.statutMonteur[i + 1]
+                                                    
          }
 
      }
-    // }
     
-     console.log(this.statutMonteur,"Apres ==>")
+                console.log(this.statutMonteur,"Apres ==>")
               });
            
       }
@@ -1230,8 +1309,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                               IsReadonly: false,
                               Id_Planning_Events_TempsReel:0,
                               titreepisode:data.titreepisode,
-                              DateDebutReel:this.StartTimeReel,
-                              DateFinReel: this.EndTimeReel,
+                              DateDebutReel:data.DateDebut,
+                              DateFinReel: data.DateFin,
                               libelleStatut:libelleStatut,
                               CodeRessourceCoordinateur:data.CodeRessourceCoordinateur,
                              
@@ -1400,7 +1479,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                  dateFinTheo = moment(data.DateFinTheo, moment.defaultFormat).toDate(),
                  codeSalleTempsReel
 
-              
+                 let initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0, 1);
       
              if( moment(data.DateFinReel, moment.defaultFormat).isValid()){
            
@@ -1439,7 +1518,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                
                   Description: data.Commentaire,
                   Operateur:operateur,
-                  coordinateurCreate: data.LibelleRessourceCoordinateur,
+                  coordinateurCreate:initiales,
                   Statut: data.Statut,
                   AzaIsPere: false,
                 //   AzaNumGroupe: data.Id_Planning_Container,
@@ -1556,21 +1635,22 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   statut = this.timelineResourceDataOut[i].Statut,
                   DateDebutTheo=this.timelineResourceDataOut[i].DateDebutTheo,
                   DateFinTheo=this.timelineResourceDataOut[i].DateFinTheo,
-                  DateDebutReel=this.timelineResourceDataOut[i].DateDebutReel,
+                  DateDebutReel= moment(this.timelineResourceDataOut[i].DateDebutReel).format("YYYY-MM-DDTHH:mm:ss"),
                   DateFinReel=this.timelineResourceDataOut[i].DateFinReel
                  
               
               this.temp = '<div class="tooltip-wrap">' +
                   '<div class="tooltip-wrap">' +
                   '${if( titreoeuvre != null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" >   Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp;<br>  Titre épisode :${titreepisode}  &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${libtypeWO} <br> Libellé chaine : &nbsp; ${libchaine}  <br>  Durée Commerciale :&nbsp;${dureecommerciale} <br> Statut :&nbsp; ${libelleStatut} </>  </>  </div> ${/if}' +
-                  '${if(   Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null)}<div> Description : &nbsp; ${Commentaire_Planning}  </>  </div> ${/if}' +
+                  '${if (!AzaIsPere && isTempsReel === 0 && Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null) }<div class="time">Retour Opérateur : &nbsp; ${Commentaire_Planning}   </div>  ${/if} </div> '+
+                  '${if(   Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null && AzaIsPere )}<div>Commentaire Coordinateur: &nbsp; ${Commentaire_Planning}  </>  </div> ${/if}' +
                   '${if (AzaIsPere  ) }<div class="time"> Titre: &nbsp;${Name} <br>  Coordinateur: &nbsp; ${coordinateurCreate}  </div> ${/if}' +
                   '${if ( Operateur != null && Operateur !== "" && Operateur !== undefined  ) }<div class="time">Opérateur:&nbsp;${Operateur} </div> ${/if}' + 
                   '${if (Statut === 3 || AzaIsPere ) }<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div> ${/if}' +
                   '${if (Statut === 3 || AzaIsPere ) }<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div> ${/if}' +
-                //   '${if (Statut !== 3 && isTempsReel === 0  ) }<div class="time">Début Réel&nbsp;:&nbsp;${DateDebutReel.toLocaleString()} </div> ${/if}' +
-                //   '${if (Statut !== 3 && isTempsReel === 0  ) }<div class="time">Fin Réel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${DateFinReel.toLocaleString()} </div> ${/if}' +
-                  '${if (!AzaIsPere && isTempsReel === 1 ) }<div class="time">  Coordinateur: &nbsp; ${coordinateurCreate} <br>   Début théorique &nbsp;:&nbsp; ${DateDebutTheo.toLocaleString()} <br>Fin théorique &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${DateFinTheo.toLocaleString()}  </div>  ${/if} </div></div> ';
+                  '${if (!AzaIsPere && Statut !== 3 &&   isTempsReel === 0  ) }<div class="time">Début Réel&nbsp;:&nbsp;${DateDebutReel} </div> ${/if}' + //la date valide
+                  '${if (!AzaIsPere && Statut !== 3 && Statut !== 2 && Statut !== 5 && isTempsReel === 0  ) }<div class="time">Fin Réel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${DateFinReel} </div> ${/if}' +
+                  '${if (!AzaIsPere && isTempsReel === 1 ) }<div class="time">Retour Opérateur : &nbsp; ${Commentaire_Planning} <br>  Coordinateur: &nbsp; ${coordinateurCreate} <br>   Début théorique &nbsp;:&nbsp; ${DateDebutTheo.toLocaleString()} <br>Fin théorique &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${DateFinTheo.toLocaleString()}  </div>  ${/if} </div></div> ';
   
           }
       }
@@ -1982,6 +2062,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
             //   .pipe(takeUntil(this.onDestroy$))
             //   .subscribe(res => {
               .then(res => {
+               
                   console.log('succes update container. RES : ', res);
                   console.log(this.allDataContainers, 'allDataContainers')
                   let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
@@ -2089,9 +2170,43 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   //         [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
                   //     ),
                   //     enableTooltip: true, tooltipTemplate: this.temp
-                  // };
-                  ///// naviguer vers  la date voulu 
+                  // };           
                   this.disabledrefresh = false
+                  this.startResize = false
+                  this.openEditor = false 
+                  if(res["error"]){
+                    console.log('error updatecontainer');
+                    this.disabledrefresh = false
+                    this.openEditor = false 
+                    this.startResize= false
+                  //   this.scheduleObj.readonly = false
+                    swal({
+                        title: 'Attention',
+                        html: 'Le déplacement est impossible car l\'emplacement est occupé par un autre container. <br> <br> Veuillez cliquer sur le bouton  Rafraichir pour l\'afficher',
+                        showCancelButton: false,
+                        confirmButtonText: 'Rafraichir',
+                        cancelButtonText: 'Annuler',
+                        allowOutsideClick:false
+                    }).then((refresh) => {
+                        if(refresh.value){
+                        this.refreshScheduler()
+                    }else{
+                        console.log("click annuler")
+                    }
+                    console.log(" ok ")
+                    this.eventSettings = {
+                        enableTooltip: true, tooltipTemplate: this.temp
+                    };          
+                });
+                    
+                    
+            
+                       
+                  
+                    this.eventSettings = {              
+                        enableTooltip: false //disable tooltip
+                    };
+                }
               }, error => {
                   console.error('error updatecontainer', error);
                   this.disabledrefresh = false
@@ -2164,6 +2279,18 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   let Operateur =operateurObject.Username;
                   this.updateWorkorderInContainerUpdate(id, container, containerEvent,Operateur);
                   this.onActionComplete('e');
+                  if(res["error"]){
+                    console.error('error updatecontainer');
+                    swal({
+                        title: 'Attention',
+                        text: 'Erreur dans la mise à jour du container lors du drag & drop'+ 'd\'un opérateur',
+                        showCancelButton: false,
+                        confirmButtonText: 'Fermer',
+                        allowOutsideClick:false
+                    
+                    })
+
+                  }
               }, error => {
                   console.error('error updatecontainer', error);
                   swal({
@@ -2398,6 +2525,32 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.openEditor = false 
                   this.startResize= false
                   console.log(this.openEditor,"this.openEditor when update container")
+
+                  if(res["error"]){
+                    console.error('error update workorder : ')
+                    swal({
+                        title: 'Attention',
+                        text: 'Impossible de superpositionner les containers',
+                        showCancelButton: false,
+                        confirmButtonText: 'Fermer',
+                        allowOutsideClick:false
+                    
+                    }).then((Fermer) => {
+                        console.log(Fermer)
+                        this.scheduleObj.eventSettings.dataSource = []
+                        this.departmentGroupDataSource = [];
+                        if(Fermer.value){
+                            this.clicFermerOnActionComplete = true
+                             this.refreshDate()
+                            this.getSalleByGroup(this.groupCoordinateur,this.refreshDateStart,this.refreshDateEnd)
+    
+                    }
+                })
+                      this.openEditor = false 
+                      this.startResize= false
+                   
+
+                  }
                 //   this.scheduleObj.readonly = false
               }, error => {
                 // this.scheduleObj.readonly = false
@@ -2528,6 +2681,18 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.WorkOrderByidgroup.push(workorder);
                   this.scheduleObj.refreshEvents()
                   this.disabledrefresh = false
+                  if(res["error"]){
+                    swal({
+                        title: 'Attention',
+                        text: 'Erreur dans la mise à jour du workorder',
+                        showCancelButton: false,
+                        confirmButtonText: 'Fermer',
+                        allowOutsideClick:false
+                    
+                    })
+                    console.error('error update workorder : ') 
+                  }
+
               }, error => {
                   swal({
                       title: 'Attention',
@@ -2706,6 +2871,18 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       enableTooltip: true, tooltipTemplate: this.temp
                   };
                   this.disabledrefresh = false
+                  if(res["error"]){
+                    swal({
+                        title: 'Attention',
+                        text: 'Erreur dans la mise à jour du workorder',
+                        showCancelButton: false,
+                        confirmButtonText: 'Fermer',
+                        allowOutsideClick:false
+                    
+                    })
+                    console.error('error update workorder : ')
+                  }
+
               }, error => {
                   swal({
                       title: 'Attention',
@@ -3021,8 +3198,16 @@ import { UtilisateurService } from "../services/utilisateur.service";
               enableTooltip: true, tooltipTemplate: this.temp
           };
           this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
+       
+             if(this.user.initials === newWorkorderForList.coordinateurCreate){
+        //         let workorderBacklog = document.getElementsByClassName('workorder-backlog')
+        //         let len = workorderBacklog.length -1
+        //         workorderBacklog[1]["style"].backgroundColor = "#F3BE09"
+        //        console.log(workorderBacklog,len,"ééééééééééééééééééé")
+        this.refreshWorkordersBacklog()
+        }
       }
-      /************************************************ PUT Workorder *****************************************/
+      /************************************************ PUT ---orkorder *****************************************/
       updateWorkOrder(args) {
   
           console.log('update workorder function');
@@ -3341,6 +3526,12 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.scheduleObj.readonly = true
                   console.log('this.scheduleObj.readonly => ', this.scheduleObj.readonly)
               }
+            //   let schObj = document.querySelector('.e-schedule')["ej2_instances"][0];
+            //   console.log(schObj)
+              
+            //   schObj.setProperties({
+            //     headerRows: [{ option: "Week" }, { option: "Date" }]
+            //   })
           }
           // TIMELINEDAY
           if ((args.currentView === 'TimelineDay') || (args.currentView == undefined && (this.scheduleObj.currentView === 'TimelineDay'))) {
@@ -3402,7 +3593,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               if(this.intervalChanged){
                 this.scheduleObj.timeScale.interval = this.value 
               }else{
-                  this.value = 120
+                this.scheduleObj.timeScale.interval= 120
               }
               this.timelineResourceDataOut = []
               console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
@@ -3615,10 +3806,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
           }
          
       }
-      moreEventClick = false
-      moreEventsClick(args){
+    
+    cellClick(args :CellClickEventArgs ){
           console.log(args,"args ===> moreEventsClick")
-          this.moreEventClick = true
+         
+       
       }
       /*************************************************************************/
       /*************************** MODALS M1ANAGEMENT **************************/
@@ -3632,7 +3824,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public elementRow
       public updateWO:boolean = false;
       public openEditor = false
-      public dataToEdit
+      public dataToEdit;
+      public editor = false
       onPopupOpen(args) { // open container modal and display workorder list
           let workOrders = [];
           // this.filtre = true
@@ -3663,7 +3856,42 @@ import { UtilisateurService } from "../services/utilisateur.service";
               args.cancel = true;
           }
           if ((args.type === 'QuickInfo') && (args.name === 'popupOpen')) {
+              
+              let start = moment(args.data["StartTime"]),
+              end = moment(args.data["EndTime"]),
+              diff = end.diff(start,'minute')
+              let  interval 
+              if(this.scheduleObj.currentView === "TimelineDay"){
+              interval = this.scheduleObj.timeScale.interval / 2
+              console.log( diff,interval)
+            } else {
+                interval = this.scheduleObj.timeScale.interval 
+                console.log( diff,interval)
+            }
+             if(diff ===  Math.trunc(interval)  || this.checkIfContainerAlreadyExists(args) === true ){
               args.cancel = true;
+              
+            } else {
+
+        //      let inputEle: HTMLInputElement;
+        //     let container: HTMLElement;
+        
+        //         this.createDrowDownOperteurInput(args, container, inputEle);
+        //         console.log("==>>",this.drowDownOperateurList); 
+        //         this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
+        //         this.drowDownOperateurList.dataSource = this.fieldMonteur['dataSource'].map(item => {
+        //             return { text: item.Username, value: item.idressourcetype };
+        //         });
+        //         console.log("==>>",this.drowDownOperateurList)
+        //         console.log(args.data.Operateur);
+         
+        //     this.drowDownOperateurList.dataSource.unshift({ text: 'Aucun Opérateur', value: 0 });
+        //    let dropDownOperateur =  (args.element.querySelector(".e-float-input") as any);
+           
+        //    console.log(dropDownOperateur)
+            }
+         
+            // e-subject e-field e-input
               console.log(args.data.StartTime.getHours())
               let title = document.getElementsByClassName('e-subject-container');
               let subTitle = document.getElementsByClassName('e-location-container');
@@ -3688,7 +3916,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               DepartmentID[0]["ej2_instances"][0].value = DepartmentID[0]["ej2_instances"][0].text 
               // DepartmentID[0]["ej2_instances"][0].itemData = DepartmentID[0]["ej2_instances"][0].itemData.concat(this.listeRegies)
               DepartmentID[0]["ej2_instances"][0].dataSource = this.listeRegies
-           
+              this.editor = true
        
           }
           if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
@@ -3774,7 +4002,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           if (args.data.name === 'cellClick') {
               console.log('cell click', args)
               this.filtre = true
-              this.zoom = true
+            
               this.CellClick = true
               if (args.target.className === "e-header-cells  e-current-day" || args.target.className === "e-header-cells") {
                   args.cancel = true
@@ -3887,12 +4115,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
               let container: HTMLElement;
               let containerOperateur = document.getElementsByClassName('custom-field-container');
              console.log(containerOperateur, "containerOperateur")
+          
               let annuler = document.getElementsByClassName("e-event-cancel")
               console.log(annuler);
               annuler[0].addEventListener('click', () => {
-                  this.cancel = true
-                  this.zoom = true
-                  this.filtre = false
+
                   this.disabledrefresh = false
                   this.openEditor = false
                   console.log('click annuler ', this.zoom, this.filtre)
@@ -3907,6 +4134,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
   
               if (args.data.hasOwnProperty('AzaIsPere')) {
                   console.log('open Editor', args);
+                  this.editor = true 
+                  
+                  console.log("open editor", this.editor)
                   console.log(this.drowDownOperateurList);
                   if (args.data.AzaIsPere) { // dblclick container
                       if (containerOperateur.length === 0) {
@@ -3946,6 +4176,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       regie[0]['style'].display = 'block';
                       console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
                   } else { // dblclick workorder
+                    console.log(containerOperateur[0])
                     if(containerOperateur[0].parentNode != undefined){
                       containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
                     }
@@ -3973,6 +4204,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   }
               } else {
                   if (args.name === 'popupOpen' && args.type === 'Editor' ) {
+                  
                       let title = document.getElementsByClassName('e-subject-container');
                       let subTitle = document.getElementsByClassName('e-location-container');
                       let Debut = document.getElementsByClassName('e-start-container');
@@ -4020,6 +4252,19 @@ import { UtilisateurService } from "../services/utilisateur.service";
                           console.log('click save ',this.departmentDataSource )
                       }
                       }, true);
+                    
+                        // args.duration =5;
+                        // var dialogObj = (args.element as any).ej2_instances[0];
+                        // dialogObj.open = function() {
+                        //   // Changed the event duration to 5 min
+                        //   let startObj = (args.element.querySelector(".e-start") as any)
+                        //     .ej2_instances[0];
+                        //   startObj.step = 5;
+                        //   let endObj = (args.element.querySelector(".e-end") as any)
+                        //     .ej2_instances[0];
+                        //   endObj.step = 5;
+                        // };
+                  
                   }
   
   
@@ -4056,6 +4301,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                      }
                 }
             });
+           
           }
        
      
@@ -4174,23 +4420,48 @@ import { UtilisateurService } from "../services/utilisateur.service";
    public eventDragStart 
       onDragStart(args: DragEventArgs){
    
-        if(!args.data['AzaIsPere'] || args.event.target["className"] === "mt-1 workorders"   ) {
-            args.cancel = true
+        if(!args.data['AzaIsPere']   ) {
+           
+            swal({
+                title: 'Attention',
+                text: `Vous ne pouvez pas effectuer cette action ` ,
+                showCancelButton: false,
+                confirmButtonText: 'Fermer',
+                cancelButtonText: 'non',
+                allowOutsideClick:false
+            
+            }).then((Fermer) => {
+                console.log(Fermer)
+                args.cancel = true
+                if(Fermer.value){
+                    args.cancel = false
+                    // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
+                    console.log(args)
+                    this.disabledrefresh = false
+            }
+        })
         }
-      
             this.eventDragStart = args.data
              args.interval = 5; // drag interval time is changed to 10 minutes 
              console.log('onDragStart args =======> ', args);
+             console.log('======', this.scheduleObj.getEventDetails(args.element))
             //  args.navigation = { enable: true, timeDelay: 4000 };
             //  args.element.draggable = true
             //  args.enableAutoScroll = true
          
             //  args.event["dragElement"].draggable = true
     //    args.event["dragElement"].draggable = true
+   
+    let workorder = document.querySelectorAll('.workorders')
+   for(let i = 0; i<= workorder.length -1;i++){
+    console.log(workorder[i])
+    args.excludeSelectors =' `${workorder[i]}`' 
+   }
+   //  as any
         
     }
       public groupIndex
- 
+    public eventItemDrag 
       onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
     if(event.event.target.className === "e-work-cells e-work-hours"){
         event.cancel = true;
@@ -4205,7 +4476,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
         // enableAutoScroll: false
         // enableTailMode: false
         // enableTapHold: false
-  
+        this.eventItemDrag = event.data
         this.groupIndex = event.groupIndex
           if(event.name === 'nodeDragging') {
             //   console.log('nodeDragging event => ', event)
@@ -4221,17 +4492,18 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   }
               }
           }
-          
+    
       }
       targetDrop
+      
       onDragStop(args:DragEventArgs){
           console.log('onDragStop args =======> ', args, args.event)
     //    this.targetDrop=  this.scheduleObj.getEventDetails(args.event.target.nextSibling)
     //   console.log(this.targetDrop)
-    if(args.event.target["className"] === "e-work-cells e-work-hours"){
-        
+    if(args.event.target["className"] === "e-work-cells e-work-hours"){   
         this.disabledrefresh = false
     }
+     console.log(moment(args.event.target["dataset"].date).format()  )
       }
   
       public onTreeDragStartCountDevTool = 0;
@@ -4250,7 +4522,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                 event.cancel = true 
                 swal({
                     title: 'Attention',
-                    text: `Vous ne pouvez pas effectuer cette action, l'opérateur n'a pas de statut : Intermittent ou Permanant ` ,
+                    text: `Vous ne pouvez pas effectuer cette action, l'opérateur n'a pas de statut : Intermittent ou Permanent ` ,
                     showCancelButton: false,
                     confirmButtonText: 'Fermer',
                     cancelButtonText: 'non',
@@ -4580,7 +4852,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log(this.isTreeItemDropped);
           console.log(this.scheduleObj, '====== scheduleobj');
         this.argsOnActionBegin = event
-       
+    
           // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
           //     console.log('is not pere');
           // } 
@@ -4642,8 +4914,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
             let initialDate = this.dataToEdit.StartTime.getDate()
             let changedDate = event.data["StartTime"].getDate()
             let date =  moment(event.data["StartTime"]).format('DD-MM-YYYY').toString()
-            console.log(initialDate , changedDate)
-            if(initialDate !=  changedDate){
+            console.log(initialDate , changedDate, this.editor)
+            // add isslotaviable
+            let isSlotAviable = this.scheduleObj.isSlotAvailable(event.data)
+            console.log(isSlotAviable)
+            if((initialDate !=  changedDate) &&  this.editor ){
                 swal({
                     title: '',
                     text: `Souhaitez-vous naviguer vers la date: ${date}` ,
@@ -4667,6 +4942,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                     this.refreshScheduler()
                 }
             })
+            this.editor = false // pour ne pas afficher la modale a chaque fois 
             }
         }
           }
@@ -4674,12 +4950,82 @@ import { UtilisateurService } from "../services/utilisateur.service";
               console.log('eventCreate');
               console.log(event.requestType);
                 /******* A voir ************************/
-              // if (event.requestType === 'eventCreate' && (<Object[]>event.data).length > 0) {            
+              // if (event.requestType === 'eventCreate' && (<Object[]>event.data).length > 0) {       
+                if(event.data[0].Name == undefined){
+                    event.data[0].Name = 'Titre'
+                   }
+                   if( this.dataToEdit!= undefined ){
+                    let initialDate = this.dataToEdit.StartTime.getDate()
+                    let changedDate = event.data[0]["StartTime"].getDate()
+                    let date =  moment(event.data[0]["StartTime"]).format('DD-MM-YYYY').toString()
+                    console.log(initialDate , changedDate, this.editor)
+                    // add isslotaviable
+                    let isSlotAviable = this.scheduleObj.isSlotAvailable(event.data)
+                    console.log(isSlotAviable)
+                    if((initialDate !=  changedDate) &&  this.editor ){
+                        swal({
+                            title: '',
+                            text: `Souhaitez-vous naviguer vers la date: ${date}` ,
+                            showCancelButton: true,
+                            confirmButtonText: 'oui',
+                            cancelButtonText: 'non',
+                            allowOutsideClick:false
+                        
+                        }).then((oui) => {
+                            console.log(oui)
+                            this.scheduleObj.eventSettings.dataSource = []
+                            this.departmentGroupDataSource = [];
+                            if(oui.value){
+                                (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
+                                let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+                                // console.log(calendar)
+                                calendar.value = event.data[0]["StartTime"];
+                               
+        
+                        }else{
+                            this.refreshScheduler()
+                        }
+                    })
+                    this.editor = false // pour ne pas afficher la modale a chaque fois 
+                    }   
+                }    
           }
           if (((event.requestType === 'eventCreate') || (event.requestType === 'eventCreated')) && !this.isTreeItemDropped) {
               // CREATE CONTAINER ON CELL WITHOUT EVENT CLICK
               event.data[0]['AzaIsPere'] = true;
               console.log('action create and !== isTreeItemDropped');
+            //   if( this.dataToEdit!= undefined ){
+            //     let initialDate = this.dataToEdit.StartTime.getDate()
+            //     let changedDate = event.data[0]["StartTime"].getDate()
+            //     let date =  moment(event.data[0]["StartTime"]).format('DD-MM-YYYY').toString()
+            //     console.log(initialDate , changedDate)
+            //     if(initialDate !=  changedDate &&  this.editor ){
+            //         swal({
+            //             title: '',
+            //             text: `Souhaitez-vous naviguer vers la date: ${date}` ,
+            //             showCancelButton: true,
+            //             confirmButtonText: 'oui',
+            //             cancelButtonText: 'non',
+            //             allowOutsideClick:false
+                    
+            //         }).then((oui) => {
+            //             console.log(oui)
+            //             this.scheduleObj.eventSettings.dataSource = []
+            //             this.departmentGroupDataSource = [];
+            //             if(oui.value){
+            //                 (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
+            //                 let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+            //                 // console.log(calendar)
+            //                 calendar.value = event.data[0]["StartTime"];
+                           
+       
+            //         }else{
+            //             this.refreshScheduler()
+            //         }
+            //     })
+            //     this.editor = false
+            //     }
+            // }
           }
           if (event.requestType === 'eventRemove') {
               if (!event.data[0].AzaIsPere) {
@@ -4773,6 +5119,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       this.createContainer(newItemContainerFromMonteurAfterEditorUpdate);
                       console.log('this.timelineResourceDataOut ', this.timelineResourceDataOut)
                   });
+            
               }
   
               this.field['dataSource'] = this.newData;
@@ -4784,7 +5131,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                 let changedDate = event.data[0]["StartTime"].getDate()
                 let date =  moment(event.data[0]["StartTime"]).format('DD-MM-YYYY').toString()
                 console.log(initialDate , changedDate)
-                if(initialDate !=  changedDate){
+                if(initialDate !=  changedDate &&  this.editor ){
                     swal({
                         title: '',
                         text: `Souhaitez-vous naviguer vers la date: ${date}` ,
@@ -4803,11 +5150,12 @@ import { UtilisateurService } from "../services/utilisateur.service";
                             // console.log(calendar)
                             calendar.value = event.data[0]["StartTime"];
                            
-    
+       
                     }else{
                         this.refreshScheduler()
                     }
                 })
+                this.editor = false
                 }
             }
           } else { // CUSTOM FUNCTION
@@ -4848,8 +5196,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                      
               console.log(this.open, '----------------------------------------------')
               console.log(args.data,"args.data")
-          } else if ((args.requestType !== 'toolbarItemRendering') && (args.data["AzaIsPere"])) { // RESIZE CONTAINER
-              console.log('CALL CUSTOM ACTION BEGIN');
+        //   } else if ((args.requestType !== 'toolbarItemRendering') && (args.data["AzaIsPere"])) { // RESIZE CONTAINER
+        //       console.log('CALL CUSTOM ACTION BEGIN');
               // this.updateContainer(args);
               // args.data['Operateur'] = args.data['Operateur'] === 'Aucun Opérateur' ? '' : args.data['Operateur'];
               // let startDifferent = this.checkDiffExistById(args.data, this.timelineResourceDataOut, 'StartTime', 'StartTime');
@@ -4910,7 +5258,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
         } else if (args.requestType === 'eventChange') {
             data = <{ [key: string]: Object }>args.data;
         }
-        
+       // if (!this.scheduleObj.isSlotAvailable(data)) {
+         //   args.cancel = true;
+       //   }
     }
       }
   
@@ -4975,10 +5325,13 @@ import { UtilisateurService } from "../services/utilisateur.service";
            
         
             console.log(cellVide,"this.scheduleObj.isSlotAvailable")
+            console.log(this.openEditor, "open editor ==>")
+            console.log(this.startResize,"start resize ===>")
               if (e.data.AzaIsPere || (!e.data.AzaIsPere && e.data.isTempsReel ===0 && this.isTreeItemDropped)) {
                 console.log(e.data ," event in updatecontainer")
                 console.log(this.scheduleObj,'aaaaaaaaaaaaaaaaaaaaaaaaa')
-                  if(cellVide || ((decallage < lengthContainer) && e.data.CodeRessourceSalle ===  this.eventDragStart.CodeRessourceSalle ) ){
+                //cellVide ==> ture 
+                  if(cellVide ||  ((decallage < lengthContainer) && e.data.CodeRessourceSalle ===  this.eventDragStart.CodeRessourceSalle ) ){
                     console.log("************************************************* onaction complete : update container");
                   
                   this.updateContainer(e);
@@ -5329,11 +5682,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
       /********** Add Monteur  *********/
   
   public searchoperateur
-  public eventonselect
+ 
       onSelect(value,e) {
           console.log(e)
           console.log(value)
-          this.eventonselect = e
+        
           let monteurListArray;
           let fieldMonteur
           for (let i = 0; i < this.monteurListe.length; i++) {    
@@ -5425,12 +5778,12 @@ import { UtilisateurService } from "../services/utilisateur.service";
           this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
           this.scheduleObj.dataBind()
           console.log(this.departmentDataSource, this.departmentGroupDataSource)
-
+          console.log(this.idCoordinateur, this.listObj.value)
           if (this.listObj.value === this.idCoordinateur) {
-           
               this.isnotMyGroup = false
+              if(this.scheduleObj.currentView != "TimelineMonth"){
               this.scheduleObj.readonly = false
-           
+            }
           }
           console.log(this.timelineResourceDataOut, "...................")
       }
@@ -5540,9 +5893,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
               console.log(this.treeObjMonteur.getTreeData())
               let fieldMonteur = this.fieldMonteur['dataSource']
               if (this.searchStringM !== "") {
-
+                 console.log(fieldMonteur)
                   new DataManager(fieldMonteur).executeQuery(new Query().
-                      search(this.searchStringM, ['Username', 'libelletype', 'libellecategorie'], null, true, true)).then((e: ReturnOption) => {
+                      search(this.searchStringM, ['Username','Prenom' ,'libelletype', 'libellecategorie','Libelle'], null, true, true)).then((e: ReturnOption) => {
 
                           if ((e.result as any).length > 0) {
                               console.log(e.result, this.treeObjMonteur.fields['dataSource'])
@@ -5731,7 +6084,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       }
  
       menuclick(args: MenuEventArgs) {
-        console.log(this.eventonselect.element.ej2_instances[0], this.selectOperateur.value)
+    
         this.selectOperateur.value = null
           let targetNodeId: string = this.treeObjMonteur.selectedNodes[0];
          
@@ -5793,8 +6146,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
           let value = parseInt(e.value as string, 10);
           setTimeout(() => {
             this.scheduleObj.scrollTo(this.hourContainer)  
+            this.zoomWithScroll()
           }, 50);
-  
+ 
           console.log(this.intervalValueDay, e)
         //   this.scheduleObj.dataBind();
       
@@ -5802,7 +6156,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
      
       /*************************************************************************************** */
       onRenderCell(args: RenderCellEventArgs, value :CellTemplateArgs): void {
-       
+
           if (this.scheduleObj.currentView == 'TimelineWeek') {
               if (args.element.classList.contains('e-work-cells') && ((args.date.getDay() % 2) != 0)) {
                   args.element['style'].background = '#E5FCFD';
@@ -5850,7 +6204,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
   
   
       }
-public startResize
+public startResize = false
       onResizing(args: ResizeEventArgs) {
           console.log(args, "on resize..................")
           console.log(this.scheduleObj, "this.scheduleObj..................")
@@ -6031,51 +6385,58 @@ public startResize
 
               //     this.value = 30
 
-              this.scheduleObj.showTimeIndicator = true
-              // this.scheduleObj.timeScale.interval = this.value
+            //   this.scheduleObj.showTimeIndicator = true
+               this.scheduleObj.timeScale.interval = this.value
               console.log(this.scheduleObj.startHour, this.scheduleObj.endHour)
+             
           } else if (val === 2) { //jour
               this.scheduleObj.startHour = "06:00"
-              this.scheduleObj.endHour = "19:00"
-          
+              this.scheduleObj.endHour = "19:00" //intervale 
+       
               //     this.value = 30
-              this.scheduleObj.showTimeIndicator = true
-              // this.scheduleObj.timeScale.interval = this.value 
+            //   this.scheduleObj.showTimeIndicator = true
+              this.scheduleObj.timeScale.interval = this.value 
               console.log(this.scheduleObj.startHour, this.scheduleObj.endHour)
+              
           } else if (val === 3) { //soir
               this.scheduleObj.startHour = "18:00"
-              this.scheduleObj.endHour = "24:00";
-              this.scheduleObj.showTimeIndicator = true
+              this.scheduleObj.endHour = "23:59";
+            //   this.scheduleObj.showTimeIndicator = true
               // (document.querySelectorAll('.template-wrap')[i] )["style"].width = "100px"
               //     this.value = 30
 
-              // this.scheduleObj.timeScale.interval = this.value 
+               this.scheduleObj.timeScale.interval = this.value 
               console.log(this.scheduleObj.startHour, this.scheduleObj.endHour)
-
+          
           } else { //toute la journée
               this.scheduleObj.startHour = "00:00"
               this.scheduleObj.endHour = "24:00"
-              // this.scheduleObj.timeScale.interval = this.value
-              this.scheduleObj.showTimeIndicator = true
+              this.scheduleObj.timeScale.interval = this.value
+            //   this.scheduleObj.showTimeIndicator = true
+           
               this.onCreated()
           }
       }
 
 //Triggers when multiple cells or events are selected on the Scheduler.
-    offsetleft
-
+            offsetLeftCell 
+    public isCellClick
+    public debutCellClick
+    public finCellClick
       onSelectMultipleCell(args: SelectEventArgs) {
           console.log("on select =====>", args)
           args["showQuickPopup"] = true
           if(args["requestType"] === "cellSelect") {
           this.hourContainer = moment(args["data"]['StartTime']).subtract('h', 1).format('HH:mm')
-        
+        this.isCellClick = true
+        this.debutCellClick = args["data"]['StartTime']
+        this.finCellClick = args["data"]['StartTime']
           console.log(this.hourContainer)
-          console.log(this.scheduleObj.getCellDetails(args["element"]))
-      
-          let element = this.scheduleObj.getCellDetails(args["element"])
-          this.offsetleft =  args["element"].scrollWidth
-        
+          console.log(moment(args["data"]['StartTime']).format('x'))
+          console.log(moment(args["data"]['EndTime']).format('x'))
+          this.offsetLeftCell = args["element"]
+          console.log(this.offsetLeftCell)
+
         }
       }
 
@@ -6105,7 +6466,5 @@ public startResize
               }
              
           }
-
-
      
   }
