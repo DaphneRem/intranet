@@ -26,7 +26,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       // icon: 'icofont icofont-attachment',
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-4',
-      link: './my-deals-in-progress/0/asc',
+      link: './my-deals-in-progress/0/desc',
       color: fmInProgress
     },
     {

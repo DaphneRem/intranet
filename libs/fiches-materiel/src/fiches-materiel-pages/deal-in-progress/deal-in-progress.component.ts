@@ -28,7 +28,7 @@ export class DealInProgressComponent implements OnInit, OnDestroy {
   public tableTheme: string = 'light blue theme';
   public globalStore;
   public user;
-
+  public showNumFM: boolean = true;
   public data: FicheMateriel[];
   public dataReady: boolean;
 
