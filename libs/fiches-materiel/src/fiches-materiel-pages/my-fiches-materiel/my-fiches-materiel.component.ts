@@ -26,9 +26,10 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
   public headerTableLinkExist: boolean = false;
   public tableTitle: string = 'Mes fiches Matériel en cours';
   public tableTheme: string = 'light blue theme';
-  public daysNumber: number = 100;
+  public daysNumber: number = 1000;
   public isArchived: number = 0;
 
+  public getDataOnInit: boolean = true;
   public data: FicheMateriel[];
   public dataReady: boolean;
   public user: string;
@@ -86,7 +87,7 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
     this.storeAppSubscription();
-    this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
+    // this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
   }
 
   ngOnDestroy() {
