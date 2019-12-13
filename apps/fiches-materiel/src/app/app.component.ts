@@ -16,6 +16,8 @@ import { AuthService } from './auth/auth.service';
 
 import { UserMediawanService } from './auth/user-mediawan.service';
 import { UserMediawan } from './auth/user-mediawan';
+import { UserAppRightsService } from './rights-app/users-app-rights.service';
+import { UserAppRights } from './rights-app/user-app-rights';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 import { App, User } from './+state/app.interfaces';
@@ -32,6 +34,7 @@ import { config } from './../../../../.privates-url';
     Store,
     AuthService,
     UserMediawanService,
+    UserAppRightsService,
     RoutingState
     // AuthAdalService
   ]
@@ -47,6 +50,7 @@ subscription: Subscription;
     private authService: AuthService,
     private router: Router,
     private userMediawanService: UserMediawanService,
+    private userAppRightsService: UserAppRightsService,
     private routingState: RoutingState
     // private authAdalService: AuthAdalService,
     // private adal5Service: Adal5Service,
@@ -64,6 +68,7 @@ subscription: Subscription;
 
   public versionApp: string;
   public userMediawan: UserMediawan;
+  public allUsersRights: UserAppRights[];
   public globalStore;
   public navbarStoreOpen;
   public navbarState;
@@ -107,6 +112,7 @@ subscription: Subscription;
         this.emailUser = this.authService.userMSAL.displayableId;
         console.log('this.emailUser => ', this.emailUser);
         this.getUserMediawan(this.emailUser);
+        this.getRightsAllUsersFmApp();
       } else {
         console.log('Error whit this.authService.userMSAL => ', this.authService.userMSAL);
         // setTimeout(() => {
@@ -134,6 +140,16 @@ subscription: Subscription;
         this.userMediawan = data;
         console.log('userMediawan => ', data);
         this.displayUser();
+      });
+  }
+
+  getRightsAllUsersFmApp() {
+    // user = user.replace('@', '%40');
+    this.userAppRightsService
+      .getRightsUserFm()
+      .subscribe(data => {
+        this.allUsersRights = data;
+        console.log('appComponent call all user app fm => ', data);
       });
   }
 
