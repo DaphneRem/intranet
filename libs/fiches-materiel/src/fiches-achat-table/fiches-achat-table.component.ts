@@ -53,6 +53,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
     search: true,
     rowsMax: 10,
     lenghtMenu: [5, 10, 15],
+    defaultOrder: [[7, 'desc']],
     theme: 'blue theme',
     renderOption: true,
     reRenderOption: true,
@@ -292,6 +293,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
         }
       },
     ];
+    this.customdatatablesOptions.defaultOrder = [[this.customdatatablesOptions.columns.length - 1, 'desc']];
   }
 
 }
