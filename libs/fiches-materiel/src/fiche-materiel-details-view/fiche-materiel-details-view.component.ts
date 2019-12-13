@@ -445,7 +445,11 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
 
   displayStatusClassColor(status) {
     if (status.IdLibstatut === 1) {
-      return 'label label-info';
+      if (this.stepActive.IdLibEtape === 1) {
+        return 'label label-default';
+      } else {
+        return 'label label-info';
+      }
     } else if (status.IdLibstatut === 2) {
       return 'label label-canceled';
     } else if (status.IdLibstatut === 3) {
@@ -467,7 +471,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
     } else if (step.IdLibEtape === 25 || step.IdLibEtape === 18) { // color : red;
       return 'label bg-danger';
     } else if (step.IdLibEtape === 26) {
-      return 'label label-default';
+      return 'label label-EA';
     } else if (step.IdLibEtape === 5) {
       return 'label label-other';
     } else if (status.IdLibstatut === 3) {

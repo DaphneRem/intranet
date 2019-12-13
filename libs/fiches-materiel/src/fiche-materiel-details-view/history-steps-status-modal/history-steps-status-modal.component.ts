@@ -101,7 +101,11 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges, OnDe
 
   displayStatusClassColor(item) {
     if (item.IdLibstatut === 1) {
-      return 'label label-info';
+      if (item.IdEtape === 1) {
+        return 'label label-default';
+      } else {
+        return 'label label-info';
+      }
     } else if (item.IdLibstatut === 2) {
       return 'label label-canceled';
     } else if (item.IdLibstatut === 3) {
@@ -122,7 +126,7 @@ export class HistoryStepsStatusModalComponent implements OnInit, OnChanges, OnDe
     } else if (item.IdEtape === 25 || item.IdEtape === 18) { // color : red;
       return 'label bg-danger';
     } else if (item.IdEtape === 26) {
-      return 'label label-default';
+      return 'label label-EA';
     } else if (item.IdEtape === 5) {
       return 'label label-other';
     } else if (item.IdLibstatut === 3) {

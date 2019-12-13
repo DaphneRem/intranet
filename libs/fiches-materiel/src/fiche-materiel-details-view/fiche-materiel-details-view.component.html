@@ -265,10 +265,17 @@
 
             <p>Date Acceptation : 
               <span [ngClass]="!myFicheMateriel.DateAcceptation ? 'empty-field' : ''">
-                <span *ngIf="myFicheMateriel.DateAcceptation !== null">
+                <span 
+                  *ngIf="myFicheMateriel.DateAcceptation !== null && !myFicheMateriel.Renouvellement" 
+                  class="label label-success acceptation">
                   {{myFicheMateriel.DateAcceptation | date}}
                 </span>
-                <span *ngIf="myFicheMateriel.DateAcceptation === null">
+                <span 
+                  *ngIf="myFicheMateriel.Renouvellement" 
+                  class="label label-success acceptation">
+                  Renouvellement
+                </span>
+                <span *ngIf="myFicheMateriel.DateAcceptation === null && !myFicheMateriel.Renouvellement">
                   {{messageEmptyField}}
                 </span>
               </span>

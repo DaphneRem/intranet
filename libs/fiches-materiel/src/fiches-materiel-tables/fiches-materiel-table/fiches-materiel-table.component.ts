@@ -40,7 +40,10 @@ import { Status } from '../../models/status';
 @Component({
   selector: 'fiches-materiel-table',
   templateUrl: './fiches-materiel-table.component.html',
-  styleUrls: ['./fiches-materiel-table.component.scss'],
+  styleUrls: [
+    './fiches-materiel-table.component.scss',
+    '../../../../../assets/icon/icofont/css/icofont.scss'
+  ],
   providers : [
     FichesMaterielService,
     AnnexElementsService,
@@ -55,6 +58,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   @Input() headerTableLink?: string;
   @Input() tableTitle?: string;
   @Input() tableTheme?: string;
+  @Input() showNumFM?: boolean;
   @Input() data;
 
   private onDestroy$: Subject<any> = new Subject();
@@ -448,7 +452,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   getFichesMateriel() {
     this.customdatatablesOptions.data = this.data;
     console.log('this.customdatatablesOptions.data => ', this.customdatatablesOptions.data);
-    this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
+    this.customdatatablesOptions.defaultOrder = [
+      [this.columnParams, this.orderParams]
+    ];
     this.displayColumns();
     // this.fichesMaterielService
     //   .getFichesMateriel()
@@ -491,7 +497,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
               return data.Deadline.slice(0, 10);
             }
           } else {
-            return '<span style="color: red"><span style="color: transparent">9</span>Aucune Deadline</span>';
+            return '<span><span style="color: transparent">9</span>Aucune</span>';
           }
         },
       },
@@ -505,7 +511,11 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
             }
           });
           if (data.IdLibstatut === 1) {
-            return `<span class="label label-info">${currentItemLib.Libelle}</span>`;
+            if (data.IdLibEtape === 1) {
+              return `<span class="label label-default">${currentItemLib.Libelle}</span>`;
+            } else {
+              return `<span class="label label-info">${currentItemLib.Libelle}</span>`;
+            }
           } else if (data.IdLibstatut === 2) {
             return `<span class="label label-canceled">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 3) {
@@ -537,7 +547,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
             } else if (currentItemLib.IdLibEtape === 25 || currentItemLib.IdLibEtape === 18) {
                 return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>'; // color : red;
             } else if (currentItemLib.IdLibEtape === 26) {
-              return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
+              return '<span class="label label-EA">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
             }
           } else if (currentItemLib.IdLibstatut === 3) { // ACCEPTE
             return '<span class="label label-success">' + currentItemLib.Libelle + '</span>'; // color : green; #04B404
@@ -556,7 +566,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         }
       },
       {
-        title : 'E-Annexes',
+        title : 'Annexes',
         data : function ( data, type, row, meta ) {
           let currentItemLib;
           that.elementsAnnexesStatusLib.map(item => {
@@ -611,22 +621,24 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         }
       },
       {
-        title : 'Acceptation',
+        title : 'Accept.',
         data : function ( data, type, row, meta ) {
           if (data.DateAcceptation !== null && data.DateAcceptation !== undefined) {
             return '<span class="label label-success acceptation">' + data.DateAcceptation.slice(0, 10) + '</span>'; // color : green; #04B404
+          } else if (data.Renouvellement !== null && data.DateAcceptation !== undefined) {
+            return '<span class="label label-success acceptation">Renouv.</span>'; // color : green; #04B404
           } else {
             return data.DateAcceptation;
           }
         }
       },
       {
-        title : 'n°fiche achat',
+        title : 'fiche achat',
         data : 'numficheachat'
       },
       {
         title : 'type FA',
-        data : 'typefiche' // data manquante
+        data : 'typefiche'
       },
       {
         title : 'n° oeuvre',
@@ -649,7 +661,15 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         }
       },
     ];
-    console.log('display columns ok');
+    if (this.showNumFM) {
+      this.customdatatablesOptions.columns.unshift(
+        {
+          title: 'N° FM',
+          data: 'IdFicheMateriel'
+        }
+      );
+    }
+    console.log('display columns ok => ', this.customdatatablesOptions.columns);
     this.dataReady = true;
 
   }
