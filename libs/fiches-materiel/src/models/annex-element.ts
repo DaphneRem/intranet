@@ -15,6 +15,7 @@ export class AnnexElementSubCategory {
     IdLibElementAnnexes: number;
     IdCategorie: number;
     Libelle: string;
+    ordre: number;
     Fiche_Mat_ElementsAnnexes: any;
     Fiche_Mat_LibCategorieElementsAnnexes: any;
 }

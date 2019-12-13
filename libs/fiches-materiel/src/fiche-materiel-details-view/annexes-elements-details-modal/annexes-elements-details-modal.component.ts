@@ -101,8 +101,10 @@ export class AnnexesElementsDetailsModalComponent implements OnInit, OnDestroy {
       .getAnnexElementsAllSubCategories()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        console.log(data);
+        console.log('getAnnexElementsAllSubCategories() data => ', data);
+        data.sort((a, b) => a.ordre - b.ordre);
         this.annexElementsAllSubCategories = data;
+        console.log('getAnnexElementsAllSubCategories() data after sort() => ', data);
       });
   }
 
