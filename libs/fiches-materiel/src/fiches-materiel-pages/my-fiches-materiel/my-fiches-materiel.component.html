@@ -33,6 +33,8 @@
     <search-form *ngIf="user" 
       [autofields]="autofields" 
       [title]="tableTitle" 
+      [getDataOnInit]="getDataOnInit"
+      [showAllDataBtnOption]="true"
       (reloadOriginalData)="displayReloadOriginalData($event)"
       (dataResult)="displayNewDataFromComplexSearch($event)">
     </search-form>

@@ -65,6 +65,7 @@
         <i class="icofont icofont-search"></i>
       </button>
       <button 
+        *ngIf="showAllDataBtnOption"
         class="btn reply"
         (click)="replyOriginalData()"
         [placement]="'right'"
@@ -76,6 +77,16 @@
 <div *ngIf="!resultComplexSearchExist" class="row no-data-row">
   <div class="col-lg-12 no-data-message">
     <p>{{errorMesssage}}</p>
+  </div>
+</div>
+<div *ngIf="showOnlyInProgressBtn" class="row data-row">
+  <div class="col-lg-12 data-message">
+    <div class="checkbox-color checkbox-info">
+      <input [checked]="inProgressChecked" id="checkbox14" type="checkbox" (click)="checkOnlyInprogressChecked()">
+      <label for="checkbox14">
+        N'afficher que les fiches en cours
+      </label>
+    </div>
   </div>
 </div>
 <div *ngIf="displayOldComplexSearch" class="row data-row">

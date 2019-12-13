@@ -19,6 +19,8 @@
     <search-form 
       [autofields]="autofields"
       [title]="tableTitle"
+      [showAllDataBtnOption]="false"
+      [showOnlyInProgressBtn]="true"
       (reloadOriginalData)="displayReloadOriginalData($event)" 
       (dataResult)="displayNewDataFromComplexSearch($event)">
     </search-form>
