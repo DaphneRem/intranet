@@ -22,6 +22,7 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
   public reloadOriginalData: boolean;
   public headerTableLinkExist = false;
   public tableTitle = 'Toutes les fiches Matériel';
+  public tableTheme: string = 'default theme';
   public daysNumber = 100;
   public isArchived = 2;
 
@@ -76,7 +77,8 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
-    this.getFichesMaterielByIntervalCreationIsArchived(this.daysNumber, this.isArchived);
+    /********** GET ON COMPONENT INIT FOR DISPLAYING TABLE (OLD VERSION) **********/
+    // this.getFichesMaterielByIntervalCreationIsArchived(this.daysNumber, this.isArchived);
   }
 
   ngOnDestroy() {

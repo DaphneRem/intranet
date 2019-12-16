@@ -23,7 +23,7 @@ export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<any> = new Subject();
 
-
+  public tableTheme = 'green theme';
   public reloadOriginalData: boolean = false;
   public headerTableLinkExist: boolean = false;
   public tableTitle: string = 'Toutes mes fiches Matériel Archivées';
@@ -86,7 +86,8 @@ export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
     this.storeAppSubscription();
-    this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
+    /********** GET ON COMPONENT INIT FOR DISPLAYING TABLE (OLD VERSION) **********/
+    // this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);
   }
 
   ngOnDestroy() {

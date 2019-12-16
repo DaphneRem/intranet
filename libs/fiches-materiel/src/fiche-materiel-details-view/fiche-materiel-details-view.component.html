@@ -91,8 +91,16 @@
             </p>
             <p *ngIf="!myFicheAchatGlobalExist">N° fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
-            <p *ngIf="myFicheAchatGlobalExist">Type de fiche Achat : 
-              <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">{{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}</span>
+            <p *ngIf="myFicheAchatGlobalExist">Nom cessionnaire : 
+              <span [ngClass]="!myFicheAchatGlobal.nom_cessionnaire ? 'empty-field' : ''">
+                {{myFicheAchatGlobal.nom_cessionnaire ? myFicheAchatGlobal.nom_cessionnaire : messageEmptyField}}
+              </span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Nom cessionnaire : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="myFicheAchatGlobalExist">Type de fiche Achat :
+              <span [ngClass]="!myFicheAchatGlobal.libelle_type_fiche ? 'empty-field' : ''">
+                {{myFicheAchatGlobal.libelle_type_fiche ? myFicheAchatGlobal.libelle_type_fiche : messageEmptyField}}
+              </span>
             </p>
             <p *ngIf="!myFicheAchatGlobalExist">Type de fiche Achat : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
             <p *ngIf="myFicheAchatGlobalExist">
@@ -127,7 +135,15 @@
               <span *ngIf="myFicheAchatDetails.nombre_episodes" [ngClass]="!myFicheAchatDetails.nombre_episodes ? 'empty-field' : ''">
                 {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisode(s)' : '/'}}
               </span>
-              <span *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.Format_serie !== ''"> de {{myFicheAchatDetails.Format_serie}}</span>
+              <span *ngIf="!myFicheAchatDetails.nombre_episodes">
+                /
+              </span>
+              <span 
+                [placement]="'right'" 
+                [ngbTooltip]="myFicheAchatDetails.DurCom"
+                *ngIf="myFicheAchatDetails.nombre_episodes && myFicheAchatDetails.DurCom !== '' && myFicheAchatDetails.DurCom !== null">
+                de {{displayDurCom(myFicheAchatDetails.DurCom)}}
+              </span>
             </p>
             <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
@@ -160,12 +176,12 @@
                 {{myFicheMateriel.NomSupport ? myFicheMateriel.NomSupport : messageEmptyField}}
               </span> 
             </p>
-            <p *ngIf="myFicheAchatGlobal.chaines">Chaînes concernées :
-              <span *ngFor="let item of myFicheAchatGlobal.chaines; let x = index">
-                {{x === 0 ? item : ', '+item}}
+            <p *ngIf="myFicheAchatGlobal.lib_chaines">Chaînes concernées :
+              <span *ngFor="let item of myFicheAchatGlobal.lib_chaines; let x = index">
+                {{x === 0 ? item : ', ' + item}}
               </span>
             </p>
-            <p *ngIf="!myFicheAchatGlobal.chaines">Chaînes concernées : 
+            <p *ngIf="!myFicheAchatGlobal.lib_chaines">Chaînes concernées : 
               <span class="empty-field">
                 {{messageEmptyField}}
               </span>
@@ -177,7 +193,7 @@
       <div class="col-lg-4 fm-content">
         <div class="sections">
           <i class="icofont icofont-law section-icon"></i>
-          <div class="section-content">
+          <div class="section-content droits">
             <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
               <span [ngClass]="!myFicheAchatDetails.debut_des_droits ? 'empty-field' : ''">
                 <span *ngIf="myFicheAchatDetails.debut_des_droits !== null">
@@ -225,7 +241,7 @@
         </div>
         <div class="sections">
           <i class="icofont icofont-clock-time section-icon"></i>
-          <div class="section-content">
+          <div class="section-content livraison">
             <div style="display: flex;">
               <p>Dernière date de livraison :
                 <span [ngClass]="!myFicheMateriel.DateLivraison ? 'empty-field' : ''">
@@ -249,10 +265,17 @@
 
             <p>Date Acceptation : 
               <span [ngClass]="!myFicheMateriel.DateAcceptation ? 'empty-field' : ''">
-                <span *ngIf="myFicheMateriel.DateAcceptation !== null">
+                <span 
+                  *ngIf="myFicheMateriel.DateAcceptation !== null && !myFicheMateriel.Renouvellement" 
+                  class="label label-success acceptation">
                   {{myFicheMateriel.DateAcceptation | date}}
                 </span>
-                <span *ngIf="myFicheMateriel.DateAcceptation === null">
+                <span 
+                  *ngIf="myFicheMateriel.Renouvellement" 
+                  class="label label-success acceptation">
+                  Renouvellement
+                </span>
+                <span *ngIf="myFicheMateriel.DateAcceptation === null && !myFicheMateriel.Renouvellement">
                   {{messageEmptyField}}
                 </span>
               </span>

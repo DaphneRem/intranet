@@ -1,10 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import swal from 'sweetalert2';
 
+import { Store } from '@ngrx/store';
+import { SearchHistoryFormInterface } from './+state/search-history-form.interfaces';
+
+import { RoutingState } from '../services/routing-state.service';
+
 import { FichesMaterielService } from '../services/fiches-materiel.service';
 import { FicheMateriel } from '../models/fiche-materiel';
 import { FicheMaterielComplexSearch } from '../models/fiche-materiel-complex-search';
 import { complexSearchInit } from './complex-search-init';
+import { getDateFromRecurrenceDateString } from '@syncfusion/ej2-schedule/src/recurrence-editor/date-generator';
 
 @Component({
   selector: 'search-form',
@@ -14,23 +20,35 @@ import { complexSearchInit } from './complex-search-init';
     '../../../../assets/icon/icofont/css/icofont.scss'
   ],
   providers: [
-    FichesMaterielService
+    FichesMaterielService,
+    Store
   ]
 })
 export class SearchFormComponent implements OnInit {
   @Input() autofields;
   @Input() title;
+  @Input() getDataOnInit?: boolean;
+  @Input() showAllDataBtnOption: boolean;
+  @Input() showOnlyInProgressBtn?: boolean;
+
   @Output() dataResult = new EventEmitter<FicheMateriel[]>();
   @Output() reloadOriginalData = new EventEmitter<boolean>();
 
-  constructor(private fichesMaterielService: FichesMaterielService) { }
+  constructor(
+    private fichesMaterielService: FichesMaterielService,
+    private store: Store<SearchHistoryFormInterface>,
+    private routingState: RoutingState
+  ) { }
 
-
+  public globalStore;
+  public storeSearchHistoryFormData;
+  public previousUrl;
   public fmParameterToPost: FicheMaterielComplexSearch;
   public fmFromComplexSearch: FicheMateriel[];
   public resultComplexSearchExist: boolean;
   public errorMesssage: string;
   public displayOldComplexSearch: boolean = false;
+  public inProgressChecked: boolean = false;
   public oldComplexSearch = {
     SuiviPar: '',
     TitreEpisodeVO: '',
@@ -49,12 +67,62 @@ export class SearchFormComponent implements OnInit {
   };
 
   ngOnInit() {
+    console.log('showOnlyInProgressBtn => ', this.showOnlyInProgressBtn);
+    this.fmParameterToPost = complexSearchInit;
+    this.previousUrl = this.routingState.getPreviousUrl();
+    this.store.subscribe(data => (this.globalStore = data));
+    console.log('this.globalStore => ', this.globalStore);
+    this.storeSearchHistoryFormData = this.globalStore.searchHistoryForm;
+    console.log('this.storeSearchHistoryFormData => ', this.storeSearchHistoryFormData);
+    this.displayComplexSearchModel();
+    console.log('this.complexSearchModel => ', this.complexSearchModel);
+  }
+
+
+  displayComplexSearchModel() {
+    let detailUrl = 'details';
+    let modifUrl = 'modification';
+    console.log(this.previousUrl);
+    if ((typeof this.previousUrl !== 'undefined') || (this.previousUrl)) {
+      if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
+        this.complexSearchModel = this.storeSearchHistoryFormData;
+        this.displayDefaultFields();
+        this.displaySearchForm();
+      } else {
+        console.log('this.previousUrl => ', this.previousUrl);
+        this.resetSearchFormStore();
+        this.displayDefaultFields();
+        if (this.getDataOnInit) {
+          this.replyOriginalData();
+        }
+      }
+    } else {
+      console.log('this.previousUrl2 => ', this.previousUrl);
+      this.resetSearchFormStore();
+      this.displayDefaultFields();
+    }
+  }
+
+  displayDefaultFields() {
     if (this.autofields) {
       this.complexSearchModel.SuiviPar = this.autofields.SuiviPar;
       this.complexSearchModel.isarchived = this.autofields.isarchived;
+      this.oldComplexSearch.SuiviPar = this.autofields.SuiviPar;
+      this.oldComplexSearch.isarchived = this.autofields.isarchived;
     }
-    this.fmParameterToPost = complexSearchInit;
   }
+
+  addComplexSearchToStore(storeState) {
+    this.store.dispatch({
+      type: 'ADD_SEARCH_HISTORY-FORM',
+      payload: storeState
+    });
+  }
+  
+  resetSearchFormStore() {
+    this.store.dispatch({ type: 'RESET_SEARCH_HISTORY-FORM' });
+  }
+
 
   resetForm() {
     this.complexSearchModel = {
@@ -70,10 +138,7 @@ export class SearchFormComponent implements OnInit {
         this.fmParameterToPost[property] = this.complexSearchModel[property];
       }
     }
-    if (this.autofields) {
-      this.complexSearchModel.SuiviPar = this.autofields.SuiviPar;
-      this.complexSearchModel.isarchived = this.autofields.isarchived;
-    }
+    this.displayDefaultFields();
   }
 
   getFichesMaterielsComplexSearch(searchObject: FicheMaterielComplexSearch) {
@@ -111,6 +176,8 @@ export class SearchFormComponent implements OnInit {
   displaySearchForm() {
     console.log('displaySearchForm');
     console.log('this.complexSearchModel => ', this.complexSearchModel);
+    console.log('this.fmParameterToPost => ', this.fmParameterToPost);
+    console.log('this.oldComplexSearch => ', this.oldComplexSearch);
     console.log('this.autofields => ', this.autofields);
     this.oldComplexSearch = {
       SuiviPar: '',
@@ -122,16 +189,27 @@ export class SearchFormComponent implements OnInit {
     };
     if (JSON.stringify(this.complexSearchModel) !== JSON.stringify(this.autofields)) {
       for (let property in this.fmParameterToPost) {
-        if ((this.complexSearchModel[property])) {
+        if (this.complexSearchModel.hasOwnProperty(property)) {
           console.log('diff property => ', property, this.complexSearchModel[property]);
+          console.log('this.fmParameterToPost[property] => ', this.fmParameterToPost[property]);
+          console.log('this.oldComplexSearch[property] => ', this.oldComplexSearch[property]);
           this.fmParameterToPost[property] = this.complexSearchModel[property];
           this.oldComplexSearch[property] = this.complexSearchModel[property];
+        } else {
+          console.log('property in thiq.fmParameterToPost => ', property, this.fmParameterToPost[property]);
+          console.log('this.complexSearchModel => ', property, this.complexSearchModel[property]);
         }
       }
+      console.log('this.fmParameterToPost => ', this.fmParameterToPost);
+      console.log('this.oldComplexSearch => ', this.oldComplexSearch);
+      this.addComplexSearchToStore(this.oldComplexSearch);
       console.log('this.fmParameterToPost after update => ', this.fmParameterToPost);
       this.getFichesMaterielsComplexSearch(this.fmParameterToPost);
     } else {
       this.displayOldComplexSearch = false;
+      if (this.getDataOnInit) {
+        this.replyOriginalData();
+      }
       console.log('same value for this.complexSearchModel & this.autofields');
     }
   }
@@ -148,4 +226,13 @@ export class SearchFormComponent implements OnInit {
     this.dataResult.emit(this.fmFromComplexSearch);
   }
 
+  checkOnlyInprogressChecked() {
+    this.inProgressChecked = !this.inProgressChecked;
+    if (this.inProgressChecked && this.showOnlyInProgressBtn) {
+      this.complexSearchModel.isarchived = 0;
+    }
+    console.log('inProgressChecked => ', this.inProgressChecked);
+    console.log('showOnlyInProgressBtd => ', this.showOnlyInProgressBtn);
+    console.log('this.autofields => ', this.autofields);
+  }
 }

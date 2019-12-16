@@ -25,9 +25,10 @@ export class DealInProgressComponent implements OnInit, OnDestroy {
 
   public headerTableLinkExist = false;
   public tableTitle = 'Mes Deals en cours';
+  public tableTheme: string = 'light blue theme';
   public globalStore;
   public user;
-
+  public showNumFM: boolean = true;
   public data: FicheMateriel[];
   public dataReady: boolean;
 

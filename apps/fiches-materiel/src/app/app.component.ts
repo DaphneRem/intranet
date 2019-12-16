@@ -4,12 +4,20 @@ import { Store } from '@ngrx/store';
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import { RoutingState } from '@ab/fiches-materiel';
+
+/****** Version import ******/
+// const version: string = require('../../../../package.json').version; // FROM PACKAGE.JSON
+import { environment } from '../environments/environment'; // FROM ENVIRONEMENT
+
 // import { AuthAdalService } from './auth-adal.service';
 // import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
 import { AuthService } from './auth/auth.service';
 
 import { UserMediawanService } from './auth/user-mediawan.service';
 import { UserMediawan } from './auth/user-mediawan';
+import { UserAppRightsService } from './rights-app/users-app-rights.service';
+import { UserAppRights } from './rights-app/user-app-rights';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 import { App, User } from './+state/app.interfaces';
@@ -25,7 +33,9 @@ import { config } from './../../../../.privates-url';
   providers : [
     Store,
     AuthService,
-    UserMediawanService
+    UserMediawanService,
+    UserAppRightsService,
+    RoutingState
     // AuthAdalService
   ]
 })
@@ -39,11 +49,14 @@ subscription: Subscription;
     private appStore: Store<App>,
     private authService: AuthService,
     private router: Router,
-    private userMediawanService: UserMediawanService
+    private userMediawanService: UserMediawanService,
+    private userAppRightsService: UserAppRightsService,
+    private routingState: RoutingState
     // private authAdalService: AuthAdalService,
     // private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
+    this.displayVersionApp();
     // this.subscription = router.events.subscribe(event => {
     //   console.log(event);
     //   if (event instanceof NavigationStart) {
@@ -52,7 +65,10 @@ subscription: Subscription;
     // });
     // this.adal5Service.init(config);
   }
+
+  public versionApp: string;
   public userMediawan: UserMediawan;
+  public allUsersRights: UserAppRights[];
   public globalStore;
   public navbarStoreOpen;
   public navbarState;
@@ -79,6 +95,7 @@ subscription: Subscription;
     if (!this.authService.authenticated) {
       this.signIn();
     }
+    this.routingState.loadRouting();
     console.log(this.store);
     console.log(this.appStore);
     this.store.subscribe(data => (this.globalStore = data));
@@ -95,6 +112,7 @@ subscription: Subscription;
         this.emailUser = this.authService.userMSAL.displayableId;
         console.log('this.emailUser => ', this.emailUser);
         this.getUserMediawan(this.emailUser);
+        this.getRightsAllUsersFmApp();
       } else {
         console.log('Error whit this.authService.userMSAL => ', this.authService.userMSAL);
         // setTimeout(() => {
@@ -110,6 +128,10 @@ subscription: Subscription;
     this.subscription.unsubscribe();
   }
 
+  displayVersionApp() {
+    this.versionApp = environment.version;
+  }
+
   getUserMediawan(user) {
     // user = user.replace('@', '%40');
     this.userMediawanService
@@ -118,6 +140,16 @@ subscription: Subscription;
         this.userMediawan = data;
         console.log('userMediawan => ', data);
         this.displayUser();
+      });
+  }
+
+  getRightsAllUsersFmApp() {
+    // user = user.replace('@', '%40');
+    this.userAppRightsService
+      .getRightsUserFm()
+      .subscribe(data => {
+        this.allUsersRights = data;
+        console.log('appComponent call all user app fm => ', data);
       });
   }
 

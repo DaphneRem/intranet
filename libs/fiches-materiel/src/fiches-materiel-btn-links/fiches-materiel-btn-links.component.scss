@@ -1,50 +1,78 @@
-$inProgressColor : rgb(57, 173, 181);
-$archivedColor : rgb(23, 185, 120);
-$allMyColor : rgb(94, 212, 255);
-$allColor : #3844b5;
+@import "../../fiches-materiel-common-theme";
 
 button {
+    /****** MES fiches Materiel/deals en cours *****/
     &.btn-outline-info {
+        color: $fmInProgress;
+        border-color: $fmInProgress;
+        transition: all ease-in 0.3s;
+        &:hover {
+            color: #ffffff;
+            background-color: $fmInProgress !important;
+            border-color: $fmInProgress !important;
+            transition: all ease-in 0.3s;
+        }
+    }
+    &.in-progress-active, &.in-progress-deals-active { // ACTIVE
+        color: #ffffff;
+        background-color: $fmInProgress !important;
+        border-color: $fmInProgress !important;
+        transition: all ease-in 0.3s;
+    }
 
-    }
+    /****** Mes fiches Matériel archivées *****/
     &.btn-outline-success {
+        color: $fmArchived;
+        border-color: $fmArchived;
         transition: all ease-in 0.3s;
-    }
-    &.btn-outline-primary {
-        color: $allMyColor !important;
-        border-color: $allMyColor !important;
-        transition: all ease-in 0.3s;
-    }
-    &.btn-outline-inverse {
-        color: $allColor;
-        border-color: $allColor;
-    }
-    &.in-progress-active { // ACTIVE
-        color: #ffffff;
-        background-color: $inProgressColor !important;
-        border-color: $inProgressColor !important;
-        transition: all ease-in 0.3s;
-    }
-    &.in-progress-deals-active { // ACTIVE
-        color: #ffffff;
-        background-color: $inProgressColor !important;
-        border-color: $inProgressColor !important;
-        transition: all ease-in 0.3s;
+        &:hover {
+            color: #ffffff;
+            background-color: $fmArchived !important;
+            transition: all ease-in 0.3s;
+        }
     }
     &.archived-active { // ACTIVE
         color: #ffffff;
-        background-color: $archivedColor !important;
+        background-color: $fmArchived !important;
         transition: all ease-in 0.3s;
+    }
+
+    /****** Toutes MES fiches Matériel *****/
+    &.btn-outline-primary { 
+        color: $allMyFmColor !important;
+        border-color: $allMyFmColor !important;
+        transition: all ease-in 0.3s;
+        &:hover {
+            color: #ffffff !important;
+            border-color: $allMyFmColor !important;
+            background-color: $allMyFmColor !important;
+            transition: all ease-in 0.3s;
+        }
     }
     &.all-my-active { // ACTIVE
         color: #ffffff !important;
-        border-color: $allMyColor !important;
-        background-color: $allMyColor !important;
+        border-color: $allMyFmColor !important;
+        background-color: $allMyFmColor !important;
+        transition: all ease-in 0.3s;
+    }
+
+    /****** Toutes LES fiches Matériel *****/
+    &.btn-outline-inverse {
+        color: $allFm !important;
+        border-color: $allFm !important;
+        transition: all ease-in 0.3s;
+        &:hover {
+            background-color: $allFm !important;
+            border-color: $allFm !important;
+            color: #ffffff !important;;
+            transition: all ease-in 0.3s;
+        }
     }
     &.all-active { // ACTIVE
-        background-color: $allColor !important;
-        border-color: $allColor !important;
-        color: #ffffff;
+        background-color: $allFm !important;
+        border-color: $allFm !important;
+        color: #ffffff !important;;
+        transition: all ease-in 0.3s;
     }
 }
 

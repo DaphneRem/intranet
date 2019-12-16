@@ -53,9 +53,10 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   constructor(
     private modalService: NgbModal,
     private annexElementsService: AnnexElementsService
-  ) { }
+  ) {}
 
   ngOnInit() {
+    console.log('modalService ===> ', this.modalService);
     this.getAnnexElementsCategories();
     this.getAnnexElementsAllSubCategories();
     console.log('this.comments => ', this.comments);
@@ -104,7 +105,7 @@ export class AnnexesElementsModificationModalComponent implements OnInit, OnChan
   }
 
   openLg(annexesElementsToModif) {
-    this.modalService.open(annexesElementsToModif, { size: 'lg' });
+    this.modalService.open(annexesElementsToModif, { size: 'lg', backdrop: 'static' });
   }
 
 /*****************************************************************************************/

@@ -19,6 +19,7 @@
     <search-form 
       *ngIf="user" 
       [autofields]="autofields"
+      [showAllDataBtnOption]="false"
       [title]="tableTitle"
       (reloadOriginalData)="displayReloadOriginalData($event)"
       (dataResult)="displayNewDataFromComplexSearch($event)"
@@ -38,5 +39,6 @@
   *ngIf="dataReady"
   [headerTableLinkExist]="headerTableLinkExist"
   [data]="data"
+  [tableTheme]="tableTheme"
   [tableTitle]="tableTitle">
 </fiches-materiel-table>

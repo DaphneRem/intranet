@@ -1,6 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { Store } from '@ngrx/store';
+import {
+  DatatableFilteredData
+} from '@ab/fiches-materiel/src/fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.interfaces';
+
 import swal from 'sweetalert2';
 
 @Component({
@@ -9,6 +14,9 @@ import swal from 'sweetalert2';
   styleUrls: [
     './creative-form-fiches-materiel.component.scss',
     '../../../../../node_modules/sweetalert2/src/sweetalert2.scss'
+  ],
+  providers: [
+    Store
   ]
 })
 export class CreativeFormFichesMaterielComponent implements OnInit {
@@ -18,6 +26,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
 
   @Output() initStep = new EventEmitter();
 
+  public storeDatatableSearchData: DatatableFilteredData;
   public oeuvreWithGaps;
   public resetGaps = false;
   public arrayGaps: any;
@@ -34,13 +43,16 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
   public allGapsValid;
   public creationState: boolean;
   public modifExist: Boolean = false;
-
-  constructor( private router: Router ) {}
+  public numFicheAchat: string;
+  constructor(
+    private router: Router,
+    private store: Store<DatatableFilteredData>,
+  ) {}
 
   ngOnInit() {
     this.initDefaultModels();
+    this.store.subscribe(data => (this.storeDatatableSearchData = data['datatableFilteredData']));
   }
-
 
   displayTypeFicheMateriel(oeuvre) {
     if (oeuvre.nombre_episodes === null) {
@@ -367,6 +379,19 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     }
   }
 
+  
+  /********************************************************************/
+  /************************** STORE MANAGEMENT  ***********************/
+  /********************************************************************/
+
+  displayStoreDatatableSearchData(dataFilter) {
+    this.store.dispatch({type: 'ADD_DATATABLE_FILTER_DATA',
+      payload: {
+        searchDatatableData: dataFilter
+      }
+    });
+  }
+
   /********************************************************************/
   /************************** MODALS MANAGEMENT  **********************/
   /********************************************************************/
@@ -393,7 +418,14 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
           confirmButtonColor: '#17AAB2'
         }).then(result => {
           if (result.value) {
-            this.router.navigate([`/material-sheets/my-material-sheets/6/desc`]);
+            console.log('this.myFicheAchat.numero_fiche => ', this.myFicheAchat.numero_fiche);
+            let numFA = this.myFicheAchat.numero_fiche;
+            if (this.myFicheAchat !== null && typeof this.myFicheAchat !== 'undefined') {
+              if (numFA !== null && typeof numFA !== 'undefined') {
+                this.displayStoreDatatableSearchData(this.myFicheAchat.numero_fiche);
+              }
+            }
+            this.router.navigate([`/material-sheets/my-material-sheets/0/asc`]);
           }
         });
       } else {

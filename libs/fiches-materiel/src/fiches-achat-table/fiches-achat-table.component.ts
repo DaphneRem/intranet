@@ -53,6 +53,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
     search: true,
     rowsMax: 10,
     lenghtMenu: [5, 10, 15],
+    defaultOrder: [[7, 'desc']],
     theme: 'blue theme',
     renderOption: true,
     reRenderOption: true,
@@ -262,10 +263,12 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       {
         title : 'Distributeur', // ayant droit
         data : 'Distributeur',
+        className: 'datatable-fa-distributeur'
       },
       {
         title : 'chaines',
-        data : 'lib_chaines'
+        data : 'lib_chaines',
+        className: 'datatable-fa-chaines'
         // data: 'id_fiche'
       },
       {
@@ -274,7 +277,8 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
       },
       {
         title : 'Nom Cessionnaire',
-        data : 'nom_cessionnaire'
+        data : 'nom_cessionnaire',
+        className: 'datatable-fa-cessionnaire'
       },
       {
         title : 'Date Modif',
@@ -289,6 +293,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
         }
       },
     ];
+    this.customdatatablesOptions.defaultOrder = [[this.customdatatablesOptions.columns.length - 1, 'desc']];
   }
 
 }

@@ -385,28 +385,28 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
       });
   }
 
-  // displayDurCom(durCom: string): string {
-  //   console.log(durCom);
-  //   let arrayDurCom = durCom.split(':');
-  //   console.log(arrayDurCom);
-  //   let labels = ['heure', 'minute', 'seconde'];
-  //   let result = '';
-  //   arrayDurCom.map((item, index) => {
-  //     console.log(+item)
-  //     if (+item === 0) {
-  //       item = '';
-  //     } else {
-  //       let multiple = '';
-  //       if (+item > 1) {
-  //         multiple = 's';
-  //       }
-  //       item = ` ${+item} ${labels[index]}${multiple}`;
-  //     }
-  //     console.log(item);
-  //     result += item;
-  //   });
-  //   return result;
-  // }
+  displayDurCom(durCom: string): string {
+    console.log(durCom);
+    let arrayDurCom = durCom.split(':');
+    console.log(arrayDurCom);
+    let labels = ['heure', 'minute', 'seconde'];
+    let result = '';
+    arrayDurCom.map((item, index) => {
+      console.log(+item)
+      if (+item === 0) {
+        item = '';
+      } else {
+        let multiple = '';
+        if (+item > 1) {
+          multiple = 's';
+        }
+        item = ` ${+item} ${labels[index]}${multiple}`;
+      }
+      console.log(item);
+      result += item;
+    });
+    return result;
+  }
 
   getFicheAchatGlobal(id: number) {
     this.fichesAchatService
@@ -445,7 +445,11 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
 
   displayStatusClassColor(status) {
     if (status.IdLibstatut === 1) {
-      return 'label label-info';
+      if (this.stepActive.IdLibEtape === 1) {
+        return 'label label-default';
+      } else {
+        return 'label label-info';
+      }
     } else if (status.IdLibstatut === 2) {
       return 'label label-canceled';
     } else if (status.IdLibstatut === 3) {
@@ -467,7 +471,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
     } else if (step.IdLibEtape === 25 || step.IdLibEtape === 18) { // color : red;
       return 'label bg-danger';
     } else if (step.IdLibEtape === 26) {
-      return 'label label-default';
+      return 'label label-EA';
     } else if (step.IdLibEtape === 5) {
       return 'label label-other';
     } else if (status.IdLibstatut === 3) {

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { RoutingState } from '../../services/routing-state.service';
+
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
@@ -35,11 +37,13 @@ import { Step } from '../../models/step';
 import { StatusLibService } from '../../services/status-lib.service';
 import { Status } from '../../models/status';
 
-import { PreviousRouteService } from '../../services/previous-route-service';
 @Component({
   selector: 'fiches-materiel-table',
   templateUrl: './fiches-materiel-table.component.html',
-  styleUrls: ['./fiches-materiel-table.component.scss'],
+  styleUrls: [
+    './fiches-materiel-table.component.scss',
+    '../../../../../assets/icon/icofont/css/icofont.scss'
+  ],
   providers : [
     FichesMaterielService,
     AnnexElementsService,
@@ -53,9 +57,12 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   @Input() headerTableLinkExist: boolean;
   @Input() headerTableLink?: string;
   @Input() tableTitle?: string;
+  @Input() tableTheme?: string;
+  @Input() showNumFM?: boolean;
   @Input() data;
 
   private onDestroy$: Subject<any> = new Subject();
+  public displayOptionsBtnModif = false;
 
   public rerenderData;
   public globalStore;
@@ -88,7 +95,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   public statusLibReady: Boolean = false;
   public elementsAnnexesStatusLib: AnnexElementStatus[];
   public elementsAnnexesStatusLibReady: Boolean = false;
-
+  // public allDatarows = [];
   public previousUrl;
   public selectedRows = [];
   public sortingData;
@@ -108,7 +115,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     paging: true,
     search: true,
     rowsMax: 500,
-    lenghtMenu: [10, 50, 100, 500],
+    lenghtMenu: [10, 50, 100, 500, 1000],
     theme: 'blue theme',
     responsive : true,
     defaultOrder: [],
@@ -139,14 +146,17 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     private stepsLibService: StepsLibService,
     private statusLibService: StatusLibService,
     private annexElementsService: AnnexElementsService,
-    private previousRouteService: PreviousRouteService
+    private routingState: RoutingState
   ) {
   }
 
   ngOnInit() {
+    if (this.tableTheme) {
+      this.customdatatablesOptions.theme = this.tableTheme;
+    }
     this.customdatatablesOptions.renderOption = true;
-    this.previousUrl = this.previousRouteService.getPreviousUrl();
-    console.log(this.previousRouteService.getPreviousUrl());
+    this.previousUrl = this.routingState.getPreviousUrl();
+    console.log('this.previousUrl => ', this.previousUrl);
     this.customdatatablesOptions.tableTitle = this.tableTitle;
     this.sub = this.route.params.subscribe(params => {
       console.log(params);
@@ -161,8 +171,10 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     console.log(this.columnParams);
     console.log(this.orderParams);
     this.displayDatatable();
-    // this.displaySwalModalActions();
-    // this.displayBtnModifActions();
+
+    // this.displaySwalModalActions(); // OLD VERSION
+    // this.displayBtnModifActions(); // OLD VERSION
+
   }
 
   displayDatatable() {
@@ -188,8 +200,6 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       console.log('this.data after => ', this.data);
       this.rerenderData = this.data;
       this.getFichesMateriel();
-      // this.customdatatablesOptions = this.data;
-      // this.customdatatablesOptions.renderOption = true;
     } else {
       this.init++;
     }
@@ -199,13 +209,20 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   displayFilterData() {
     let detailUrl = 'details';
     let modifUrl = 'modification';
+    let creationUrl = 'creation';
     console.log(this.previousUrl);
-    if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
-      this.customdatatablesOptions.searchRecordedData = this.storeDatatableSearchData.searchDatatableData;
-    } else {
-      this.customdatatablesOptions.searchRecordedData = '';
-      if (this.storeDatatableSearchData.searchDatatableData !== '') {
-        this.store.dispatch({type: 'DELETE_DATATABLE_FILTER_DATA'});
+    if ((typeof this.previousUrl !== 'undefined') || (this.previousUrl)) {
+      if (
+        this.previousUrl.includes(detailUrl)
+        || this.previousUrl.includes(modifUrl)
+        || this.previousUrl.includes(creationUrl)
+      ) {
+        this.customdatatablesOptions.searchRecordedData = this.storeDatatableSearchData.searchDatatableData;
+      } else {
+        this.customdatatablesOptions.searchRecordedData = '';
+        if (this.storeDatatableSearchData.searchDatatableData !== '') {
+          this.store.dispatch({ type: 'DELETE_DATATABLE_FILTER_DATA' });
+        }
       }
     }
   }
@@ -282,29 +299,6 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     });
   }
 
-  // public allDatarows = [];
-  checkDataRow(dataRow) {
-    console.log('dataRow => ', dataRow);
-    let oneSelectionBtn = document.getElementById('one-selection');
-    let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
-    oneSelectionBtn.style.display = 'none';
-    multiSelectionBtn.style.display = 'none';
-    // let divToRemove = document.getElementsByClassName('modif-fm-btn');
-    // let dblFm = [];
-    // this.allDatarows.map(item => {
-    //   if (item.IdFicheMateriel === dataRow.IdFicheMateriel) {
-    //     dblFm.push(item);
-    //   }
-    // });
-    // if (dblFm.length === 0) {
-    //   this.allDatarows.push(dataRow);
-    // } else {
-    //   this.allDatarows = this.allDatarows.filter(item => item.IdFicheMateriel !== dataRow.IdFicheMateriel);
-    // }
-    // console.log('this.allDatarows after filter or push => ', this.allDatarows);
-  }
-
-  public displayOptionsBtnModif = false;
   AllSelectedRows(e) {
     this.selectedRows = e;
     console.log('this.selectedRows => ', this.selectedRows);
@@ -335,6 +329,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       });
       this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
     } else {
+      // OLD VERSION
       // swal({
       //     title : 'Options de modification',
       //     text: `Modifier uniquement la fiche Matériel n°
@@ -361,10 +356,15 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       //   tableCustom[0].innerHTML = `<div class="modif-fm-btn one-selection">Modifier la fiche</div><div class="modif-fm-btn all-oeuvres-selection">Modifier fiches de l'oeuvre</div>`;
       //   this.displayOptionsBtnModif = true;
       // }
-      let oneSelectionBtn = document.getElementById('one-selection');
-      let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
-      oneSelectionBtn.style.display = 'flex';
-      multiSelectionBtn.style.display = 'flex';
+      /***************** PERMET UNIQUEMENT L'AFFICHAGE DE L4OPTION "MODIFIER" : ****************/ // code à conserver
+      this.oneSelectionAction();
+      /*****************************************************************************************/
+      /****** PERMET L'AFFICHAGE DE L'OPTION DE MODIF "TOUTES LES FICHES DE L'OEUVRES" : *******/ // code à conserver
+      // let oneSelectionBtn = document.getElementById('one-selection');
+      // let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
+      // oneSelectionBtn.style.display = 'flex';
+      // multiSelectionBtn.style.display = 'flex';
+      /*****************************************************************************************/
     }
   }
 
@@ -383,33 +383,33 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
   }
 
-  allOeuvresSelection() {
-    this.checkOtherFmInOeuvre();
-    console.log('this.selectedOeuvre => ', this.selectedOeuvre);
-    if (this.selectedOeuvre.length > 1) {
-      this.store.dispatch({
-        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-        payload: {
-          modificationType: 'multi',
-          multiFicheAchat: false,
-          multiOeuvre: false,
-          selectedFichesMateriel: this.selectedOeuvre
-        }
-      });
-      this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-    } else {
-      this.store.dispatch({
-        type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-        payload: {
-          modificationType: 'one',
-          multiFicheAchat: false,
-          multiOeuvre: false,
-          selectedFichesMateriel: this.selectedId
-        }
-      });
-      this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
-    }
-  }
+  // allOeuvresSelection() {
+  //   this.checkOtherFmInOeuvre();
+  //   console.log('this.selectedOeuvre => ', this.selectedOeuvre);
+  //   if (this.selectedOeuvre.length > 1) {
+  //     this.store.dispatch({
+  //       type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+  //       payload: {
+  //         modificationType: 'multi',
+  //         multiFicheAchat: false,
+  //         multiOeuvre: false,
+  //         selectedFichesMateriel: this.selectedOeuvre
+  //       }
+  //     });
+  //     this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+  //   } else {
+  //     this.store.dispatch({
+  //       type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+  //       payload: {
+  //         modificationType: 'one',
+  //         multiFicheAchat: false,
+  //         multiOeuvre: false,
+  //         selectedFichesMateriel: this.selectedId
+  //       }
+  //     });
+  //     this.router.navigate([`/material-sheets/my-material-sheets/modification`]);
+  //   }
+  // }
 
   checkOtherFmInOeuvre() {
     this.selectedOeuvre = [];
@@ -428,133 +428,6 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       }
     });
   }
-
-  displayBtnModifActions() { // OLD VERSION WITH SWAL MODAL
-    const that = this;
-    let coco = this.selectedRows;
-    let router = this.router;
-    console.log(coco);
-    $(document).on('click', '.all-oeuvres-selection', function() {
-      console.log(coco);
-      console.log('one-selection');
-      that.selectedOeuvre = [];
-      that.customdatatablesOptions.data.map((item) => {
-        console.log(item);
-        // console.log(that.selectedRows[0].IdFicheDetail);
-        console.log(item.IdFicheDetail);
-        console.log(that.selectedRows[0].IdFicheDetail);
-        if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
-          console.log(item.IdFicheDetail);
-          that.selectedOeuvre.push(
-            {
-              idFicheMateriel: item.IdFicheMateriel,
-              idFicheAchat: item.IdFicheAchat,
-              idFicheAchatDetail: item.IdFicheDetail
-            }
-          );
-        }
-      });
-      if (that.selectedOeuvre.length > 1) {
-        that.store.dispatch({
-          type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-          payload: {
-            modificationType: 'multi',
-            multiFicheAchat: false,
-            multiOeuvre: false,
-            selectedFichesMateriel: that.selectedOeuvre
-          }
-        });
-        router.navigate([`/material-sheets/my-material-sheets/modification`]);
-      } else {
-        that.store.dispatch({
-          type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-          payload: {
-            modificationType: 'one',
-            multiFicheAchat: false,
-            multiOeuvre: false,
-            selectedFichesMateriel: that.selectedId
-          }
-        });
-        router.navigate([`/material-sheets/my-material-sheets/modification`]);
-      }
-    });
-    // $(document).on('click', '.one-selection', function() {
-    //   console.log('all-oeuvres-selection');
-    //   that.store.dispatch({
-    //     type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-    //     payload: {
-    //       modificationType: 'one',
-    //       multiFicheAchat: false,
-    //       multiOeuvre: false,
-    //       selectedFichesMateriel: that.selectedId
-    //     }
-    //   });
-    //   router.navigate([`/material-sheets/my-material-sheets/modification`]);
-    // });
-  }
-
-  // displaySwalModalActions() { // OLD VERSION WITH SWAL MODAL
-  //   const that = this;
-  //   let coco = this.selectedRows;
-  //   console.log(coco);
-  //   $(document).on('click', '.SwalBtn1', function() {
-  //         console.log(coco);
-  //     console.log('Coucou2');
-  //     that.selectedOeuvre = [];
-  //     that.customdatatablesOptions.data.map((item) => {
-  //       console.log(item);
-  //       // console.log(that.selectedRows[0].IdFicheDetail);
-  //       console.log(item.IdFicheDetail);
-  //       console.log(that.selectedRows[0].IdFicheDetail);
-  //       if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
-  //         console.log(item.IdFicheDetail);
-  //         that.selectedOeuvre.push(
-  //           {
-  //             idFicheMateriel: item.IdFicheMateriel,
-  //             idFicheAchat: item.IdFicheAchat,
-  //             idFicheAchatDetail: item.IdFicheDetail
-  //           }
-  //         );
-  //       }
-  //     });
-  //     if (that.selectedOeuvre.length > 1) {
-  //       that.store.dispatch({
-  //         type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-  //         payload: {
-  //           modificationType: 'multi',
-  //           multiFicheAchat: false,
-  //           multiOeuvre: false,
-  //           selectedFichesMateriel: that.selectedOeuvre
-  //         }
-  //       });
-  //     } else {
-  //       that.store.dispatch({
-  //         type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-  //         payload: {
-  //           modificationType: 'one',
-  //           multiFicheAchat: false,
-  //           multiOeuvre: false,
-  //           selectedFichesMateriel: that.selectedId
-  //         }
-  //       });
-  //     }
-
-  //     swal.clickConfirm();
-  //   });
-  //   $(document).on('click', '.SwalBtn2', function() {
-  //     console.log('Coucou1');
-  //     that.store.dispatch({
-  //       type: 'ADD_FICHE_MATERIEL_IN_MODIF',
-  //       payload: {
-  //         modificationType: 'one',
-  //         multiFicheAchat: false,
-  //         multiOeuvre: false,
-  //         selectedFichesMateriel: that.selectedId
-  //       }
-  //     });
-  //     swal.clickConfirm();
-  //   });
-  // }
 
   displayAction() {
     this.customdatatablesOptions.dbClickAction = (dataRow) => {
@@ -579,7 +452,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   getFichesMateriel() {
     this.customdatatablesOptions.data = this.data;
     console.log('this.customdatatablesOptions.data => ', this.customdatatablesOptions.data);
-    this.customdatatablesOptions.defaultOrder = [[this.columnParams, this.orderParams]];
+    this.customdatatablesOptions.defaultOrder = [
+      [this.columnParams, this.orderParams]
+    ];
     this.displayColumns();
     // this.fichesMaterielService
     //   .getFichesMateriel()
@@ -612,7 +487,6 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     this.customdatatablesOptions.columns = [
       {
         title : 'Deadline',
-        // data: 'Deadline'
         data : function ( data, type, row, meta ) {
           if (data.Deadline !== null) {
             let date = moment(data.Deadline).format('YYYY-MM-DD');
@@ -623,10 +497,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
               return data.Deadline.slice(0, 10);
             }
           } else {
-            return '<span style="color: red"><span style="color: transparent">9</span>Aucune Deadline</span>';
+            return '<span><span style="color: transparent">9</span>Aucune</span>';
           }
         },
-        // className: 'red'
       },
       {
         title : 'Statut',
@@ -638,7 +511,11 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
             }
           });
           if (data.IdLibstatut === 1) {
-            return `<span class="label label-info">${currentItemLib.Libelle}</span>`;
+            if (data.IdLibEtape === 1) {
+              return `<span class="label label-default">${currentItemLib.Libelle}</span>`;
+            } else {
+              return `<span class="label label-info">${currentItemLib.Libelle}</span>`;
+            }
           } else if (data.IdLibstatut === 2) {
             return `<span class="label label-canceled">${currentItemLib.Libelle}</span>`;
           } else if (data.IdLibstatut === 3) {
@@ -670,7 +547,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
             } else if (currentItemLib.IdLibEtape === 25 || currentItemLib.IdLibEtape === 18) {
                 return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>'; // color : red;
             } else if (currentItemLib.IdLibEtape === 26) {
-              return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
+              return '<span class="label label-EA">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8 && #FFFFFF
             }
           } else if (currentItemLib.IdLibstatut === 3) { // ACCEPTE
             return '<span class="label label-success">' + currentItemLib.Libelle + '</span>'; // color : green; #04B404
@@ -685,25 +562,11 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
             }
           } else {
             return '/';
-          //                 return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8
-          //   }  else if (currentItemLib.IdLibEtape > 6 && currentItemLib.IdLibEtape <= 10) {
-          //       return '<span class="label bg-primary">' + currentItemLib.Libelle + '</span>'; // color : red;
-          //   } else if (currentItemLib.IdLibEtape === 25 || currentItemLib.IdLibEtape === 18) {
-          //       return '<span class="label bg-danger">' + currentItemLib.Libelle + '</span>'; // color : red;
-          //   } else if (currentItemLib.IdLibEtape === 26) {
-          //     return '<span class="label label-default">' + currentItemLib.Libelle + '</span>'; // color: #a8a8a8
-          //   }
-          // } else if (currentItemLib.IdLibstatut === 2) { // ACCEPTE
-          //   return '<span class="label bg-info">' + currentItemLib.Libelle + '</span>'; // color : green;
-          // } else if (currentItemLib.IdLibstatut === 3) { // ANNULE
-          //   return '<span class="label bg-primary">' + currentItemLib.Libelle + '</span>';
-          // } else if (currentItemLib.IdLibstatut === 5) { // TRAITE PAR AUTRES SERVICES
-          //   return '<span class="label bg-success">' + currentItemLib.Libelle + '</span>';
           }
         }
       },
       {
-        title : 'E-Annexes',
+        title : 'Annexes',
         data : function ( data, type, row, meta ) {
           let currentItemLib;
           that.elementsAnnexesStatusLib.map(item => {
@@ -758,22 +621,24 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         }
       },
       {
-        title : 'Acceptation',
+        title : 'Accept.',
         data : function ( data, type, row, meta ) {
           if (data.DateAcceptation !== null && data.DateAcceptation !== undefined) {
-            return data.DateAcceptation.slice(0, 10);
+            return '<span class="label label-success acceptation">' + data.DateAcceptation.slice(0, 10) + '</span>'; // color : green; #04B404
+          } else if (data.Renouvellement !== null && data.DateAcceptation !== undefined) {
+            return '<span class="label label-success acceptation">Renouv.</span>'; // color : green; #04B404
           } else {
             return data.DateAcceptation;
           }
         }
       },
       {
-        title : 'n°fiche achat',
+        title : 'fiche achat',
         data : 'numficheachat'
       },
       {
         title : 'type FA',
-        data : 'typefiche' // data manquante
+        data : 'typefiche'
       },
       {
         title : 'n° oeuvre',
@@ -796,9 +661,169 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         }
       },
     ];
-    console.log('display columns ok');
+    if (this.showNumFM) {
+      this.customdatatablesOptions.columns.unshift(
+        {
+          title: 'N° FM',
+          data: 'IdFicheMateriel'
+        }
+      );
+    }
+    console.log('display columns ok => ', this.customdatatablesOptions.columns);
     this.dataReady = true;
 
   }
+
+  /****************************************************************************************/
+  /****************************** MODIF SELECTION BTN STYLE *******************************/
+  /****************************************************************************************/
+
+    // displaySwalModalActions() { // OLD VERSION WITH SWAL MODAL
+    //   const that = this;
+    //   let coco = this.selectedRows;
+    //   console.log(coco);
+    //   $(document).on('click', '.SwalBtn1', function() {
+    //         console.log(coco);
+    //     console.log('Coucou2');
+    //     that.selectedOeuvre = [];
+    //     that.customdatatablesOptions.data.map((item) => {
+    //       console.log(item);
+    //       // console.log(that.selectedRows[0].IdFicheDetail);
+    //       console.log(item.IdFicheDetail);
+    //       console.log(that.selectedRows[0].IdFicheDetail);
+    //       if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
+    //         console.log(item.IdFicheDetail);
+    //         that.selectedOeuvre.push(
+    //           {
+    //             idFicheMateriel: item.IdFicheMateriel,
+    //             idFicheAchat: item.IdFicheAchat,
+    //             idFicheAchatDetail: item.IdFicheDetail
+    //           }
+    //         );
+    //       }
+    //     });
+    //     if (that.selectedOeuvre.length > 1) {
+    //       that.store.dispatch({
+    //         type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+    //         payload: {
+    //           modificationType: 'multi',
+    //           multiFicheAchat: false,
+    //           multiOeuvre: false,
+    //           selectedFichesMateriel: that.selectedOeuvre
+    //         }
+    //       });
+    //     } else {
+    //       that.store.dispatch({
+    //         type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+    //         payload: {
+    //           modificationType: 'one',
+    //           multiFicheAchat: false,
+    //           multiOeuvre: false,
+    //           selectedFichesMateriel: that.selectedId
+    //         }
+    //       });
+    //     }
+    //     swal.clickConfirm();
+    //   });
+    //   $(document).on('click', '.SwalBtn2', function() {
+    //     console.log('Coucou1');
+    //     that.store.dispatch({
+    //       type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+    //       payload: {
+    //         modificationType: 'one',
+    //         multiFicheAchat: false,
+    //         multiOeuvre: false,
+    //         selectedFichesMateriel: that.selectedId
+    //       }
+    //     });
+    //     swal.clickConfirm();
+    //   });
+    // }
+
+    // displayBtnModifActions() { // OLD VERSION WITH SWAL MODAL
+    //   const that = this;
+    //   let coco = this.selectedRows;
+    //   let router = this.router;
+    //   console.log(coco);
+    //   $(document).on('click', '.all-oeuvres-selection', function () {
+    //     console.log(coco);
+    //     console.log('one-selection');
+    //     that.selectedOeuvre = [];
+    //     that.customdatatablesOptions.data.map((item) => {
+    //       console.log(item);
+    //       // console.log(that.selectedRows[0].IdFicheDetail);
+    //       console.log(item.IdFicheDetail);
+    //       console.log(that.selectedRows[0].IdFicheDetail);
+    //       if (item.IdFicheDetail === that.selectedRows[0].IdFicheDetail) {
+    //         console.log(item.IdFicheDetail);
+    //         that.selectedOeuvre.push(
+    //           {
+    //             idFicheMateriel: item.IdFicheMateriel,
+    //             idFicheAchat: item.IdFicheAchat,
+    //             idFicheAchatDetail: item.IdFicheDetail
+    //           }
+    //         );
+    //       }
+    //     });
+    //     if (that.selectedOeuvre.length > 1) {
+    //       that.store.dispatch({
+    //         type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+    //         payload: {
+    //           modificationType: 'multi',
+    //           multiFicheAchat: false,
+    //           multiOeuvre: false,
+    //           selectedFichesMateriel: that.selectedOeuvre
+    //         }
+    //       });
+    //       router.navigate([`/material-sheets/my-material-sheets/modification`]);
+    //     } else {
+    //       that.store.dispatch({
+    //         type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+    //         payload: {
+    //           modificationType: 'one',
+    //           multiFicheAchat: false,
+    //           multiOeuvre: false,
+    //           selectedFichesMateriel: that.selectedId
+    //         }
+    //       });
+    //       router.navigate([`/material-sheets/my-material-sheets/modification`]);
+    //     }
+    //   });
+    //   // $(document).on('click', '.one-selection', function() {
+    //   //   console.log('all-oeuvres-selection');
+    //   //   that.store.dispatch({
+    //   //     type: 'ADD_FICHE_MATERIEL_IN_MODIF',
+    //   //     payload: {
+    //   //       modificationType: 'one',
+    //   //       multiFicheAchat: false,
+    //   //       multiOeuvre: false,
+    //   //       selectedFichesMateriel: that.selectedId
+    //   //     }
+    //   //   });
+    //   //   router.navigate([`/material-sheets/my-material-sheets/modification`]);
+    //   // });
+    // }
+
+
+    checkDataRow(dataRow) {
+      console.log('dataRow => ', dataRow);
+      let oneSelectionBtn = document.getElementById('one-selection');
+      let multiSelectionBtn = document.getElementById('all-oeuvres-selection');
+      oneSelectionBtn.style.display = 'none';
+      multiSelectionBtn.style.display = 'none';
+      // let divToRemove = document.getElementsByClassName('modif-fm-btn');
+      // let dblFm = [];
+      // this.allDatarows.map(item => {
+      //   if (item.IdFicheMateriel === dataRow.IdFicheMateriel) {
+      //     dblFm.push(item);
+      //   }
+      // });
+      // if (dblFm.length === 0) {
+      //   this.allDatarows.push(dataRow);
+      // } else {
+      //   this.allDatarows = this.allDatarows.filter(item => item.IdFicheMateriel !== dataRow.IdFicheMateriel);
+      // }
+      // console.log('this.allDatarows after filter or push => ', this.allDatarows);
+    }
 
 }

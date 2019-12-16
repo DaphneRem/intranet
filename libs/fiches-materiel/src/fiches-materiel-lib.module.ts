@@ -14,9 +14,6 @@ import { ModalsModule } from '@ab/modals';
 import { SubHeaderModule } from '@ab/sub-header';
 import { WidgetsModule } from '@ab/widgets';
 
-// services impots
-import { PreviousRouteService } from './services/previous-route-service';
-
 // components pages imports
 import { DisplayFichesAchatsComponent } from './fiches-materiel-pages/display-fiches-achats/display-fiches-achats.component';
 import { FichesMaterielCreationComponent } from './fiches-materiel-pages/fiches-materiel-creation/fiches-materiel-creation.component';
@@ -177,9 +174,6 @@ import { FichesMaterielBtnLinksComponent } from './fiches-materiel-btn-links/fic
     StepsStatusCommentModalComponent,
     WarningAcceptedStatusComponent,
     AnnexesElementsDetailsModalComponent
-  ],
-  providers: [
-    PreviousRouteService
   ]
 })
 export class FichesMaterielLibModule {}
