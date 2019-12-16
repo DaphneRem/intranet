@@ -256,7 +256,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public btnRegieMessageAll
       public colorReadOnly
       public currentView: View = 'TimelineDay';
-      public workHours: WorkHoursModel = { start: '06:00', end: '23:00', highlight: true };
+      public workHours: WorkHoursModel = { start: '00:00', end: '23:00', highlight: true };
       public weekNumber = true
       public cssClass: string = 'custom';
       public readonly: boolean = true;
@@ -264,8 +264,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public openEditorCount = 0;
       public creationArray = [];
       public newData = [];
-      public startHour: string = '00:00';
-      public endHour: string = '01:00';
+      //public startHour: string = '00:00';
+     // public endHour: string = '01:00';
       public timeScale: TimeScaleModel = { enable: true, interval: 60, slotCount: 2 };
    
       public colorStatut: Object[] = [
@@ -291,8 +291,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
         { text: 'Plage horaire soir', Code:3 },
         { text: 'Toute la journée', Code:4 }
     ]
-    public fieldPlagesHoraires = { text: 'text', value:'Code' };
-  public  choixPlagesHoraires = "Plages horaire"
+      public fieldPlagesHoraires = { text: 'text', value:'Code' };
+      public  choixPlagesHoraires = "Plages horaire"
       // BACKLOGS INIT
       public waitingList;
       public headerText: Object = [{ 'text': 'WorkOrder' }, { 'text': 'Operateur' }];
@@ -435,7 +435,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       ) {
           console.log('******* constructor start *******');
           this.isnotMyGroup = false;     
-            
+         
           document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
               let btnrefresh = document.getElementById('btn-refresh');
               let btnrefreshWo = document.getElementById('btn-refreshWo');
@@ -462,24 +462,22 @@ import { UtilisateurService } from "../services/utilisateur.service";
   
           })
         //   let schedule+++--+-+-+--Element = document.getElementsByClassName('e-table-container');
-           let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-  
+        //    let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
+         
            document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
-            // let idSchedule  = document.getElementById('schedule');
-            if(this.isClickZoom){
+            let scheduleElement: Element = document.querySelector('.e-schedule');
+            let scheduleObj: Schedule = ((scheduleElement as EJ2Instance).ej2_instances[0] as Schedule);
+            // if(this.isClickZoom){
             if (eKey.key === '-' ) {
                 // -------------------------------------------------           
             this.isClickZoom = false
                 this.intervalChanged = true;
                 this.value = this.value + this.valueAdd;
-                this.scheduleObj.timeScale.interval = this.value;     
-                let cell = document.querySelectorAll('.e-work-cells') as any;
-                // this.offsetCell = this.offsetCell 0
-                console.log(  this.offsetCell ,"====> ++++")
-  
-                // this.scheduleObj.refreshEvents();
+                scheduleObj.timeScale.interval += 10;     
+          
                 setTimeout(() => {
                     this.zoomWithScroll()
+                    
                 }, 100);
                 this.eventSettings.dataSource = this.timelineResourceDataOut
                 console.log(this.value , this.valueMax)
@@ -490,16 +488,12 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       //+++++++++++++++++++++++             
                       this.intervalChanged = true;
                       this.value = this.value - this.valueAdd;
-                      this.scheduleObj.timeScale.interval = this.value ;
-                    //   this.scheduleObj.refreshEvents() ; 
-                    let cell = document.querySelectorAll('.e-work-cells') as any;
-                    // this.offsetCell =this.offsetCell + 100
-                    console.log(  this.offsetCell ,cell[0],"====> ----")
+                      scheduleObj.timeScale.interval -=10;
+                
                     setTimeout(() => {
-                        this.zoomWithScroll()
+                        this.zoomWithScroll()  
                     }, 100);
-                     
-                    //   (document.querySelectorAll('.e-content-wrap')[0]).scrollLeft = this.offsetxEvent
+            
               if(this.value === 5){    
 
               }
@@ -508,32 +502,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
               this.eventSettings.dataSource = this.timelineResourceDataOut
                }
 
-           }
-        }
-        //    if(this.hourContainer == undefined){
-        //     this.hourContainer =moment().subtract(1,'hour').format('HH:mm'); 
-        //     console.log(this.hourContainer)
         //    }
-    //        if(eKey.keyCode === 107  || eKey.keyCode === 109 ){
-    //         //    this.scheduleObj.element["ej2_instances"][0].isAdaptive = true
-    //         //    this.scheduleObj.element["ej2_instances"][0].showQuickInfo = false
-    //            console.log("aaaaa")   
-    //            if(this.scheduleObj.currentView === "TimelineWeek"){
-    //             this.intervalValue = this.value.toString()
-    //         }else{
-    //             this.intervalValueDay = this.value.toString()
-    //            }
-              
+        }
    
-    //      if(this.scheduleObj.currentView != "TimelineWeek"){
-    //         // this.scheduleObj.scrollTo(this.hourContainer)  
-            
-    //     }else{
-           
-     
-    //    }
-      
-    //     }
 
         }, true);
        
@@ -542,35 +513,16 @@ import { UtilisateurService } from "../services/utilisateur.service";
       }
      public scrollLeft
       ngOnInit() {
-        
-        //   this.scheduleObj.enablePersistence = false;
-        //   this.scheduleObj.allowKeyboardInteraction = true;
-        //   this.treeObj.enablePersistence = false;
-          // this.toggleBtn.content = 'Voir toutes les Régies';
+
           this.activeViewTimelineDay = this.scheduleObj;
-          // console.log(hospitalData); 
-          // console.log(this.data);
-          // this.storeAppSubscription();
           console.log(this.store);
-          // this.getMonteur(10);
-          // this.getAllContainer();
-          // this.getContainersByRessource(118);
           console.log(this.selectedDate, moment().add(1, 'd').toDate());
-          // this.getWorkorderByContainerId(1);
-          //  this.getWorkOrderByidGroup(1)
-          // this.getWorkOrderByidGroup(3);
-          //  this.getSalleByGroup(10);
-         
+          
+
           this.storeAppSubscription();
           window.addEventListener('scroll', this.scroll, true);    
-         
-        //    window.addEventListener('beforeunload', function (e) {
-        //     // Cancel the event
-        //     e.preventDefault();
-        //     // Chrome requires returnValue to be set
-        //     e.returnValue = '';
-        //     // return "Êtes-vous sure de vouloir quitter le k-planner ?"
-        //   });
+          this.getStatut();
+        
       }
   
     @HostListener('mouseenter') onMouseEnter() {
@@ -604,7 +556,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       }
       ngAfterViewInit() {
           this.departmentDataSource = this.departmentGroupDataSource;
-      
+        
   
       }
   
@@ -620,65 +572,48 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public hiderefresh: boolean 
       refreshScheduler() {
           console.log(this.scheduleObj,this.disabledrefresh);
+          this.departmentGroupDataSource = [];
           this.disabledrefresh = true;
           this.hiderefresh = true;
           this.planningChanged = false ;
-          console.log('refresh scheduler click in refreshScheduler() => ', this.disabledrefresh);
+          console.log('refresh scheduler click in refreshScheduler() => ', this.disabledrefresh );
           this.scheduleObj.eventSettings.dataSource = []
           this.timelineResourceDataOut = []
           this.allDataWorkorders = []
-          this.departmentDataSource = [];
-          this.departmentDataSourceAll = [];
-          this.departmentGroupDataSource = [];
+        //   this.departmentDataSource = [];
+        //   this.departmentDataSourceAll = []; /bug btn rafraichir les regis sont pas charger 
           this.allDataContainers = [];
-     
           this.openEditorCount = 0;
+        
           console.log(this.scheduleObj.currentView, 'currentView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
           console.log('refresh scheduler click in refreshScheduler() => ');
           console.log('isClicked : ', this.isClicked);
           console.log('this.refreshDateStart => ', this.refreshDateStart);
           console.log('this.refreshDateEnd => ', this.refreshDateEnd);
           this.refreshDate()
+          if(this.departmentGroupDataSource.length == 0 ){
           this.getSalleByGroup( this.idGroupeCoordinateur, this.refreshDateStart, this.refreshDateEnd);
-        
+        }
           console.log('this.refreshDateStart : ', this.refreshDateStart);
           console.log('this.refreshDateEnd : ', this.refreshDateEnd);
           console.log('refresh scheduler with my regies group');
           console.log(this.timelineResourceDataOut)
 
-          this.departmentDataSource = this.departmentGroupDataSource;
+        //   this.departmentDataSource = this.departmentGroupDataSource; //bug btn rafraichir
           this.openEditorCount = 0;
   // ******************************************************garder l'etat des barre de recherche******************************************************
-          if (this.searchString != undefined) {
-              console.log("clic bouton refresh ")
-              this.searchwo.value = this.searchString
-              this.onFilter(this.searchwo.value, 0, this.argsKeyboardEvent)
-          } else {
-          }
-
-      
-        
-               
+        //   if (this.searchString != undefined) {
+        //       console.log("clic bouton refresh ")
+        //       this.searchwo.value = this.searchString
+        //       this.onFilter(this.searchwo.value, 0, this.argsKeyboardEvent)
+        //   } else {
+        //   }       
         //*****************************************************garder l'etat des checkboxs *************************************************************
           this.Check = 0
        setTimeout(() => {                   
-              if (this.theorique.checked == false) {
-                this.CheckTheoriqueNavig = false
-  
-            }else{
-                this.CheckTheoriqueNavig = true
-            }
             this.onChangeDataSource()
-              }, 800);
-
-
             
-            // this.eventSettings = {
-            //     dataSource: <Object[]>extend(
-            //         [], this.timelineResourceDataOut, null, true
-            //     ),
-            //     enableTooltip: true, tooltipTemplate: this.temp
-            // };
+              }, 1000);
             }
       public disabledrefreshBacklog:boolean =true
   
@@ -694,10 +629,18 @@ import { UtilisateurService } from "../services/utilisateur.service";
               // if (!this.navigation ) {
                   let valueSearch = document.getElementsByClassName('recherche-wo');
                   console.log("clic bouton refresh ", this.searchString, this.argsKeyboardEvent)
-                  this.searchwo.value = ""
+                //   this.searchwo.value = ""
                  
                   console.log(this.searchString,valueSearch)
-         
+                  setTimeout(() => {
+                    if (this.searchString != undefined) {
+                        console.log("clic bouton refresh ")
+                        this.searchwo.value = this.searchString
+                        this.onFilter(this.searchwo.value, 0, this.argsKeyboardEvent)
+                    } else {
+                    }   
+                  }, 200);
+          
          
       }}
   refreshDate(){
@@ -723,7 +666,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               
                     console.log('COORDINATEUR => ', this.itemCoordinateur, this.idGroupeCoordinateur );
                     this.getTypeRessourceMonteur()
-                this.getStatut()
+               
                 this.getSalleByGroup(this.groupeCoordinateur, startofDay, endofDay);
                 this.getMonteursByGroup(this.groupeCoordinateur);
                 this.getWorkOrderByidGroup(this.groupeCoordinateur);
@@ -749,7 +692,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log('event clicked !!!!!!!!!!!',e);
      
           this.eventClick = true;
-
+this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
       }
       public eventHoverData
       onHover(args :HoverEventArgs ){
@@ -770,44 +713,46 @@ import { UtilisateurService } from "../services/utilisateur.service";
   
       zoomWithScroll(){
         console.log(this.offsetLeftCell)
-     
+        this.scheduleObj.element["ej2_instances"][0].refreshEvents()
         let len = document.querySelectorAll('.e-appointment').length;  
-        if(!this.isCellClick){
+        if(this.eventHoverData != null){
         for (let i = 0; i < len; i++) {
           let event = document.querySelectorAll('.e-appointment')[i] as any;
       
         console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-
+     if(this.eventHoverData != null){  
           if (event.getAttribute("data-id") === this.eventHoverData.dataset.id) { 
             console.log(event,'event ')
             // console.log((event.getAttribute("aria-label") === this.eventClickData['Name']))
             // document.querySelector('.e-content-wrap').scrollTop = document.querySelector('.e-content-wrap').scrollTop;
             document.querySelector('.e-content-wrap').scrollLeft = event.offsetLeft ;
+            this.scheduleObj.dataBind()
             this.isClickZoom = true
           }else {
             // document.querySelector('.e-content-wrap').scrollLeft = this.offsetLeftCell
             this.isClickZoom = true
           }
-
-        } }else{
-            let cell = document.querySelectorAll('.e-work-cells') as any;
-            console.log("Cell click",this.offsetCell  )
+        }
+        } }
+       //else{
+           // let cell = document.querySelectorAll('.e-work-cells') as any;
+          //  console.log("Cell click",this.offsetCell  )
       
                     
-            for(let i = 0 ; i<cell.length ; i++){
-                      if (this.offsetLeftCell.dataset.date === cell[i].dataset.date && this.offsetLeftCell.dataset.groupIndex === cell[i].dataset.groupIndex ){
-                        console.log(cell[i],'event ')
-                        // document.querySelector('.e-content-wrap').scrollLeft = 
-                        document.querySelector('.e-content-wrap').scrollLeft = cell[i].offsetLeft || cell[i].offsetLeft +100 || cell[i].offsetLeft -100   
-                        console.log( document.querySelector('.e-content-wrap').scrollLeft)
-                    }
-                    if(i === cell.length - 1){
-                        this.isClickZoom = true
-                    }
-                      }
+          //  for(let i = 0 ; i<cell.length ; i++){
+          //            if (this.offsetLeftCell.dataset.date === cell[i].dataset.date && this.offsetLeftCell.dataset.groupIndex === cell[i].dataset.groupIndex ){
+         //               console.log(cell[i],'event ')
+           //             // document.querySelector('.e-content-wrap').scrollLeft = 
+           //             document.querySelector('.e-content-wrap').scrollLeft = cell[i].offsetLeft || cell[i].offsetLeft +100 || cell[i].offsetLeft -100   
+           //             console.log( document.querySelector('.e-content-wrap').scrollLeft)
+          //          }
+          //          if(i === cell.length - 1){
+           //             this.isClickZoom = true
+           //         }
+           //           }
             
                    
-         }
+        // }
       } 
    
 //    
@@ -852,15 +797,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       console.log('regie departmentDataSource', this.departmentDataSource);
                       console.log('item code salle fot container request : ', item.CodeSalle);
                       // this.getContainersByRessource(item.CodeRessource);
-                  }); 
-                  this.filterAfterRefresh ();
-                  // let startofDay = moment().toDate()
-                  // let endofDay = moment().add(1, 'd').toDate();
-                  this.timelineResourceDataOut = []
-                //   if(this.firstCallGetContainersByRessourceStartDateEndDate == 0 ){
-                  this.salleDataSource.forEach(salle => {
-                 
-                      let indexSalle = this.salleDataSource.indexOf(salle);
+                      let indexSalle = this.salleDataSource.indexOf(item);
                       if(indexSalle === (this.salleDataSource.length - 1)){
                         this.lastSalle = true 
                         console.log(this.salleDataSource[indexSalle],"-----------------------------lastSalle")
@@ -869,10 +806,10 @@ import { UtilisateurService } from "../services/utilisateur.service";
                     
                   // lors du demmarage de l'application 
                       this.getContainersByRessourceStartDateEndDate(
-                          salle.CodeRessource,
+                         item.CodeRessource,
                           start,
                           end,
-                          salle.CodeSalle,
+                          item.CodeSalle,
                           indexSalle,
                           idGroup
                       );
@@ -885,34 +822,21 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       if(  this.planningChanged || this.clicFermerOnActionComplete ){  
                           if(this.reel.checked){
                               console.log(" this.planningChanged  was changed ", idGroup)
-                      this.getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroup, debut,fin,salle.CodeRessource,salle.CodeSalle) 
+                      this.getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroup, debut,fin,item.CodeRessource,item.CodeSalle) 
                     
                     }
                 }
+                  }); 
+                  this.filterAfterRefresh();
+                  // let startofDay = moment().toDate()
+                  // let endofDay = moment().add(1, 'd').toDate();
+                //   this.timelineResourceDataOut = []
+                //   if(this.firstCallGetContainersByRessourceStartDateEndDate == 0 ){
+                  this.salleDataSource.forEach(salle => {
+                 
+                   
                   });
-                  
-                // } 
-                //  if(this.firstCallGetContainersByRessourceStartDateEndDate == 1){
-                //     console.log(this.firstCallGetContainersByRessourceStartDateEndDate, this.departmentDataSource," call when we refresh")
-                //     this.salleDataSource.forEach(salle => {
-                //               let indexSalle = this.salleDataSource.indexOf(salle);
-                //               console.log('--------------------------------------------------indexSalle => ', indexSalle);
-                
-                             
-                                  
-                //                   this.getContainersByRessourceStartDateEndDate(
-                //                       salle.CodeRessource,
-                //                       this.refreshDateStart,
-                //                       this.refreshDateEnd,
-                //                       salle.CodeSalle,
-                //                       indexSalle,
-                //                       this.groupCoordinateur
-                //                   );
-                             
-                       
-                //           });
-                // }
-                  
+            
               })
               this.listeRegies = this.departmentGroupDataSource
         
@@ -1327,6 +1251,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       containerEvent.map(data => {
                           indexContainer = containerEvent.indexOf(data)
                       })
+                      console.log(this.allDataWorkorders)
                       //    if){
                       if ((indexContainer === (containerEvent.length - 1)) && (indexSalle === (this.salleDataSource.length - 1))  ) {
                           this.lastSalleCall = true;
@@ -1892,7 +1817,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       console.log('ERROR POST CONTAINER !!', error);
                       swal({
                           title: 'Attention',
-                          html: 'La création est impossible car l\'emplacement est occupé par un autre container De :'+ error.listinterval.DateDebutTheo+ 'à' +error.listinterval.DateFinTheo  +' <br> <br> Veuillez cliquer sur le bouton  Rafraichir pour l\'afficher',
+                          html: 'La création est impossible car l\'emplacement est occupé par un autre container  ' ,
                           showCancelButton: true,
                           confirmButtonText: 'Rafraichir',
                           cancelButtonText: 'Annuler',
@@ -2062,7 +1987,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
             //   .pipe(takeUntil(this.onDestroy$))
             //   .subscribe(res => {
               .then(res => {
-               
+                if(!res["error"]){
                   console.log('succes update container. RES : ', res);
                   console.log(this.allDataContainers, 'allDataContainers')
                   let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
@@ -2174,7 +2099,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.disabledrefresh = false
                   this.startResize = false
                   this.openEditor = false 
-                  if(res["error"]){
+                }else{
                     console.log('error updatecontainer');
                     this.disabledrefresh = false
                     this.openEditor = false 
@@ -2182,9 +2107,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   //   this.scheduleObj.readonly = false
                     swal({
                         title: 'Attention',
-                        html: 'Le déplacement est impossible car l\'emplacement est occupé par un autre container. <br> <br> Veuillez cliquer sur le bouton  Rafraichir pour l\'afficher',
+                        html: 'Le déplacement est impossible car l\'emplacement est occupé par un autre container.',
                         showCancelButton: false,
-                        confirmButtonText: 'Rafraichir',
+                        confirmButtonText: 'Fermer',
                         cancelButtonText: 'Annuler',
                         allowOutsideClick:false
                     }).then((refresh) => {
@@ -2207,40 +2132,41 @@ import { UtilisateurService } from "../services/utilisateur.service";
                         enableTooltip: false //disable tooltip
                     };
                 }
-              }, error => {
-                  console.error('error updatecontainer', error);
-                  this.disabledrefresh = false
-                  this.openEditor = false 
-                  this.startResize= false
-                //   this.scheduleObj.readonly = false
-                  swal({
-                      title: 'Attention',
-                      html: 'Le déplacement est impossible car l\'emplacement est occupé par un autre container. <br> <br> Veuillez cliquer sur le bouton  Rafraichir pour l\'afficher',
-                      showCancelButton: false,
-                      confirmButtonText: 'Rafraichir',
-                      cancelButtonText: 'Annuler',
-                      allowOutsideClick:false
-                  }).then((refresh) => {
-                      if(refresh.value){
-                      this.refreshScheduler()
-                  }else{
-                      console.log("click annuler")
-                  }
-                  console.log(" ok ")
-                  this.eventSettings = {
-                      enableTooltip: true, tooltipTemplate: this.temp
-                  };          
-              });
+              }
+            //   , error => {
+            //       console.error('error updatecontainer', error);
+            //       this.disabledrefresh = false
+            //       this.openEditor = false 
+            //       this.startResize= false
+            //     //   this.scheduleObj.readonly = false
+            //       swal({
+            //           title: 'Attention',
+            //           html: 'Le déplacement est impossible car l\'emplacement est occupé par un autre container. <br> <br> Veuillez cliquer sur le bouton  Rafraichir pour l\'afficher',
+            //           showCancelButton: false,
+            //           confirmButtonText: 'Rafraichir',
+            //           cancelButtonText: 'Annuler',
+            //           allowOutsideClick:false
+            //       }).then((refresh) => {
+            //           if(refresh.value){
+            //           this.refreshScheduler()
+            //       }else{
+            //           console.log("click annuler")
+            //       }
+            //       console.log(" ok ")
+            //       this.eventSettings = {
+            //           enableTooltip: true, tooltipTemplate: this.temp
+            //       };          
+            //   });
                   
                   
           
                      
                 
-                  this.eventSettings = {              
-                      enableTooltip: false //disable tooltip
-                  };
+            //       this.eventSettings = {              
+            //           enableTooltip: false //disable tooltip
+            //       };
                   
-              }
+            //   }
               )
            
       }
@@ -2273,13 +2199,14 @@ import { UtilisateurService } from "../services/utilisateur.service";
             //   .pipe(takeUntil(this.onDestroy$))
             //   .subscribe(res => {
                 .then(res => {
+                    if(!res["error"]){
                   console.log('succes update container. RES : ', res);
                   this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
                 //   let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel===0);
                   let Operateur =operateurObject.Username;
                   this.updateWorkorderInContainerUpdate(id, container, containerEvent,Operateur);
                   this.onActionComplete('e');
-                  if(res["error"]){
+                     } else{
                     console.error('error updatecontainer');
                     swal({
                         title: 'Attention',
@@ -2447,13 +2374,14 @@ import { UtilisateurService } from "../services/utilisateur.service";
             //   .pipe(takeUntil(this.onDestroy$))
             //   .subscribe(res => {
                 .then(res => {
+                    if(!res["error"]){
                   console.log('update workorder with success : ', res);
                   console.log(this.allDataWorkorders); // all brut workorder data in backlog
                   // LUNDI ====> AJOUTER UN REFRESH DES EVENEMENTS !!!!!!!!!!
                 
                 
                 //   this.allDataWorkorders.push(newWorkorder);
-      
+            
                 this.allDataWorkorders.map(item => {
                     
                    if (item.Id_Planning_Events === newWorkorder.Id_Planning_Events ){
@@ -2510,7 +2438,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                 });
                   console.log(this.allDataWorkorders);
                   console.log('this.scheduleObj.getEvents() ==> ', this.scheduleObj.getEvents());
-                //   this.scheduleObj.saveEvent(eventWorkorder); //07/11/2019
+                  this.scheduleObj.saveEvent(eventWorkorder); //07/11/2019
                   this.eventSettings = {
                       dataSource: <Object[]>extend(
                           [], this.timelineResourceDataOut, null, true
@@ -2526,8 +2454,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.startResize= false
                   console.log(this.openEditor,"this.openEditor when update container")
 
-                  if(res["error"]){
+                }else{
                     console.error('error update workorder : ')
+                    this.scheduleObj.eventSettings.dataSource = []
+                        this.timelineResourceDataOut = []
+                        this.departmentGroupDataSource = [];
                     swal({
                         title: 'Attention',
                         text: 'Impossible de superpositionner les containers',
@@ -2666,6 +2597,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
             //   .pipe(takeUntil(this.onDestroy$))
             //   .subscribe(res => {
                 .then(res => {
+                    if(!res["error"]){
                   console.log('update workorder with success : ', res);
                   console.log(this.allDataWorkorders); // all brut workorder data in backlog
                   this.allDataWorkorders.push(workorder);
@@ -2681,7 +2613,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.WorkOrderByidgroup.push(workorder);
                   this.scheduleObj.refreshEvents()
                   this.disabledrefresh = false
-                  if(res["error"]){
+               
+                }else{
                     swal({
                         title: 'Attention',
                         text: 'Erreur dans la mise à jour du workorder',
@@ -2693,17 +2626,18 @@ import { UtilisateurService } from "../services/utilisateur.service";
                     console.error('error update workorder : ') 
                   }
 
-              }, error => {
-                  swal({
-                      title: 'Attention',
-                      text: 'Erreur dans la mise à jour du workorder',
-                      showCancelButton: false,
-                      confirmButtonText: 'Fermer',
-                      allowOutsideClick:false
-                  
-                  })
-                  console.error('error update workorder : ', error)
               }
+           //   , error => {
+               //   swal({
+               //       title: 'Attention',
+                 //    text: 'Erreur dans la mise à jour du workorder',
+                   //   showCancelButton: false,
+                   //   confirmButtonText: 'Fermer',
+                   //   allowOutsideClick:false
+                  
+                //  })
+                //  console.error('error update workorder : ', error)
+            //  }
               );
       }
   
@@ -2782,6 +2716,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.refreshWorkordersBacklog()
                   console.log(checkIfCloture,"checkIfCloture else")
               }
+              if(this.creationArray.length==1){
+                this.creationArray.pop() 
+                
+            }
+
           } else {
               console.log('NO otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
               this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
@@ -2833,6 +2772,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   coordinateurCreate: this.currentCoordinateur.Username
               }
               console.log('workorder data selected', newWorkorder);
+         
               this.putWorkorderWithCalcul(newWorkorder, event, containerParent, this.timelineResourceDataOut, true);
           }
   
@@ -2844,6 +2784,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
             //   .pipe(takeUntil(this.onDestroy$))
             //   .subscribe(res => {
                 .then(res => {
+                    if(!res["error"]){
                   console.log('update workorder with success : ', res);
                   console.log(this.allDataWorkorders); // all brut workorder data in backlog
                   this.displayWorkorderInBacklogWorkorderData(eventWorkorder, 'delete');
@@ -2871,7 +2812,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       enableTooltip: true, tooltipTemplate: this.temp
                   };
                   this.disabledrefresh = false
-                  if(res["error"]){
+                  if(this.creationArray.length==1){
+                    this.creationArray.pop() 
+                    
+                }
+             } else{
                     swal({
                         title: 'Attention',
                         text: 'Erreur dans la mise à jour du workorder',
@@ -2883,17 +2828,18 @@ import { UtilisateurService } from "../services/utilisateur.service";
                     console.error('error update workorder : ')
                   }
 
-              }, error => {
-                  swal({
-                      title: 'Attention',
-                      text: 'Erreur dans la mise à jour du workorder',
-                      showCancelButton: false,
-                      confirmButtonText: 'Fermer',
-                      allowOutsideClick:false
-                  
-                  })
-                  console.error('error update workorder : ', error)
               }
+              //, error => {
+              //    swal({
+              //        title: 'Attention',
+              //        text: 'Erreur dans la mise à jour du workorder',
+              //        showCancelButton: false,
+             //         confirmButtonText: 'Fermer',
+              //        allowOutsideClick:false
+              //    
+              //    })
+               //   console.error('error update workorder : ', error)
+           //   }
               );
       }
   
@@ -3284,7 +3230,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               Id_Planning_Events_TempsReel:0,
               titreepisode:workorder.titreepisode,
               DateDebutReel:workorder.DateDebutReel,
-              DateFinReel:workorder.DateFinTheo,
+              DateFinReel:workorder.DateFinReel,
               libelleStatut:workorder.libelleStatut
           }
           console.log('workorder data selected', newWorkorder);
@@ -3299,11 +3245,13 @@ import { UtilisateurService } from "../services/utilisateur.service";
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(res => {
               console.log('succes update workorder. RES : ', res);
+              console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
               let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
               let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
               this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
               let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === workorder.Id_Planning_Container);
               let containerPere = containerEvent[0];
+              console.log(event)
               console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
               this.timelineResourceDataOut.map(item => {
                   if (item.Id === event.Id) {
@@ -3324,12 +3272,12 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       item.dureecommerciale=  event.dureecommerciale;
                       item.libtypeWO= event.libtypeWO;
                       item.Commentaire_Planning= event.Commentaire_Planning;
-                      item.Id_Planning_Container = event.Id_Planning_Container;
+                      item.Id_Planning_Container = event.AzaNumGroupe;
                       item.IdGenerationWO = event.IdGenerationWO,
                       item.Commentaire = event.Commentaire,
                       item.titreepisode = event.titreepisode,
                       item.libelleStatut = event.libelleStatut,
-                      item.codeRessourceCoordinateur = event.codeRessourceCoordinateur
+                      item.CodeRessourceCoordinateur = event.CodeRessourceCoordinateur
                       console.log(item);
                   }
               });
@@ -3348,6 +3296,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       ),
                       enableTooltip: true, tooltipTemplate: this.temp
                   };
+                  this.scheduleObj.refreshEvents()
+               
                   // this.eventSettings = {
                   //     dataSource: <Object[]>extend(
                   //         [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
@@ -4356,7 +4306,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               return false;
           }
       }
-  
+ 
       public valueOperateur
       createDrowDownOperteurInput(args, container, inputEle) {
           let row: HTMLElement = createElement('div', { className: 'custom-field-row' });
@@ -4419,30 +4369,35 @@ import { UtilisateurService } from "../services/utilisateur.service";
    /********************** DRAG AND DROP M1ANAGEMENT ***********************/
    public eventDragStart 
       onDragStart(args: DragEventArgs){
-   
-        if(!args.data['AzaIsPere']   ) {
-           
+       
+      
+
+        if(!args.data['AzaIsPere']   ) {    
+          
             swal({
-                title: 'Attention',
-                text: `Vous ne pouvez pas effectuer cette action ` ,
-                showCancelButton: false,
-                confirmButtonText: 'Fermer',
-                cancelButtonText: 'non',
-                allowOutsideClick:false
+            title: 'Attention',
+            text: `Vous ne pouvez pas effectuer cette action ` ,
+            showCancelButton: false,
+            confirmButtonText: 'Fermer',
+            cancelButtonText: 'non',
+            allowOutsideClick:false
+        
+        }).then((Fermer) => {
+            console.log(Fermer)
             
-            }).then((Fermer) => {
-                console.log(Fermer)
-                args.cancel = true
-                if(Fermer.value){
-                    args.cancel = false
-                    // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
-                    console.log(args)
-                    this.disabledrefresh = false
-            }
-        })
+            if(Fermer.value){
+            args.cancel = false       
+                // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
+                console.log(args)
+                this.disabledrefresh = false
+              this.refreshScheduler()
+
         }
+    })
+        }
+       
             this.eventDragStart = args.data
-             args.interval = 5; // drag interval time is changed to 10 minutes 
+             args.interval = 5; // drag interval time is changed to 5 minutes 
              console.log('onDragStart args =======> ', args);
              console.log('======', this.scheduleObj.getEventDetails(args.element))
             //  args.navigation = { enable: true, timeDelay: 4000 };
@@ -4452,21 +4407,17 @@ import { UtilisateurService } from "../services/utilisateur.service";
             //  args.event["dragElement"].draggable = true
     //    args.event["dragElement"].draggable = true
    
-    let workorder = document.querySelectorAll('.workorders')
-   for(let i = 0; i<= workorder.length -1;i++){
-    console.log(workorder[i])
-    args.excludeSelectors =' `${workorder[i]}`' 
-   }
+  
    //  as any
         
     }
       public groupIndex
     public eventItemDrag 
       onItemDrag(event: any, tabIndex): void { // FUCNTION FROM TEMPLATE
-    if(event.event.target.className === "e-work-cells e-work-hours"){
-        event.cancel = true;
-        this.disabledrefresh = false
-    }
+    // if(event.event.target.className === "e-work-cells e-work-hours"){
+    //     event.cancel = true;
+    //     this.disabledrefresh = false
+    // }
      
           event.interval = 5;
           this.disabledrefresh = true
@@ -4492,7 +4443,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   }
               }
           }
-    
+      
       }
       targetDrop
       
@@ -4503,7 +4454,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
     if(args.event.target["className"] === "e-work-cells e-work-hours"){   
         this.disabledrefresh = false
     }
-     console.log(moment(args.event.target["dataset"].date).format()  )
+
       }
   
       public onTreeDragStartCountDevTool = 0;
@@ -4851,33 +4802,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log(this.scheduleObj.currentView)
           console.log(this.isTreeItemDropped);
           console.log(this.scheduleObj, '====== scheduleobj');
-        this.argsOnActionBegin = event
-    
-          // if (event.requestType === 'eventChange' && !event.data.AzaIsPere) {
-          //     console.log('is not pere');
-          // } 
-      
-          // let clicktoolbar = document.getElementsByClassName('e-tbar-btn-text') 
-       
      
-        
-          // for(let i = 0; i<clicktoolbar.length; i++ ){
-    
-          //      clicktoolbar[i].addEventListener('mousedown',() => {
-                      
-          //         console.log("click *********************************************************************************",  clicktoolbar[i] )
-  
-          //      }, true);
-          // }
-       
-          // if(this.firstZoom === 0) {
-          //     let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-          //     let height = "calc(100vh - 40px)";
-          //     scheduleElement[0]['style'].maxHeight = height;
-         
-          //     this.firstZoom= 1
-          // }
-       
           console.log( event.cancel, "onActionBegin(e)")
           if(event.requestType === 'viewNavigate'){
             //   this.scheduleObj.enablePersistence = false;
@@ -4894,8 +4819,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               this.scheduleObj.getEvents().length = 0    
        
           }
-  
-      
+    
           if (event.requestType === 'eventChange') {
               this.zoom = true
   
@@ -5251,17 +5175,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       //        console.log(  this.searchwo.value , this.searchString )
       //        console.log( typeof this.searchwo.value)
       //    }
-      if (args.requestType === 'eventCreate' || args.requestType === 'eventChange') {
-        let data: { [key: string]: Object };
-        if (args.requestType === 'eventCreate') {
-            data = <{ [key: string]: Object }>args.data[0];
-        } else if (args.requestType === 'eventChange') {
-            data = <{ [key: string]: Object }>args.data;
-        }
-       // if (!this.scheduleObj.isSlotAvailable(data)) {
-         //   args.cancel = true;
-       //   }
-    }
+    
       }
   
       checkDiffExistByGroupe(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute) { }
@@ -5312,7 +5226,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
             let startTime =  e.data instanceof Array ? e.data[0].StartTime : e.data.StartTime ,
             endTime = e.data instanceof Array ? e.data[0].EndTime:  e.data.EndTime ,
             groupIndex = this.groupIndex,
-            cellVide = this.scheduleObj.isSlotAvailable(startTime,endTime,groupIndex),
+            cellVide = this.scheduleObj.isSlotAvailable(startTime),
             decallage,
             lengthContainer
             if(this.eventDragStart != undefined){
@@ -5329,47 +5243,10 @@ import { UtilisateurService } from "../services/utilisateur.service";
             console.log(this.startResize,"start resize ===>")
               if (e.data.AzaIsPere || (!e.data.AzaIsPere && e.data.isTempsReel ===0 && this.isTreeItemDropped)) {
                 console.log(e.data ," event in updatecontainer")
-                console.log(this.scheduleObj,'aaaaaaaaaaaaaaaaaaaaaaaaa')
-                //cellVide ==> ture 
-                  if(cellVide ||  ((decallage < lengthContainer) && e.data.CodeRessourceSalle ===  this.eventDragStart.CodeRessourceSalle ) ){
+                console.log(this.eventDragStart.Id , e.data.Id,'aaaaaaaaaaaaaaaaaaaaaaaaa')
+                //cellVide ==> ture  checkIfContainerAlreadyExists(args)  
                     console.log("************************************************* onaction complete : update container");
-                  
-                  this.updateContainer(e);
-                }else{
-                    // this.eventSettings.enableTooltip = false 
-                    console.log( this.scheduleObj.dragAndDropModule,"event setting ")
-                    this.disabledrefresh = false
-               if(!this.openEditor &&  !this.startResize ){
-                    swal({
-                        title: 'Attention',
-                        text: 'Impossible de superpositionner les containers',
-                        showCancelButton: false,
-                        confirmButtonText: 'Fermer',
-                        allowOutsideClick:false
-                    
-                    }).then((Fermer) => {
-                        console.log(Fermer)
-                        this.scheduleObj.eventSettings.dataSource = []
-                        this.departmentGroupDataSource = [];
-                        if(Fermer.value){
-                            this.clicFermerOnActionComplete = true
-                             this.refreshDate()
-                            this.getSalleByGroup(this.groupCoordinateur,this.refreshDateStart,this.refreshDateEnd)
-  
-                    }
-                })
-            }
-                    if(this.openEditor){ //ouverture de la modale 
-                        this.updateContainer(e);
-                        console.log(this.openEditor,"open editor ")
-                    }
-
-                    if( this.startResize){
-                        this.updateContainer(e);
-                        this.startResize = false
-                        console.log(this.startResize,"start resize ")
-                    }
-                }
+                  this.updateContainer(e);   
               } else {
                   if (!e.data.AzaIsPere && e.data.isTempsReel ===0 && this.updateWO) {
                       console.log("************************************************* onaction complete : update WorkOrder",e);
@@ -6380,38 +6257,38 @@ public startResize = false
           console.log(this.scheduleObj)
          
           if (val === 1) { //matin
-              this.scheduleObj.startHour = "00:00"
-              this.scheduleObj.endHour = "08:00"
+            this.scheduleObj.element["ej2_instances"][0].startHour = "00:00"
+            this.scheduleObj.element["ej2_instances"][0].endHour = "08:00"
 
               //     this.value = 30
 
             //   this.scheduleObj.showTimeIndicator = true
-               this.scheduleObj.timeScale.interval = this.value
+              this.scheduleObj.element["ej2_instances"][0].timeScale.interval = this.value
               console.log(this.scheduleObj.startHour, this.scheduleObj.endHour)
              
           } else if (val === 2) { //jour
-              this.scheduleObj.startHour = "06:00"
-              this.scheduleObj.endHour = "19:00" //intervale 
+              this.scheduleObj.element["ej2_instances"][0].startHour = "06:00"
+            this.scheduleObj.element["ej2_instances"][0].endHour = "19:00" //intervale 
        
               //     this.value = 30
             //   this.scheduleObj.showTimeIndicator = true
-              this.scheduleObj.timeScale.interval = this.value 
+             this.scheduleObj.element["ej2_instances"][0].timeScale.interval = this.value 
               console.log(this.scheduleObj.startHour, this.scheduleObj.endHour)
               
           } else if (val === 3) { //soir
-              this.scheduleObj.startHour = "18:00"
-              this.scheduleObj.endHour = "23:59";
+            this.scheduleObj.element["ej2_instances"][0].startHour = "18:00"
+            this.scheduleObj.element["ej2_instances"][0].endHour = "23:59";
             //   this.scheduleObj.showTimeIndicator = true
               // (document.querySelectorAll('.template-wrap')[i] )["style"].width = "100px"
               //     this.value = 30
 
-               this.scheduleObj.timeScale.interval = this.value 
+               this.scheduleObj.element["ej2_instances"][0].timeScale.interval = this.value 
               console.log(this.scheduleObj.startHour, this.scheduleObj.endHour)
           
           } else { //toute la journée
-              this.scheduleObj.startHour = "00:00"
-              this.scheduleObj.endHour = "24:00"
-              this.scheduleObj.timeScale.interval = this.value
+             this.scheduleObj.element["ej2_instances"][0].startHour = "00:00"
+             this.scheduleObj.element["ej2_instances"][0].endHour = "24:00"
+             this.scheduleObj.element["ej2_instances"][0].timeScale.interval = this.value
             //   this.scheduleObj.showTimeIndicator = true
            
               this.onCreated()
@@ -6434,7 +6311,7 @@ public startResize = false
           console.log(this.hourContainer)
           console.log(moment(args["data"]['StartTime']).format('x'))
           console.log(moment(args["data"]['EndTime']).format('x'))
-          this.offsetLeftCell = args["element"]
+          this.offsetLeftCell = args["element"].offsetLeft
           console.log(this.offsetLeftCell)
 
         }
