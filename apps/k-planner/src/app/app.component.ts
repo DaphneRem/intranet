@@ -11,14 +11,17 @@ import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 
-import { config } from './../../../../.privates-url';
+import { config, CodeModuleKplanner } from './../../../../.privates-url';
 import { AuthAdalService } from 'apps/fiches-materiel/src/app/auth-adal.service';
 import { App } from 'apps/fiches-materiel/src/app/+state/app.interfaces';
 
 import { Coordinateur } from '@ab/k-planner-lib/src/models/coordinateur';
 import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur.service';
 import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.service';
+import { UserAccessRightsService } from './accessRights/users-access-rights-service';
 
+const editRight = 'Modification';
+const coordinateurRight ='Coordinateur';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -26,6 +29,7 @@ import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.s
   providers : [
     CoordinateurService,
     UtilisateurService,
+    UserAccessRightsService,
     Store,
     AuthService,
     // AuthAdalService
@@ -39,6 +43,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private compiler: Compiler,
     private coordinateurService: CoordinateurService,
     private utilisateurService : UtilisateurService,
+    private userAccessRightsService : UserAccessRightsService,
     private store: Store<Navbar>,
     private appStore: Store<App>,
     // private authAdalService: AuthAdalService,
@@ -55,11 +60,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public globalStore;
   public navbarStoreOpen;
   public navbarState;
-  public windowWidth;
   public marginTop = '56px';
   public paddingTop;
   public marginLeft;
-  public title = 'suivi-ingests';
+ 
   public logo = 'logoABintranet';
   public headerNav = false;
   public userName: string;
@@ -74,7 +78,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public userIsReady = false;
 
   public currentCoordinateur: Coordinateur;
-
+  
   ngOnInit() {
     if (!this.authService.authenticated) {
       console.log(this.authService.authenticated,"this.authService.authenticated")
@@ -97,37 +101,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.navbarState = this.globalStore.navbar.open;
     this.checkHeader(this.navbarState);
 
-
-    // Check if the user is authenticated. If not, call the login() method
-    // if (!this.adal5Service.userInfo.authenticated) {
-    //   this.adal5Service.login();
-    //   console.log('adalDervicde login()');
-    // }
-
-    // Log the user information to the console
-
-    // console.log('username ' + this.adal5Service.userInfo.username);
-    // console.log('authenticated: ' + this.adal5Service.userInfo.authenticated);
-    // console.log('name: ' + this.adal5Service.userInfo.profile.name);
-    // console.log('token: ' + this.adal5Service.userInfo.token);
-    // console.log(this.adal5Service.userInfo.profile);
-
-    // this.userName = this.adal5Service.userInfo.username;
-    // this.name = this.adal5Service.userInfo.profile.name;
-    // this.firstName = this.adal5Service.userInfo.profile.given_name;
-    // this.lastName = this.adal5Service.userInfo.profile.family_name;
-    // this.initials = `${this.firstName.slice(0, 1).toUpperCase()}${this.lastName.slice(0, 1).toUpperCase()}`;
-
-    // this.userNameSplit = this.userName.split('@');
-    // this.shortUserName = this.userNameSplit[0];
-    // console.log(this.shortUserName);
-    // this.user = {
-    //   name: this.name,
-    //   userName: this.userName,
-    //   initials: this.initials,
-    //   shortUserName: this.shortUserName
-    // };
-    // console.log(this.appStore);
   }
 
   ngAfterViewInit() {
@@ -178,40 +151,17 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     // Handle callback if this is a redirect from Azure
     // this.adal5Service.handleWindowCallback(); // ajouter condition
     // check navbar.open state from store
-    let email = encodeURIComponent(this.userName)
-    this.getUtilisateurByLogin(email)
+  
+    this.getAccessRightsUser()  
+   
     console.log(this.store);
     console.log(this.appStore);
-  
+// 
     // this.getAllCoordinateurs();
 
 
     
   }
-
-  // getAllCoordinateurs() {
-  //   this.coordinateurService.getAllCoordinateurs()
-  //     .pipe(takeUntil(this.onDestroy$))
-  //     .subscribe(data => {
-  //         data.map(item => {
-  //             if (item.Username === this.user.shortUserName) {
-  //                 this.currentCoordinateur = item;
-  //                 this.appStore.dispatch({
-  //                   type: 'ADD_USER',
-  //                   payload: {
-  //                     user : {
-  //                       username: this.userName,
-  //                       name: this.name,
-  //                       initials: this.initials,
-  //                       shortUserName: this.shortUserName,
-  //                       numGroup: this.currentCoordinateur.Groupe
-  //                     }
-  //                   }
-  //                 });
-  //               }
-  //         });
-  //   });
-  // }
 
 
   getUtilisateurByLogin(email) {
@@ -244,12 +194,44 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         });
          
     this.userIsReady = true;
+ 
         console.log("appStore",this.appStore)
         console.log( this.shortUserName)
+   
     });     
 
   }
 
+getAccessRightsUser(){
+  this.userAccessRightsService
+  .getAccessRightsUser()
+  .pipe(takeUntil(this.onDestroy$))
+  .subscribe(data => {
+     let UsersAccessRights = data
+
+     UsersAccessRights.map(item =>{
+         item.Modules.map(dataModule =>{
+           
+           if (dataModule.CodeModule === CodeModuleKplanner && item.Mail === this.userName   ){
+         
+            console.log(dataModule)
+                 if(dataModule.ListeRight[editRight]  === true && dataModule.ListeRight[coordinateurRight] === true){
+                  console.log("get utilisateur by login",item.Mail)
+                    this.getUtilisateurByLogin(item.Mail)
+                 }
+           }
+         })
+
+      // if(item.Modules[0].ListeRight['Modification'] == true && item.Modules[0].ListeRight['Coordinateur'] == true ){
+      //  if(item.Mail === this.userName && CodeModuleKplanner == item.Modules[0].CodeModule ){
+      //     console.log("get utilisateur by login",item.Mail)
+      //     this.getUtilisateurByLogin(item.Mail)
+      //    }
+      //  }
+     })
+    console.log('access rights user kplanner',UsersAccessRights)
+  })
+}
   logout(event) {
     if (event) {
       this.store.dispatch({

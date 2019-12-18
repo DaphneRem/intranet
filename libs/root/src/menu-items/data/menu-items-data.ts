@@ -6,7 +6,8 @@ import {
     rootUrl,
     rootUrlMateriel,
     rootUrlKPlanner,
-    buildModeFichesMaterielApp
+    buildModeFichesMaterielApp,
+    buildModeKplannerApp
 } from '../../../../../.privates-url';
 
 let distUrl: String = '';
@@ -28,7 +29,7 @@ if (document.location.host.indexOf('localhost') !== -1) {
 
 let MENU = [];
 
-if (buildModeFichesMaterielApp < 1) {
+if (buildModeFichesMaterielApp < 1 && buildModeKplannerApp < 1) {
     MENU = [
         {
             label: '',
@@ -134,6 +135,7 @@ if (buildModeFichesMaterielApp < 1) {
         }
     ];
 } else {
+    if (buildModeFichesMaterielApp > 1) {
     MENU = [
         {
             label: '',
@@ -167,6 +169,33 @@ if (buildModeFichesMaterielApp < 1) {
             ]
         }
     ];
+}
+if (buildModeKplannerApp > 1) {
+    MENU = [
+        {
+        label: '',
+        url: `${this.distUrl}app0/`,
+        main: [
+                {
+                    state: 'k-planner',
+                    short_label: 'KP',
+                    name: 'K Planner',
+                    type: 'sub',
+                    icon: 'icofont icofont-ui-calendar',
+                    iconColor: '#DE5768',
+                    children: [
+                        {
+                            state: 'Voir mon planning',
+                            name: 'Voir mon planning',
+                            route: `${distUrl_KPlanner}/k-planner`
+                        }
+                    ]
+                }
+            ]
+        }
+        ];
+
+}
 }
 
 export const MENUITEMS = MENU;

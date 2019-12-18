@@ -402,7 +402,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public zoomCont: number = 0
       public valueMax: number = 60
       public value: number =60
-      public valueAdd: number =10
+      public valueAdd: number =5
       public refreshF4 : boolean
       public navigation: boolean = false;
       public intervalChanged: boolean = false
@@ -473,7 +473,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
             this.isClickZoom = false
                 this.intervalChanged = true;
                 this.value = this.value + this.valueAdd;
-                scheduleObj.timeScale.interval += 10;     
+                scheduleObj.timeScale.interval += 5;     
           
                 setTimeout(() => {
                     this.zoomWithScroll()
@@ -488,11 +488,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       //+++++++++++++++++++++++             
                       this.intervalChanged = true;
                       this.value = this.value - this.valueAdd;
-                      scheduleObj.timeScale.interval -=10;
+                      scheduleObj.timeScale.interval -=5;
                 
                     setTimeout(() => {
                         this.zoomWithScroll()  
-                    }, 100);
+                    }, 70);
             
               if(this.value === 5){    
 
@@ -518,10 +518,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log(this.store);
           console.log(this.selectedDate, moment().add(1, 'd').toDate());
           
-
+      
           this.storeAppSubscription();
           window.addEventListener('scroll', this.scroll, true);    
           this.getStatut();
+       
         
       }
   
@@ -557,7 +558,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       ngAfterViewInit() {
           this.departmentDataSource = this.departmentGroupDataSource;
         
-  
+        
       }
   
       ngOnDestroy() {
@@ -712,21 +713,22 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
  
   
       zoomWithScroll(){
-        console.log(this.offsetLeftCell)
+       
         this.scheduleObj.element["ej2_instances"][0].refreshEvents()
         let len = document.querySelectorAll('.e-appointment').length;  
         if(this.eventHoverData != null){
-        for (let i = 0; i < len; i++) {
+        for (let i = 0; i < len -1; i++) {
           let event = document.querySelectorAll('.e-appointment')[i] as any;
       
-        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-     if(this.eventHoverData != null){  
+       
+     if(this.eventHoverData != null || undefined){  
           if (event.getAttribute("data-id") === this.eventHoverData.dataset.id) { 
+            console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
             console.log(event,'event ')
             // console.log((event.getAttribute("aria-label") === this.eventClickData['Name']))
             // document.querySelector('.e-content-wrap').scrollTop = document.querySelector('.e-content-wrap').scrollTop;
             document.querySelector('.e-content-wrap').scrollLeft = event.offsetLeft ;
-            this.scheduleObj.dataBind()
+            // this.scheduleObj.dataBind()
             this.isClickZoom = true
           }else {
             // document.querySelector('.e-content-wrap').scrollLeft = this.offsetLeftCell
@@ -804,7 +806,7 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
                       }
                       console.log('--------------------------------------------------indexSalle => ', indexSalle);
                     
-                  // lors du demmarage de l'application 
+                  // lors du demarrage de l'application 
                       this.getContainersByRessourceStartDateEndDate(
                          item.CodeRessource,
                           start,
@@ -3146,12 +3148,18 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
           this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
        
              if(this.user.initials === newWorkorderForList.coordinateurCreate){
-        //         let workorderBacklog = document.getElementsByClassName('workorder-backlog')
-        //         let len = workorderBacklog.length -1
-        //         workorderBacklog[1]["style"].backgroundColor = "#F3BE09"
-        //        console.log(workorderBacklog,len,"ééééééééééééééééééé")
+    
         this.refreshWorkordersBacklog()
+       
         }
+        setTimeout(() => {
+            if (this.searchString != undefined) {
+                console.log("clic bouton refresh ")
+                this.searchwo.value = this.searchString
+                this.onFilter(this.searchwo.value, 0, this.argsKeyboardEvent)
+            } else {
+            }   
+          }, 200);
       }
       /************************************************ PUT ---orkorder *****************************************/
       updateWorkOrder(args) {
@@ -3469,6 +3477,12 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
               } else {
                   this.scheduleObj.readonly = false
               }
+            //   if (args.action === 'date') {
+            //     let now =  moment().subtract('h', 1).format('HH:mm')
+            //     setTimeout(() => {
+            //       this.scheduleObj.scrollTo(now) 
+            //     }, 500);
+            // }
           } else if (args.currentView === 'TimelineMonth' || args.currentView === 'Agenda') {
               this.scheduleObj.readonly = true
               this.scheduleObj.rowAutoHeight = false
@@ -4127,7 +4141,7 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
                       console.log(title[0]['style'].display, "sssssssssssssssssssssssssssssssssssssss")
                   } else { // dblclick workorder
                     console.log(containerOperateur[0])
-                    if(containerOperateur[0].parentNode != undefined){
+                    if(containerOperateur[0] != undefined || null ){
                       containerOperateur[0].parentNode.removeChild(containerOperateur[0]);
                     }
                       console.log("edit click")
@@ -4818,6 +4832,14 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
               console.log(  this.scheduleObj.enablePersistence , "onActionBegin(e)")
               this.scheduleObj.getEvents().length = 0    
        
+          }
+          if (event.requestType === 'toolbarItemRendering') {
+              let now =  moment().subtract('h', 1).format('HH:mm')
+              setTimeout(() => {
+                this.scheduleObj.scrollTo(now) 
+              }, 500);
+            
+console.log('on load app', this.scheduleObj)
           }
     
           if (event.requestType === 'eventChange') {
@@ -6313,6 +6335,8 @@ public startResize = false
           console.log(moment(args["data"]['EndTime']).format('x'))
           this.offsetLeftCell = args["element"].offsetLeft
           console.log(this.offsetLeftCell)
+          let close = document.getElementsByClassName("e-popup-footer") 
+          console.log(close);
 
         }
       }
