@@ -693,7 +693,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log('event clicked !!!!!!!!!!!',e);
      
           this.eventClick = true;
-this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
+// this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
       }
       public eventHoverData
       onHover(args :HoverEventArgs ){
@@ -3795,7 +3795,7 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
           // this.filtre = true
           // this.zoom = true
         
-    console.log(args);
+        console.log(args);
         console.log(this.eventSettings)
         this.dataToEdit = args.data
          
@@ -3832,29 +3832,18 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
                 interval = this.scheduleObj.timeScale.interval 
                 console.log( diff,interval)
             }
-             if(diff ===  Math.trunc(interval)  || this.checkIfContainerAlreadyExists(args) === true ){
+             if(diff ===  Math.trunc(interval)   ){
               args.cancel = true;
               
-            } else {
-
-        //      let inputEle: HTMLInputElement;
-        //     let container: HTMLElement;
-        
-        //         this.createDrowDownOperteurInput(args, container, inputEle);
-        //         console.log("==>>",this.drowDownOperateurList); 
-        //         this.drowDownOperateurList.onchange = args.data.Operateur = this.drowDownOperateurList.value;
-        //         this.drowDownOperateurList.dataSource = this.fieldMonteur['dataSource'].map(item => {
-        //             return { text: item.Username, value: item.idressourcetype };
-        //         });
-        //         console.log("==>>",this.drowDownOperateurList)
-        //         console.log(args.data.Operateur);
-         
-        //     this.drowDownOperateurList.dataSource.unshift({ text: 'Aucun Opérateur', value: 0 });
-        //    let dropDownOperateur =  (args.element.querySelector(".e-float-input") as any);
-           
-        //    console.log(dropDownOperateur)
             }
-         
+
+            let btnclose =  document.getElementsByClassName('e-close e-control');
+            btnclose[0].addEventListener('click', () => {
+                this.editor = false
+                console.log(btnclose)
+            }, true);
+           
+
             // e-subject e-field e-input
               console.log(args.data.StartTime.getHours())
               let title = document.getElementsByClassName('e-subject-container');
@@ -4279,9 +4268,10 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
             if(args.type = "QuickInfo" )
             {
                 (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
-                let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
-                // console.log(calendar)
-                calendar.value = args.data.startTime;
+                // let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+                // // console.log(calendar)
+                // calendar.value = args.data.startTime;
+                this.scheduleObj.selectedDate= args.data.startTime
                 this.scheduleObj.currentView = "TimelineDay";     
                 let day =    this.scheduleObj.element.querySelectorAll('.e-timeline-day');               
                 addClass([day[0]], ['e-active-view']);
@@ -4457,7 +4447,7 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
                   }
               }
           }
-      
+   
       }
       targetDrop
       
@@ -4838,7 +4828,7 @@ this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
               setTimeout(() => {
                 this.scheduleObj.scrollTo(now) 
               }, 500);
-            
+            // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
 console.log('on load app', this.scheduleObj)
           }
     
@@ -4856,7 +4846,7 @@ console.log('on load app', this.scheduleObj)
                   this.sidebar.position = 'Right';
                   this.sidebar.animate = false;
               }
-        if( this.dataToEdit!= undefined ){
+        if( this.dataToEdit!= undefined  ){
             let initialDate = this.dataToEdit.StartTime.getDate()
             let changedDate = event.data["StartTime"].getDate()
             let date =  moment(event.data["StartTime"]).format('DD-MM-YYYY').toString()
@@ -4864,7 +4854,9 @@ console.log('on load app', this.scheduleObj)
             // add isslotaviable
             let isSlotAviable = this.scheduleObj.isSlotAvailable(event.data)
             console.log(isSlotAviable)
+            // if(this.scheduleObj.currentView ==="TimelineDay"){
             if((initialDate !=  changedDate) &&  this.editor ){
+                console.log("timelineDay")
                 swal({
                     title: '',
                     text: `Souhaitez-vous naviguer vers la date: ${date}` ,
@@ -4878,18 +4870,51 @@ console.log('on load app', this.scheduleObj)
                     this.scheduleObj.eventSettings.dataSource = []
                     this.departmentGroupDataSource = [];
                     if(oui.value){
-                        (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
-                        let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
-                        // console.log(calendar)
-                        calendar.value = event.data["StartTime"];
+                        // (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
+                        // let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+                        // // console.log(calendar)
+                        // calendar.value = event.data["StartTime"];
                        
-
+                        this.scheduleObj.selectedDate= event.data["StartTime"]
                 }else{
                     this.refreshScheduler()
                 }
             })
             this.editor = false // pour ne pas afficher la modale a chaque fois 
             }
+        // } else{
+
+  
+        //    let sameWeek = moment(initialDate).isSame(moment(changedDate),'weeks');
+        //    console.log(sameWeek ,'same weeek')
+        //     if(this.scheduleObj.currentView ==="TimelineWeek"  && sameWeek == false && this.editor ){
+               
+        //         swal({
+        //             title: '',
+        //             text: `Souhaitez-vous naviguer vers la date: ${date}` ,
+        //             showCancelButton: true,
+        //             confirmButtonText: 'oui',
+        //             cancelButtonText: 'non',
+        //             allowOutsideClick:false
+                
+        //         }).then((oui) => {
+        //             console.log(oui)
+        //             this.scheduleObj.eventSettings.dataSource = []
+        //             this.departmentGroupDataSource = [];
+        //             if(oui.value){
+        //                 // (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
+        //                 // let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+        //                 // // console.log(calendar)
+        //                 // calendar.value = event.data["StartTime"];
+                       
+        //                 this.scheduleObj.selectedDate= event.data["StartTime"]
+        //         }else{
+        //             this.refreshScheduler()
+        //         }
+        //     })
+        //     this.editor = false 
+        //     }
+        // }
         }
           }
           if (event.requestType === 'eventCreate') {
@@ -4922,11 +4947,11 @@ console.log('on load app', this.scheduleObj)
                             this.scheduleObj.eventSettings.dataSource = []
                             this.departmentGroupDataSource = [];
                             if(oui.value){
-                                (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
-                                let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
-                                // console.log(calendar)
-                                calendar.value = event.data[0]["StartTime"];
-                               
+                                // (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
+                                // let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+                                // // console.log(calendar)
+                                // calendar.value = event.data[0]["StartTime"];
+                                this.scheduleObj.selectedDate= event.data[0]["StartTime"]
         
                         }else{
                             this.refreshScheduler()
@@ -5091,11 +5116,11 @@ console.log('on load app', this.scheduleObj)
                         this.scheduleObj.eventSettings.dataSource = []
                         this.departmentGroupDataSource = [];
                         if(oui.value){
-                            (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
-                            let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
-                            // console.log(calendar)
-                            calendar.value = event.data[0]["StartTime"];
-                           
+                            // (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
+                            // let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+                            // // console.log(calendar)
+                            // calendar.value = event.data[0]["StartTime"];
+                            this.scheduleObj.selectedDate= event.data[0]["StartTime"]
        
                     }else{
                         this.refreshScheduler()
@@ -5243,6 +5268,9 @@ console.log('on load app', this.scheduleObj)
             
      
           }
+          if (e.requestType === 'eventCreated') {
+            this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
+          }
          
           if (e.requestType === 'eventChanged') {
             let startTime =  e.data instanceof Array ? e.data[0].StartTime : e.data.StartTime ,
@@ -5265,7 +5293,7 @@ console.log('on load app', this.scheduleObj)
             console.log(this.startResize,"start resize ===>")
               if (e.data.AzaIsPere || (!e.data.AzaIsPere && e.data.isTempsReel ===0 && this.isTreeItemDropped)) {
                 console.log(e.data ," event in updatecontainer")
-                console.log(this.eventDragStart.Id , e.data.Id,'aaaaaaaaaaaaaaaaaaaaaaaaa')
+           
                 //cellVide ==> ture  checkIfContainerAlreadyExists(args)  
                     console.log("************************************************* onaction complete : update container");
                   this.updateContainer(e);   
@@ -6070,21 +6098,15 @@ console.log('on load app', this.scheduleObj)
             }
           
           }
-    //  if(this.scheduleObj.currentView == 'TimelineMonth'){
-        
-    //     console.log(this.scheduleObj.firstDayOfWeek)
-     
-    //  let numSemaine = getWeekNumber((args.date));
+     if(this.scheduleObj.currentView == 'TimelineMonth'){
  
-    //  if (args.element.classList.contains('e-work-cells') && ((numSemaine % 2) != 0)) {
-    //     args.element['style'].background = '#E5FCFD';
+     if (args.element.classList.contains('e-work-cells') && (args.date.getDay() === 6 || args.date.getDay() === 0   )) {
+        args.element['style'].background = '#E5FCFD';
    
-    // }
-    // if (args.element.classList.contains('e-work-cells') && (numSemaine === 0)){
-    //   args.element['style'].background = '#E5FCFD';
-    // }
-        
-    //  }
+    } 
+
+  
+     }
 
           if (args.elementType === 'emptyCells' && args.element.classList.contains('e-resource-left-td')) {
               let target: HTMLElement = args.element.querySelector('.e-resource-text') as HTMLElement;
@@ -6095,11 +6117,7 @@ console.log('on load app', this.scheduleObj)
               }
           }
         
-          // if(args.element.classList.contains('e-resource-cells')  ) {
-          //     // args.element['style'].height = '160px' || args.element.classList.contains('e-work-cells ')
-          //        console.log(args.element['style'].height)
-          // }
-        
+ 
   
   
       }
@@ -6123,7 +6141,7 @@ public startResize = false
       public Check = 0
       public CheckTheoriqueNavig = true
       public  timelineDataOutitems: object[] = []
-      onChangeDataSource() { //a essayer avec la nouvelle méthode 
+      onChangeDataSource() { //a essayer avec la nouvelle méthode predicate
           let predicate: Predicate;
           let checkBoxes: CheckBoxComponent[] = [this.reel, this.theorique];
           const timelineDataOutitems = this.timelineResourceDataOut

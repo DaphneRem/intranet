@@ -29,7 +29,7 @@ if (document.location.host.indexOf('localhost') !== -1) {
 
 let MENU = [];
 
-if (buildModeFichesMaterielApp < 1 && buildModeKplannerApp < 1) {
+if (buildModeFichesMaterielApp < 1 && buildModeKplannerApp <= 1) {
     MENU = [
         {
             label: '',
