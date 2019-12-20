@@ -104,7 +104,7 @@
             <label class="col-form-label">N° Episode AB : </label>
             <input 
               [(ngModel)]="newObject.NumEpisodeAB"
-              type="text" 
+              type="text"
               class="form-control" 
               id="epAb" 
               name="epAb"
@@ -241,7 +241,7 @@
             <input 
               [(ngModel)]="newObject.NumEpisodeProd"
               placeholder="{{newObject.NumEpisodeProd ? valueNotToChangeLibelle : ''}}"
-              type="text" 
+              type="text"
               class="form-control col-lg-4" 
               id="epProd" 
               name="epProd"
@@ -326,7 +326,13 @@
               <span *ngIf="!ficheAchatDetail.nombre_episodes">
                 /
               </span>
-              <span *ngIf="ficheAchatDetail.nombre_episodes && ficheAchatDetail.Format_serie !== ''"> de {{ficheAchatDetail.Format_serie}}</span>
+              <span 
+                *ngIf="ficheAchatDetail.nombre_episodes && propertyExist(ficheAchatDetail.DurCom, ficheAchatDetail)" 
+                [placement]="'right'" 
+                [ngbTooltip]="propertyExist(ficheAchatDetail.DurCom, ficheAchatDetail) ? ficheAchatDetail.DurCom : ''">
+                de {{displayDurCom(ficheAchatDetail.DurCom)}}
+              </span>
+
           </p>
           <p *ngIf="selectionType === 'one' && !ficheAchatDetailReady">Format œuvre :
             <span>/</span>
@@ -597,10 +603,14 @@
             </span>
           </p> -->
           <p *ngIf="selectionType === 'one'">Chaînes concernées :
-            <span *ngIf="ficheAchatReady && ficheAchat.hasOwnProperty(chaines) && ficheAchat.chaines !== null">
-              {{ficheAchat.chaines}}
+            <span *ngIf="ficheAchatReady && ficheAchat.hasOwnProperty('lib_chaines') && ficheAchat.lib_chaines !== null && ficheAchat.lib_chaines !== []">
+              <span *ngFor="let item of ficheAchat.lib_chaines; let x = index">
+                {{x === 0 ? item : ', ' + item}}
+              </span>
             </span>
-            <span *ngIf="ficheAchatReady && (!ficheAchat.hasOwnProperty(chaines) || ficheAchat.chaines === null)">/</span>
+            <span *ngIf="ficheAchatReady && (!ficheAchat.hasOwnProperty('lib_chaines') || ficheAchat.lib_chaines === null || ficheAchat.lib_chaines === [])">
+              / 
+            </span>
           </p>
         </div>
 
@@ -704,10 +714,13 @@
             </div>
             <div class="col-lg-2 history-delivery-date">
               <history-delivery-date-modal 
-                *ngIf="selectionType === 'one'" 
+                *ngIf="selectionType === 'one'"
                 [myFicheMateriel]="newObject"
                 [reload]="reload">
               </history-delivery-date-modal>
+              <!-- <div class="history" *ngIf="selectionType === 'multi'">
+                <i class="icofont icofont-history"></i>
+              </div> -->
             </div>
           </div>
           <div *ngIf="!checkValidDate(newObject.DateLivraison) && !fmInRecording" class="col-form-label invalid-form">La date de livraison n'est pas valide</div>
@@ -717,8 +730,11 @@
             [livraisonIsValid]= "livraisonIsValid"
             (newComment)="displayDeliveryDateModelComment($event)"
             ></delivery-date-comment-modal>
-          <p *ngIf="selectionType === 'one'">Délai de vérif :
-            <span *ngIf="ficheAchatDetail.delai_verification">{{ficheAchatDetail.delai_verification}} jours</span>
+          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Délai de vérif :
+             {{ficheAchatDetail.delai_verification}}
+            <span *ngIf="propertyExist(ficheAchatDetail.delai_verification, ficheAchatDetail)">
+              {{ficheAchatDetail.delai_verification}} jours
+            </span>
             <span *ngIf="!ficheAchatDetail.delai_verification">/</span>
           </p>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker acceptation">
@@ -963,8 +979,15 @@
               Date de retour :
             </label>
             <div class="input-group col-lg-6">
-              <input class="form-control" placeholder="{{this.newObject.DateRetourOri}}" name="rDate"
-                [(ngModel)]="this.newObject.DateRetourOri" ngbDatepicker #retourDate="ngbDatepicker">
+              <input 
+                [ngClass]="!checkValidDate(newObject.DateLivraison) && !fmInRecording ? 'form-control-danger' : ''"
+                placeholder="{{newObject.DateRetourOri}}" 
+                name="rDate"
+                [(ngModel)]="newObject.DateRetourOri" 
+                ngbDatepicker
+                (keyup)="displayValidDate(newObject.DateRetourOri, 'ori')"
+                #ori="ngModel"
+                #retourDate="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="retourDate.toggle()" type="button">
                   <i class="icofont icofont-calendar"></i>
@@ -972,6 +995,7 @@
               </div>
             </div>
           </div>
+          <div *ngIf="!checkValidDate(newObject.DateRetourOri) && !fmInRecording" class="col-form-label invalid-form">La date d'acceptation n'est pas valide</div>
         </div>
 
 <!--- ***************  SECTION RECEPTION LABO ***************** -->

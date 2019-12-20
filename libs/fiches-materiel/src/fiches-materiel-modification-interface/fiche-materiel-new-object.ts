@@ -43,6 +43,8 @@ export class NewObject {
     Fiche_Mat_Qualite?: any;
     Fiche_Mat_StatutElementsAnnexes?: any;
     Fiche_Mat_Version?: any;
+    debut_des_droits: any;
+    expiration_droit: any;
 
 }
 
@@ -92,5 +94,7 @@ export const objectNoChanged: NewObject = {
     DateModification: valueNoChanged,
     CommentairesDateLivraison: valueNoChanged,
     CommentairesStatutEtape: valueNoChanged,
-    isarchived: valueNoChanged
+    isarchived: valueNoChanged,
+    debut_des_droits: valueNoChanged,
+    expiration_droit: valueNoChanged
   };

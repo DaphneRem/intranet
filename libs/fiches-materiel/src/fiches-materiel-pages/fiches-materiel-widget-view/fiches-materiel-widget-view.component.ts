@@ -18,7 +18,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       title: 'Mes Fiches Matériel en cours',
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-4',
-      link: './my-material-sheets/0/asc',
+      link: './my-material-sheets',
       color: fmInProgress
     },
     {
@@ -26,7 +26,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       // icon: 'icofont icofont-attachment',
       icon: 'icofont icofont-spinner-alt-6',
       size: 'col-md-12 col-lg-4',
-      link: './my-deals-in-progress/0/desc',
+      link: './my-deals-in-progress',
       color: fmInProgress
     },
     {
@@ -34,14 +34,14 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       // icon: 'icofont icofont-check-alt',
       icon: 'icofont icofont-archive',
       size: 'col-md-12 col-lg-4',
-      link: './my-material-sheets/archived/0/desc',
+      link: './my-material-sheets-archived',
       color: fmArchived
     },
     {
       title: 'Toutes mes Fiches Matériel',
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
-      link: './my-material-sheets/all/0/asc',
+      link: './my-material-sheets/all',
       color: allMyFmColor
     },
     {
@@ -49,7 +49,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       // icon: 'icofont icofont-file-text',
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
-      link: './all/0/asc',
+      link: './all',
       color: allFm
     },
   ];

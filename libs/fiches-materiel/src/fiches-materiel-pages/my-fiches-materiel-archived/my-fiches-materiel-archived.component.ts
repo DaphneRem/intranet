@@ -29,7 +29,6 @@ export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
   public tableTitle: string = 'Toutes mes fiches Matériel Archivées';
   public daysNumber: number = 100;
   public isArchived: number = 1;
-
   public data: FicheMateriel[];
   public dataReady: boolean;
   public user: string;

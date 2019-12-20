@@ -37,12 +37,12 @@ const routes: Routes = [
         data : { title : 'Modification Fiche Matériel'}
       },
       {
-        path: 'my-material-sheets/:columnIndex/:order',
+        path: 'my-material-sheets',
         component : MyFichesMaterielComponent,
         data : { title : 'Mes Fiches Matériel En Cours'}
       },
       {
-        path: 'my-deals-in-progress/:columnIndex/:order',
+        path: 'my-deals-in-progress',
         component : DealInProgressComponent,
         data : { title : 'Mes Deals En Cours'}
       },
@@ -52,7 +52,8 @@ const routes: Routes = [
         data : { title : 'Détails Fiche Matériel'}
       },
       {
-        path: 'my-material-sheets/archived/:columnIndex/:order',
+        // path: 'my-material-sheets/archived/:columnIndex/:order',
+        path: 'my-material-sheets-archived',
         component: MyFichesMaterielArchivedComponent,
         data: { title: 'Mes Fiches Matériel Archivées' }
       },
@@ -62,7 +63,7 @@ const routes: Routes = [
         data : { title : 'Détails Fiche Matériel'}
       },
       {
-        path: 'my-material-sheets/all/:columnIndex/:order',
+        path: 'my-material-sheets/all',
         component: MyFichesMaterielAllComponent,
         data: { title: 'Toutes Mes Fiches Matériel' }
       },
@@ -72,7 +73,7 @@ const routes: Routes = [
         data : { title : 'Détails Fiche Matériel'}
       },
       {
-        path: 'all/:columnIndex/:order',
+        path: 'all',
         component: FichesMaterielAllComponent,
         data: { title: 'Toutes les Fiches Matériel' }
       },

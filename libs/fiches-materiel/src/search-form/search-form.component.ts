@@ -86,7 +86,10 @@ export class SearchFormComponent implements OnInit {
     if ((typeof this.previousUrl !== 'undefined') || (this.previousUrl)) {
       if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
         this.complexSearchModel = this.storeSearchHistoryFormData;
-        this.displayDefaultFields();
+        // this.displayDefaultFields();
+        if ((this.complexSearchModel.isarchived === 0) && this.showOnlyInProgressBtn) {
+          this.inProgressChecked = true;
+        }
         this.displaySearchForm();
       } else {
         console.log('this.previousUrl => ', this.previousUrl);
@@ -187,6 +190,17 @@ export class SearchFormComponent implements OnInit {
       distributeur: '',
       numficheachat: ''
     };
+    console.log('this.showOnlyInProgressBtn => ', this.showOnlyInProgressBtn );
+
+    if (this.showOnlyInProgressBtn) {
+      console.log('this.oldComplexSearch => ', this.oldComplexSearch);
+      console.log('this.changeOldComplexSearchArchived => ', this.changeOldComplexSearchArchived);
+
+      this.oldComplexSearch.isarchived = this.changeOldComplexSearchArchived;
+      console.log('this.oldComplexSearch => ', this.oldComplexSearch);
+
+    }
+    console.log('this.oldComplexSearch after show in progress change => ', this.oldComplexSearch);
     if (JSON.stringify(this.complexSearchModel) !== JSON.stringify(this.autofields)) {
       for (let property in this.fmParameterToPost) {
         if (this.complexSearchModel.hasOwnProperty(property)) {
@@ -225,11 +239,17 @@ export class SearchFormComponent implements OnInit {
   sendDataResult() {
     this.dataResult.emit(this.fmFromComplexSearch);
   }
-
+  public changeOldComplexSearchArchived;
   checkOnlyInprogressChecked() {
     this.inProgressChecked = !this.inProgressChecked;
     if (this.inProgressChecked && this.showOnlyInProgressBtn) {
       this.complexSearchModel.isarchived = 0;
+      this.changeOldComplexSearchArchived = 2;
+    } else if (!this.inProgressChecked && this.showOnlyInProgressBtn) {
+      this.complexSearchModel.isarchived = 2;
+      this.changeOldComplexSearchArchived = 0;
+      this.autofields.isarchived = 0;
+
     }
     console.log('inProgressChecked => ', this.inProgressChecked);
     console.log('showOnlyInProgressBtd => ', this.showOnlyInProgressBtn);

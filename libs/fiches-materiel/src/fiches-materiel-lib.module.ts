@@ -14,6 +14,20 @@ import { ModalsModule } from '@ab/modals';
 import { SubHeaderModule } from '@ab/sub-header';
 import { WidgetsModule } from '@ab/widgets';
 
+// store imports
+import { StoreModule } from '@ngrx/store';
+import { ficheMaterielModificationInitialState } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.init';
+import { ficheMaterielModificationReducer } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.reducer';
+import { datatableFilteredDataInitialState } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.init';
+import { datatableFilteredDataReducer } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.reducer';
+import { SearchHistoryFormInitialState } from './search-form/+state/search-history-form.init';
+import { searchHistoryFormReducer } from './search-form/+state/search-history-form.reducer';
+import {
+  DatatableColumnOrderInitialState
+} from './fiches-materiel-tables/fiches-materiel-table/+state-datatable-columns-order/datatable-columns-order.init';
+import {
+  datatableColumnsOrderReducer
+} from './fiches-materiel-tables/fiches-materiel-table/+state-datatable-columns-order/datatable-columns-order.reducer';
 // components pages imports
 import { DisplayFichesAchatsComponent } from './fiches-materiel-pages/display-fiches-achats/display-fiches-achats.component';
 import { FichesMaterielCreationComponent } from './fiches-materiel-pages/fiches-materiel-creation/fiches-materiel-creation.component';
@@ -22,7 +36,9 @@ import {
 } from './fiches-materiel-pages/fiches-materiel-widget-view/fiches-materiel-widget-view.component';
 import { MyFichesMaterielComponent } from './fiches-materiel-pages/my-fiches-materiel/my-fiches-materiel.component';
 import { MyFichesMaterielAllComponent } from './fiches-materiel-pages/my-fiches-materiel-all/my-fiches-materiel-all.component';
-import { MyFichesMaterielArchivedComponent } from './fiches-materiel-pages/my-fiches-materiel-archived/my-fiches-materiel-archived.component';
+import {
+  MyFichesMaterielArchivedComponent
+} from './fiches-materiel-pages/my-fiches-materiel-archived/my-fiches-materiel-archived.component';
 
 // components tables imports
 import { FichesAchatTableComponent } from './fiches-achat-table/fiches-achat-table.component';
@@ -45,9 +61,6 @@ import {
 import {
   FichesMaterielModificationInterfaceComponent
 } from './fiches-materiel-modification-interface/fiches-materiel-modification-interface.component';
-import { StoreModule } from '@ngrx/store';
-import { ficheMaterielModificationReducer } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.reducer';
-import { ficheMaterielModificationInitialState } from './fiches-materiel-modification-interface/+state/fiche-materiel-modification.init';
 import {
   FichesMaterielModificationActionComponent
 } from './fiches-materiel-modification-interface/fiches-materiel-modification-action/fiches-materiel-modification-action.component';
@@ -80,10 +93,6 @@ import {
 } from './fiche-materiel-details-view/annexes-elements-details-modal/annexes-elements-details-modal.component';
 import { FichesMaterielAllComponent } from './fiches-materiel-pages/fiches-materiel-all/fiches-materiel-all.component';
 import { DealInProgressComponent } from './fiches-materiel-pages/deal-in-progress/deal-in-progress.component';
-
-
-import { datatableFilteredDataInitialState } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.init';
-import { datatableFilteredDataReducer } from './fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.reducer';
 import { FichesMaterielBtnLinksComponent } from './fiches-materiel-btn-links/fiches-materiel-btn-links.component';
 
 @NgModule({
@@ -108,7 +117,17 @@ import { FichesMaterielBtnLinksComponent } from './fiches-materiel-btn-links/fic
       'datatableFilteredData',
       datatableFilteredDataReducer,
       { initialState: datatableFilteredDataInitialState }
-    )
+    ),
+    StoreModule.forFeature(
+      'searchHistoryForm',
+      searchHistoryFormReducer,
+      { initialState: SearchHistoryFormInitialState }
+    ),
+    StoreModule.forFeature(
+      'datatableColumnsOrder',
+      datatableColumnsOrderReducer,
+      { initialState: DatatableColumnOrderInitialState }
+    ),
   ],
   declarations: [
     AffectedEpisodesModalComponent,

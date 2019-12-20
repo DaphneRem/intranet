@@ -49,7 +49,7 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
             this.init = -1;
           } else if (this.init && (typeof changeDeliveryDate.currentValue !== 'string')) {
             console.log('openSwal in delivery date. this.intit = >', this.init);
-            if (this.selectionType === 'multi' && this.init > 1) {
+            if (this.selectionType === 'multi') {
               this.openSwal();
             } else if (this.selectionType !== 'multi') {
               this.openSwal();
