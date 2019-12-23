@@ -29,6 +29,7 @@ export class CustomDatatablesOptions {
   getSearchData?: boolean;
   searchRecordedOption?: boolean;
   searchRecordedData?: string;
+  getColumnsOrders?: boolean;
 }
 
 export class Columns {

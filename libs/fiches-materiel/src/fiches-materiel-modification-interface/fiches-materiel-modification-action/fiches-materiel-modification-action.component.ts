@@ -175,7 +175,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
 
   resetDateFormat(newObject) { // 5/ ONE & MULTI
     // console.log('before resetDateFormat : this.newObject => ', this.newObject);
-    // console.log('newObject.Deadline => ', newObject.Deadline);
+     console.log('newObject.Deadline => ', newObject.Deadline);
     // console.log('newObject.DateLivraison => ', newObject.DateLivraison);
     // console.log('newObject.DatePremiereDiff => ', newObject.DatePremiereDiff);
     // console.log('newObject.DateAcceptation => ', newObject.DateAcceptation);
@@ -190,6 +190,25 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       this.checkDeadline(newObject);
     } else if (newObject.Deadline === null) {
       this.newObject.Deadline = null;
+    } else if (this.selectionType === 'one' && newObject.Deadline === 'dd-mm-yyyy') {
+      if ((this.newObject.isarchived === 0)) {
+        let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
+        // console.log('nullDate => --------------------------------------- ', nullDate);
+        // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+        this.newObject.Deadline = nullDate;
+        this.newObject.isarchived = 1;
+      } else if (this.newObject.isarchived === 1) {
+        if (this.newObject.IdLibstatut === 1 // en cours
+          || this.newObject.IdLibstatut === 3 && this.newObject.IdLibEtape !== 21
+          || this.newObject.IdLibstatut === 2 && this.newObject.IdLibEtape !== 20
+          || this.newObject.IdLibstatut === 5 && this.newObject.IdLibEtape !== 24
+        ) {
+          let today = moment().format('YYYY-MM-DDTHH:mm:ss');
+          this.newObject.Deadline = today;
+          console.log('&&&&&&&&&&&&&&&&& La deadline  &&&&&&&&&&&&&&&&&&&&&& => ', this.changedValues);
+          this.newObject.isarchived = 0;
+        }
+      }
     }
     if (
       newObject.DateLivraison !== null &&
@@ -281,13 +300,14 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     ) {
       this.newObject.Deadline = null;
       this.newObject.isarchived = 1;
-      // console.log('this.newObject.Deadline => ', this.newObject.Deadline);
+      console.log('this.newObject.Deadline => ', this.newObject.Deadline);
     } else {
       let day = this.addZeroToDate(newObject.Deadline.day);
       let month = this.addZeroToDate(newObject.Deadline.month);
       newObject.Deadline = `${newObject.Deadline.year}-${
         month
       }-${day}T00:00:00`;
+      console.log('Deadline => ', this.newObject.Deadline);
     }
   }
 
@@ -561,6 +581,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         // console.log('this.newObject[key] (value) => ', this.newObject[key]);
       }
     }
+    console.log('this.changedValues =>', this.changedValues);
     // console.log(this.selectionType);
     // if ((this.newObject.Deadline === null) && this.selectionType === 'multi') {
     //   let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
@@ -574,22 +595,23 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     //   this.changedValues['Deadline'] = this.newObject.Deadline;
     // }
     if (this.selectionType === 'multi') {
-        // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
-        // console.log('this.newObject ===================================> ', this.newObject);
-      if (this.newObject.Deadline === null || this.newObject.Deadline === 'dd-mm-yyyy') {
+         console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+         console.log('this.newObject ===================================> ', this.newObject);
+      if ((this.newObject.Deadline === null || this.newObject.Deadline === 'dd-mm-yyyy') && (this.newObject.isarchived === 0)) {
         let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
         // console.log('nullDate => --------------------------------------- ', nullDate);
         // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
         this.changedValues['Deadline'] = nullDate;
         this.changedValues['isarchived'] = 1;
-      } else if ((this.newObject.Deadline === this.valueNotToChangeLibelle) && (this.newObject.isarchived === 1)) {
+      } else if ((this.newObject.Deadline === 'dd-mm-yyyy') && (this.newObject.isarchived === 1)) {
         if (this.newObject.IdLibstatut === 1 // en cours
         || this.newObject.IdLibstatut === 3 && this.newObject.IdLibEtape !== 21
         || this.newObject.IdLibstatut === 2 && this.newObject.IdLibEtape !== 20
         || this.newObject.IdLibstatut === 5 && this.newObject.IdLibEtape !== 24
         ) {
-          this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
-          // console.log('&&&&&&&&&&&&&&&&& La deadline doit disparaitre &&&&&&&&&&&&&&&&&&&&&& => ', this.changedValues);
+          let today = moment().format('YYYY-MM-DDTHH:mm:ss');
+          this.changedValues['Deadline'] = today;
+          console.log('&&&&&&&&&&&&&&&&& La deadline  &&&&&&&&&&&&&&&&&&&&&& => ', this.changedValues);
           this.changedValues['isarchived'] = 0;
         }
       } else if (this.newObject.Deadline === this.valueNotToChangeLibelle) {
@@ -597,8 +619,15 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         // this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
         // console.log('deadline error => ', this.changedValues['Deadline']);
       }
-
+      
     }
+    console.log('this.changedValues after deadline management =>', this.changedValues);
+    for (let item in this.changedValues) {
+      if (item !== 'Deadline' && this.changedValues[item] === 'dd-mm-yyyy') {
+        this.changedValues[item] = null;
+      }
+    }
+    console.log('this.changedValues after date null management =>', this.changedValues);
     let now = moment().format('YYYY-MM-DDTHH:mm:ss');
     this.changedValues['UserModification'] = this.user;
     this.changedValues['DateModification'] = now;

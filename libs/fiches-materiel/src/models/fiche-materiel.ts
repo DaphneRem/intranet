@@ -40,4 +40,6 @@ export class FicheMateriel {
     distributeur: string;
     CommentairesDateLivraison: string;
     CommentairesStatutEtape: string;
+    DateDebutDroit: Date | string;
+    DateFinDroit: Date | string;
 }

@@ -61,7 +61,7 @@ export class DisplayFichesAchatsComponent implements OnInit {
       circleColor: '#999898',
       circleColorHover: '#b5b3b3',
     },
-    link: '../material-sheets/my-material-sheets/0/asc',
+    link: '../material-sheets/my-material-sheets',
     tooltip : true,
     tooltipMessage : 'Voir les fiches Matériel'
   };

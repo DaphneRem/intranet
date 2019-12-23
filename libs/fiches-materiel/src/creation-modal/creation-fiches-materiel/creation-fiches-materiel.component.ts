@@ -31,6 +31,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   @Input() myFicheAchat;
 
   @Output() confirmCreation = new EventEmitter();
+  @Output() errorInfoFmCreation = new EventEmitter();
 
   private onDestroy$: Subject<any> = new Subject();
 
@@ -40,6 +41,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   public creationState: Boolean = false;
   public retourOri: number;
   public user;
+  public errorCreationInfoFm = [];
 
   // dealine calcul
   public today;
@@ -71,7 +73,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   }
 
   /** POST FICHES MATERIEL **/
-  createFichesMateriel(newFicheMateriel) {
+  createFichesMateriel(newFicheMateriel, oeuvre) {
     this.fichesMaterielService
       .postFicheMateriel(newFicheMateriel)
       .pipe(takeUntil(this.onDestroy$))
@@ -84,7 +86,13 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
         },
         error => {
           this.creationState = false;
+          let errorFM = {
+            ficheMateriel: newFicheMateriel,
+            oeuvre: oeuvre
+          };
           console.log(' could not be created');
+          this.errorCreationInfoFm.push(errorFM);
+          this.errorInfoFmCreation.emit(this.errorCreationInfoFm);
           this.create(this.creationState);
         }
       );
@@ -112,7 +120,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(
         res => {
-          this.createFichesMateriel(newFicheMateriel);
+          this.createFichesMateriel(newFicheMateriel, this.detailsFicheAchat);
                   console.log(this.myFicheAchat);
 
           this.updateFicheAchatDetailImport(
@@ -222,6 +230,8 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
       });
       for (let i = 0; i < oeuvre.numFichesMateriel.length; i++) {
         console.log(this.user);
+  //       oeuvreFicheDetail.debut_des_droits = '2019-11-18T00:00:00';
+  //       oeuvreFicheDetail.expiration_droits = '2022-11-18T00:00:00';
         this.fichesMateriel.push(
           new NewFicheMateriel({
             IdFicheAchat: oeuvre.id_fiche,
@@ -237,7 +247,9 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
             DateCreation: new Date().toJSON().slice(0, 19),
             UserCreation: this.user,
             SuiviPar: this.user,
-            RetourOri: retourOriOeuvre
+            RetourOri: retourOriOeuvre,
+            DateDebutDroit: oeuvreFicheDetail.debut_des_droits,
+            DateFinDroit: oeuvreFicheDetail.expiration_droits,
           })
         );
       }

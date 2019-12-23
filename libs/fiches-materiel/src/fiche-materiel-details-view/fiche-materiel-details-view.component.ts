@@ -346,7 +346,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         console.log(data);
         if (data) {
           this.myFicheMateriel = data[0];
-          console.log(this.myFicheMateriel);
+          console.log('this.myFicheMateriel => ', this.myFicheMateriel);
           this.dataMaterielReady = true;
           this.myFicheMaterielExist = true;
           this.fichesMaterielModification.action = this.goToModifInterface();

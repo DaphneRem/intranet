@@ -43,6 +43,7 @@ export class CustomDatatablesComponent implements OnInit, AfterViewInit, OnDestr
   @Output() row = new EventEmitter();
   @Output() selectRows = new EventEmitter();
   @Output() searchData = new EventEmitter();
+  @Output() columnsOrder = new EventEmitter();
 
   // rerender onchange variables
   public init = 0;
@@ -147,8 +148,12 @@ public test = 'ookok';
   ) {}
 
   ngOnInit(): void {
+    console.log('this.customdatatablesOptions.getColumnsOrders => ', this.customdatatablesOptions.getColumnsOrders);
     // this.dataReady = true;
     this.checkFilterData();
+    //if (this.customdatatablesOptions.getColumnsOrders) {
+    //  this.getColumnClick();
+    //}
     this.initializeDatatable();
   }
 
@@ -166,6 +171,18 @@ public test = 'ookok';
     } else {
       this.checkDataFilterReady = true;
     }
+  }
+
+  getColumnClick() {
+    let that = this;
+    $('#datatable').on('order.dt', function(event, settings) {
+      console.log('order click detected');
+      console.log('event => ', event);
+      console.log('settings => ', settings);
+      console.log('order => ', settings.aaSorting);
+      that.columnsOrder.emit(settings.aaSorting);
+    });
+
   }
 
   initializeDatatable() {
@@ -336,7 +353,9 @@ public test = 'ookok';
   }
 
   displayCustomOptions() {
+    console.log('displayoptions');
     const options = this.customdatatablesOptions;
+    console.log('options => ', options);
     // console.log('options.renderOption => ', options.renderOption);
       this.themeName = options.theme;
       this.data = options.data;

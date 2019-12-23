@@ -425,7 +425,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
                 this.displayStoreDatatableSearchData(this.myFicheAchat.numero_fiche);
               }
             }
-            this.router.navigate([`/material-sheets/my-material-sheets/0/asc`]);
+            this.router.navigate([`/material-sheets/my-deals-in-progress`]);
           }
         });
       } else {
@@ -444,6 +444,14 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
     }, 1000);
   }
 
+  public errorMessage;
+  displayErrorInfoFmCreation(event) {
+    let errorFm = event;
+    let errorMsg;
+//    for (let i = 0; i < errorFm.length; i++) {
+//      let errorMsg += 'La ficheMatériel n°' 
+//    }
+  }
   /***** Close modal creation-details *****/
   closeMyModal(event) {
     this.creationState = false;

@@ -184,6 +184,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public multiOeuvre: boolean;
   public premiereDiff: Boolean = true;
   public accesLabo: Boolean = true;
+  public ori: Boolean = true;
   public newObject: NewObject;
 
   constructor(
@@ -332,28 +333,28 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       });
   }
 
-  // displayDurCom(durCom: string): string {
-  //   console.log(durCom);
-  //   let arrayDurCom = durCom.split(':');
-  //   console.log(arrayDurCom);
-  //   let labels = ['heure', 'minute', 'seconde'];
-  //   let result = '';
-  //   arrayDurCom.map((item, index) => {
-  //     console.log(+item)
-  //     if (+item === 0) {
-  //       item = '';
-  //     } else {
-  //       let multiple = '';
-  //       if (+item > 1) {
-  //         multiple = 's';
-  //       }
-  //       item = ` ${+item} ${labels[index]}${multiple}`;
-  //     }
-  //     console.log(item);
-  //     result += item;
-  //   });
-  //   return result;
-  // }
+  displayDurCom(durCom: string): string {
+    console.log(durCom);
+    let arrayDurCom = durCom.split(':');
+    console.log(arrayDurCom);
+    let labels = ['heure', 'minute', 'seconde'];
+    let result = '';
+    arrayDurCom.map((item, index) => {
+      console.log(+item)
+      if (+item === 0) {
+        item = '';
+      } else {
+        let multiple = '';
+        if (+item > 1) {
+          multiple = 's';
+        }
+        item = ` ${+item} ${labels[index]}${multiple}`;
+      }
+      console.log(item);
+      result += item;
+    });
+    return result;
+  }
 
   getLibs() {
     this.categoriesReady = false;
@@ -970,6 +971,8 @@ public firtsClickStep = true;
       this.premiereDiff = this.checkValidDate(date);
     } else if (type === 'labo') {
       this.accesLabo = this.checkValidDate(date);
+    } else if (type === 'ori') {
+      this.ori = this.checkValidDate(date);
     }
   }
 
@@ -2027,6 +2030,17 @@ public categoriesReady: Boolean = false;
     this.newObject.CommentairesDateLivraison = comment;
     // console.log(`Delivery Date Comment : '${this.newObject.CommentairesDateLivraison}'`);
     // console.log(this.newObject);
+  }
+
+  propertyExist(property, object): boolean {
+    console.log('propertyExist(property) => ', property);
+    if (object.hasOwnProperty(property)) {
+      if ((typeof property !== 'undefined') && (property !== '') && (property !== null)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
   /*************************************************************************************************************/

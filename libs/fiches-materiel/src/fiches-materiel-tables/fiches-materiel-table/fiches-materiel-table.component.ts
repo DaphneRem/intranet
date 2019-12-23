@@ -58,7 +58,8 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   @Input() headerTableLink?: string;
   @Input() tableTitle?: string;
   @Input() tableTheme?: string;
-  @Input() showNumFM?: boolean;
+  @Input() multiColumnsOrderExist?: boolean;
+  @Input() multiColumnsOrder?: any;
   @Input() data;
 
   private onDestroy$: Subject<any> = new Subject();
@@ -69,6 +70,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   public searchValue: string;
   public storeFichesToModif;
   public storeDatatableSearchData;
+  public storeDatatableColumnsOrder;
   public selectedId = [];
   public selectedOeuvre;
   public idFicheAchatArray = [];
@@ -127,6 +129,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     getSearchData: true,
     searchRecordedOption: true,
     searchRecordedData: '',
+    getColumnsOrders: true,
     buttons: {
       buttons: true,
       allButtons: true,
@@ -151,6 +154,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   }
 
   ngOnInit() {
+    console.log('multiColumnsOrderExist => ', this.multiColumnsOrderExist);
     if (this.tableTheme) {
       this.customdatatablesOptions.theme = this.tableTheme;
     }
@@ -185,8 +189,10 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     this.storeDatatableSearchData = this.globalStore.datatableFilteredData;
+    this.storeDatatableColumnsOrder = this.globalStore.datatableColumnsOrder;
     this.displayFilterData();
     console.log(this.storeFichesToModif);
+    this.customdatatablesOptions.data = this.data;
   }
 
   public init = 0;
@@ -199,7 +205,16 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       console.log('data.currentValue ngOnChanges => ', data.currentValue);
       console.log('this.data after => ', this.data);
       this.rerenderData = this.data;
-      this.getFichesMateriel();
+      this.customdatatablesOptions.data = this.data;
+      console.log('this.customdatatablesOptions.data => ', this.customdatatablesOptions.data);
+      //this.customdatatablesOptions.defaultOrder = [
+      //  [this.columnParams, this.orderParams]
+      //];
+      this.displayColumns();
+      this.displayColumnsOrder();
+      //this.displayColumns();
+      // this.getFichesMateriel();
+
     } else {
       this.init++;
     }
@@ -225,6 +240,66 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         }
       }
     }
+  }
+
+  displayColumnsOrder() {
+    let detailUrl = 'details';
+    let modifUrl = 'modification';
+    let creationUrl = 'creation';
+    console.log(this.previousUrl);
+    if ((typeof this.previousUrl !== 'undefined') || (this.previousUrl)) {
+      if (
+        this.previousUrl.includes(detailUrl)
+        || this.previousUrl.includes(modifUrl)
+      ) {
+        console.log('this.storeDatatableColumnsOrder => ', this.storeDatatableColumnsOrder);
+        let storeColumnsOrder = this.storeDatatableColumnsOrder.columnsDatatableOrder;
+        console.log('storeColumnsOrder => ', storeColumnsOrder);
+        this.customdatatablesOptions.defaultOrder = storeColumnsOrder;
+      } else {
+        this.displayDefaultColumnsOrder();
+      }
+    } else {
+      this.displayDefaultColumnsOrder();
+    }
+    this.displayColumns();
+  }
+
+  displayDefaultColumnsOrder() {
+    if (this.multiColumnsOrderExist) {
+      this.customdatatablesOptions.defaultOrder = [
+        [10, 'desc'], // n°FA du plus récent au plus ancien
+        [5, 'asc'], // TF par ordre alphabétique
+        [7, 'asc'], // n° épidose AB par ordre croissant
+      ];
+    } else {
+      this.customdatatablesOptions.defaultOrder = [[0, 'asc']];
+    }
+    this.store.dispatch({
+      type: 'ADD_DATATABLE_COLUMS_ORDER',
+      payload: {
+        columnsDatatableOrder: this.customdatatablesOptions.defaultOrder
+      }
+    });
+  }
+
+  checkColumnsOrder(event) {
+    console.log('event order columns => ', event);
+    let order = [];
+    console.log('event.length order => ', event.length);
+    if (event.length) {
+      event.map(item => {
+        order.push([item[0], item[1]]);
+      });
+    }
+    console.log('order array after map modif => ', order);
+    this.customdatatablesOptions.defaultOrder = order;
+    this.store.dispatch({
+      type: 'ADD_DATATABLE_COLUMS_ORDER',
+      payload: {
+        columnsDatatableOrder: this.customdatatablesOptions.defaultOrder
+      }
+    });
   }
 
   checkDeadline(data, fm) { // check DeadLine && display important data
@@ -254,9 +329,11 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         this.stepLib = data;
-        console.log(data);
+        console.log('step lib get from table component : data => ', data);
         this.stepLibReady = true;
-        this.getFichesMateriel();
+        // this.getFichesMateriel();
+        this.customdatatablesOptions.data = this.data;
+        this.displayColumnsOrder();
       });
   }
 
@@ -431,19 +508,22 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
 
   displayAction() {
     this.customdatatablesOptions.dbClickAction = (dataRow) => {
-      console.log(this.route);
+      console.log('this.route => ', this.route);
       let paths = this.route.snapshot.routeConfig.path;
-      let path = paths.split('/');
-      path.splice(-2, 2);
-      console.log(path);
-      let value;
-      if (path.length > 1) {
-        value = path.join('/');
-      } else {
-        value = path[0];
-      }
-      console.log(path);
-      this.router.navigate([`/material-sheets/${value}/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}/${dataRow.IdFicheDetail}`]);
+      console.log('paths => ', paths);
+    //  let path = paths.split('/');
+    //  path.splice(-2, 2);
+    //  console.log(path);
+    //  let value;
+    //  if (path.length > 1) {
+    //    value = path.join('/');
+    //  } else {
+    //    value = path[0];
+    //  }
+    //  console.log('value => ', value);
+    //  console.log('path => ', path);
+      this.router.navigate([`/material-sheets/${paths}/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}/${dataRow.IdFicheDetail}`]);
+    //  this.router.navigate([`/material-sheets/${value}/details/${dataRow.IdFicheMateriel}/${dataRow.IdFicheAchat}/${dataRow.IdFicheDetail}`]);
     };
     this.customdatatablesOptions.tooltipHeader = 'Double cliquer sur un fichier pour avoir une vue détaillée';
     console.log('display action ok');
@@ -456,6 +536,10 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       [this.columnParams, this.orderParams]
     ];
     this.displayColumns();
+    // this.customdatatablesOptions.data = this.data;
+    // console.log('this.customdatatablesOptions.data => ', this.customdatatablesOptions.data);
+// ICI ORDER
+    // this.displayColumns();
     // this.fichesMaterielService
     //   .getFichesMateriel()
     //   .pipe(takeUntil(this.onDestroy$))
@@ -661,14 +745,6 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         }
       },
     ];
-    if (this.showNumFM) {
-      this.customdatatablesOptions.columns.unshift(
-        {
-          title: 'N° FM',
-          data: 'IdFicheMateriel'
-        }
-      );
-    }
     console.log('display columns ok => ', this.customdatatablesOptions.columns);
     this.dataReady = true;
 

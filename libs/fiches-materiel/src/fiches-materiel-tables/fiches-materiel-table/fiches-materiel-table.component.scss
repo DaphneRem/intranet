@@ -55,9 +55,9 @@
 }
 
 /deep/ .label-EA  {
-    background: $label-waitEA-color-backgroud;
-    background-color: $label-waitEA-color-backgroud !important;
-    color: #000000 !important;
+    background: #ffffff;
+    background-color: #ffffff !important;
+    color: $label-waitEA-color-backgroud !important;
     border: 1px solid $label-waitEA-color-backgroud;
 }
 

@@ -82,6 +82,7 @@
 <creation-fiches-materiel
   *ngIf="displayCreateBtn(oeuvreWithGaps)"
   (confirmCreation)="checkCreationState($event)"
+  (errorInfoFmCreation)="displayErrorInfoFmCreation($event)"
   [oeuvreWithGaps]="oeuvreWithGaps" 
   [detailsFicheAchat]="detailsFicheAchat"
   [myFicheAchat]="myFicheAchat"

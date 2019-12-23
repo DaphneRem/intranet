@@ -28,9 +28,14 @@ export class DealInProgressComponent implements OnInit, OnDestroy {
   public tableTheme: string = 'light blue theme';
   public globalStore;
   public user;
-  public showNumFM: boolean = true;
   public data: FicheMateriel[];
   public dataReady: boolean;
+  public multiColumnsOrderExist = true;
+  public multiColumnsOrder = [
+    [5, 'asc'],
+    [7, 'asc'],
+    [10, 'asc']
+  ];
 
   public widgetLink = '/';
   public icons = [];

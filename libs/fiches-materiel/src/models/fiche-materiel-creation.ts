@@ -29,4 +29,6 @@ export class FicheMaterielCreation {
     DateCreation: Date;
     DateModification: Date;
 
+    DateDebutDroit: Date | string;
+    DateFinDroit: Date | string;
 }
