@@ -19,6 +19,7 @@ import { Coordinateur } from '@ab/k-planner-lib/src/models/coordinateur';
 import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur.service';
 import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.service';
 import { UserAccessRightsService } from './accessRights/users-access-rights-service';
+import { environment } from '../environments/environment';
 
 const editRight = 'Modification';
 const coordinateurRight ='Coordinateur';
@@ -53,6 +54,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this.navbarStoreOpen = this.store;
     // this.adal5Service.init(config);
+    this.versionApp = environment.version;
   }
 
   private onDestroy$: Subject<any> = new Subject();
@@ -76,7 +78,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public shortUserName: string;
   public numGroup: number;
   public userIsReady = false;
-
+  public versionApp : string;
   public currentCoordinateur: Coordinateur;
   
   ngOnInit() {
