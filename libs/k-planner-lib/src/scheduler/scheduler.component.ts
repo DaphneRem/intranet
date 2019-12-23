@@ -264,8 +264,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public openEditorCount = 0;
       public creationArray = [];
       public newData = [];
-      //public startHour: string = '00:00';
-     // public endHour: string = '01:00';
+   
       public timeScale: TimeScaleModel = { enable: true, interval: 60, slotCount: 2 };
    
       public colorStatut: Object[] = [
@@ -602,13 +601,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
 
         //   this.departmentDataSource = this.departmentGroupDataSource; //bug btn rafraichir
           this.openEditorCount = 0;
-  // ******************************************************garder l'etat des barre de recherche******************************************************
-        //   if (this.searchString != undefined) {
-        //       console.log("clic bouton refresh ")
-        //       this.searchwo.value = this.searchString
-        //       this.onFilter(this.searchwo.value, 0, this.argsKeyboardEvent)
-        //   } else {
-        //   }       
+      
         //*****************************************************garder l'etat des checkboxs *************************************************************
           this.Check = 0
        setTimeout(() => {                   
