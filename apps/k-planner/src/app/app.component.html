@@ -1,4 +1,4 @@
-<div *ngIf="authService.user">
+<div *ngIf="authService.user && rightsAreReady"  >
 <root-header 
   class="ng-tns-c2-0 ng-star-inserted"
   [headerTitle]="title" 
@@ -42,3 +42,5 @@
     </div>
 </div>
 </div>
+
+<page-403 *ngIf="!rightsAreReady"></page-403>

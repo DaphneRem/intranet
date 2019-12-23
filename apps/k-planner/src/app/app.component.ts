@@ -76,7 +76,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public shortUserName: string;
   public numGroup: number;
   public userIsReady = false;
-
+  public rightsAreReady = true ;
   public currentCoordinateur: Coordinateur;
   
   ngOnInit() {
@@ -218,6 +218,8 @@ getAccessRightsUser(){
                  if(dataModule.ListeRight[editRight]  === true && dataModule.ListeRight[coordinateurRight] === true){
                   console.log("get utilisateur by login",item.Mail)
                     this.getUtilisateurByLogin(item.Mail)
+                 }else {
+                   this.rightsAreReady = false
                  }
            }
          })
