@@ -1167,7 +1167,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   
               //       }
               //   }
-              
+          
               });
             
               console.log("allDataContainers length",this.allDataContainers.length) 
@@ -1812,6 +1812,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       this.creationArray = [];
                       this.disabledrefresh = false
                       this.openEditor = false 
+                      this.open = false
                         this.startResize= false
                   }
               },
@@ -1832,6 +1833,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       }
                       });
                       this.openEditor = false 
+                      this.open = false
                   this.startResize= false
                   }
               );
@@ -1892,6 +1894,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log('nouveau container fot api request : ', newContainer);
           console.log(event);
           this.createJustContainerAction = true;
+          this.open = false
           this.postContainer(newContainer, event);
       }
   
@@ -3842,7 +3845,15 @@ import { UtilisateurService } from "../services/utilisateur.service";
                 this.editor = false
                 console.log(btnclose)
             }, true);
-           
+            let save = document.getElementsByClassName("e-event-save")
+          
+            save[0].addEventListener('click', () => {
+               if (this.filtreRegie && args.target === "e-appointment"){
+                  
+                   this.open = false
+                console.log('click save ', this.open  )
+            }
+        }, true)
 
             // e-subject e-field e-input
               console.log(args.data.StartTime.getHours())
@@ -4202,6 +4213,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                              console.log("this.departmentDataSource  before", this.departmentDataSource )
                              this.departmentDataSource = this.listeRegies
                              this.openEditor = false
+                             this.open = false
                           console.log('click save ',this.departmentDataSource )
                       }
                       }, true);
@@ -4854,7 +4866,7 @@ console.log('on load app', this.scheduleObj)
             // add isslotaviable
             let isSlotAviable = this.scheduleObj.isSlotAvailable(event.data)
             console.log(isSlotAviable)
-            // if(this.scheduleObj.currentView ==="TimelineDay"){
+            if(this.scheduleObj.currentView ==="TimelineDay"){
             if((initialDate !=  changedDate) &&  this.editor ){
                 console.log("timelineDay")
                 swal({
@@ -4882,39 +4894,40 @@ console.log('on load app', this.scheduleObj)
             })
             this.editor = false // pour ne pas afficher la modale a chaque fois 
             }
-        // } else{
-
-  
-        //    let sameWeek = moment(initialDate).isSame(moment(changedDate),'weeks');
-        //    console.log(sameWeek ,'same weeek')
-        //     if(this.scheduleObj.currentView ==="TimelineWeek"  && sameWeek == false && this.editor ){
-               
-        //         swal({
-        //             title: '',
-        //             text: `Souhaitez-vous naviguer vers la date: ${date}` ,
-        //             showCancelButton: true,
-        //             confirmButtonText: 'oui',
-        //             cancelButtonText: 'non',
-        //             allowOutsideClick:false
+        } else{
+//         let startOfWeek = moment(initialDate).startOf('week'),
+//             endOfWeek = moment(initialDate).endOf('week'),
+           let  isSameWeek = moment(this.dataToEdit.StartTime).isSame(event.data["StartTime"],'week')
+// if (startOfWeek.format('D') <= )
+  console.log(isSameWeek,"is the same week")
+            if(this.scheduleObj.currentView ==="TimelineWeek"   ){
+               if(!isSameWeek && this.editor ){
+                swal({
+                    title: '',
+                    text: `Souhaitez-vous naviguer vers la date: ${date}` ,
+                    showCancelButton: true,
+                    confirmButtonText: 'oui',
+                    cancelButtonText: 'non',
+                    allowOutsideClick:false
                 
-        //         }).then((oui) => {
-        //             console.log(oui)
-        //             this.scheduleObj.eventSettings.dataSource = []
-        //             this.departmentGroupDataSource = [];
-        //             if(oui.value){
-        //                 // (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
-        //                 // let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
-        //                 // // console.log(calendar)
-        //                 // calendar.value = event.data["StartTime"];
+                }).then((oui) => {
+                    console.log(oui)
+                    this.scheduleObj.eventSettings.dataSource = []
+                    this.departmentGroupDataSource = [];
+                    if(oui.value){
+                        // (this.scheduleObj.element.querySelectorAll('.e-schedule-toolbar .e-date-range')[0] as any).click();
+                        // let calendar = (this.scheduleObj.element.querySelectorAll('.e-calendar')[0] as any).ej2_instances[0];
+                        // // console.log(calendar)
+                        // calendar.value = event.data["StartTime"];
                        
-        //                 this.scheduleObj.selectedDate= event.data["StartTime"]
-        //         }else{
-        //             this.refreshScheduler()
-        //         }
-        //     })
-        //     this.editor = false 
-        //     }
-        // }
+                        this.scheduleObj.selectedDate= event.data["StartTime"]
+                }else{
+                    this.refreshScheduler()
+                }
+            })
+            this.editor = false 
+            }}
+        }
         }
           }
           if (event.requestType === 'eventCreate') {
