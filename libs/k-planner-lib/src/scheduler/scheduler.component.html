@@ -113,6 +113,7 @@
                     locale="fr-CH"
                     (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
+                    (popupClose) = "onPopupClose($event)"
                     cssClass='schedule-drag-drop' 
                     [group]="group" 
                     [currentView]="currentView" 
@@ -129,7 +130,7 @@
                     (resizeStop)="onResizingStop($event)"
                     (select)= "onSelectMultipleCell($event)"
                     (hover) = "onHover($event)"
-                   (cellClick) = "cellClick($event) "
+                    (cellClick) = "cellClick($event) "
                     [enablePersistence]="false"
                     [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
@@ -302,7 +303,8 @@
                                 (nodeSelecting)="onTreeSelected($event)"
                                 (nodeExpanding)="onTreeExpanding($event)"
                                 (nodeDragging)="onItemDrag($event, 0)"                        
-                                [enablePersistence]="false">
+                                [enablePersistence]="false"
+                               >
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""
                                 >
                                     <div id="waiting" class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
@@ -337,7 +339,7 @@
                             <div class="header-treeviewMonteur">
                            
                             <div class="input-group">
-                                <input type="text" id="searchoperateur" class="form-control recherche mt-2"  placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1,$event)" (mousedown)="Filter()" >
+                                <input type="text" id="searchoperateur" class="form-control recherche mt-2"  placeholder="Rechercher..."  #search   [(ngModel)]="search.value"  (keyup)="onFilter(search.value,1,$event)"  >
                                 <!-- <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span> -->
                             </div>
                             <!-- <select class="form-control form-control-info" ([ngModel])="selectedValue"  #select (change)="onSelect(select.value)">
@@ -366,7 +368,7 @@
                                    <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe), 'background-color': getBackgroundColor(dataMon.Username, dataMon.codegroupe)}">
                                         <div id="waitdetails" class="monteurs">
                                            <div id="waitlist" class=" {{dataMon.Username}} " >{{dataMon.Username}}.   </div> 
-                                            <div id="waitcategory">   {{dataMon.libelletype }}<span *ngFor = "let libelle of this.statutMonteur ">  
+                                            <div id="waitcategory">   {{dataMon.libelletype }}<span *ngFor = "let libelle of statutMonteur ">  
                                               <span *ngIf="libelle.Name === dataMon.Username  ">   - {{libelle.Libelle }}</span></span> 
                                                 
                                        </div>
