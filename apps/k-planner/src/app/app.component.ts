@@ -77,11 +77,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public shortUserName: string;
   public numGroup: number;
   public userIsReady = false;
-<<<<<<< HEAD
   public versionApp : string;
-=======
   public rightsAreReady = true ;
->>>>>>> develop
   public currentCoordinateur: Coordinateur;
   
   ngOnInit() {
