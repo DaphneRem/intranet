@@ -11,7 +11,7 @@ import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 
-import { config, CodeModuleKplanner } from './../../../../.privates-url';
+import { config, CodeModuleKplanner, coordinateurRight, editRight } from './../../../../.privates-url';
 import { AuthAdalService } from 'apps/fiches-materiel/src/app/auth-adal.service';
 import { App } from 'apps/fiches-materiel/src/app/+state/app.interfaces';
 
@@ -20,8 +20,7 @@ import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur
 import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.service';
 import { UserAccessRightsService } from './accessRights/users-access-rights-service';
 
-const editRight = 'Modification';
-const coordinateurRight ='Coordinateur';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -213,15 +212,13 @@ getAccessRightsUser(){
          item.Modules.map(dataModule =>{
            
            if (dataModule.CodeModule === CodeModuleKplanner && item.Mail === this.userName   ){
-         
-            console.log(dataModule)
                  if(dataModule.ListeRight[editRight]  === true && dataModule.ListeRight[coordinateurRight] === true){
                   console.log("get utilisateur by login",item.Mail)
                     this.getUtilisateurByLogin(item.Mail)
-                 }else {
-                   this.rightsAreReady = false
                  }
-           }
+           }else {
+            // this.rightsAreReady = false
+          }
          })
 
       // if(item.Modules[0].ListeRight['Modification'] == true && item.Modules[0].ListeRight['Coordinateur'] == true ){
@@ -231,6 +228,7 @@ getAccessRightsUser(){
       //    }
       //  }
      })
+     console.log(this.rightsAreReady)
     console.log('access rights user kplanner',UsersAccessRights)
   })
 }
