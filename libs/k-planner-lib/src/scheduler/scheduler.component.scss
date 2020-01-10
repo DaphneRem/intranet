@@ -737,3 +737,14 @@ padding: 0
         position:relative
     }
 }
+
+// onPopOpen style
+/deep/ .e-location-container{
+    display:none;
+}
+/deep/ .e-all-day-time-zone-row{
+    display : none;
+}
+/deep/ .e-editor{
+    display : none;
+}
