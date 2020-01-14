@@ -271,12 +271,12 @@ import { UtilisateurService } from "../services/utilisateur.service";
           { Id: 0, Color: '#e8e2ae' },
           { Id: 1, Color: '#e8e2ae' },
           { Id: 2, Color: '#2471A3' }, // pise en charge
-          { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER JAUNE
+          { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER JAUNE
           { Id: 4, Color: '#F3BE09' },
           { Id: 5, Color: '#7FB3D5' }, //  STATUT_A_FINIR(pause)
-          { Id: 6, Color: '#3ba506' }, //  STATUT_TERMINE_OK VERT
-          { Id: 7, Color: '#B01106' }, //   STATUT_TERMINE_KO ROUGE
-          { Id: 8, Color: '#F39009' }, //   STATUT_EN_ATTENTE ORANGE
+          { Id: 6, Color: '#3ba506' }, //  STATUT_TERMINE_OK VERT
+          { Id: 7, Color: '#B01106' }, //   STATUT_TERMINE_KO ROUGE
+          { Id: 8, Color: '#F39009' }, //   STATUT_EN_ATTENTE ORANGE
           { Id: 9, Color: '#e8e2ae' },
           { Id: 10, Color: '#3ba506' },//  STATUT_TACHES_OK
           { Id: 11, Color: '#B01106' },
@@ -457,7 +457,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   }else {
                       console.log("pas de refresh ")
                   }
-              
+                 
                   console.log(btnrefresh, btnrefreshWo)
   
               }
@@ -1090,10 +1090,10 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   // console.log('fin =>', fin);
                   // console.log('coderessource salle => ', coderessource);
                 console.log("res ===>",res)
-            
+               
                   if (res.length > 0) {
                       this.allDataContainers = [...this.allDataContainers, ...res];
-                    //   console.log('regie contains container : ', res);
+                      // console.log('regie contains container : ', res.length);
                       this.dataContainersByRessourceStartDateEndDate.map(data => {
                         console.log("data ===>",data)
                           let indexContainer =  this.allDataContainers.indexOf(data)
@@ -1102,11 +1102,15 @@ import { UtilisateurService } from "../services/utilisateur.service";
                           // console.log('item in container present in regie (map) : ', data);
                           let dateDebut = moment(data.DateDebutTheo, moment.defaultFormat).toDate();
                           let dateFin = moment(data.DateFinTheo, moment.defaultFormat).toDate();
-                          let initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0, 1);
-                          
+                        //   let arrName = data.UserEnvoi.split('-');
+                        let initiales
+                        if(data.UserEnvoi != null){
+                      initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0, 1);
+                    }else{
+                        initiales = ''
+                    }
+                        //  console.log(initiales,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
                           this.timelineResourceDataOut.push({
-                            //   Id_Syncfusion_Container: data.Id_Planning_Container,
-                            //   Id_Planning_Container: data.Id_Planning_Container,
                               Id: data.Id_Planning_Container,
                               Name: (data.Titre === null || typeof (data.Titre) === 'undefined') ? 'Titre' : data.Titre,
                               StartTime: dateDebut,
@@ -1116,7 +1120,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                               numGroup: data.Id_Planning_Container,
                               Description: data.Commentaire_Planning,
                               Operateur: data.LibelleRessourceOperateur === null ? '' : data.LibelleRessourceOperateur,
-                              coordinateurCreate: initiales,
+                              coordinateurCreate: (initiales === null || typeof (initiales) === 'undefined') ? '' : initiales,
                               AzaIsPere: true,
                               AzaNumGroupe: data.Id_Planning_Container,
                               DepartmentID: coderessource,
@@ -1174,7 +1178,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                              this.disabledrefresh = false
                              this.hiderefresh = false
                   
-                            //  this.updateEventSetting(this.timelineResourceDataOut);
+                             this.updateEventSetting(this.timelineResourceDataOut);
                              this.createTooltipWorkorder();
                       }
    
@@ -1229,8 +1233,6 @@ import { UtilisateurService } from "../services/utilisateur.service";
                      } )
 
                           let newWorkorderEvent = {
-                            //   IdSyncfusion: id + "_" + data.Id_Planning_Events,
-                            //   IdWorkorder:data.Id_Planning_Events,
                               Id: data.Id_Planning_Events,
                               Name: data.titreoeuvre,
                               StartTime: dateDebut,
@@ -1621,6 +1623,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               console.log("donnee backlog",donnees)
               console.log('getWorkOrderByidgroup', this.WorkOrderByidgroup);
               if (this.WorkOrderByidgroup != []) {
+                 
                   this.WorkOrderByidgroup.map(workOrder => {
                       console.log('workorder to map : ', workOrder)
                       let StartTime = moment(workOrder.DateDebutTheo, moment.defaultFormat).toDate(),
@@ -1635,7 +1638,6 @@ import { UtilisateurService } from "../services/utilisateur.service";
                  } )
 
                   this.workOrderData.push({
-                      IdWorkorder: workOrder.Id_Planning_Events,
                       Id: workOrder.Id_Planning_Events,
                       Name: workOrder.titreoeuvre , 
                       StartTime: dateDebut ,
@@ -1741,7 +1743,6 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.timelineResourceDataOut.forEach(item => {
                       if ((+event.AzaNumGroupe === +item.AzaNumGroupe) && !item.AzaIsPere && item.isTempsReel ===0) {
                           if (!this.field['dataSource'].includes(item)) {
-                              console.log(item.event)
                               this.updateWorkorderBackToBacklog(item, event);
                           }
                       }
@@ -1788,14 +1789,6 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       event.AzaNumGroupe = res.Id_Planning_Container;
                       console.log('event after post and update id')
                       containerToCreate.Id_Planning_Container = res.Id_Planning_Container;
-                      containerToCreate.Id_Syncfusion_Container =res.Id_Planning_Container;    
-                              //   this.creationArray.map(item =>{
-                    //     item.Id_Planning_Container = res.Id_Planning_Container,
-                    //     item.Name = res.Titre
-                      
-                    //   })
-                     
-
                       let workorderEventToUpdate = this.creationArray.filter(item => !item.AzaIsPere && item.isTempsReel ===0);
                       console.log('workorderEventToUpdate=> ',workorderEventToUpdate);
                       console.log('this.creationArray => ', this.creationArray);
@@ -1804,9 +1797,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                           workorderEventToUpdate.map(item => {
                               console.log(item, "===> item")
                               let newItemWorkorderAfterEditorUpdate = {
-                                //  IdWorkorder: item.IdWorkorder,
-                                //  IdSyncfusion:  res.Id_Planning_Container + "_" +item.IdWorkorder,
-                                Id: item.Id,
+                                  Id: item.Id,
                                   Name: item.titreoeuvre,
                                   StartTime: event.StartTime,
                                   EndTime: event.EndTime,
@@ -1907,8 +1898,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log(libelleRessourceSalle,"===>",codeRessourceSalle)
           console.log(event.Name)
           let newContainer = {
-            //   Id_Syncfusion_Container: "0",
-              Id_Planning_Container : 0,
+              Id_Planning_Container: 0,
               UserEnvoi: this.user.shortUserName,
               DateEnvoi: now,
               Titre: (event.Name == null || typeof(event.Name) == 'undefined') ? 'Titre' : event.Name, // (aucun titre) 
@@ -1963,7 +1953,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log(event, 'event container')
           let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
           console.log('old Event container :', oldEvent);
-          let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id);
+        //   let containerResult = this.timelineResourceDataOut.filter(item => item.Id === event.Id && item.AzaIsPere);
+          let containerResult = this.allDataContainers.filter(item => item.Id_Planning_Container === event.Id );
+        // console.log(containerResult1)
           console.log("container result",containerResult[0])
           let container = containerResult[0];
           console.log(container, 'event container') //donnée brute
@@ -1981,7 +1973,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   codeRessourceOperateur = item.CodeRessource;
               }
           });
-   
+          console.log(this.departmentDataSource);
           this.departmentDataSource.map(item => {
               if (item['Id'] === event.DepartmentID) {
                   console.log('event libelle salle => ', item['Text']);
@@ -1993,15 +1985,14 @@ import { UtilisateurService } from "../services/utilisateur.service";
           console.log(event,"event")
           if(typeof(container) != 'undefined' ){
           let newContainer = {
-            Id_Planning_Container: container.Id_Planning_Container,
-            //   Id_Syncfusion_Container: container.Id_Planning_Container,
+              Id_Planning_Container: container.Id_Planning_Container,
               UserEnvoi: container.UserEnvoi,
               DateEnvoi: container.DateEnvoi,
               Titre: event.Name || event.Subject ,
               CodeRessourceOperateur: codeRessourceOperateur,
               LibelleRessourceOperateur: event.Operateur,
               CodeRessourceCoordinateur: this.currentCoordinateur.IdCoord,// a changer
-              LibelleRessourceCoordinateur: container.coordinateurCreate,
+              LibelleRessourceCoordinateur: container.libelleRessourceCoordinateur,
               DateSoumission: null,
               DateDebut: event.DateDebut,
               DateFin: event.DateFin,
@@ -2009,7 +2000,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               DateFinTheo: endTime,
               CodeRessourceSalle: codeRessourceSalle,
               LibelleRessourceSalle: libelleRessourceSalle,
-              Commentaire: container.Commentaire,
+              Commentaire: container.Commentaire_Planning,
               Commentaire_Planning: event.Commentaire_Planning || event.Description ,
               DateMaj: now,
               UserMaj: this.user.shortUserName,
@@ -2018,7 +2009,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               IsReadonly:false,
               isTempsReel:0,
           };
-          console.log("new Container ==>",newContainer, newContainer.Id_Planning_Container )
+          console.log("new Container ==>",newContainer)
           
           this.putContainer(newContainer.Id_Planning_Container, newContainer, event);
           
@@ -2027,29 +2018,27 @@ import { UtilisateurService } from "../services/utilisateur.service";
  
       putContainer(id, container, event) { // call in resize, deplacement and Editor (call in updateContainer() function )
         // this.scheduleObj.readonly = true
-    
-        console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
+     
+  
           this.containersService.updateContainerPromise(id, container)
             //   .pipe(takeUntil(this.onDestroy$))
             //   .subscribe(res => {
               .then(res => {
-                console.log(event,res)
                 if(!res["error"]){
                   console.log('succes update container. RES : ', res);
                   console.log(this.allDataContainers, 'allDataContainers')
-                  let startDifferent = this.checkDiffcontainerExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-                  let endDifferent = this.checkDiffcontainerExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-                  console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
-                //   this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
+                  let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                  let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+                  this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
                   console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
                   this.timelineResourceDataOut.map(item => {
-                      if (item.Id=== event.Id) {
+                      if (item.Id === event.Id && item.AzaIsPere) {
                           console.log('event container to update => ', item);
                           item.Name = event.Name;
                           item.StartTime = event.StartTime;
                           item.EndTime = event.EndTime;
                           item.IsAllDay = event.IsAllDay;
-                          item.DepartmentID = event.DepartmentID;
+                          item.DepartmentID = container.DepartmentID;
                           item.ConsultantID = event.ConsultantID;
                           item.AzaIsPere = true;
                           item.AzaNumGroupe = event.AzaNumGroupe;
@@ -2058,7 +2047,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                           item.Commentaire = event.Commentaire
                           item.Commentaire_Planning = event.Commentaire_Planning;
                           item.CodeRessourceCoordinateur = event.CodeRessourceCoordinateur
-                            
+                              console.log(item);
+  
                       }
                     
   
@@ -2078,7 +2068,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                           item.DateFinTheo = res['DateFinTheo']
                           item.DateMaj = res['DateMaj']
                           item.DateSoumission = res['DateSoumission']
-                          item.Id_Planning_Container =   item.Id_Planning_Container
+                          item.Id_Planning_Container = res['Id_Planning_Container']
                           item.Titre = res['Titre']
                           item.UserEnvoi = res['UserEnvoi']
                           item.UserMaj = res['UserMaj']
@@ -2371,7 +2361,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           let startTime = moment(eventWorkorder.StartTime).format('YYYY-MM-DDTHH:mm:ss');
           let endTime = moment(eventWorkorder.EndTime).format('YYYY-MM-DDTHH:mm:ss');
           let newWorkorder = {
-             Id_Planning_Events: workorderSelected.Id_Planning_Events,
+              Id_Planning_Events: workorderSelected.Id_Planning_Events,
               Iddetail: workorderSelected.Iddetail,
               IdTypeWO: workorderSelected.IdTypeWO,
               UserEnvoi: workorderSelected.UserEnvoi,
@@ -2438,9 +2428,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
             
                 this.allDataWorkorders.map(item => {
                     
-                   if (item.Id_Planning_Events === newWorkorder.Id_Planning_Events){
+                   if (item.Id_Planning_Events === newWorkorder.Id_Planning_Events ){
 
-                    item.Id_Planning_Events= item.Id_Planning_Events ,
+                    item.Id_Planning_Events= workorderSelected.Id_Planning_Events,
                     item.Iddetail= workorderSelected.Iddetail,
                     item.IdTypeWO= workorderSelected.IdTypeWO,
                     item.UserEnvoi= workorderSelected.UserEnvoi,
@@ -2717,11 +2707,10 @@ import { UtilisateurService } from "../services/utilisateur.service";
       updateWorkorderInDragDropAddToContainer(event, containerParent) {
           console.log('event to workorder backlog => ', event);
           console.log('containerParent to workorder backlog => ', containerParent);
-          console.log(this.WorkOrderByidgroup)
+          
           let now = moment().format('YYYY-MM-DDTHH:mm:ss');
           let workorderResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id );
           let workorderSelected = workorderResult[0];
-          console.log(workorderSelected)
           let otherWorkorderExistForCOntainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere &&  item.isTempsReel===0);
           console.log('otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
           let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
@@ -2755,8 +2744,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
               })
               console.log(checkIfCloture,"checkIfCloture")
          if(!checkIfCloture){
-              let startDifferent = this.checkDiffworkorderExistById(containerParent, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-              let endDifferent = this.checkDiffworkorderExistById(containerParent, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+              let startDifferent = this.checkDiffExistById(containerParent, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+              let endDifferent = this.checkDiffExistById(containerParent, this.timelineResourceDataOut, 'EndTime', 'EndTime');
               this.timelineResourceDataOut.push(event);
               let provisionalTimelineDataOut = this.calculPrevisonalDateGroup(
                   this.timelineResourceDataOut,
@@ -2784,7 +2773,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               console.log('NO otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
               this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
               let newWorkorder = {
-                Id_Planning_Events: workorderSelected.Id_Planning_Events,
+                  Id_Planning_Events: workorderSelected.Id_Planning_Events,
                   Iddetail: workorderSelected.Iddetail,
                   IdTypeWO: workorderSelected.IdTypeWO,
                   UserEnvoi: workorderSelected.UserEnvoi,
@@ -2854,8 +2843,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   if (pushEvent) {
                       this.timelineResourceDataOut.push(eventWorkorder);
                   }
-                  let startDifferent = this.checkDiffworkorderExistById(containerPere, timelineDataOut, 'StartTime', 'StartTime');
-                  let endDifferent = this.checkDiffworkorderExistById(containerPere, timelineDataOut, 'EndTime', 'EndTime');
+                  let startDifferent = this.checkDiffExistById(containerPere, timelineDataOut, 'StartTime', 'StartTime');
+                  let endDifferent = this.checkDiffExistById(containerPere, timelineDataOut, 'EndTime', 'EndTime');
                   console.log('update only group in timelinesDataOut');
                   this.timelineResourceDataOut = this.calculDateGroup(
                       timelineDataOut,
@@ -2909,7 +2898,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           let now = moment().format('YYYY-MM-DDTHH:mm:ss');
           let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
           let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
-          console.log('event ID ============> ', event);
+          console.log('event ID ============> ', event.Id);
           console.log('this.allDataWorkorders -----> ', this.allDataWorkorders);
           console.log('this.WorkOrderByidgroup -----> ', this.WorkOrderByidgroup);
           let workorderPlanningResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id );
@@ -2923,7 +2912,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           }
           console.log('workorder before => ', workorder);
           let newWorkorder = {
-            Id_Planning_Events: workorder.Id_Planning_Events,
+              Id_Planning_Events: workorder.Id_Planning_Events,
               Iddetail: workorder.Iddetail,
               IdTypeWO: workorder.IdTypeWO,
               UserEnvoi: workorder.UserEnvoi,
@@ -3048,8 +3037,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
           let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
           let newWorkorder = {
-            Id_Planning_Events: workorderSelected.Id_Planning_Events,
-            //   Id_Planning_Events: workorderSelected.Id_Planning_Events,
+              Id_Planning_Events: workorderSelected.Id_Planning_Events,
               Iddetail: workorderSelected.Iddetail,
               IdTypeWO: workorderSelected.IdTypeWO,
               UserEnvoi: workorderSelected.UserEnvoi,
@@ -3105,8 +3093,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   console.log(this.allDataWorkorders); // all brut workorder data in backlog
                   this.backToBacklog(event);
                   this.WorkOrderByidgroup.push(newWorkorder);
-                  let startDifferent = this.checkDiffworkorderExistById(containerPere, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-                  let endDifferent = this.checkDiffworkorderExistById(containerPere, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+                  let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                  let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'EndTime', 'EndTime');
                   console.log('this.deleteContainerAction', this.deleteContainerAction)
                   if (this.deleteContainerAction) {
                       this.eventSettings = {
@@ -3229,7 +3217,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
           let event = args.data;
           console.log(event)
           console.log(this.allDataWorkorders)
-          let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id );
+          let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id && !item.AzaIsPere);
           console.log('old Event workorder :', oldEvent);
           let workorderResult = this.allDataWorkorders.filter(item => item.Id_Planning_Events === event.Id && item.Id_Planning_Events_TempsReel === 0);
           console.log('workorder result ', workorderResult, workorderResult[0]['Id_Planning_Container'])
@@ -3254,7 +3242,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
            console.log("startTime & endTime ===>", startTime, endTime, "event.StartTime ,event.EndTime ", event.StartTime, event.EndTime)
   
           let newWorkorder = {
-            Id_Planning_Events: workorder.Id_Planning_Events,
+              Id_Planning_Events: workorder.Id_Planning_Events,
               Iddetail: workorder.Iddetail,
               IdTypeWO: workorder.IdTypeWO,
               UserEnvoi: workorder.UserEnvoi,
@@ -3313,15 +3301,15 @@ import { UtilisateurService } from "../services/utilisateur.service";
       .subscribe(res => {
               console.log('succes update workorder. RES : ', res);
               console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
-              let startDifferent = this.checkDiffworkorderExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-              let endDifferent = this.checkDiffworkorderExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+              let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+              let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
               this.timelineResourceDataOut = this.eventSettings.dataSource as Object[]; // refresh dataSource
-              let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === workorder.Id_Planning_Container);
+              let containerEvent = this.timelineResourceDataOut.filter(item => item.Id === workorder.Id_Planning_Container && item.AzaIsPere);
               let containerPere = containerEvent[0];
               console.log(event)
               console.log('this.timelineResourceDataOut : ', this.timelineResourceDataOut);
               this.timelineResourceDataOut.map(item => {
-                  if (item.IdWorkorder === event.Id) {
+                  if (item.Id === event.Id && !item.AzaIsPere && item.isTempsReel ==0) {
                       item.Name = event.Name;
                       item.StartTime = event.StartTime;
                       item.EndTime = event.EndTime;
@@ -3417,15 +3405,12 @@ import { UtilisateurService } from "../services/utilisateur.service";
       findIndexEventById(id) {
           let selectedEvent;
           let indexEvent;
-          console.log( this.timelineResourceDataOut, +id)
           this.timelineResourceDataOut.forEach(item => {
-              
               if ((item.Id === +id) && (item.AzaIsPere)) {
                   selectedEvent = item;
                   indexEvent = this.timelineResourceDataOut.indexOf(item);
               }
           });
-          console.log(indexEvent)
           return indexEvent;
       }
   
@@ -4458,7 +4443,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
            //
             //     args.cancel = false
             // }
-     console.log(args.element["ej2_instances"][0].queryPositionInfo())
+     
         
     }
    public groupIndex
@@ -4483,7 +4468,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   }
               }
           }
-         
+      
       }
       targetDrop
       
@@ -4555,7 +4540,6 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   if (event.target.classList.contains('e-work-cells')) {
                       const filteredData: { [key: string]: Object }[] =
                           treeviewData.filter((item: any) => item.Id === parseInt(event.draggedNodeData.id as string, 10)  );
-                          console.log(treeviewData)
                       this.randomId();
                       console.log('last Random id : ', this.lastRandomId);
                       console.log('event target : ', event.target);
@@ -4580,7 +4564,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
                                           };
                       console.log(filteredData[0], 'filteredData[0]');
                       let eventData: { [key: string]: Object } = { // DISPLAY DATA FOR EVENT
-                         IdWorkorder: filteredData[0].Id,
+                          Id: filteredData[0].Id,
+                        
                           Name: filteredData[0].titreoeuvre,
                           StartTime: cellData.startTime,
                           EndTime: cellData.endTime,
@@ -4648,20 +4633,19 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       );
                   } else {  // IF EMPLACEMENT EST DEJA PRIS PAR UN CONTENEUR
                       if (event.target.id) {
-                        console.log(event.target)
+                        
                           let indexContainerEvent = this.findIndexEventById(event.target.id);
                           let containerSelected = this.timelineResourceDataOut[indexContainerEvent];
                           console.log('containerSelected => ', containerSelected);
-                          console.log( treeviewData)
                           const filteredDataW =
-                              treeviewData.filter((item: any) => item.IdWorkorder === parseInt(event.draggedNodeData.id as string, 10));
-                          let container = this.allDataContainers.filter(item => item.Id_Planning_Container === containerSelected.Id_Planning_Container);
+                              treeviewData.filter((item: any) => item.Id === parseInt(event.draggedNodeData.id as string, 10));
+                          let container = this.allDataContainers.filter(item => item.Id_Planning_Container === containerSelected.Id);
                           let containerDataSelected = container[0];
                           console.log('container => ', container);
                           console.log('containerDataSelected => ', containerDataSelected);
                           console.log( filteredDataW , event.draggedNodeData.id )
                           let newEventData = { // DISPLAY DATA FOR EVENT
-                            Id: filteredDataW[0].Id,
+                              Id: filteredDataW[0].Id,
                               
                               Name: filteredDataW[0].titreoeuvre,
                               StartTime: containerSelected.StartTime,
@@ -4759,7 +4743,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       console.log(cellData);
                       console.log(resourceDetails);
                       let containerData = { // DISPLAY DATA FOR CONTAINER
-                        Id: filteredData[0].CodeRessource,
+                          Id: filteredData[0].CodeRessource,
                           Name: 'Title',
                           StartTime: cellData.startTime,
                           EndTime: cellData.endTime,
@@ -5070,7 +5054,7 @@ console.log('on load app', this.scheduleObj)
                       console.log(event.data[0].Commentaire_Planning || event.data[0].Commentaire_Planning )
                       if (item.AzaIsPere) {
                           let newItemContainerAfterEditorUpdate = {
-                            Id: item.Id,
+                              Id: item.Id,
                               Name:  event.data[0].Subject || event.data[0].Name ,
                               StartTime: event.data[0].StartTime,
                               EndTime: event.data[0].EndTime,
@@ -5113,7 +5097,6 @@ console.log('on load app', this.scheduleObj)
                       }
                   });
               } else if (this.isTreeItemDroppedMonteur) {
-                  console.log(this.creationArray)
                   this.creationArray.map(item => {
                       let newItemContainerFromMonteurAfterEditorUpdate = {
                           Id: item.Id,
@@ -5277,10 +5260,10 @@ console.log('on load app', this.scheduleObj)
   
       checkDiffExistByGroupe(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute) { }
   
-      checkDiffcontainerExistById(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute): boolean {
+      checkDiffExistById(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute): boolean {
           let diffExist: boolean = false;
           for (let i = 0; i < arrayObject.length; i++) {
-              if (object.Id=== arrayObject[i]['Id']) {
+              if (object.Id === arrayObject[i]['Id']) {
                   if (object[objectAttribute] === arrayObject[i][arrayItemAttribute]) {
                       diffExist = false;
                   } else {
@@ -5290,20 +5273,6 @@ console.log('on load app', this.scheduleObj)
           }
           return diffExist;
       }
-
-      checkDiffworkorderExistById(object: any, arrayObject: Object[], objectAttribute, arrayItemAttribute): boolean {
-        let diffExist: boolean = false;
-        for (let i = 0; i < arrayObject.length; i++) {
-            if (object.Id === arrayObject[i]['Id']) {
-                if (object[objectAttribute] === arrayObject[i][arrayItemAttribute]) {
-                    diffExist = false;
-                } else {
-                    diffExist = true;
-                }
-            }
-        }
-        return diffExist;
-    }
   
       /*********************** ACTION COMPLETE FUNCTION *********************/
   public argsOnActionComplete
@@ -5383,13 +5352,13 @@ console.log('on load app', this.scheduleObj)
                   this.sidebar.animate = false;
               }
 
+
               this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                 dataSource: <Object[]>extend(
                     [], this.timelineResourceDataOut, null, true
                 ),
                 enableTooltip: true, tooltipTemplate: this.temp
-            };
-              // this.updateContainer(e); 
+            };              // this.updateContainer(e); 
           }
           if (this.drowDownExist) {
               this.drowDownOperateurList.value = null;
