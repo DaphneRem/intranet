@@ -430,7 +430,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
         });
       } else {
         swal({
-          text: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+          text: this.errorMessage,
           showCancelButton: false,
           type: 'error',
           confirmButtonText: 'Fermer',
@@ -446,11 +446,8 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
 
   public errorMessage;
   displayErrorInfoFmCreation(event) {
-    let errorFm = event;
-    let errorMsg;
-//    for (let i = 0; i < errorFm.length; i++) {
-//      let errorMsg += 'La ficheMatériel n°' 
-//    }
+    this.errorMessage = event;
+    console.log('displayErrorInfoFmCreation => ', event);
   }
   /***** Close modal creation-details *****/
   closeMyModal(event) {
