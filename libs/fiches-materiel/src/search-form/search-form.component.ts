@@ -79,7 +79,7 @@ export class SearchFormComponent implements OnInit {
   }
 
 
-  displayComplexSearchModel() {
+  displayComplexSearchModel() { // Call only onInit
     let detailUrl = 'details';
     let modifUrl = 'modification';
     console.log(this.previousUrl);
@@ -87,15 +87,26 @@ export class SearchFormComponent implements OnInit {
       if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
         this.complexSearchModel = this.storeSearchHistoryFormData;
         // this.displayDefaultFields();
-        if ((this.complexSearchModel.isarchived === 0) && this.showOnlyInProgressBtn) {
-          this.inProgressChecked = true;
+        if (this.showOnlyInProgressBtn) {
+          if (this.complexSearchModel.isarchived === 0) {
+            this.inProgressChecked = true;
+          }
+          this.displaySearchForm();
+        } else {
+          this.resetSearchFormStore();
+          this.displayDefaultFields();
+          this.displaySearchForm();
         }
-        this.displaySearchForm();
+//        if ((this.complexSearchModel.isarchived === 0) && this.showOnlyInProgressBtn) {
+//          this.inProgressChecked = true;
+//        }
+//        this.displaySearchForm();
       } else {
         console.log('this.previousUrl => ', this.previousUrl);
         this.resetSearchFormStore();
         this.displayDefaultFields();
         if (this.getDataOnInit) {
+          console.log('replayOriginalData() call');
           this.replyOriginalData();
         }
       }
@@ -110,9 +121,10 @@ export class SearchFormComponent implements OnInit {
     if (this.autofields) {
       this.complexSearchModel.SuiviPar = this.autofields.SuiviPar;
       this.complexSearchModel.isarchived = this.autofields.isarchived;
-      this.oldComplexSearch.SuiviPar = this.autofields.SuiviPar;
-      this.oldComplexSearch.isarchived = this.autofields.isarchived;
+   //   this.oldComplexSearch.SuiviPar = this.autofields.SuiviPar;
+    //  this.oldComplexSearch.isarchived = this.autofields.isarchived;
     }
+    console.log('this.complexSearchModel.SuiviPar => ', this.complexSearchModel.SuiviPar);
   }
 
   addComplexSearchToStore(storeState) {
@@ -176,23 +188,26 @@ export class SearchFormComponent implements OnInit {
       });
   }
 
-  displaySearchForm() {
+  displaySearchForm() { // call onInit and search btn onclick
     console.log('displaySearchForm');
     console.log('this.complexSearchModel => ', this.complexSearchModel);
     console.log('this.fmParameterToPost => ', this.fmParameterToPost);
     console.log('this.oldComplexSearch => ', this.oldComplexSearch);
     console.log('this.autofields => ', this.autofields);
-    this.oldComplexSearch = {
-      SuiviPar: '',
-      TitreEpisodeVO: '',
-      TitreEpisodeVF: '',
-      isarchived: 2,
-      distributeur: '',
-      numficheachat: ''
-    };
-    console.log('this.showOnlyInProgressBtn => ', this.showOnlyInProgressBtn );
 
-    if (this.showOnlyInProgressBtn) {
+    console.log('this.showOnlyInProgressBtn => ', this.showOnlyInProgressBtn );
+    if (this.oldComplexSearch === null) {
+      console.log('this oldComplexSearch is null => ', this.oldComplexSearch);
+      this.oldComplexSearch = {
+        SuiviPar: '',
+        TitreEpisodeVO: '',
+        TitreEpisodeVF: '',
+        isarchived: 2,
+        distributeur: '',
+        numficheachat: ''
+      };
+    }
+    if (this.showOnlyInProgressBtn && this.inProgressChecked) {
       console.log('this.oldComplexSearch => ', this.oldComplexSearch);
       console.log('this.changeOldComplexSearchArchived => ', this.changeOldComplexSearchArchived);
 
@@ -212,6 +227,7 @@ export class SearchFormComponent implements OnInit {
         } else {
           console.log('property in thiq.fmParameterToPost => ', property, this.fmParameterToPost[property]);
           console.log('this.complexSearchModel => ', property, this.complexSearchModel[property]);
+          console.log('this.oldComplexSearch => ', this.oldComplexSearch);
         }
       }
       console.log('this.fmParameterToPost => ', this.fmParameterToPost);
@@ -222,6 +238,7 @@ export class SearchFormComponent implements OnInit {
     } else {
       this.displayOldComplexSearch = false;
       if (this.getDataOnInit) {
+        console.log('if getDataOnInit call replyOriginalData()');
         this.replyOriginalData();
       }
       console.log('same value for this.complexSearchModel & this.autofields');
@@ -234,6 +251,7 @@ export class SearchFormComponent implements OnInit {
     this.resetForm();
     this.oldComplexSearch = null;
     this.displayOldComplexSearch = false;
+    console.log('replyOriginalData() this.oldComplexSearch => ', this.oldComplexSearch);
   }
 
   sendDataResult() {
@@ -241,16 +259,21 @@ export class SearchFormComponent implements OnInit {
   }
   public changeOldComplexSearchArchived;
   checkOnlyInprogressChecked() {
+    console.log('this.inProgressChecked before changement => ', this.inProgressChecked);
     this.inProgressChecked = !this.inProgressChecked;
+    console.log('this.inProgressChecked after changement => ', this.inProgressChecked);
     if (this.inProgressChecked && this.showOnlyInProgressBtn) {
       this.complexSearchModel.isarchived = 0;
-      this.changeOldComplexSearchArchived = 2;
-    } else if (!this.inProgressChecked && this.showOnlyInProgressBtn) {
-      this.complexSearchModel.isarchived = 2;
       this.changeOldComplexSearchArchived = 0;
       this.autofields.isarchived = 0;
 
+    } else if (!this.inProgressChecked && this.showOnlyInProgressBtn) {
+      this.complexSearchModel.isarchived = 2;
+      this.changeOldComplexSearchArchived = 2;
+      this.autofields.isarchived = 2;
+
     }
+    console.log('this.changeOldComplexSearchArchived => ', this.changeOldComplexSearchArchived);
     console.log('inProgressChecked => ', this.inProgressChecked);
     console.log('showOnlyInProgressBtd => ', this.showOnlyInProgressBtn);
     console.log('this.autofields => ', this.autofields);
