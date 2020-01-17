@@ -692,7 +692,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       // },
       {
         title : 'ep. AB',
-        data : 'NumEpisode',
+        data: 'NumEpisodeAB',
       },
       {
         title : 'Livraison',
