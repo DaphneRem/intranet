@@ -26,7 +26,7 @@
                     <div *ngFor="let comment of comments" class="comment">
                         <div *ngIf="comment.idLibCategorieElementsAnnexes === category.IdLibCategorieElementsAnnexes">
                             <label class="items-sub-category">Commentaire :</label>
-                            <p class="comment-sub-category">{{comment.Commentaire !== '' ? comment.Commentaire : '/'}}</p>
+                            <pre class="comment-sub-category">{{comment.Commentaire !== '' ? comment.Commentaire : '/'}}</pre>
                         </div>
                     </div>
                     <!-- <p class="comment-sub-category">{{category.Fiche_Mat_CategorieElementsAnnexesCommentaire | json}}</p> -->

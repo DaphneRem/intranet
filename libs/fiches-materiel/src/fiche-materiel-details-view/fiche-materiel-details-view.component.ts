@@ -150,7 +150,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         circleColorHover: '#2eced6',
         iconSize: '2.2em'
       },
-      link : '../../../../0/desc',
+      link : '../../../../',
       tooltip : true,
       tooltipMessage : 'Retour aux fiches Matériel'
   };
