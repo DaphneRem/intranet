@@ -33,8 +33,8 @@ export class WarningAcceptedStatusComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
       const changeStatus: SimpleChange = changes.status;
       const previousValueStatus = changeStatus.previousValue;
-      console.log(changeStatus);
-      console.log(changeStatus.currentValue);
+    console.log('changeStatus in warning-accept-status => ', changeStatus);
+    console.log('changeStatus.currentValue in warning-accept-status => ', changeStatus.currentValue);
       if (changeStatus.currentValue === 3 && this.init) {
           this.openSwal();
           this.onStatusChange(previousValueStatus);
