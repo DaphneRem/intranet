@@ -1,4 +1,4 @@
-export class UserAppRights {
+export class UsersInAppRights {
     Mail: string;
     Modules: Module[];
     UserName: string;
@@ -14,5 +14,5 @@ export class ListeRight {
     ADMINISTRATION: boolean;
     CONSULTATION: boolean;
     MODIFICATION: boolean;
-    SUPPRESSION: boolean;
+    PRESSE: boolean;
 }

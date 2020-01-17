@@ -16,8 +16,8 @@ import { AuthService } from './auth/auth.service';
 
 import { UserMediawanService } from './auth/user-mediawan.service';
 import { UserMediawan } from './auth/user-mediawan';
-import { UserAppRightsService } from './rights-app/users-app-rights.service';
-import { UserAppRights } from './rights-app/user-app-rights';
+import { AppRightsService } from './rights-app/app-rights.service';
+import { UsersInAppRights } from './rights-app/users-in-app-rights';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 import { App, User } from './+state/app.interfaces';
@@ -32,9 +32,8 @@ import { config } from './../../../../.privates-url';
   styleUrls: ['./app.component.scss'],
   providers : [
     Store,
-    AuthService,
     UserMediawanService,
-    UserAppRightsService,
+    // AppRightsService,
     RoutingState
     // AuthAdalService
   ]
@@ -50,13 +49,14 @@ subscription: Subscription;
     private authService: AuthService,
     private router: Router,
     private userMediawanService: UserMediawanService,
-    private userAppRightsService: UserAppRightsService,
+    private appRightsService: AppRightsService,
     private routingState: RoutingState
     // private authAdalService: AuthAdalService,
     // private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
     this.displayVersionApp();
+    console.log('appcomponenet constructor');
     // this.subscription = router.events.subscribe(event => {
     //   console.log(event);
     //   if (event instanceof NavigationStart) {
@@ -68,7 +68,7 @@ subscription: Subscription;
 
   public versionApp: string;
   public userMediawan: UserMediawan;
-  public allUsersRights: UserAppRights[];
+  public allUsersRights: UsersInAppRights[];
   public globalStore;
   public navbarStoreOpen;
   public navbarState;
@@ -93,6 +93,7 @@ subscription: Subscription;
   ngOnInit() {
     // check navbar.open state from store
     if (!this.authService.authenticated) {
+      console.log('sign in !!');
       this.signIn();
     }
     this.routingState.loadRouting();
@@ -145,7 +146,7 @@ subscription: Subscription;
 
   getRightsAllUsersFmApp() {
     // user = user.replace('@', '%40');
-    this.userAppRightsService
+    this.appRightsService
       .getRightsUserFm()
       .subscribe(data => {
         this.allUsersRights = data;
@@ -179,6 +180,7 @@ subscription: Subscription;
             username: this.userName,
             name: this.name,
             shortUserName: this.shortUserName,
+            rights: 'consultation'
           }
         }
     });

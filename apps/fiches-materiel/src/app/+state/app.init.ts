@@ -5,7 +5,8 @@ export const appInitialState: App = {
   user : {
     username: '',
     name: '',
-    shortUserName: ''
+    shortUserName: '',
+    rights: ''
   }
 };
 

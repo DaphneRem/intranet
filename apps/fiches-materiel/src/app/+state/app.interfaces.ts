@@ -6,6 +6,7 @@ export interface User {
   username: string;
   name: string;
   shortUserName: string;
+  rights: string;
 }
 
 export interface AppState {

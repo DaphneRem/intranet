@@ -4,7 +4,8 @@ export interface AddConnectedUser {
     user: {
       username: string,
       name: string,
-      shortUserName: string
+      shortUserName: string,
+      rights: string,
     }
   };
 }
@@ -15,7 +16,8 @@ export interface DeleteConnectedUser {
     user: {
       username: string,
       name: string,
-      shortUserName: string
+      shortUserName: string,
+      rights: string,
     }
   };
 }

@@ -19,7 +19,8 @@ export function appReducer(state: App, action: UserAction): App {
         user : {
           name: '',
           username: '',
-          shortUserName: ''
+          shortUserName: '',
+          rights: ''
         }
       };
     }
