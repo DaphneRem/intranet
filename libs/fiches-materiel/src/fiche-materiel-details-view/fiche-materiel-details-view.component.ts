@@ -170,7 +170,11 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.icons = [this.fichesMaterielModification, this.back];
+    this.store.subscribe(data => (this.globalStore = data));
+    this.icons = [ this.back];
+    if (this.globalStore.app.user.rights.modification) {
+      this.icons.unshift(this.fichesMaterielModification);
+    }
     this.sub = this.route.params.pipe(takeUntil(this.onDestroy$)).subscribe(params => {
       this.idParamsFicheMateriel = +params['idFicheMateriel'];
       this.idParamsFicheAchat = +params['idFicheAchat'];
@@ -184,7 +188,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
     this.getFicheAchatDetails(this.idParamsFicheAchatDetail);
     this.getFicheAchatGlobal(this.idParamsFicheAchat);
     this.getFicheMateriel(this.idParamsFicheMateriel);
-    this.store.subscribe(data => (this.globalStore = data));
+
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     console.log(this.storeFichesToModif);
   }

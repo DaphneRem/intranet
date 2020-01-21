@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
 import { Store } from '@ngrx/store';
+import { App } from '../+state/app.interfaces';
 
 import { AppRightsService } from '../rights-app/app-rights.service';
 import { UserInAppRights } from '../rights-app/user-in-app-rights';
@@ -12,7 +13,7 @@ import { UserInAppRights } from '../rights-app/user-in-app-rights';
 export class CanActivateApp implements CanActivate {
 
     constructor(
-        // private store: Store<App>,
+        private appStore: Store<App>,
         private router: Router,
         private authService: AuthService,
         private appRightsService: AppRightsService
@@ -23,6 +24,7 @@ export class CanActivateApp implements CanActivate {
 
     canActivate() {
         console.log('AppGuard');
+        this.appStore.subscribe(data => (this.globalStore = data));
         console.log('this.authService.authenticated in canActivateApp => ', this.authService.authenticated);
         this.emailUser = this.authService.userMSAL.displayableId;
         return this.appRightsService
@@ -30,9 +32,21 @@ export class CanActivateApp implements CanActivate {
             .map(data => {
                 console.log('data user right in app by email => ', data);
                 if ((data.Droits.hasOwnProperty('CONSULTATION') && data.Droits['CONSULTATION']) && (this.authService.authenticated)) {
+                    this.appStore.dispatch({
+                        type: 'ADD_USER_RIGHTS',
+                        payload: {
+                            user: {
+                                rights: {
+                                    modification: data.Droits['MODIFICATION'],
+                                    consultation: data.Droits['CONSULTATION'],
+                                    presse: data.Droits['PRESSE']
+                                }
+                            }
+                        }
+                    });
                     return true;
                 } else {
-                    // this.router.navigateByUrl('material-sheets/all'); // redirect to 
+                    this.router.navigateByUrl('/access-denied');
                     return false;
                 }
             });

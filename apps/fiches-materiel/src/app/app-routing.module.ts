@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
-import { Page404Component } from '@ab/error-pages';
+import { Page404Component, Page403AppComponent } from '@ab/error-pages';
 import {
   MyFichesMaterielArchivedComponent,
   FichesMaterielCreationComponent,
@@ -112,6 +112,11 @@ const routes: Routes = [
     component: DisplayFichesAchatsComponent,
     data: { title : 'Fiches Achat' },
     canActivate: [CanActivateApp]
+  },
+  { 
+    path: 'access-denied',
+    component: Page403AppComponent,
+    canActivate: [!CanActivateApp]
   },
   { path: '**', component: Page404Component },
 ];

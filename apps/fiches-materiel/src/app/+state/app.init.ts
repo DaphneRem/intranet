@@ -6,7 +6,15 @@ export const appInitialState: App = {
     username: '',
     name: '',
     shortUserName: '',
-    rights: ''
+    rights: {
+      modification: '',
+      consultation: '',
+      presse: ''
+    }
+  },
+  appInfo: {
+    name: '',
+    code: 0
   }
 };
 

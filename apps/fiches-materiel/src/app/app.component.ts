@@ -180,9 +180,17 @@ subscription: Subscription;
             username: this.userName,
             name: this.name,
             shortUserName: this.shortUserName,
-            rights: 'consultation'
           }
         }
+    });
+    this.appStore.dispatch({
+      type: 'ADD_APP_INFO',
+      payload: {
+        appInfo: {
+          name: 'fichemateriel',
+          code: 160
+        }
+      }
     });
     this.userIsReady = true;
     // this.getAllCoordinateurs();
