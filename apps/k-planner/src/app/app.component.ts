@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public userIsReady = false;
   public rightsAreReady = true ;
   public currentCoordinateur: Coordinateur;
-  
+  public authUser = false
   ngOnInit() {
     if (!this.authService.authenticated) {
       console.log(this.authService.authenticated,"this.authService.authenticated")
@@ -109,7 +109,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
        
       if (this.authService.user !== null && this.authService.user !== undefined) {
          this.displayUser();
-      } 
+         this.authUser = true
+      }else{
+        this.authUser = false
+      }
     }
    
 
@@ -125,8 +128,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   //   console.log(this.authService);
   // }
   public myUser;
-  signIn() {
-      this.authService.signIn();
+  async signIn() {
+    await  this.authService.signIn();
       console.log(this.authService);
       // this.addUser(this.authService.user);
       
@@ -203,34 +206,20 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
 getAccessRightsUser(){
   this.userAccessRightsService
-  .getAccessRightsUser()
+  .getAccessRightsUser(CodeModuleKplanner , this.userName   )
   .pipe(takeUntil(this.onDestroy$))
   .subscribe(data => {
      let UsersAccessRights = data
-
-     UsersAccessRights.map(item =>{
-         item.Modules.map(dataModule =>{
-           
-           if (dataModule.CodeModule === CodeModuleKplanner && item.Mail === this.userName   ){
-                 if(dataModule.ListeRight[editRight]  === true && dataModule.ListeRight[coordinateurRight] === true){
-                  console.log("get utilisateur by login",item.Mail)
-                    this.getUtilisateurByLogin(item.Mail)
+     console.log('access rights user kplanner',UsersAccessRights)
+  
+                 if(UsersAccessRights["Droits"][editRight]  === true && UsersAccessRights["Droits"][coordinateurRight] === true){
+                
+                    this.getUtilisateurByLogin(this.userName)
                  }
-           }else {
-            // this.rightsAreReady = false
-          }
-         })
-
-      // if(item.Modules[0].ListeRight['Modification'] == true && item.Modules[0].ListeRight['Coordinateur'] == true ){
-      //  if(item.Mail === this.userName && CodeModuleKplanner == item.Modules[0].CodeModule ){
-      //     console.log("get utilisateur by login",item.Mail)
-      //     this.getUtilisateurByLogin(item.Mail)
-      //    }
-      //  }
      })
      console.log(this.rightsAreReady)
-    console.log('access rights user kplanner',UsersAccessRights)
-  })
+  
+ 
 }
   logout(event) {
     if (event) {
