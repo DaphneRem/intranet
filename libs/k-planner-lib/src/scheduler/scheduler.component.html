@@ -62,17 +62,17 @@
                             <td style="width: 5%">
                                 <div style="text-align:center" *ngIf="scheduleObj.currentView != 'TimelineMonth'  "> Intervalle <br> (Minutes)</div>          
                             </td>
-                            <td  style="width: 10%"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                            <td  style="width: 10%"  *ngIf="scheduleObj.currentView !='TimelineMonth'   ">
                                 <div style="width: 100%">
                                     <ejs-dropdownlist   [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
                           
-                            <td  style="width: 10%" *ngIf="scheduleObj.currentView =='TimelineDay'" class ="mr-2">
+                            <!-- <td  style="width: 10%" *ngIf="scheduleObj.currentView =='TimelineDay'" class ="mr-2">
                                 <div style="width: 100%">
                                     <ejs-dropdownlist class =" mt-2 ml-3"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
-                            </td>
+                            </td> -->
                             <td  style="width: 30%" >
                          <ejs-dropdownlist class =" mt-2 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>        
                              </td>
@@ -113,6 +113,7 @@
                     (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
                     (popupClose) = "onPopupClose($event)"
+                    (dataBinding)="ondataBinding($event)"
                     cssClass='schedule-drag-drop' 
                     [group]="group" 
                     [currentView]="currentView" 

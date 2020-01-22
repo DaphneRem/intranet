@@ -110,7 +110,7 @@ import {
   import { DataManager, ReturnOption, Query, Predicate, } from '@syncfusion/ej2-data';
 //   import { Grid } from '@syncfusion/ej2-angular-grids';
   import { SpinSettingsModel } from "@syncfusion/ej2-splitbuttons";
-  import { splitClasses, ConditionalExpr } from "@angular/compiler";
+  import { splitClasses, ConditionalExpr, CompileMetadataResolver } from "@angular/compiler";
   import { CustomIconsModule } from "@ab/custom-icons";
   import { Navbar } from "@ab/root";
   import { StatutService } from "../services/statut.service";
@@ -362,7 +362,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public endofDay
       // public SelectDateFin: Date = new Date(this.SelectDateDebut.getDate() + 1);    
       public weekInterval: number = 1;
-      public intervalValue: string = '120'
+      public intervalValue: string = '60'
       public intervalValueDay: string = '60'
       public intervalData: string[] = ['10', '20', '30', '40', '50', '60','120','480']
   
@@ -407,7 +407,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
       public isStrictMode: boolean = true;
       public statutMonteur = []
     public isClickZoom = true 
-    public offsetCell
+    public offsetCell;
+    public disabledrefresh: boolean  = false
       // public fistCallAction: boolean = false;
       // public deleteWorkorderAction: boolean = false;
       // public deleteContainerAction: boolean = false;
@@ -445,12 +446,13 @@ import { UtilisateurService } from "../services/utilisateur.service";
               if (eKey.keyCode === 115) {
   
                   if (this.hiderefresh == false &&  this.disabledrefresh == false  ) {
+                    this.disabledrefresh = true
+                    this.hiderefresh = true
                     console.log("clique f4 !disabledrefresh")
                     this.timelineResourceDataOut = []
                     this.departmentDataSource = []
                     this.allDataContainers = []
-                    this.allDataWorkorders = []
-                    this.disabledrefresh = true
+                    this.allDataWorkorders = []               
                      this.refreshScheduler()
                      this.refreshWorkordersBacklog()
                  
@@ -464,7 +466,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
        
   
           })
-        }, 500);
+        }, 700);
           document.body.addEventListener('keydown', (eKey: KeyboardEvent) => {
             let btnrefresh = document.getElementById('btn-refresh');
             let btnrefreshWo = document.getElementById('btn-refreshWo');
@@ -479,6 +481,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.departmentDataSource = []
                     this.allDataContainers = []
                     this.allDataWorkorders = []
+                    
                 }else {
                     console.log("pas de refresh ")
                 }
@@ -596,7 +599,6 @@ import { UtilisateurService } from "../services/utilisateur.service";
       }
   
   
-      public disabledrefresh: boolean 
       public hiderefresh: boolean 
       refreshScheduler() {
           console.log(this.scheduleObj,this.disabledrefresh);
@@ -712,7 +714,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
 
       onEventClick(e: ActionEventArgs) {
           console.log('event clicked !!!!!!!!!!!',e);
-     
+          if(e.event["Statut"] != 3 && !e.event["AzaIsPere"] ){
+              console.log("temps reel")
+            //   this.openDialog( this.workOrderColor  , e.event, e.event, this.departmentDataSource);
+            this.getWorkorderTempsReelByIdPlannigEvents(e.event['Id'])
+          }
           this.eventClick = true;
 // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
       }
@@ -731,7 +737,9 @@ import { UtilisateurService } from "../services/utilisateur.service";
            
      }
     }
- 
+    ondataBinding(args){
+        console.log(args,'!!!!!!!!!')
+    }
   
       zoomWithScroll(){
        
@@ -826,7 +834,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                         console.log(this.salleDataSource[indexSalle],"-----------------------------lastSalle")
                       }
                       console.log('--------------------------------------------------indexSalle => ', indexSalle);
-                    
+           
                   // lors du demarrage de l'application 
                       this.getContainersByRessourceStartDateEndDate(
                          item.CodeRessource,
@@ -1412,7 +1420,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
       }
   public dataWorkorderTempsReelByIdGroupeStartDateEndDate
   public EndTimeReel; StartTimeReel
-  public newWorkorderTempsReelEvent 
+  public WorkorderTempsReelEvent 
       getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroupe, dateDebut,dateFin,codeRessouceSalle,codeSalle){
      
         this.workOrderTempsReelService 
@@ -1559,10 +1567,19 @@ import { UtilisateurService } from "../services/utilisateur.service";
             
             // console.log(this.disabledrefresh)
           }
-          this.newWorkorderTempsReelEvent =  [... new Set( this.timelineResourceDataOut)]
-          console.log( this.newWorkorderTempsReelEvent ," ... this.newWorkorderTempsReelEvent ")
       })
     
+      }
+
+      getWorkorderTempsReelByIdPlannigEvents(idPlanningEvents){
+          this.workOrderTempsReelService
+          .getWorkorderTempsReelByIdPlannigEvents(idPlanningEvents)
+          .pipe(takeUntil(this.onDestroy$))
+          .subscribe(res =>{
+              console.log(res)
+              this.WorkorderTempsReelEvent = res
+          })
+
       }
 
       createTooltipWorkorder() {
@@ -2438,7 +2455,11 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   console.log(this.allDataWorkorders); // all brut workorder data in backlog
                   // LUNDI ====> AJOUTER UN REFRESH DES EVENEMENTS !!!!!!!!!!
                 
-                
+                  this.timelineResourceDataOut.map(item =>{
+                    if(item.Id === newWorkorder.Id_Planning_Events ){
+                        item.Operateur = Operateur
+                    }
+                })
                 //   this.allDataWorkorders.push(newWorkorder);
             
                 this.allDataWorkorders.map(item => {
@@ -2507,14 +2528,15 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.openEditor = false 
                   this.startResize= false
                   console.log(this.openEditor,"this.openEditor when update container")
-                
-                  
-                this.updateEventSetting(this.timelineResourceDataOut)
+              
+               
                 this.scheduleObj.refreshEvents()
-                setTimeout(() => {
-                    this.createTooltipWorkorder()
-                   
-                }, 100);
+                this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                    dataSource: <Object[]>extend(
+                        [], this.timelineResourceDataOut, null, true
+                    ),
+                    enableTooltip: true, tooltipTemplate: this.temp
+                };  
             
                 } else
                 if(res["error"]){
@@ -3550,32 +3572,22 @@ import { UtilisateurService } from "../services/utilisateur.service";
                   this.scheduleObj.readonly = true
                   console.log('this.scheduleObj.readonly => ', this.scheduleObj.readonly)
               }
-            //   let schObj = document.querySelector('.e-schedule')["ej2_instances"][0];
-            //   console.log(schObj)
-              
-            //   schObj.setProperties({
-            //     headerRows: [{ option: "Week" }, { option: "Date" }]
-            //   })
+          
           }
           // TIMELINEDAY
           if ((args.currentView === 'TimelineDay') || (args.currentView == undefined && (this.scheduleObj.currentView === 'TimelineDay'))) {
-            //   this.valueMax = 60
-          
-              if(this.value <this.valueMax){
-                //   scheduleElement[0]['style'].zoom =this.valueMax.toString() +"%"
-                //   this.value = 60
-                  console.log("value zoom ",scheduleElement[0]['style'].zoom )
-              }
+            
               console.log( 'TimelineDay first call condition width management value');  
-              // this.valueMax = 60
-              // this.value = parseInt(this.intervalValueDay as string, 10)
-              // this.valueAdd = 10       
+               
+            
               this.intervalData = ['10', '20', '30', '40', '50', '60', '120','480'];
               this.scheduleObj.timeScale = { enable: true, interval: parseInt(this.intervalValueDay as string, 10), slotCount: 2 }
+              this.intervalValue = "60" 
               if(this.intervalChanged){
               this.scheduleObj.timeScale.interval = this.value 
             }else{
                 // this.value = this.scheduleObj.timeScale.interval
+                
             }
               console.log('TIMELINEDAY !!!! => date contition');
               this.refreshDateStart = this.startofDay;
@@ -3617,6 +3629,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
               if(this.intervalChanged){
                 this.scheduleObj.timeScale.interval = this.value 
               }else{
+                this.intervalValue = "120" 
                 this.scheduleObj.timeScale.interval= 120
               }
               this.timelineResourceDataOut = []
@@ -3924,7 +3937,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
               // DepartmentID[0]["ej2_instances"][0].itemData = DepartmentID[0]["ej2_instances"][0].itemData.concat(this.listeRegies)
               DepartmentID[0]["ej2_instances"][0].dataSource = this.listeRegies
               this.editor = true
-       
+            let titleContainer = document.getElementsByClassName('e-subject e-text-ellipsis')
+            console.log(titleContainer)
           }
           if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
               if (args.data.AzaIsPere) {
@@ -3932,20 +3946,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       if (item.AzaNumGroupe === args.data.AzaNumGroupe && item.AzaIsPere === false && item.isTempsReel === 0) {
                           workOrders.push(item);
                           if(item.Statut !== 3   ){
-                            // let edit = document.getElementsByClassName('e-edit-icon'),
-                            //     deleteWorkorder = document.getElementsByClassName('e-delete-icon')
-                            // edit[0]['style'].display = 'none';
-                            // deleteWorkorder[0]['style'].display = 'none';
-                            var buttonElementEdit = args.type === "QuickInfo" ? ".e-event-popup .e-edit" : ".e-schedule-dialog .e-event-edit";
-                            var buttonElementDelete = args.type === "QuickInfo" ? ".e-event-popup .e-delete" : ".e-schedule-dialog .e-event-delete";
-                            var editButton = document.querySelector(buttonElementEdit);
-                            var deleteButton = document.querySelector(buttonElementDelete)
-                            if (editButton && (editButton as EJ2Instance).ej2_instances) {
-                              ((editButton as EJ2Instance).ej2_instances[0] as Button).disabled = true;
-                            }
-                            if (deleteButton && (deleteButton as EJ2Instance).ej2_instances) {
-                                ((deleteButton as EJ2Instance).ej2_instances[0] as Button).disabled = true;
-                              }
+                            this.disableBtnCloseAndEdit(args)  
                            }
                       }
                   });
@@ -4003,11 +4004,45 @@ import { UtilisateurService } from "../services/utilisateur.service";
                       if (elementworkorder != null){
                       elementworkorder.innerHTML = `<div class='e-subject e-text-ellipsis' style="color : black; font-size:12px">${workOrders[i].titreoeuvre}&nbsp;/&nbsp;${workOrders[i].titreepisode} ep ${workOrders[i].numepisode} </div>`
                   }}
-                  if(args.data.Statut != 3){
-                 
-                      args.cancel = true
-                      console.log(args, "==> statut")
-                }
+                  if(args.data.Statut != 3 && args.data.isTempsReel===0 ){
+                        console.log(args.data)
+                        this.disableBtnCloseAndEdit(args)
+                     
+                        let rowWorkOrder: HTMLElement = createElement('div', {
+                            className: 'e-sub-object-list'
+                        });
+                    
+                        let elementParent: HTMLElement = <HTMLElement>args.element.querySelector('.e-popup-content')  ;
+                        console.log(elementParent) 
+                        if (elementParent != null) {
+                        elementParent['style'].overflow = 'auto'
+                        elementParent['style'].maxHeight = '40vh'
+                        elementParent.appendChild(rowWorkOrder);    
+                        
+                        }
+              
+                          setTimeout(() => {
+                              console.log( this.WorkorderTempsReelEvent.length)
+                            for (let i = 0; i < this.WorkorderTempsReelEvent.length; i++) {
+                                  console.log( rowWorkOrder)   
+                                  
+                                rowWorkOrder.innerHTML += `<div id='id${i}' style="color : black; font-size:12px">&nbsp; Debut réel&nbsp;:&nbsp;${this.WorkorderTempsReelEvent[i].DateDebut.toLocaleString()} <br> &nbsp;Fin réel :&nbsp;${this.WorkorderTempsReelEvent[i].DateFin.toLocaleString()}&nbsp; <br> &nbsp;Opérateur :&nbsp;${this.WorkorderTempsReelEvent[i].UserMaj} </div>`;
+                                let element = document.getElementById('id' + i)
+                                
+                                let couleur 
+                                 this.statutWorkorder.map(statut => {
+                                  if (this.WorkorderTempsReelEvent[i].statut === statut["Code"] ) {
+                                      couleur = statut['Color']            
+                                  }
+                                 element.style.backgroundColor =couleur
+                                   
+                            
+                                })  
+                                }
+                         
+                          }, 200);
+                       
+                        }
               }
           }
           if (args.data.name === 'cellClick') {
@@ -4291,6 +4326,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
            
                       args.cancel = true
                       console.log(args, "==> statut")
+                     }else {
+                        args.cancel = false
                      }
                 }
             });
@@ -4304,6 +4341,8 @@ import { UtilisateurService } from "../services/utilisateur.service";
            
                       args.cancel = true
                       console.log(args, "==> statut")
+                     }else{
+                        args.cancel = false
                      }
                 }
             });
@@ -4460,7 +4499,7 @@ import { UtilisateurService } from "../services/utilisateur.service";
                         }
                     })
             }
-
+             console.log(this.scheduleObj)
             this.scheduleObj.dataBind()
            //
             //     args.cancel = false
@@ -6104,7 +6143,7 @@ console.log('on load app', this.scheduleObj)
   
       /******************************************* Zoom *******************/
   
-      changeInterval(e: DropDownChangeArgs): void { // a rassembler avec changeIntevalDay plus de decalage events
+      changeInterval(e: DropDownChangeArgs): void { 
           // this.scheduleObj.activeViewOptions.timeScale.interval =  parseInt(e.value as string, 10)
           // this.scheduleObj.dataBind();
   
@@ -6116,21 +6155,24 @@ console.log('on load app', this.scheduleObj)
           console.log(e.value)
           console.log(this.intervalValue)
           this.scheduleObj.dataBind();
+          if(this.scheduleObj.currentView ==="TimelineDay"){
+            setTimeout(() => {
+                this.scheduleObj.scrollTo(this.hourContainer)  
+                this.zoomWithScroll()
+              }, 50);
+          }
       }
   
-      changeIntervalDay(e: DropDownChangeArgs ) {
-          this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
-          this.intervalValueDay = e.value as string
-          let value = parseInt(e.value as string, 10);
-          setTimeout(() => {
-            this.scheduleObj.scrollTo(this.hourContainer)  
-            this.zoomWithScroll()
-          }, 50);
+    //   changeIntervalDay(e: DropDownChangeArgs ) {
+    //       this.scheduleObj.timeScale.interval = parseInt(e.value as string, 10);
+    //       this.intervalValueDay = e.value as string
+    //       let value = parseInt(e.value as string, 10);
+       
  
-          console.log(this.intervalValueDay, e)
-        //   this.scheduleObj.dataBind();
+    //       console.log(this.intervalValueDay, e)
+    //     //   this.scheduleObj.dataBind();
       
-      }
+    //   }
      
       /*************************************************************************************** */
       onRenderCell(args: RenderCellEventArgs, value :CellTemplateArgs): void {
@@ -6330,7 +6372,18 @@ public startResize = false
      
           console.log(this.reel, this.theorique)
       }
-
+   disableBtnCloseAndEdit(args){
+    var buttonElementEdit = args.type === "QuickInfo" ? ".e-event-popup .e-edit" : ".e-schedule-dialog .e-event-edit";
+    var buttonElementDelete = args.type === "QuickInfo" ? ".e-event-popup .e-delete" : ".e-schedule-dialog .e-event-delete";
+    var editButton = document.querySelector(buttonElementEdit);
+    var deleteButton = document.querySelector(buttonElementDelete)
+    if (editButton && (editButton as EJ2Instance).ej2_instances) {
+      ((editButton as EJ2Instance).ej2_instances[0] as Button).disabled = true;
+    }
+    if (deleteButton && (deleteButton as EJ2Instance).ej2_instances) {
+        ((deleteButton as EJ2Instance).ej2_instances[0] as Button).disabled = true;
+      }
+            }
     
         
       onCreated() {
@@ -6408,7 +6461,7 @@ public startResize = false
           console.log(close);
 
         }
-      }
+     }
 
 
  
