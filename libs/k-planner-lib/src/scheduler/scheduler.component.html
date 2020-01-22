@@ -44,7 +44,6 @@
                 placeholder="Rechercher une régie..." 
                 #search 
                 (keyup)="onFilterRegie(search.value,$event )" 
-                (mousedown)="Filter()" 
                 value=""
                 style="width: 15%" >
                 <table class="table-light table-sm " id="property" title="Properties" >
@@ -137,6 +136,7 @@
                     [rowAutoHeight]="rowAutoHeight"
                     [showHeaderBar]='true'
                     timezone="Europe/Paris"
+                    height ='100%'
                     >
                     <!-- (created)="onCreated($event)" -->
                     <!-- (renderCell)="onRenderCell($event)" -->
