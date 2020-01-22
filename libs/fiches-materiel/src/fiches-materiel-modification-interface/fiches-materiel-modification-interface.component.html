@@ -89,8 +89,11 @@
         <div class="form-group row">
           <label class="user clo-lg-4 col-form-label">
             Suivi par :</label>
-          <select name="select" class="form-control col-lg-8">
-            <option [value]="newObject.SuiviPar">{{newObject.SuiviPar}}</option>
+          <select name="select" class="form-control col-lg-8" [(ngModel)]="newObject.SuiviPar" >
+            <option [ngValue]="newObject.SuiviPar">{{newObject.SuiviPar}}</option>
+            <option *ngFor="let name of displayOthersUsersWithModificationRight(newObject.SuiviPar)" [ngValue]="name">
+              <span *ngIf="name !== newObject.SuiviPar">{{name}}</span>
+            </option>
           </select>
         </div>
       </div>
