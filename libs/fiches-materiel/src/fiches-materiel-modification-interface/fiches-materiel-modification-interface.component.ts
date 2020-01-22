@@ -184,7 +184,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public multiOeuvre: boolean;
   public premiereDiff: Boolean = true;
   public accesLabo: Boolean = true;
-  public ori: Boolean = true;
+  public oriIsValid: Boolean = true;
   public newObject: NewObject;
 
   constructor(
@@ -957,9 +957,12 @@ public firtsClickStep = true;
       console.log('dateDiff this.warningDateDiffExist => ', this.warningDateDiffExist);
     }
   }
-
+  onDateSelect(event, date) {
+    console.log('modelChanged, event => ', event, date);
+  } 
   displayValidDate(date, type) {
     // console.log(this.selectionType);
+    console.log('displayValidDate => ', date, type);
     if (type === 'deadline') {
       this.deadlineIsValid = this.checkValidDate(date);
       this.displayWarningDeadline(date);
@@ -969,10 +972,11 @@ public firtsClickStep = true;
       this.acceptationIsValid = this.checkValidDate(date);
     } else if (type === 'diff') {
       this.premiereDiff = this.checkValidDate(date);
+      this.displayWarningDateDiff(date);
     } else if (type === 'labo') {
       this.accesLabo = this.checkValidDate(date);
     } else if (type === 'ori') {
-      this.ori = this.checkValidDate(date);
+      this.oriIsValid = this.checkValidDate(date);
     }
   }
 
@@ -981,13 +985,16 @@ public firtsClickStep = true;
   changeDateFormat(originalDate) {
     let defaultFormat = 'dd-mm-yyyy';
     if (this.selectionType === 'one') {
+      console.log('DateRetourOri => ', this.newObject.DateRetourOri);
       if (
         this.newObject.DateRetourOri !== undefined &&
         this.newObject.DateRetourOri !== null
       ) {
         // DATE RETOUR ORI
+        console.log('A');
         this.newObject.DateRetourOri = this.changeToNgFormatDate(this.newObject.DateRetourOri);
       } else {
+        console.log('B');
         this.newObject.DateRetourOri = defaultFormat;
       }
       if (

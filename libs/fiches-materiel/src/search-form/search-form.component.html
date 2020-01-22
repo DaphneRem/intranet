@@ -89,10 +89,12 @@
     </div>
   </div>
 </div>
+<!--{{oldComplexSearch | json}}-->
+<!--changeOldComplexSearchArchived : {{changeOldComplexSearchArchived | json}}-->
 <div *ngIf="displayOldComplexSearch" class="row data-row">
   <div class="col-lg-12 data-message">
     <p>Résultat de la recherche dans {{title | lowercase}} : 
-      <span *ngIf="oldComplexSearch.isarchived !== '' && showOnlyInProgressBtn"><i class="icofont icofont-tick-boxed"></i> Fiches en cours</span>
+      <span *ngIf="oldComplexSearch.isarchived === 0 && showOnlyInProgressBtn"><i class="icofont icofont-tick-boxed"></i> Fiches en cours</span>
       <span *ngIf="oldComplexSearch.TitreEpisodeVO !== ''"><i class="icofont icofont-tick-boxed"></i> Titre VO : {{oldComplexSearch.TitreEpisodeVO}}</span>
       <span *ngIf="oldComplexSearch.TitreEpisodeVF !== ''"><i class="icofont icofont-tick-boxed"></i> Titre VF : {{oldComplexSearch.TitreEpisodeVF}}</span>
       <span *ngIf="oldComplexSearch.SuiviPar !== ''"><i class="icofont icofont-tick-boxed"></i> Suivi par : {{oldComplexSearch.SuiviPar}}</span>
@@ -100,3 +102,5 @@
       <span *ngIf="oldComplexSearch.numficheachat !== ''"><i class="icofont icofont-tick-boxed"></i> N° fiche Achat : {{oldComplexSearch.numficheachat}}</span>
   </div>
 </div>
+<!--{{fmParameterToPost | json}}-->
+

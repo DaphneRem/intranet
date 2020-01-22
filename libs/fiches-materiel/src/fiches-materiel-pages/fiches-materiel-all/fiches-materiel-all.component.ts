@@ -7,12 +7,16 @@ import { takeUntil } from 'rxjs/operators';
 import { FicheMateriel } from '../../models/fiche-materiel';
 import { FichesMaterielService } from '../../services/fiches-materiel.service';
 
+import { Store } from '@ngrx/store';
+import { App } from './../../../../../apps/fiches-materiel/src/app/+state/app.interfaces';
+
 @Component({
   selector: 'fiches-materiel-all',
   templateUrl: './fiches-materiel-all.component.html',
   styleUrls: ['./fiches-materiel-all.component.scss'],
   providers: [
-    FichesMaterielService
+    FichesMaterielService,
+    Store
   ]
 })
 export class FichesMaterielAllComponent implements OnInit, OnDestroy {
@@ -25,6 +29,7 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
   public tableTheme: string = 'default theme';
   public daysNumber = 100;
   public isArchived = 2;
+  public changeView;
 
   public data: FicheMateriel[];
   public dataReady: boolean;
@@ -72,11 +77,20 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
       distributeur: '',
       numficheachat: ''
   };
+  public globalStore;
+  public userModifRights: boolean;
 
-  constructor( private fichesMaterielService: FichesMaterielService ) {}
+  constructor(
+    private fichesMaterielService: FichesMaterielService,
+    private appStore: Store<App>,
+) {}
 
   ngOnInit() {
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
+    this.appStore.subscribe(data => (this.globalStore = data));
+    console.log('globalStore => ', this.globalStore);
+    this.userModifRights = this.globalStore.app.user.rights.modification;
+    console.log('this.userModifRights => ', this.userModifRights);
     /********** GET ON COMPONENT INIT FOR DISPLAYING TABLE (OLD VERSION) **********/
     // this.getFichesMaterielByIntervalCreationIsArchived(this.daysNumber, this.isArchived);
   }

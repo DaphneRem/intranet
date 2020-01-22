@@ -182,11 +182,12 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   }
 
   displayDatatable() {
+    this.store.subscribe(data => (this.globalStore = data));
+    this.customdatatablesOptions.selectionBtn = this.globalStore.app.user.rights.modification;
     this.getElementsAnnexesStatusLib();
     this.getStatusLib();
     this.checkLinks();
     this.displayAction();
-    this.store.subscribe(data => (this.globalStore = data));
     this.storeFichesToModif = this.globalStore.ficheMaterielModification;
     this.storeDatatableSearchData = this.globalStore.datatableFilteredData;
     this.storeDatatableColumnsOrder = this.globalStore.datatableColumnsOrder;
@@ -692,7 +693,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       // },
       {
         title : 'ep. AB',
-        data : 'NumEpisode',
+        data: 'NumEpisodeAB',
       },
       {
         title : 'Livraison',

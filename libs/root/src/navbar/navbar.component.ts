@@ -41,6 +41,9 @@ export class NavbarComponent implements OnInit {
   @Input() dropDownIcon: string;
   @Input() subItemIcon: string;
 
+  @Input() userSpecifiRights?: any;
+  @Input() specificRightsExist?: boolean;
+
   public config: any;
   public localMode: boolean;
   constructor(
@@ -71,5 +74,35 @@ export class NavbarComponent implements OnInit {
   sanitize(url: string) {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
+
+  displayItemIfSpecificRights(item) {
+    // console.log('item navbar =>', item);
+    // console.log('users rights => ', this.userSpecifiRights);
+    if (item.hasOwnProperty('needSpecificRights')) { // check if need rights to display route
+      if (this.specificRightsExist && item.needSpecificRights.length > 0) { // check if user rights are specified in app
+        if (this.userSpecifiRights) { // check if user has rights for display route
+          let rights = [];
+          for (let i = 0; i < item.needSpecificRights.length; i++) {
+            for (let j = 0; j < this.userSpecifiRights.length; j++) {
+              if (item.needSpecificRights[i].toLowerCase() === this.userSpecifiRights[j].toLowerCase()) {
+                rights.push(item.needSpecificRights[i]);
+            }
+          }
+        }
+        if (rights.length === item.needSpecificRights.length) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  } else {
+    return true;
+  }
+}
 
 }

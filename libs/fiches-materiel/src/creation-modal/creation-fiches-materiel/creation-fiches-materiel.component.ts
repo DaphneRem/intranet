@@ -13,6 +13,7 @@ import { FichesAchatService } from '@ab/fiches-achat';
 import { FicheMaterielCreation } from '../../models/fiche-materiel-creation';
 import { NewFicheMateriel } from '../../models/new-fiche-materiel';
 import { FicheAchat } from '@ab/fiches-achat/src/models/fiche-achat';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 @Component({
   selector: 'creation-fiches-materiel',
@@ -42,7 +43,8 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   public retourOri: number;
   public user;
   public errorCreationInfoFm = [];
-
+  public createdOeuvre = 0;
+  public creationProcessIsOk = true;
   // dealine calcul
   public today;
   public disabled: boolean;
@@ -73,27 +75,38 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   }
 
   /** POST FICHES MATERIEL **/
-  createFichesMateriel(newFicheMateriel, oeuvre) {
+  createFichesMateriel(newFicheMateriel, oeuvre, IdFicheDetail, ficheAchatDetail) {
     this.fichesMaterielService
       .postFicheMateriel(newFicheMateriel)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(
-        res => {
+      .then(
+        (res) => {
           console.log('newFM POST => ', res);
-          this.creationState = true;
-          this.create(this.creationState);
-          this.disabled = false;
+         // console.log("res['status'] => ", res.status);
+//          this.creationState = true;
+  //        this.create(this.creationState);
+          if (this.creationProcessIsOk) {
+            this.disabled = false;
+            this.createdOeuvre++;
+            this.updateFicheAchatDetailImport(
+              IdFicheDetail,
+              ficheAchatDetail
+            );
+          }
         },
         error => {
+          console.error('error => ', error);
+          console.log('oeuvre => ', oeuvre);
+          console.log('ficheAchatDetail => ', ficheAchatDetail);
+          this.creationProcessIsOk = false;
           this.creationState = false;
-          let errorFM = {
-            ficheMateriel: newFicheMateriel,
-            oeuvre: oeuvre
-          };
-          console.log(' could not be created');
-          this.errorCreationInfoFm.push(errorFM);
-          this.errorInfoFmCreation.emit(this.errorCreationInfoFm);
           this.create(this.creationState);
+          let errorFM =
+            "Une erreur s'est produite, la création des fiches matériel de l'oeuvre "
+            + "'" + ficheAchatDetail.titre_vf + "' a achouée. L'action' a donc été interrompue."
+            + " Message d'erreur : "
+            + error
+            + ". Merci de recommancer ou de contacter le support si l'erreur persiste."
+          this.errorInfoFmCreation.emit(errorFM);
         }
       );
   }
@@ -117,27 +130,43 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
     });
     this.fichesMaterielService
       .deleteFicheMaterielByFicheAchatDetail(idFicheAchatDetail)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(
+      .then(
         res => {
-          this.createFichesMateriel(newFicheMateriel, this.detailsFicheAchat);
-                  console.log(this.myFicheAchat);
-
-          this.updateFicheAchatDetailImport(
-            ficheMateriel.IdFicheDetail,
-            ficheAchatDetail
-          );
-          if (index === lastIndex) {
-            this.updateFicheAchatGlobalImport();
+          if (this.creationProcessIsOk) {
+            this.createFichesMateriel(
+              newFicheMateriel,
+              this.detailsFicheAchat,
+              ficheMateriel.IdFicheDetail,
+              ficheAchatDetail);
+          } else {
+            this.creationProcessIsOk = false;
+            this.creationState = false;
+            this.create(this.creationState);
           }
+//          this.updateFicheAchatDetailImport(
+//            ficheMateriel.IdFicheDetail,
+//            ficheAchatDetail
+//          );
+//          if (index === lastIndex) {
+//            this.updateFicheAchatGlobalImport();
+//          }
+
           // this.updateFicheAchatGlobalImport();
-          console.log('delete ok ' + idFicheAchatDetail);
-          this.creationState = true;
+
         },
         error => {
+          console.error('error => ', error);
+          console.log('ficheAchatDetail => ', ficheAchatDetail);
+          this.creationProcessIsOk = false;
           this.creationState = false;
-          console.log(' could not be created');
           this.create(this.creationState);
+          let errorFM =
+            "Une erreur s'est produite, la suppression des anciennes fiches matériel associées à l'oeuvre "
+            + "'" + ficheAchatDetail.titre_vf + "' a achouée. L'action a donc été interrompue."
+            + " Message d'erreur : "
+            + error
+            + ". Merci de recommancer ou de contacter le support si l'erreur persiste."
+          this.errorInfoFmCreation.emit(errorFM);
         }
       );
   }
@@ -161,11 +190,32 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
     // );
     this.fichesAchatService
       .putFicheAchatDetail(detailsFicheAchat.id_fiche_det, detailsFicheAchat)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
+      .then(data => {
         console.log(data);
+        console.log('this.oeuvreWithGaps.length - 1 => ', this.oeuvreWithGaps.length);
+        console.log('this.createdOeuvre => ', this.createdOeuvre);
+        if (this.createdOeuvre === this.oeuvreWithGaps.length) {
+          if (this.creationProcessIsOk) {
+            this.updateFicheAchatGlobalImport();
+          } else {
+            this.creationProcessIsOk = false;
+            this.creationState = false;
+            this.create(this.creationState);
+          }
+        }
       }, error => {
-        console.error('update PUT Detail error');
+        console.error('error => ', error);
+        console.log('detailsFicheAchat => ', detailsFicheAchat);
+        this.creationProcessIsOk = false;
+        this.creationState = false;
+        this.create(this.creationState);
+        let errorFM =
+          "Une erreur s'est produite, la mise à jour de l'oeuvre "
+          + "'" + detailsFicheAchat.titre_vf + "' a achouée. L'action a donc été interrompue."
+          + " Message d'erreur : "
+          + error
+          + ". Merci de recommancer ou de contacter le support si l'erreur persiste."
+        this.errorInfoFmCreation.emit(errorFM);
       });
   }
 
@@ -178,11 +228,30 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
     console.log(this.myFicheAchat);
     this.fichesAchatService
       .putFicheAchatGlobal(this.myFicheAchat.id_fiche, this.myFicheAchat)
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(data => {
+      .then(data => {
         console.log(data);
+        console.log('creationState = true');
+        if (this.creationProcessIsOk) {
+          this.creationState = true;
+          this.create(this.creationState);
+          this.creationProcessIsOk = true;
+        } else {
+          this.creationProcessIsOk = false;
+          this.creationState = false;
+          this.create(this.creationState);
+        }
       }, error => {
-        console.error('update PUT Global error');
+        console.error('error => ', error);
+        this.creationProcessIsOk = false;
+        this.creationState = false;
+        this.create(this.creationState);
+        let errorFM =
+          "Une erreur s'est produite, la mise à jour de la fiche achat "
+          + "'" + this.myFicheAchat.numero_fiche + "' a achouée. L'action a donc été interrompue."
+          + " Message d'erreur : "
+          + error
+          + ". Merci de recommancer ou de contacter le support si l'erreur persiste."
+        this.errorInfoFmCreation.emit(errorFM);
       });
   }
 
@@ -214,6 +283,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
 
   /** CHANGE OEUVRE WITH GAPS TO FICHES MATERIEL OEUVRE WITH EPS ARRAY **/
   displayFichesMateriel() {
+    console.log('oeuvreWithGaps => ', this.oeuvreWithGaps);
     this.oeuvreWithGaps.forEach(oeuvre => {
       let oeuvreFicheDetail;
       let retourOriOeuvre;
@@ -258,7 +328,9 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
       let lastIndex = this.oeuvreWithGaps.length - 1;
       console.log(index);
       console.log(lastIndex);
-      this.deleteOldFichesMateriel(this.fichesMateriel, oeuvre.id_fiche_det, index, lastIndex);
+      if (this.creationProcessIsOk) {
+        this.deleteOldFichesMateriel(this.fichesMateriel, oeuvre.id_fiche_det, index, lastIndex);
+      }
     });
   }
 

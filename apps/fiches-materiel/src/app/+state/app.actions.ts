@@ -4,7 +4,7 @@ export interface AddConnectedUser {
     user: {
       username: string,
       name: string,
-      shortUserName: string
+      shortUserName: string,
     }
   };
 }
@@ -15,9 +15,39 @@ export interface DeleteConnectedUser {
     user: {
       username: string,
       name: string,
-      shortUserName: string
+      shortUserName: string,
+      rights: string,
+    },
+    appInfo: {
+      name: string,
+      code: number
     }
   };
 }
 
-export type UserAction = AddConnectedUser | DeleteConnectedUser;
+export interface AddAppInfo {
+  type: 'ADD_APP_INFO';
+  payload: {
+    appInfo: {
+      name: string,
+      code: number
+    }
+  };
+}
+
+
+export interface AddUserRights {
+  type: 'ADD_USER_RIGHTS';
+  payload: {
+    user: {
+      rights: {
+        modification: string;
+        consultation: string;
+        presse: string;
+      }
+    }
+  };
+}
+
+
+export type UserAction = AddConnectedUser | DeleteConnectedUser | AddAppInfo | AddUserRights;

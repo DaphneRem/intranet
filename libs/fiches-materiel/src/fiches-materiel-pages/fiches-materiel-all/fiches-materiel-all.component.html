@@ -1,6 +1,6 @@
-<sub-header [tableView]="true" [changeView]="true" [link]="widgetLink"></sub-header>
+<sub-header [tableView]="true" [changeView]="userModifRights" [link]="widgetLink"></sub-header>
 
-<div class="row card">
+<div class="row card" *ngIf="userModifRights">
   <div class="col-lg-11 buttons">
     <fiches-materiel-btn-links></fiches-materiel-btn-links>
   </div>

@@ -2,10 +2,16 @@ import { Component, OnInit } from '@angular/core';
 
 import { CustomIconBadge } from '@ab/custom-icons';
 
+import { Store } from '@ngrx/store';
+import { App } from './../../../../../apps/fiches-materiel/src/app/+state/app.interfaces';
+
 @Component({
   selector: 'display-fiches-achats',
   templateUrl: './display-fiches-achats.component.html',
-  styleUrls: ['./display-fiches-achats.component.scss']
+  styleUrls: ['./display-fiches-achats.component.scss'],
+  providers: [
+    Store
+  ]
 })
 export class DisplayFichesAchatsComponent implements OnInit {
 
@@ -65,11 +71,16 @@ export class DisplayFichesAchatsComponent implements OnInit {
     tooltip : true,
     tooltipMessage : 'Voir les fiches Matériel'
   };
+  public globalStore;
 
-  constructor() {}
+  constructor(private store: Store<App>) {}
 
   ngOnInit() {
-    this.icons = [this.fichesMaterielCreation, this.fichesMaterielView];
+    this.store.subscribe(data => (this.globalStore = data));
+    this.icons = [this.fichesMaterielView];
+    if (this.globalStore.app.user.rights.modification) {
+      this.icons.unshift(this.fichesMaterielCreation);
+    }
     this.stateFIcheAchat = this.views[2];
     this.selectedView = this.views[2];
   }

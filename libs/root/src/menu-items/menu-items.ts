@@ -10,6 +10,7 @@ export interface ChildrenItems {
     name: string;
     type?: string;
     children?: ChildrenItems[];
+    needSpecificRights?: any;
 }
 
 export interface MainMenuItems {
