@@ -33,7 +33,6 @@ import { config } from './../../../../.privates-url';
   providers : [
     Store,
     UserMediawanService,
-    // AppRightsService,
     RoutingState
     // AuthAdalService
   ]
@@ -89,6 +88,10 @@ subscription: Subscription;
   public myUser;
   public userIsReady = false;
   public emailUser: string;
+  public userSpecifiRights = [];
+  public specificRightsExist = true;
+  public userRightsForApp;
+
 
   ngOnInit() {
     // check navbar.open state from store
@@ -100,6 +103,7 @@ subscription: Subscription;
     console.log(this.store);
     console.log(this.appStore);
     this.store.subscribe(data => (this.globalStore = data));
+    console.log('this.globalStore onInit appComponent => ', this.globalStore);
     this.navbarState = this.globalStore.navbar.open;
     this.checkHeader(this.navbarState);
   }
@@ -111,9 +115,9 @@ subscription: Subscription;
       if (this.authService.userMSAL !== null && this.authService.userMSAL !== undefined) {
         //  this.displayUser();
         this.emailUser = this.authService.userMSAL.displayableId;
+        this.getRightsInAppForCurrentUser(this.emailUser);
         console.log('this.emailUser => ', this.emailUser);
         this.getUserMediawan(this.emailUser);
-        this.getRightsAllUsersFmApp();
       } else {
         console.log('Error whit this.authService.userMSAL => ', this.authService.userMSAL);
         // setTimeout(() => {
@@ -144,14 +148,30 @@ subscription: Subscription;
       });
   }
 
-  getRightsAllUsersFmApp() {
-    // user = user.replace('@', '%40');
+  getRightsInAppForCurrentUser(email) {
+    console.log('dsfndsklgnfdlskgn');
     this.appRightsService
-      .getRightsUserFm()
+      .getRightsByAppAndUser('fichemateriel', email)
       .subscribe(data => {
-        this.allUsersRights = data;
-        console.log('appComponent call all user app fm => ', data);
+        console.log('data user right in app by email in appcomponent=> ', data);
+        if ((data.Droits.hasOwnProperty('CONSULTATION') && data.Droits['CONSULTATION']) && (this.authService.authenticated)) {
+          this.userRightsForApp = data.Droits;
+          // this.userRightsForApp['MODIFICATION'] = false; // FOR TESTS
+          this.displayRightsToNavbarLinks(this.userRightsForApp);
+        }
+      }, error => {
+        console.error(error);
       });
+  }
+
+  displayRightsToNavbarLinks(rights) {
+    console.log('rights in displayRightsToNavbarLinks => ', rights);
+    for (let key in rights) {
+      if (rights[key]) {
+        this.userSpecifiRights.push(key.toString());
+      }
+    }
+    console.log('this.userSpecifiRights after display to store => ', this.userSpecifiRights)
   }
 
   signIn() {

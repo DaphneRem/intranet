@@ -84,7 +84,7 @@
               <span
                 *ngFor="let asideBadge of asideItem.badge"
                 class="pcoded-badge label label-{{ asideBadge.type }}">
-                {{asideBadge.value}}
+                {{asideBadge.value}}CCC
               </span>
               <span class="pcoded-mcaret"></span>
             </a>
@@ -92,13 +92,13 @@
               <ng-template ngFor let-asideChildren [ngForOf]="asideItem.children">
                 <li [ngSwitch]="localMode" [ngClass]="linkActiveTest(asideChildren.route)" [routerLinkActive]="['active']" *ngIf="asideChildren.type !== 'sub'">
 
-                    <a *ngSwitchCase="false"
+                    <a *ngSwitchCase="false && displayItemIfSpecificRights(asideChildren)"
                     [href]="asideChildren.route"
                     target="{{asideChildren.target ? '_blank' : '_self'}}">
                         <span class="pcoded-micon">
                             <i class="icon-angle-right"></i>
                           </span>
-                          <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
+                          <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }}</span>
                           <span
                             *ngIf="asideChildren.tooltipText"
                             class="pcoded-mtext"
@@ -115,13 +115,13 @@
                           <span class="pcoded-mcaret"></span>
                         </a>
 
-                    <a *ngSwitchCase="true"
+                    <a *ngSwitchCase="true && displayItemIfSpecificRights(asideChildren)"
                     [routerLink]="asideChildren.route" [routerLinkActive]="'is-active'" target="{{asideChildren.target ? '_blank' : '_self'}}">
 
                         <span class="pcoded-micon">
                           <i class="icon-angle-right"></i>
                         </span>
-                        <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
+                        <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }}</span>
                         <span
                           *ngIf="asideChildren.tooltipText"
                           class="pcoded-mtext"
