@@ -113,10 +113,9 @@ const routes: Routes = [
     data: { title : 'Fiches Achat' },
     canActivate: [CanActivateApp]
   },
-  { 
+  {
     path: 'access-denied',
     component: Page403AppComponent,
-    canActivate: [!CanActivateApp]
   },
   { path: '**', component: Page404Component },
 ];
