@@ -158,7 +158,8 @@ if (buildModeFichesMaterielApp < 1 && buildModeKplannerApp <= 1) {
                         {
                             state: 'creation-fiches-materiel',
                             name: 'Création fiches Matériel',
-                            route: `${distUrl_Materiel}/creation`
+                            route: `${distUrl_Materiel}/creation`,
+                            needSpecificRights: ['MODIFICATION'],
                         },
                         {
                             state: 'suivi-fiches-achat',

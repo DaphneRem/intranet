@@ -32,6 +32,7 @@ export class CanActivateApp implements CanActivate {
             .map(data => {
                 console.log('data user right in app by email => ', data);
                 if ((data.Droits.hasOwnProperty('CONSULTATION') && data.Droits['CONSULTATION']) && (this.authService.authenticated)) {
+                    console.log('data.Droits.CONSULTATION exist and true => ');
                     this.appStore.dispatch({
                         type: 'ADD_USER_RIGHTS',
                         payload: {
@@ -46,6 +47,7 @@ export class CanActivateApp implements CanActivate {
                     });
                     return true;
                 } else {
+                    console.log('data.Droits.CONSULTATION not exist');
                     this.router.navigateByUrl('/access-denied');
                     return false;
                 }
