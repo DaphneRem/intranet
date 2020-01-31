@@ -212,10 +212,13 @@ getAccessRightsUser(){
      let UsersAccessRights = data
      console.log('access rights user kplanner',UsersAccessRights)
   
-                 if(UsersAccessRights["Droits"][editRight]  === true && UsersAccessRights["Droits"][coordinateurRight] === true){
-                
+     if(UsersAccessRights["Droits"][editRight]  === true && UsersAccessRights["Droits"][coordinateurRight] === true){
+                console.log("user have rights to access")
                     this.getUtilisateurByLogin(this.userName)
-                 }
+                    this.rightsAreReady = true
+        }else{
+                   this.rightsAreReady = false
+        }
      })
      console.log(this.rightsAreReady)
   
