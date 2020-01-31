@@ -9,7 +9,7 @@ import { NumericTextBoxAllModule } from '@syncfusion/ej2-angular-inputs';
 import { CheckBoxAllModule, ButtonModule } from '@syncfusion/ej2-angular-buttons';
 import { ToolbarAllModule, SidebarModule } from '@syncfusion/ej2-angular-navigations';
 import { MaskedTextBoxModule } from '@syncfusion/ej2-angular-inputs';
-import { DropDownListAllModule, MultiSelectAllModule} from '@syncfusion/ej2-angular-dropdowns';
+import { DropDownListAllModule, MultiSelectAllModule, MultiSelectModule} from '@syncfusion/ej2-angular-dropdowns';
 import {
   TreeViewModule,
   TabModule,
@@ -19,8 +19,8 @@ import {
   ContextMenuModule
 } from '@syncfusion/ej2-angular-navigations';
 import { ListViewModule } from '@syncfusion/ej2-angular-lists';
-import { TooltipModule, Position } from '@syncfusion/ej2-angular-popups';
-
+import { TooltipModule, Position, DialogComponent, DialogModule } from '@syncfusion/ej2-angular-popups';
+import { AutoCompleteModule } from '@syncfusion/ej2-angular-dropdowns'
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -37,6 +37,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LoadersModule } from '@ab/loaders';
 import { ErrorPagesModule } from '@ab/error-pages';
+import { KeyboardShortcutComponent } from './keyboard-shortcut/keyboard-shortcut.component';
 
 @NgModule({
   imports: [
@@ -69,19 +70,24 @@ import { ErrorPagesModule } from '@ab/error-pages';
     TooltipModule,
     ButtonModule,
     ContextMenuModule,
-    ErrorPagesModule
+    ErrorPagesModule,
+    AutoCompleteModule,
+    MultiSelectModule,
+    DialogModule
   ],
   declarations: [
     SchedulerComponent,
     MonPlanningComponent,
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
-    FilterPipe
+    FilterPipe,
+    KeyboardShortcutComponent
   ],
   entryComponents: [
     MonPlanningComponent,
     SchedulerComponent,
-    WorkorderDetailsModalComponent
+    WorkorderDetailsModalComponent,
+
   ]
 })
 export class KPlannerLibModule {}
