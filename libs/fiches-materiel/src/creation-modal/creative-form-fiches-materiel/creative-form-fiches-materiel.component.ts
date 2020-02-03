@@ -68,7 +68,9 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
 
   /******* Init default oeuvre Model ********/
   initDefaultModels() {
-    this.oeuvreWithGaps = this.detailsFicheAchat.map(oeuvre => { 
+    // let oeuvreToImportFm = this.detailsFicheAchat.filter(item => (item.Import_FM === null || item.Import_FM === null));
+    let oeuvreToImportFm = this.detailsFicheAchat;
+    this.oeuvreWithGaps = oeuvreToImportFm.map(oeuvre => {
       return {
         id_fiche: oeuvre.id_fiche,
         id_fiche_det: oeuvre.id_fiche_det,

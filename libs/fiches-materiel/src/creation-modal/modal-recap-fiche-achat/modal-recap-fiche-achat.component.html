@@ -5,6 +5,7 @@
       *ngIf="step === 1" 
       (nextStep)="changeStep($event)"
       [step]="step" 
+      [faMajExist]="faMajExist"
       [detailsFicheAchat]="detailsFicheAchat">
     </fiches-achat-details>
     <creative-form-fiches-materiel 

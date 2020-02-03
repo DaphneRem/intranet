@@ -5,7 +5,7 @@
     <div *ngIf="dataReady" class="scroll-content" [ngClass]="(detailsFicheAchat.length > 2) ? 'scroll' : ''" >
       <div *ngFor="let oeuvre of detailsFicheAchat" class="oeuvre">
         <div class="title">
-          <div class="number">{{detailsFicheAchat.indexOf(oeuvre) + 1}}</div>
+          <div class="number"><span class="oeuvre-number">{{detailsFicheAchat.indexOf(oeuvre) + 1}}</span></div>
           <h4>{{oeuvre.titre_vf}}</h4>
         </div>
         <div class="details">
