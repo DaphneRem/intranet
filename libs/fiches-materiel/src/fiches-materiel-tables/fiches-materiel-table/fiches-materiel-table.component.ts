@@ -61,6 +61,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
   @Input() multiColumnsOrderExist?: boolean;
   @Input() multiColumnsOrder?: any;
   @Input() data;
+  @Input() responsive?: boolean;
 
   private onDestroy$: Subject<any> = new Subject();
   public displayOptionsBtnModif = false;
@@ -119,7 +120,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     rowsMax: 500,
     lenghtMenu: [10, 50, 100, 500, 1000],
     theme: 'blue theme',
-    responsive : true,
+    responsive : false,
     defaultOrder: [],
     reRenderOption: true,
     renderOption: true,
@@ -155,6 +156,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
 
   ngOnInit() {
     console.log('multiColumnsOrderExist => ', this.multiColumnsOrderExist);
+    this.customdatatablesOptions.responsive = this.responsive;
     if (this.tableTheme) {
       this.customdatatablesOptions.theme = this.tableTheme;
     }
@@ -710,7 +712,7 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
         data : function ( data, type, row, meta ) {
           if (data.DateAcceptation !== null && data.DateAcceptation !== undefined) {
             return '<span class="label label-success acceptation">' + data.DateAcceptation.slice(0, 10) + '</span>'; // color : green; #04B404
-          } else if (data.Renouvellement !== null && data.DateAcceptation !== undefined) {
+          } else if (data.Renouvellement !== null && data.Renouvellement !== 0 && data.DateAcceptation !== undefined) {
             return '<span class="label label-success acceptation">Renouv.</span>'; // color : green; #04B404
           } else {
             return data.DateAcceptation;
