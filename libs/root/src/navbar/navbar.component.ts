@@ -76,11 +76,11 @@ export class NavbarComponent implements OnInit {
   }
 
   displayItemIfSpecificRights(item) {
-    // console.log('item navbar =>', item);
-    // console.log('users rights => ', this.userSpecifiRights);
+    console.log('item navbar =>', item);
+    console.log('users rights => ', this.userSpecifiRights);
     if (item.hasOwnProperty('needSpecificRights')) { // check if need rights to display route
       if (this.specificRightsExist && item.needSpecificRights.length > 0) { // check if user rights are specified in app
-        if (this.userSpecifiRights) { // check if user has rights for display route
+        if (this.userSpecifiRights.length > 0 ) { // check if user has rights for display route
           let rights = [];
           for (let i = 0; i < item.needSpecificRights.length; i++) {
             for (let j = 0; j < this.userSpecifiRights.length; j++) {
@@ -89,9 +89,12 @@ export class NavbarComponent implements OnInit {
             }
           }
         }
+        console.log('rights => ', rights);
         if (rights.length === item.needSpecificRights.length) {
+          console.log('true');
           return true;
         } else {
+          console.log('false');
           return false;
         }
       } else {

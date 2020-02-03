@@ -151,14 +151,26 @@ subscription: Subscription;
   getRightsInAppForCurrentUser(email) {
     console.log('dsfndsklgnfdlskgn');
     this.appRightsService
+      // .getRightsByAppAndUser('fichemateriel', 'christine.vitipon@mediawan.com')
       .getRightsByAppAndUser('fichemateriel', email)
       .subscribe(data => {
         console.log('data user right in app by email in appcomponent=> ', data);
-        if ((data.Droits.hasOwnProperty('CONSULTATION') && data.Droits['CONSULTATION']) && (this.authService.authenticated)) {
-          this.userRightsForApp = data.Droits;
-          // this.userRightsForApp['MODIFICATION'] = false; // FOR TESTS
-          this.displayRightsToNavbarLinks(this.userRightsForApp);
+        console.log('Object.keys(Droits).length => ', Object.keys(data.Droits).length);
+        console.log('data.Droits => ', data.Droits);
+        console.log('this.userSpecifiRights before => ', this.userSpecifiRights);
+        if (data.hasOwnProperty('Droits') && Object.keys(data.Droits).length > 0) {
+          console.log('condition true => ', Object.keys(data.Droits).length)
+          console.log('data.Droits => ', data.Droits);
+          this.userSpecifiRights.push('fm-app');
+          if ((data.Droits.hasOwnProperty('CONSULTATION') && data.Droits['CONSULTATION']) && (this.authService.authenticated)) {
+            this.userRightsForApp = data.Droits;
+            // this.userRightsForApp['MODIFICATION'] = false; // FOR TESTS
+            this.displayRightsToNavbarLinks(this.userRightsForApp);
+          }
+        } else {
+          this.userSpecifiRights = [];
         }
+        console.log('this.userSpecifiRights after => ', this.userSpecifiRights);
       }, error => {
         console.error(error);
       });
