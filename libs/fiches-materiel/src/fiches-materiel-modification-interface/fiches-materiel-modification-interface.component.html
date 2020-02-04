@@ -36,6 +36,7 @@
       [deadlineIsValid]="deadlineIsValid"
       [livraisonIsValid]="livraisonIsValid"
       [acceptationIsValid]="acceptationIsValid"
+      [oriIsValid]="oriIsValid"
       [premiereDiff]="premiereDiff"
       [accesLabo]="accesLabo"
       [comments]="comments"
@@ -68,7 +69,7 @@
                   [(ngModel)]="newObject.Deadline" 
                   [disabled]="disabledDeadline()"
                   ngbDatepicker
-                  (dateSelect)="displayWarningDeadline(newObject.Deadline)"
+                  (dateSelect)="selectionType === 'one' ? displayValidDate(newObject.Deadline, 'deadline') : displayValidDate(deadline.value, 'deadline')"
                   (keyup)="selectionType === 'one' ? displayValidDate(newObject.Deadline, 'deadline') : displayValidDate(deadline.value, 'deadline')"
                   #deadline="ngModel"
                   #deadlineDate="ngbDatepicker">
@@ -88,8 +89,11 @@
         <div class="form-group row">
           <label class="user clo-lg-4 col-form-label">
             Suivi par :</label>
-          <select name="select" class="form-control col-lg-8">
-            <option [value]="newObject.SuiviPar">{{newObject.SuiviPar}}</option>
+          <select name="select" class="form-control col-lg-8" [(ngModel)]="newObject.SuiviPar" >
+            <option [ngValue]="newObject.SuiviPar">{{newObject.SuiviPar}}</option>
+            <option *ngFor="let name of displayOthersUsersWithModificationRight(newObject.SuiviPar)" [ngValue]="name">
+              <span *ngIf="name !== newObject.SuiviPar">{{name}}</span>
+            </option>
           </select>
         </div>
       </div>
@@ -674,6 +678,7 @@
           <i class="icofont icofont-law section-icon"></i>
 
           <p class="deb-droits">Date déb droits :
+            <!-- <span>{{newObject.DateDebutDroit | date}}</span> -->
             <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.debut_des_droits">/</span>
           </p>
@@ -683,10 +688,10 @@
           </p> -->
           <p *ngIf="ficheAchatDetail.duree_droits_annee">Fin des droits : {{ficheAchatDetail.duree_droits_annee}} an(s)</p>
           <p *ngIf="ficheAchatDetail.duree_droits_mois">Fin des droits : {{ficheAchatDetail.duree_droits_mois}} mois</p>
-          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois">Fin des droits :
+          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && ficheAchatDetail.expiration_droits">Expiration droits : {{ficheAchatDetail.expiration_droits | json}}</p>
+          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && !ficheAchatDetail.expiration_droits">Fin des droits :
             <span class="empty-field">/</span>
           </p>
-
         </div>
 
 
@@ -702,7 +707,8 @@
                 placeholder="{{newObject.DateLivraison}}" 
                 name="livDate" 
                 [(ngModel)]="newObject.DateLivraison" 
-                ngbDatepicker 
+                ngbDatepicker
+                (dateSelect)="displayValidDate(newObject.DateLivraison, 'livraison')" 
                 (keyup)="displayValidDate(newObject.DateLivraison, 'livraison')"
                 #livraison="ngModel"
                 #livDate="ngbDatepicker">
@@ -755,6 +761,7 @@
                 name="acceptDate"
                 [(ngModel)]="newObject.DateAcceptation" 
                 ngbDatepicker 
+                (dateSelect)="displayValidDate(newObject.DateAcceptation, 'acceptation')"
                 (keyup)="displayValidDate(newObject.DateAcceptation, 'acceptation')"
                 #acceptation="ngModel"
                 #acceptDate="ngbDatepicker" 
@@ -792,7 +799,7 @@
                 placeholder="{{newObject.DatePremiereDiff}}" 
                 name="diffDate"
                 [(ngModel)]="newObject.DatePremiereDiff"
-                (dateSelect)="displayWarningDateDiff(newObject.DatePremiereDiff)"
+                (dateSelect)="displayValidDate(newObject.DatePremiereDiff, 'diff')"
                 ngbDatepicker 
                 (keyup)="displayValidDate(newObject.DatePremiereDiff, 'diff')"
                 #diff="ngModel"
@@ -980,11 +987,13 @@
             </label>
             <div class="input-group col-lg-6">
               <input 
-                [ngClass]="!checkValidDate(newObject.DateLivraison) && !fmInRecording ? 'form-control-danger' : ''"
+                class="form-control"
+                [ngClass]="!checkValidDate(newObject.DateRetourOri) && !fmInRecording ? 'form-control-danger' : ''"
                 placeholder="{{newObject.DateRetourOri}}" 
                 name="rDate"
                 [(ngModel)]="newObject.DateRetourOri" 
                 ngbDatepicker
+                (dateSelect)="displayValidDate(newObject.DateRetourOri, 'ori')"
                 (keyup)="displayValidDate(newObject.DateRetourOri, 'ori')"
                 #ori="ngModel"
                 #retourDate="ngbDatepicker">
@@ -995,7 +1004,7 @@
               </div>
             </div>
           </div>
-          <div *ngIf="!checkValidDate(newObject.DateRetourOri) && !fmInRecording" class="col-form-label invalid-form">La date d'acceptation n'est pas valide</div>
+          <div *ngIf="!checkValidDate(newObject.DateRetourOri) && !fmInRecording && newObject.RetourOri === 3" class="col-form-label invalid-form">La date de retour n'est pas valide</div>
         </div>
 
 <!--- ***************  SECTION RECEPTION LABO ***************** -->
@@ -1013,6 +1022,7 @@
                 name="accLaboDate"
                 [(ngModel)]="newObject.ReceptionAccesLabo" 
                 ngbDatepicker 
+                (dateSelect)="displayValidDate(newObject.ReceptionAccesLabo, 'labo')"
                 (keyup)="displayValidDate(newObject.ReceptionAccesLabo, 'labo')"
                 #accesLabo="ngModel"
                 #accLaboDate="ngbDatepicker">
@@ -1187,6 +1197,7 @@
       [deadlineIsValid]="deadlineIsValid"
       [livraisonIsValid]="livraisonIsValid"
       [acceptationIsValid]="acceptationIsValid"
+      [oriIsValid]="oriIsValid"
       [premiereDiff]="premiereDiff"
       [accesLabo]="accesLabo"
       [comments]="comments"

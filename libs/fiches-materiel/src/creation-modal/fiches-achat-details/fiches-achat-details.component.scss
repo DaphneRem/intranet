@@ -5,6 +5,9 @@ $importantColor : #fd5f5f;
 
 .nbr-oeuvre {
    margin-bottom : 25px; 
+   .fa-maj-exist-warning {
+       color : $importantColor;
+   }
 }
 .scroll-content {
     &.scroll {
@@ -21,7 +24,20 @@ $importantColor : #fd5f5f;
                 background: $creationBtnColor;
                 color: #ffffff;
                 border-radius : 100%;
-                padding-left: 8px;
+                display: flex;
+                justify-content: center;
+                //padding-left: 8px;
+                .oeuvre-number {
+                }
+            }
+            .warning-number {
+                height: 25px;
+                width: 25px;
+                background: $importantColor;
+                color: #ffffff;
+                border-radius : 100%;
+                display: flex;
+                justify-content: center;
             }
             h4 {
                 font-size: 1em;

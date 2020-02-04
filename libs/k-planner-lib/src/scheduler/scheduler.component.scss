@@ -106,21 +106,23 @@ $InfoBtnHoverColor :  #2eced6;
         }
     }
 }
-/deep/ .schedule-drag-drop {
-    max-height: calc(90vh - 80px); // hauteur du schedule
+// /deep/ .schedule-drag-drop {
+    // max-height:82vh; // hauteur du schedule
+    // height: auto;
+    // height:100%;
     // margin-left: 15px;
     // margin-right: 15px
     // height:80vh;
     // border:red 2px solid;
     // zoom: 90%;
-   
-}
 
-// /deep/ .schedule {
-  
-
-    // border:black 2px solid
 // }
+
+/deep/ .schedule {
+  height: 82vh;
+
+
+}
 // /deep/ .e-table-container{
 //     border:green 2px solid
 // }
@@ -150,7 +152,8 @@ $InfoBtnHoverColor :  #2eced6;
 
 .schedule-container {
     padding-right: 10px;
-  
+    height : 88vh;
+
     .schedule-header {
         display: flex;
         width: 90%;
@@ -303,15 +306,15 @@ $InfoBtnHoverColor :  #2eced6;
 //     min-height: 100px,
 // }
 
-/deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
+// /deep/ .e-schedule .e-timeline-month-view .e-resource-cells{
     // height: 100px;
     // min-height: 100px,
 
-}
-/deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
+// }
+// /deep/ .e-schedule .e-timeline-month-view  .e-work-cells{
     // height: 100px;
     // min-height: 100px,
-}
+// }
 
 // /deep/ .e-schedule .e-schedule-table > tbody > tr > td{
 //     // overflow: visible;
@@ -544,6 +547,20 @@ $InfoBtnHoverColor :  #2eced6;
     content:'\e960';
    
 }
+/deep/ .BT_Remove:before{
+    content:'\e94a';
+    color:rgba(172, 28, 28, 0.863);
+    margin-top:8px;
+    height:2.5em;
+    width:2.5em;
+
+}
+
+/deep/ .e-quick-popup-wrapper .e-delete-icon::before {
+    content: '\e354';
+    height:2.5em;
+    width:2.5em;
+}
 // /deep/  .e-schedule .e-timeline-month-view .e-appointment{
 //     opacity:0.7
 // }
@@ -748,3 +765,10 @@ padding: 0
 /deep/ .e-editor{
     display : none;
 }
+ .btn-keyboard{
+    font-size:25px;
+     padding:0; 
+     color:$InfoBtnColor;
+     left:0
+}
+

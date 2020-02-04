@@ -16,8 +16,8 @@ import { AuthService } from './auth/auth.service';
 
 import { UserMediawanService } from './auth/user-mediawan.service';
 import { UserMediawan } from './auth/user-mediawan';
-import { UserAppRightsService } from './rights-app/users-app-rights.service';
-import { UserAppRights } from './rights-app/user-app-rights';
+import { AppRightsService } from './rights-app/app-rights.service';
+import { UsersInAppRights } from './rights-app/users-in-app-rights';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 import { App, User } from './+state/app.interfaces';
@@ -32,9 +32,7 @@ import { config } from './../../../../.privates-url';
   styleUrls: ['./app.component.scss'],
   providers : [
     Store,
-    AuthService,
     UserMediawanService,
-    UserAppRightsService,
     RoutingState
     // AuthAdalService
   ]
@@ -50,13 +48,14 @@ subscription: Subscription;
     private authService: AuthService,
     private router: Router,
     private userMediawanService: UserMediawanService,
-    private userAppRightsService: UserAppRightsService,
+    private appRightsService: AppRightsService,
     private routingState: RoutingState
     // private authAdalService: AuthAdalService,
     // private adal5Service: Adal5Service,
   ) {
     this.navbarStoreOpen = this.store;
     this.displayVersionApp();
+    console.log('appcomponenet constructor');
     // this.subscription = router.events.subscribe(event => {
     //   console.log(event);
     //   if (event instanceof NavigationStart) {
@@ -68,7 +67,7 @@ subscription: Subscription;
 
   public versionApp: string;
   public userMediawan: UserMediawan;
-  public allUsersRights: UserAppRights[];
+  public allUsersRights: UsersInAppRights[];
   public globalStore;
   public navbarStoreOpen;
   public navbarState;
@@ -89,16 +88,22 @@ subscription: Subscription;
   public myUser;
   public userIsReady = false;
   public emailUser: string;
+  public userSpecifiRights = [];
+  public specificRightsExist = true;
+  public userRightsForApp;
+
 
   ngOnInit() {
     // check navbar.open state from store
     if (!this.authService.authenticated) {
+      console.log('sign in !!');
       this.signIn();
     }
     this.routingState.loadRouting();
     console.log(this.store);
     console.log(this.appStore);
     this.store.subscribe(data => (this.globalStore = data));
+    console.log('this.globalStore onInit appComponent => ', this.globalStore);
     this.navbarState = this.globalStore.navbar.open;
     this.checkHeader(this.navbarState);
   }
@@ -110,9 +115,9 @@ subscription: Subscription;
       if (this.authService.userMSAL !== null && this.authService.userMSAL !== undefined) {
         //  this.displayUser();
         this.emailUser = this.authService.userMSAL.displayableId;
+        this.getRightsInAppForCurrentUser(this.emailUser);
         console.log('this.emailUser => ', this.emailUser);
         this.getUserMediawan(this.emailUser);
-        this.getRightsAllUsersFmApp();
       } else {
         console.log('Error whit this.authService.userMSAL => ', this.authService.userMSAL);
         // setTimeout(() => {
@@ -143,14 +148,42 @@ subscription: Subscription;
       });
   }
 
-  getRightsAllUsersFmApp() {
-    // user = user.replace('@', '%40');
-    this.userAppRightsService
-      .getRightsUserFm()
+  getRightsInAppForCurrentUser(email) {
+    console.log('dsfndsklgnfdlskgn');
+    this.appRightsService
+      // .getRightsByAppAndUser('fichemateriel', 'christine.vitipon@mediawan.com')
+      .getRightsByAppAndUser('fichemateriel', email)
       .subscribe(data => {
-        this.allUsersRights = data;
-        console.log('appComponent call all user app fm => ', data);
+        console.log('data user right in app by email in appcomponent=> ', data);
+        console.log('Object.keys(Droits).length => ', Object.keys(data.Droits).length);
+        console.log('data.Droits => ', data.Droits);
+        console.log('this.userSpecifiRights before => ', this.userSpecifiRights);
+        if (data.hasOwnProperty('Droits') && Object.keys(data.Droits).length > 0) {
+          console.log('condition true => ', Object.keys(data.Droits).length)
+          console.log('data.Droits => ', data.Droits);
+          this.userSpecifiRights.push('fm-app');
+          if ((data.Droits.hasOwnProperty('CONSULTATION') && data.Droits['CONSULTATION']) && (this.authService.authenticated)) {
+            this.userRightsForApp = data.Droits;
+            // this.userRightsForApp['MODIFICATION'] = false; // FOR TESTS
+            this.displayRightsToNavbarLinks(this.userRightsForApp);
+          }
+        } else {
+          this.userSpecifiRights = [];
+        }
+        console.log('this.userSpecifiRights after => ', this.userSpecifiRights);
+      }, error => {
+        console.error(error);
       });
+  }
+
+  displayRightsToNavbarLinks(rights) {
+    console.log('rights in displayRightsToNavbarLinks => ', rights);
+    for (let key in rights) {
+      if (rights[key]) {
+        this.userSpecifiRights.push(key.toString());
+      }
+    }
+    console.log('this.userSpecifiRights after display to store => ', this.userSpecifiRights)
   }
 
   signIn() {
@@ -181,6 +214,15 @@ subscription: Subscription;
             shortUserName: this.shortUserName,
           }
         }
+    });
+    this.appStore.dispatch({
+      type: 'ADD_APP_INFO',
+      payload: {
+        appInfo: {
+          name: 'fichemateriel',
+          code: 160
+        }
+      }
     });
     this.userIsReady = true;
     // this.getAllCoordinateurs();

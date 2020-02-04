@@ -32,6 +32,9 @@ import { appInitialState } from './+state/app.init';
 import { environment } from '../environments/environment';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
+import { AuthService } from './auth/auth.service';
+import { AppRightsService } from './rights-app/app-rights.service';
+
 registerLocaleData(localeFr, 'fr');
 
 @NgModule({
@@ -65,6 +68,8 @@ registerLocaleData(localeFr, 'fr');
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
+    AuthService,
+    AppRightsService
     // Adal5Service,
     // {
     //   provide: Adal5HTTPService,

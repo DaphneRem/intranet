@@ -3,9 +3,9 @@ import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NxModule } from '@nrwl/nx';
 import { Adal5Service, Adal5HTTPService } from 'adal-angular5';
-import { MsalModule } from '@azure/msal-angular';
+import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { OAuthSettings } from './../../../../.privates-url';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from './auth/auth.service';
 
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
@@ -35,7 +35,9 @@ registerLocaleData(localeFr, 'fr');
     AppRoutingModule,
     MsalModule.forRoot({
       clientID: OAuthSettings.appId,
-      authority: OAuthSettings.authority
+      // protectedResourceMap : OAuthSettings.protectedResourceMap,
+      // authority: OAuthSettings.authority,
+      // validateAuthority: true,
     }),
     RootModule,
     ErrorPagesModule,
@@ -59,12 +61,13 @@ registerLocaleData(localeFr, 'fr');
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
-    Adal5Service,
-    {
-      provide: Adal5HTTPService,
-      useFactory: Adal5HTTPService.factory,
-      deps: [HttpClient, Adal5Service]
-    }
+    // Adal5Service,
+    // {
+    //   provide: Adal5HTTPService,
+    //   useFactory: Adal5HTTPService.factory,
+    //   deps: [HttpClient, Adal5Service]
+    // }
+    // {provide: HTTP_INTERCEPTORS, useClass: MsalInterceptor, multi: true}
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent]

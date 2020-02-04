@@ -5,7 +5,7 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Observable } from 'rxjs/Observable';
 import { catchError } from 'rxjs/operators';
 import { EventModel } from '../models/Events';
-import { urlKPlanner, urlPlanningEventsTempsReel, urlPlanningEventsTempsReelBystartDate, urlPlanningEventsTempsReelByendDate, urlPlanningEventsTempsReelByIdGroupe } from '.privates-url';
+import { urlKPlanner, urlPlanningEventsTempsReel, urlPlanningEventsTempsReelBystartDate, urlPlanningEventsTempsReelByendDate, urlPlanningEventsTempsReelByIdGroupe, urlPlanningEventsTempsReelById_Planning_Events } from '.privates-url';
 
 
 
@@ -36,6 +36,22 @@ export class WorkOrderTempsReelService {
         });
   }
   
+  getWorkorderTempsReelByIdPlannigEvents(
+    idPlanningEvents: number,
+  ): Observable<EventModel[]> {
+      return this.http
+        .get(
+          urlKPlanner +
+          urlPlanningEventsTempsReel + // /DW_Planning_Events_TempsReel
+          urlPlanningEventsTempsReelById_Planning_Events+
+          idPlanningEvents
+          )
+        .map((res: any) => {
+          console.log(res);
+        
+          return res as EventModel[];
+        });
+  }
   /*********************** ERROR ************************/
 
   private handleError(error: HttpErrorResponse) {

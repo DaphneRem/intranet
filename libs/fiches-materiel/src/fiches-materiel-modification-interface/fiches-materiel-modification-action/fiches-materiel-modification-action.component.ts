@@ -45,6 +45,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   @Input() deadlineIsValid;
   @Input() livraisonIsValid;
   @Input() acceptationIsValid;
+  @Input() oriIsValid;
   @Input() premiereDiff;
   @Input() comments: AnnexElementCommentsFicheMAteriel[];
   @Input() accesLabo;
@@ -96,10 +97,6 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   /*************************************************************************************************************/
 
   modifFichesMateriel(closeAction) { // 1/
-    this.modifInProgressMessage.emit('Enregistrement des Fiches Matériel...');
-    this.fmInRecordingEvent.emit(true);
-    this.fmInRecordingLocal = true;
-    let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
     // console.log('COMMENTS ================> ', this.comments);
     if (closeAction === 'close') {
       this.closeInterface = true;
@@ -107,6 +104,10 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       this.closeInterface = false;
     }
     if (this.checkAllValidDates()) {
+      this.modifInProgressMessage.emit('Enregistrement des Fiches Matériel...');
+      this.fmInRecordingEvent.emit(true);
+      this.fmInRecordingLocal = true;
+      let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
       if (this.selectionType === 'one') {
         this.getFicheMaterielOriginal(this.newObject.IdFicheMateriel);
       } else {
@@ -148,12 +149,19 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   /*************************************************************************************************************/
 
   checkAllValidDates(): boolean { // 2/
+    console.log('this.deadlineIsValid => ', this.deadlineIsValid);
+    console.log('this.livraisonIsValid => ', this.livraisonIsValid);
+    console.log('this.acceptationIsValid => ', this.acceptationIsValid);
+    console.log('this.premiereDiff => ', this.premiereDiff);
+    console.log('this.accesLabo => ', this.accesLabo);
+    console.log('this.oriIsValid => ', this.oriIsValid);
     if (
       this.deadlineIsValid
       && this.livraisonIsValid
       && this.acceptationIsValid
       && this.premiereDiff
       && this.accesLabo
+      && (this.oriIsValid || this.newObject.RetourOri !== 3)
     ) {
       return true;
     } else {
@@ -190,7 +198,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       this.checkDeadline(newObject);
     } else if (newObject.Deadline === null) {
       this.newObject.Deadline = null;
-    } else if (this.selectionType === 'one' && newObject.Deadline === 'dd-mm-yyyy') {
+    } else if (newObject.Deadline === 'dd-mm-yyyy') {
       if ((this.newObject.isarchived === 0)) {
         let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
         // console.log('nullDate => --------------------------------------- ', nullDate);
@@ -259,7 +267,9 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       // console.log('newObject.ReceptionAccesLabo => ', newObject.ReceptionAccesLabo);
       // newObject.ReceptionAccesLabo = new Date(newObject.ReceptionAccesLabo.year, newObject.ReceptionAccesLabo.month - 1, newObject.ReceptionAccesLabo.day).toDateString();
     }
-    if (
+    if (this.newObject.RetourOri !== 3) {
+      newObject.DateRetourOri = null;
+    } else if (
       newObject.DateRetourOri !== null &&
       newObject.DateRetourOri !== this.valueNotToChangeLibelle &&
       newObject.DateRetourOri !== 'dd-mm-yyyy'
@@ -327,6 +337,9 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       }
       if (!this.accesLabo) {
         invalidDate.push('date d\'Accès labo');
+      }
+      if (!this.oriIsValid) {
+        invalidDate.push('date de retour ori');
       }
       if (invalidDate.length > 1) {
         swal({
@@ -619,7 +632,12 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         // this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
         // console.log('deadline error => ', this.changedValues['Deadline']);
       }
-      
+      if ((this.newObject.DateAcceptation === null || this.newObject.DateAcceptation === 'dd-mm-yyyy')) {
+        let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
+        // console.log('nullDate => --------------------------------------- ', nullDate);
+        // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+        this.changedValues['DateAcceptation'] = nullDate;
+      }
     }
     console.log('this.changedValues after deadline management =>', this.changedValues);
     for (let item in this.changedValues) {

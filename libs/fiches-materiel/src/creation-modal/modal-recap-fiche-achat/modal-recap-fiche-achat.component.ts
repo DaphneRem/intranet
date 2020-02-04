@@ -59,6 +59,7 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges, OnDestr
   public dataReady = false;
   public step = 1;
   public init = 1;
+  public faMajExist: boolean = false;
 
   constructor(
     private router: Router,
@@ -94,6 +95,7 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges, OnDestr
       .subscribe( data => {
         console.log('getFicheAchatDétail res => ', data);
         this.detailsFicheAchat = data;
+        this.checkFmImportForOeuvre();
         this.dataReady = true;
       });
   }
@@ -104,5 +106,18 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges, OnDestr
       .classList.remove('md-show');
     setTimeout(() => (this.step = 1), 500);
   }
+
+
+  checkFmImportForOeuvre() {
+    this.faMajExist = false;
+    // let importFmOeuvre = this.detailsFicheAchat.filter(item => item.Import_FM === 1);
+    // console.log('importFmOeuvre => ', importFmOeuvre);
+    // if (importFmOeuvre.length > 0) {
+    //   this.faMajExist = true;
+    // } else {
+    //   this.faMajExist = false;
+    // }
+  }
+
 
 }

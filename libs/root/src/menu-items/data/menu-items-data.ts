@@ -82,17 +82,20 @@ if (buildModeFichesMaterielApp < 1 && buildModeKplannerApp <= 1) {
                         {
                             state: 'suivi-fiches-materiel',
                             name: 'Suivi fiches Matériel',
-                            route: `${distUrl_Materiel}/material-sheets`
+                            route: `${distUrl_Materiel}/material-sheets`,
+                            needSpecificRights: ['fm-app'],
                         },
                         {
                             state: 'creation-fiches-materiel',
                             name: 'Création fiches Matériel',
-                            route: `${distUrl_Materiel}/creation`
+                            route: `${distUrl_Materiel}/creation`,
+                            needSpecificRights: ['fm-app', 'MODIFICATION'],
                         },
                         {
                             state: 'suivi-fiches-achat',
                             name: 'Suivi fiches Achat',
-                            route: `${distUrl_Materiel}/displaying-purchase-sheets`
+                            route: `${distUrl_Materiel}/displaying-purchase-sheets`,
+                            needSpecificRights: ['fm-app'],
                         }
                     ]
                 },
@@ -152,17 +155,20 @@ if (buildModeFichesMaterielApp < 1 && buildModeKplannerApp <= 1) {
                         {
                             state: 'suivi-fiches-materiel',
                             name: 'Suivi fiches Matériel',
-                            route: `${distUrl_Materiel}/material-sheets`
+                            route: `${distUrl_Materiel}/material-sheets`,
+                            needSpecificRights: ['fm-app'],
                         },
                         {
                             state: 'creation-fiches-materiel',
                             name: 'Création fiches Matériel',
-                            route: `${distUrl_Materiel}/creation`
+                            route: `${distUrl_Materiel}/creation`,
+                            needSpecificRights: ['fm-app', 'MODIFICATION'],
                         },
                         {
                             state: 'suivi-fiches-achat',
                             name: 'Suivi fiches Achat',
-                            route: `${distUrl_Materiel}/displaying-purchase-sheets`
+                            route: `${distUrl_Materiel}/displaying-purchase-sheets`,
+                            needSpecificRights: ['fm-app'],
                         }
                     ]
                 }

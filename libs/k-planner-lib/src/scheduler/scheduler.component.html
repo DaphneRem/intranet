@@ -37,17 +37,42 @@
                     <option value={{this.idCoordinateur}}>Mon planning</option>
                     <option *ngFor="let libelle of libGroupe" value={{libelle.Code}}>{{libelle.Libelle}} </option>
                 </select> -->
-                <ejs-dropdownlist  class =" mt-3 mr-3" #selectplan [dataSource]='libGroupe' (change)='onSelectPlannig(selectplan.value)' [value]='selectplan.value' [fields]='fieldsPlanning' [sortOrder]='sorting' [placeholder]='otherSchedule' [allowFiltering]='true' ></ejs-dropdownlist>
-                <input type="text" 
+                <ejs-dropdownlist  class =" mt-3 mr-3" #selectplan 
+                [dataSource]='libGroupe' 
+                (change)='onSelectPlannig(selectplan.value)' 
+                [value]='selectplan.value' [fields]='fieldsPlanning' 
+                [sortOrder]='sorting' 
+                [placeholder]='otherSchedule'
+                [allowFiltering]='true'
+                 ></ejs-dropdownlist>
+                <!-- <input type="text" 
                 id="searchregie"
                 class="form-control form-control-info  e-input recherche " 
                 placeholder="Rechercher une régie..." 
                 #search 
                 (keyup)="onFilterRegie(search.value,$event )" 
-                (mousedown)="Filter()" 
                 value=""
-                style="width: 15%" >
-                <table class="table-light table-sm " id="property" title="Properties" >
+                style="width: 15%" > -->
+                <div style="width: 15%"  class =" mt-3 mr-3" > 
+                <ejs-multiselect id='multiselect-checkbox' #checkbox 
+                [dataSource]='departmentGroupDataSource' 
+                [fields]='checkFields'
+                [mode]='CheckBox'  
+                [showDropDownIcon]='true'
+                [ignoreAccent]='true' 
+                (mousedown)="onChange($event)" 
+                [allowFiltering]='true'
+                locale="fr-CH"
+                (close)="onClose($event)"
+                (select)="onSelectMul($event)"
+                (filtering)="onFiltring($event)"
+                (removing)="onRemoveRegieList($event)"
+                [placeholder]='placeholderRegie'
+                (open)='onOpen($event)'
+                [enableGroupCheckBox]= 'true'
+                ></ejs-multiselect>
+            </div>
+                <table class="table-light table-sm " id="property" title="Properties"    >
                     <tbody>
                         <tr style="height: 40px">
                           
@@ -63,47 +88,39 @@
                             <td style="width: 5%">
                                 <div style="text-align:center" *ngIf="scheduleObj.currentView != 'TimelineMonth'  "> Intervalle <br> (Minutes)</div>          
                             </td>
-                            <td  style="width: 10%"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
+                            <td  style="width: 10%"  *ngIf="scheduleObj.currentView !='TimelineMonth'   ">
                                 <div style="width: 100%">
-                                    <ejs-dropdownlist   [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
-                                </div>
-                            </td>
-                          
-                            <td  style="width: 10%" *ngIf="scheduleObj.currentView =='TimelineDay'" class ="mr-2">
-                                <div style="width: 100%">
-                                    <ejs-dropdownlist class =" mt-2 ml-3"  [dataSource]='intervalData' [value]='intervalValueDay'  (change)='changeIntervalDay($event)' popupHeight="200px"></ejs-dropdownlist>
+                                    <ejs-dropdownlist  class =" mt-2 ml-3" [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
                                 </div>
                             </td>
                             <td  style="width: 30%" >
                          <ejs-dropdownlist class =" mt-2 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>        
                              </td>
-                            <!-- <td  style="width: 5%" >
-                                <div style="width:100%" > Heur de <br> Début
-                                </div>
-                            </td>
-                            <td style="width: 10%">
-                                <div style="width:100%" >
-                                    <ejs-timepicker #ejStartTimePicker id="startTime" [value]="startdate"   [cssClass]='customClass'   format='HH:mm'></ejs-timepicker>
-                                </div>
-                            </td >
-                            <td style="width: 5%">
-                                <div style="width:100%" >Heur de  <br>  Fin
-                                </div>
-                            </td>
-                            <td style="width:10%">
-                                <div style="width:100%"  >
-                                    <ejs-timepicker #ejEndTimePicker id="endTime" [value]="enddate"  format='HH:mm'  [cssClass]='customClass' (change)="onSubmit()"></ejs-timepicker>
-                                </div>
-                            </td> -->
-                            <!-- <td style="width: 70%;"  *ngIf="scheduleObj.currentView =='TimelineWeek'  ">
-                                <div>
-                                    <ejs-datepicker #datepicker [(value)]='selectedDate' [showClearButton]=false></ejs-datepicker>
-                                </div>
-                            </td> -->
+                        
+                            
                         </tr>
                      
                     </tbody>
                 </table>
+                <div  class="ml-3 mt-3 btn-modal">
+                              
+                    <i  ejs-button id='dlgbtn' #ButtonInstance (click)="BtnClick()"  class="icofont icofont-keyboard  btn-keyboard" ></i>
+                      <ejs-dialog #Dialog  
+                      [width]='width'
+                      [visible]='false' 
+                      [header]='header'
+                      [animationSettings]='animationSettings'  
+                      [showCloseIcon]='showCloseIcon' 
+                      (open)="dialogOpen()" 
+                      (close)="dialogClose()" 
+                       [target]='targetModal' 
+                      >
+                      <ng-template #content>
+                         <app-keyboard-shortcut></app-keyboard-shortcut>
+                      </ng-template>
+                  </ejs-dialog>
+                    
+                </div>
             </div>
       
             <div class="schedule" id="schedule">
@@ -114,6 +131,7 @@
                     (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
                     (popupClose) = "onPopupClose($event)"
+                   
                     cssClass='schedule-drag-drop' 
                     [group]="group" 
                     [currentView]="currentView" 
@@ -122,6 +140,7 @@
                     [eventSettings]="eventSettings" 
                     (actionBegin)="onActionBegin($event)" 
                     (actionComplete)="onActionComplete($event)"
+                    (actionFailure)="onActionFailure($event)"
                     (drag)="onItemDrag($event)"
                     (eventRendered)="onEventRendered($event)"
                     (renderCell)="onRenderCell($event)"
@@ -137,6 +156,7 @@
                     [rowAutoHeight]="rowAutoHeight"
                     [showHeaderBar]='true'
                     timezone="Europe/Paris"
+                    height ='100%'
                     >
                     <!-- (created)="onCreated($event)" -->
                     <!-- (renderCell)="onRenderCell($event)" -->
@@ -284,12 +304,44 @@
                                     Rafraichir
                                 </button>
                             </div>
-                            <div class="input-group">
-                                <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search  [(ngModel)]="search.value"  (keyup)="onFilter(search.value,0,$event)" value="{{this.searchString}}" >
-                                <!-- <span class="input-group-addon" id="basic-addon1"><i class="icofont icofont-search"></i></span> -->
+                            <div class="input-group" style="width: 500px" >
+                                <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search  [(ngModel)]="search.value"  (keyup)="onFilter(search.value,0,$event)" value="{{this.searchString}}" > -->
+                                <br> 
+                      <!-- <ejs-multiselect #workOrderBacklog 
+                      id="workOrderBacklog" 
+                      [dataSource]="workOrderData" 
+                      [fields]="workOrderBacklogFields" 
+                      [showDropDownIcon]='true' 
+                      showSelectAll='false'
+                      floatLabelType='Auto' 
+                      [enableGroupCheckBox]= 'true'
+                      [mode]='CheckBox'  
+                      width=' 200px'
+                      (select)="onSelectWorkOrder($event)"
+                      (open)='onOpenWorkOrderList($event)'
+                      (filtering)="onFiltringWorkorderBacklog($event)"
+                      (close)="onCloseWorkOrderList($event)"
+                      (mousedown) = "onChangeWorkorder($event)"
+                      (removing) = "onremovingWorkorderBacklog($event)"
+                       > 
+                    </ejs-multiselect>  -->
+                                  
+                             
+                            
                             </div>
                             <div class="treeview">
-                         
+                                <ejs-tooltip #tooltip 
+                                 target="#treeEvents"  
+                                 [content]='tooltipContent' 
+                                 (mouseover)="onBeforeRender($event)" 
+                                 (beforeRender)="onBeforeOpen($event)"
+                                 [showTipPointer]='true'
+                                 [mouseTrail]='true'
+                                 [width]='180'
+                                 [offsetX]='10'
+                                 [offsetY]='10'
+                                 cssClass='tooltip-treeview'
+                             >
                             <ejs-treeview 
                                 #treeObj 
                                 id="treeEvents"
@@ -308,7 +360,7 @@
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""
                                 >
                                     <div id="waiting" class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
-                                        <div id="waitdetails"   >
+                                        <div id="dataWorkOrder.Id"   >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
                                             <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}} 
@@ -318,13 +370,16 @@
                                 </ng-template>
                              
                             </ejs-treeview>
-                            <!-- <ejs-contextmenu
+                       
+                        </ejs-tooltip>
+
+                            <ejs-contextmenu
                             id='contentmenutree'
                              target='#treeEvents'
                               [items]='menuItems' 
-                              (beforeOpen)='beforeopen($event)' 
-                              (select)='menuclick($event)'>
-                            </ejs-contextmenu> -->
+                              (beforeOpen)='beforeopen($event,0)' 
+                              (select)='menuclick($event,0)'>
+                            </ejs-contextmenu>
                         </div>
 
                    
@@ -381,8 +436,8 @@
                         id='contentmenutree'
                          target='#treeMonteur'
                           [items]='menuItems' 
-                          (beforeOpen)='beforeopen($event)' 
-                          (select)='menuclick($event)'>
+                          (beforeOpen)='beforeopen($event,1)' 
+                          (select)='menuclick($event,1)'>
                         </ejs-contextmenu>
                         </div>
                     </ng-template>

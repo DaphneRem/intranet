@@ -18,7 +18,7 @@
           </div>
         </ng-template>
         <ng-template ngbPanelContent>
-           {{item.Commentaires === null || item.commentaires === '' ? 'Aucun commentaire' : item.Commentaires}}
+           <pre>{{item.Commentaires === null || item.commentaires === '' ? 'Aucun commentaire' : item.Commentaires}}</pre>
         </ng-template>
       </ngb-panel>
     </ngb-accordion>

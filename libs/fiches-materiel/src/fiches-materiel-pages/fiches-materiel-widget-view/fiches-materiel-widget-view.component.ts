@@ -41,7 +41,7 @@ export class FichesMaterielWidgetViewComponent implements OnInit {
       title: 'Toutes mes Fiches Matériel',
       icon: 'icofont icofont-document-folder',
       size: 'col-md-12 col-lg-6 ',
-      link: './my-material-sheets/all',
+      link: './my-material-sheets-all',
       color: allMyFmColor
     },
     {

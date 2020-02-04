@@ -51,6 +51,12 @@ const httpOptions = {
 export class FichesMaterielService {
   constructor(private http: HttpClient) {}
 
+  private extractData(res: Response) {
+    let body = res;
+    console.log('res api request fiches materiel => ', body);
+    return body || [];
+  }
+
   /* GET ONE FICHE MATERIEL BY ID */
   getOneFicheMateriel(id: number): Observable<FicheMateriel> {
     return this.http
@@ -214,21 +220,42 @@ export class FichesMaterielService {
       .pipe(catchError(this.handleError));
   }
 
+  /* POST FICHES MATERIEL WITH OBSERVABLE */
+//  postFicheMateriel(ficheMateriel: FicheMaterielCreation): Observable<FicheMaterielCreation> {
+//    return this.http
+//      .post<FicheMaterielCreation>(
+//        urlFicheMateriel + urlAllFichesMateriel,
+//        ficheMateriel
+//      )
+//      .pipe(catchError(this.handleError));
+//  }
 
-  /* POST FICHES MATERIEL */
-  postFicheMateriel(ficheMateriel: FicheMaterielCreation): Observable<FicheMaterielCreation> {
+  /* POST FICHES MATERIEL WITH PROMISE */
+  postFicheMateriel(ficheMateriel) {
     return this.http
-      .post<FicheMaterielCreation>(
-        urlFicheMateriel + urlAllFichesMateriel,
-        ficheMateriel
+      .post(
+      urlFicheMateriel + urlAllFichesMateriel,
+      ficheMateriel
       )
-      .pipe(catchError(this.handleError));
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleErrorForPromise);
   }
 
-  deleteFicheMaterielByFicheAchatDetail(id: number): Observable<{}> {
+  /* DELETE FICHES MATERIEL WITH OBSERVABLE */
+//  deleteFicheMaterielByFicheAchatDetail(id: number): Observable<{}> {
+//    return this.http
+//      .delete(urlFicheMateriel + urlFicheMaterielByFicheAchatDetail + id)
+//      .pipe(catchError(this.handleError));
+//  }
+
+  /* DELETE FICHES MATERIEL WITH PROMISE */
+  deleteFicheMaterielByFicheAchatDetail(id: number) {
     return this.http
       .delete(urlFicheMateriel + urlFicheMaterielByFicheAchatDetail + id)
-      .pipe(catchError(this.handleError));
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleErrorForPromise);
   }
 
   /* PUT FICHES MATERIEL */
@@ -264,5 +291,10 @@ export class FichesMaterielService {
     return new ErrorObservable(
       'Something bad happened; please try again later.'
     );
+  }
+
+  private handleErrorForPromise(error: any): Promise<any> {
+    console.error('An error occurred', error);
+    return Promise.reject(error.message || error);
   }
 }

@@ -47,9 +47,7 @@ export class NewFicheMateriel {
                 DateCreation: DateCreation,
                 UserCreation: UserCreation,
                 SuiviPar: SuiviPar,
-                RetourOri: RetourOri,
-                DateDebutDroit: DateDebutDroit,
-                DateFinDroit: DateFinDroit
+                RetourOri: RetourOri
             }
         ) {
             this.IdFicheAchat = IdFicheAchat,
@@ -66,8 +64,6 @@ export class NewFicheMateriel {
             this.UserCreation = UserCreation,
             this.SuiviPar = SuiviPar,
             this.RetourOri = RetourOri,
-            this.DateDebutDroit = DateDebutDroit,
-            this.DateFinDroit = DateFinDroit,
 
             // this.SuiviPar = 'User1', // par défaut : moi
             this.IdLibstatut = 1, // par défaut : 'en cours' (1)
@@ -87,5 +83,7 @@ export class NewFicheMateriel {
             this.UserModification = '', // par défaut : ''
             this.DateModification = null;
             this.isarchived = 0;
+            this.DateDebutDroit = null;
+            this.DateFinDroit = null;
         }
 }

@@ -1,11 +1,17 @@
 <p *ngIf="detailsFicheAchat === null"> Aucune oeuvre n'a été trouvée</p>
-<p *ngIf="detailsFicheAchat" class="nbr-oeuvre">Nombre d'oeuvres : {{detailsFicheAchat.length}}</p>
+<p *ngIf="detailsFicheAchat" class="nbr-oeuvre">Nombre d'oeuvres : {{detailsFicheAchat.length}}
+  <span *ngIf="faMajExist" class="fa-maj-exist-warning">La fiche Achat a été mise à jour.</span>
+</p>
 <div *ngIf="detailsFicheAchat" class="scroll-content" [ngClass]="(detailsFicheAchat.length > 4) ? 'scroll' : ''">
   <div *ngFor="let oeuvre of detailsFicheAchat" class="oeuvre">
     <div class="title">
-      <div class="number">{{detailsFicheAchat.indexOf(oeuvre) + 1}}</div>
+      <!-- <div [ngClass]="oeuvre.Import_FM === 1 ? 'warning-number' : 'number'"> -->
+      <div class="number">
+        <span class="oeuvre-number">{{detailsFicheAchat.indexOf(oeuvre) + 1}}</span>
+      </div>
       <h4>{{oeuvre.titre_vf}}</h4>
     </div>
+    <!-- <div *ngIf="oeuvre.Import_FM !== 1" class="details"> -->
     <div class="details">
       <p class="oeuvre-details">Titre oeuvre VO : {{oeuvre.titre_vo}}</p>
       <p class="oeuvre-details">Nombre d'épisodes : 
@@ -14,6 +20,9 @@
         <span *ngIf="oeuvre.nombre_episodes === 0">1 (renseigné à 0 dans la fiche Achat)</span>
       </p>
     </div>
+    <!-- <div *ngIf="oeuvre.Import_FM === 1" class="details">
+      <p class="oeuvre-details">Les fiches Matériels ont déjà été crées pour cette oeuvre.</p>
+    </div> -->
   </div>
 </div>
 <button *ngIf="detailsFicheAchat" (click)="goToNextStep()" class="creation-btn btn btn-info md-close">Créer les fiches Matériel</button>

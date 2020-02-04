@@ -8,10 +8,20 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
-import { UserAppRights } from './user-app-rights';
+import { UsersInAppRights } from './users-in-app-rights';
+import { UserInAppRights } from './user-in-app-rights';
 
 // temporary imports :
-import { fmRightsUsersUrl } from '../../../../../.privates-url';
+import {
+    authUrlUser, // '/utilisateur/Info/'
+    authUrlUserRights, // '/utilisateur/Droit/'
+    authUrlByUserForApp1, // '/Module/'
+    authUrlByUserForApp2, // '/utilisateur/'
+    rightsForApp, // '/ApplicationWeb/fichemateriel'
+    fmRightsUsersUrl, // '/ApplicationWeb/fichemateriel/DroitUser'
+    fmRightsUsersEmailUrl // '/ApplicationWeb/fichemateriel/Utilisateurs'
+} from '../../../../../.privates-url';
+import { resAirlinesData } from '@ab/k-planner-lib/src/datasource';
 
 const httpOptions = {
     headers: new HttpHeaders({
@@ -20,16 +30,26 @@ const httpOptions = {
 };
 
 @Injectable()
-export class UserAppRightsService {
+export class AppRightsService {
     constructor(private http: HttpClient) { }
 
-    getRightsUserFm(): Observable<UserAppRights[]> {
+    getRightsUserFm(): Observable<UsersInAppRights[]> { // '/ApplicationWeb/fichemateriel/DroitUser'
         return this.http
             .get(fmRightsUsersUrl)
             .map((res: any) => {
                 console.log('fmRightsUsersUrl => ', fmRightsUsersUrl);
                 console.log('all users rights for app fichemateriel => ', res);
-                return res as UserAppRights[];
+                return res as UsersInAppRights[];
+            });
+    }
+
+    getRightsByAppAndUser(appName, userEmail) { // '/ApplicationWeb/fichemateriel/DroitUser'
+        let url = authUrlByUserForApp1 + appName + authUrlByUserForApp2 + userEmail;
+        return this.http
+            .get(url)
+            .map((res: any) => {
+                console.log('rights for user in app => ', res);
+                return res;
             });
     }
 

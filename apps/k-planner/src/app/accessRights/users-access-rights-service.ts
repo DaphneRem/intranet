@@ -10,15 +10,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 import { UserAccessRights } from './access-rights-model';
-import { urlAccessRightsKP } from '.privates-url';
+import { urlAccessRightsKP, urlModule, urlUtilisateur } from '.privates-url';
 
 @Injectable()
 export class UserAccessRightsService {
     constructor(private http: HttpClient) { }
 
-    getAccessRightsUser(): Observable<UserAccessRights[]> {
+    getAccessRightsUser(codeModule , login): Observable<UserAccessRights[]> {
         return this.http
-            .get(urlAccessRightsKP)
+            .get(urlModule + codeModule +urlUtilisateur +login )
             .map((res: any) => {
    
                 console.log(res);

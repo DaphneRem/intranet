@@ -32,6 +32,12 @@ import { identifierModuleUrl } from '@angular/compiler';
 export class FichesAchatService {
   constructor(private http: HttpClient) {}
 
+  private extractData(res: Response) {
+    let body = res;
+    console.log('res api request fiches achat => ', body);
+    return body || [];
+  }
+
   getFichesAchat(days: number): Observable<FicheAchat[]> {
     return this.http
       .get(urlFicheAchat + urlFicheAchatTraitee)
@@ -103,25 +109,49 @@ export class FichesAchatService {
       .catch(this.handleError);
   }
 
-  /* PUT FICHE ACHAT DETAIL */
+  /* PUT FICHE ACHAT DETAIL WITH PROMISE */
   putFicheAchatDetail(id: number, ficheAchatDetail: FicheAchatDetails) {
     return this.http
       .put(
         urlFicheAchat + urlFicheAchatDetail + id,
         ficheAchatDetail
       )
-      .pipe(catchError(this.handleError));
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleErrorForPromise);
   }
 
-  /* PUT FICHE ACHAT GLOBAL */
+  /* PUT FICHE ACHAT DETAIL WITH OBSERVABLE */
+//  putFicheAchatDetail(id: number, ficheAchatDetail: FicheAchatDetails) {
+//    return this.http
+//      .put(
+//      urlFicheAchat + urlFicheAchatDetail + id,
+//      ficheAchatDetail
+//      )
+//      .pipe(catchError(this.handleError));
+//  }
+
+  /* PUT FICHE ACHAT GLOBAL WITH PROMISE */
   putFicheAchatGlobal(id: number, ficheAchat: FicheAchat) {
     return this.http
       .put(
         urlFicheAchat + urlFicheAchatGlobalPut + id,
         ficheAchat
       )
-      .pipe(catchError(this.handleError));
+      .toPromise()
+      .then(this.extractData)
+      .catch(this.handleErrorForPromise);
   }
+
+  /* PUT FICHE ACHAT GLOBAL WHIT OBSERVABLE */
+//  putFicheAchatGlobal(id: number, ficheAchat: FicheAchat) {
+//    return this.http
+//      .put(
+//      urlFicheAchat + urlFicheAchatGlobalPut + id,
+//      ficheAchat
+//      )
+//      .pipe(catchError(this.handleError));
+//  }
 
   /* PATCH FICHE ACHAT GLOBAL */
   patchMaterielImportFicheAchatGlobal(id: number | string, value: number, ficheAchat: FicheAchat) {
@@ -164,4 +194,10 @@ export class FichesAchatService {
       'Something bad happened; please try again later.'
     );
   }
+
+  private handleErrorForPromise(error: any): Promise<any> {
+    console.error('An error occurred', error);
+    return Promise.reject(error.message || error);
+  }
+
 }
