@@ -53,7 +53,7 @@ export class AuthService {
         //  this.alertsService.add('Get token failed', JSON.stringify(reason, null, 2));
         console.log('Get token failed', JSON.stringify(reason, null, 2));
       });
-
+    console.log('auth ok');
     return result;
   }
 

@@ -126,6 +126,7 @@ export class MyFichesMaterielComponent implements OnInit, OnDestroy {
 
 
   displayReloadOriginalData(event: boolean) {
+    console.log('displayReloadOriginalData CALL');
     this.reloadOriginalData = event;
     this.dataReady = false;
     this.getFichesMaterielByIntervalCreationSuiviParIsArchived(this.daysNumber, this.user, this.isArchived);

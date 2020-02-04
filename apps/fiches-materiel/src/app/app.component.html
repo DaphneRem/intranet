@@ -4,7 +4,10 @@
   [logo]="logo"
   [user]="user"
   (logOutEvent)="logout($event)"
-  (headerNav)="checkHeaderNav($event)">
+  (headerNav)="checkHeaderNav($event)"
+  [userSpecifiRights]="userSpecifiRights"
+  [specificRightsExist]="specificRightsExist"
+  >
 </root-header>
 <div 
     class="pcoded-main-container app" 

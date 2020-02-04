@@ -90,15 +90,14 @@
             </a>
             <ul class="pcoded-submenu">
               <ng-template ngFor let-asideChildren [ngForOf]="asideItem.children">
-                <li [ngSwitch]="localMode" [ngClass]="linkActiveTest(asideChildren.route)" [routerLinkActive]="['active']" *ngIf="asideChildren.type !== 'sub'">
-
-                    <a *ngSwitchCase="false"
+                <li [ngClass]="linkActiveTest(asideChildren.route)" [routerLinkActive]="['active']" *ngIf="asideChildren.type !== 'sub'">
+                    <a *ngIf="!localMode && displayItemIfSpecificRights(asideChildren)"
                     [href]="asideChildren.route"
                     target="{{asideChildren.target ? '_blank' : '_self'}}">
                         <span class="pcoded-micon">
                             <i class="icon-angle-right"></i>
                           </span>
-                          <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
+                          <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }}</span>
                           <span
                             *ngIf="asideChildren.tooltipText"
                             class="pcoded-mtext"
@@ -115,13 +114,13 @@
                           <span class="pcoded-mcaret"></span>
                         </a>
 
-                    <a *ngSwitchCase="true"
+                    <a *ngIf="localMode && displayItemIfSpecificRights(asideChildren)"
                     [routerLink]="asideChildren.route" [routerLinkActive]="'is-active'" target="{{asideChildren.target ? '_blank' : '_self'}}">
 
                         <span class="pcoded-micon">
                           <i class="icon-angle-right"></i>
                         </span>
-                        <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }} </span>
+                        <span *ngIf="!asideChildren.tooltipText" class="pcoded-mtext">{{ asideChildren.name }}</span>
                         <span
                           *ngIf="asideChildren.tooltipText"
                           class="pcoded-mtext"

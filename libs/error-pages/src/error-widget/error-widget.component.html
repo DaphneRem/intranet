@@ -16,5 +16,13 @@
         <h6 class="message">Désolé, il semble que vous n'êtes pas autorisé à consulter cette page </h6>
         <button (click)="goBack()" class="btn btn-round btn-warning">Retour</button>
       </div>
+      <div *ngIf="error === '403-app'" class="card-block text-center">
+        <h3 class="text-warning">Oups...</h3>
+        <h1 class="text-warning title">
+          4<i class="icofont icofont-ban access-denied-app"></i>3
+        </h1>
+        <h6 class="message">Désolé, il semblerait que vous n'ayez pas les droits requis pour accéder à cette application</h6>
+        <button (click)="goBack()" class="btn btn-round btn-warning">Retour</button>
+      </div>
   </div>
 </div>

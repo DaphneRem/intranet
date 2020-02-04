@@ -5,7 +5,16 @@ export const appInitialState: App = {
   user : {
     username: '',
     name: '',
-    shortUserName: ''
+    shortUserName: '',
+    rights: {
+      modification: '',
+      consultation: '',
+      presse: ''
+    }
+  },
+  appInfo: {
+    name: '',
+    code: 0
   }
 };
 

@@ -308,15 +308,36 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
         Vérifiez que ces conditions soient remplies et réessayez.`,
       confirmButtonColor: 'rgb(23, 170, 178)',
     }).then((result) => {
-      this.onStatusChange(this.previousValueStatus);
-      this.init = -1;
-      this.addCommentStepStatus = false;
-      this.openWarningSwalModal = false;
-      this.previousValueStep = undefined;
-      this.previousValueStatus = undefined;
+      if (this.changeStatus) {
+        console.log('event send is status');
+        this.backToOldStepStatus.emit('status');
+        this.init = 0;
+      } else if (!this.changeStatus && this.changeStep) {
+        console.log('event send is step');
+        this.backToOldStepStatus.emit('step');
+        if (this.lastChangeIsStep) {
+          console.log('last change is step => ', this.lastChangeIsStep);
+          this.init = 0;
+        } else {
+          console.log('last change is !step => ', this.lastChangeIsStep);
+          this.init = 0;
+        }
+      }
+      console.log('last change is step ===> ', this.lastChangeIsStep);
+      // let resetComment = '';
+      // this.onCommentChange(resetComment);
+      // swal.close();
       this.changeStatus = false;
       this.changeStep = false;
+      // this.onStatusChange(this.previousValueStatus);
       // this.init = 0;
+      // this.addCommentStepStatus = false;
+      // this.openWarningSwalModal = false;
+      // this.previousValueStep = undefined;
+      // this.previousValueStatus = undefined;
+      // this.changeStatus = false;
+      // this.changeStep = false;
+      // // this.init = 0;
     });
   }
 

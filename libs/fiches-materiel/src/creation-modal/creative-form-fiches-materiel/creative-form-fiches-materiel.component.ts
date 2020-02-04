@@ -68,7 +68,9 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
 
   /******* Init default oeuvre Model ********/
   initDefaultModels() {
-    this.oeuvreWithGaps = this.detailsFicheAchat.map(oeuvre => { 
+    // let oeuvreToImportFm = this.detailsFicheAchat.filter(item => (item.Import_FM === null || item.Import_FM === null));
+    let oeuvreToImportFm = this.detailsFicheAchat;
+    this.oeuvreWithGaps = oeuvreToImportFm.map(oeuvre => {
       return {
         id_fiche: oeuvre.id_fiche,
         id_fiche_det: oeuvre.id_fiche_det,
@@ -430,7 +432,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
         });
       } else {
         swal({
-          text: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+          text: this.errorMessage,
           showCancelButton: false,
           type: 'error',
           confirmButtonText: 'Fermer',
@@ -446,11 +448,8 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
 
   public errorMessage;
   displayErrorInfoFmCreation(event) {
-    let errorFm = event;
-    let errorMsg;
-//    for (let i = 0; i < errorFm.length; i++) {
-//      let errorMsg += 'La ficheMatériel n°' 
-//    }
+    this.errorMessage = event;
+    console.log('displayErrorInfoFmCreation => ', event);
   }
   /***** Close modal creation-details *****/
   closeMyModal(event) {

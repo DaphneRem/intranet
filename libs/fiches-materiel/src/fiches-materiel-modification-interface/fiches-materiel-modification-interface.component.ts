@@ -25,6 +25,7 @@ import { QualiteService } from '../services/qualite.service';
 import { VersionService } from '../services/version.service';
 import { RetourOriLibService } from '../services/retour-ori-lib.service';
 import { NgbDateCustomParserFormatter } from '../services/custom-parser-formatter-datepiker';
+import { AppRightsService } from '../../../../apps/fiches-materiel/src/app/rights-app/app-rights.service';
 
 // models imports
 import { FicheMateriel } from '../models/fiche-materiel';
@@ -40,6 +41,8 @@ import {
   AnnexElementFicheMAteriel
 } from '../models/annex-element';
 import { AnnexElementCommentsFicheMAteriel } from '../models/annex-elements-comments';
+import { UsersInAppRights } from '../../../../apps/fiches-materiel/src/app/rights-app/users-in-app-rights';
+
 import { CustomDatepickerI18n, I18n } from '../services/custom-datepicker-i18n';
 
 // import { browserRefresh } from '../../../../apps/fiches-materiel/src/app/app.component';
@@ -55,6 +58,7 @@ import { NewObject, objectNoChanged } from './fiche-materiel-new-object';
     '../../../../assets/icon/icofont/css/icofont.scss'
   ],
   providers: [
+    AppRightsService,
     AnnexElementsService,
     FichesAchatService,
     FichesMaterielService,
@@ -184,10 +188,13 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public multiOeuvre: boolean;
   public premiereDiff: Boolean = true;
   public accesLabo: Boolean = true;
-  public ori: Boolean = true;
+  public oriIsValid: Boolean = true;
   public newObject: NewObject;
+  public allUsersRightsInApp: UsersInAppRights[];
+
 
   constructor(
+    private appRightsService: AppRightsService,
     private annexElementsService: AnnexElementsService,
     private fichesAchatService: FichesAchatService,
     private fichesMaterielService: FichesMaterielService,
@@ -364,6 +371,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.getQualiteLib();
     this.getVersionLib();
     this.getAnnexElementsCategories();
+    this.getAllUsersRightsForApp();
     // this.getAnnexElementsAllSubCategories();
   }
 
@@ -417,6 +425,32 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.versionLib = data;
         // console.log('this.versionLib => ', this.versionLib);
       });
+  }
+
+  public changeUserPossible: boolean;
+  public listModificationRightUsers = [];
+  getAllUsersRightsForApp() {
+    this.appRightsService
+      .getRightsUserFm()
+      .subscribe(data => {
+        if (data.length > 0) {
+          this.allUsersRightsInApp = data;
+          this.changeUserPossible = true;
+          this.allUsersRightsInApp.map(item => {
+            if (item.Modules[0].ListeRight.MODIFICATION) {
+              this.listModificationRightUsers.push(item.UserName);
+            }
+          });
+          console.log('all users rights in app => ', data);
+          console.log('this.listModificationRightUsers => ', this.listModificationRightUsers);
+        }
+      }, error => {
+        this.changeUserPossible = false;
+      });
+  }
+
+  displayOthersUsersWithModificationRight(suiviPar) {
+    return this.listModificationRightUsers.filter(item => item !== suiviPar);
   }
 
   /*************************************************************************************************************/
@@ -957,9 +991,12 @@ public firtsClickStep = true;
       console.log('dateDiff this.warningDateDiffExist => ', this.warningDateDiffExist);
     }
   }
-
+  onDateSelect(event, date) {
+    console.log('modelChanged, event => ', event, date);
+  } 
   displayValidDate(date, type) {
     // console.log(this.selectionType);
+    console.log('displayValidDate => ', date, type);
     if (type === 'deadline') {
       this.deadlineIsValid = this.checkValidDate(date);
       this.displayWarningDeadline(date);
@@ -969,10 +1006,11 @@ public firtsClickStep = true;
       this.acceptationIsValid = this.checkValidDate(date);
     } else if (type === 'diff') {
       this.premiereDiff = this.checkValidDate(date);
+      this.displayWarningDateDiff(date);
     } else if (type === 'labo') {
       this.accesLabo = this.checkValidDate(date);
     } else if (type === 'ori') {
-      this.ori = this.checkValidDate(date);
+      this.oriIsValid = this.checkValidDate(date);
     }
   }
 
@@ -981,13 +1019,16 @@ public firtsClickStep = true;
   changeDateFormat(originalDate) {
     let defaultFormat = 'dd-mm-yyyy';
     if (this.selectionType === 'one') {
+      console.log('DateRetourOri => ', this.newObject.DateRetourOri);
       if (
         this.newObject.DateRetourOri !== undefined &&
         this.newObject.DateRetourOri !== null
       ) {
         // DATE RETOUR ORI
+        console.log('A');
         this.newObject.DateRetourOri = this.changeToNgFormatDate(this.newObject.DateRetourOri);
       } else {
+        console.log('B');
         this.newObject.DateRetourOri = defaultFormat;
       }
       if (

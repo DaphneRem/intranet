@@ -96,6 +96,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   @Input() authentication?: boolean;
   @Input() user?: any;
 
+  @Input() userSpecifiRights?: any;
+  @Input() specificRightsExist?: boolean;
+
   @Output() headerNav: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() logOutEvent: EventEmitter<any> = new EventEmitter();
 
