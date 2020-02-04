@@ -678,6 +678,7 @@
           <i class="icofont icofont-law section-icon"></i>
 
           <p class="deb-droits">Date déb droits :
+            <!-- <span>{{newObject.DateDebutDroit | date}}</span> -->
             <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.debut_des_droits">/</span>
           </p>
@@ -687,10 +688,10 @@
           </p> -->
           <p *ngIf="ficheAchatDetail.duree_droits_annee">Fin des droits : {{ficheAchatDetail.duree_droits_annee}} an(s)</p>
           <p *ngIf="ficheAchatDetail.duree_droits_mois">Fin des droits : {{ficheAchatDetail.duree_droits_mois}} mois</p>
-          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois">Fin des droits :
+          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && ficheAchatDetail.expiration_droits">Expiration droits : {{ficheAchatDetail.expiration_droits | json}}</p>
+          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && !ficheAchatDetail.expiration_droits">Fin des droits :
             <span class="empty-field">/</span>
           </p>
-
         </div>
 
 
