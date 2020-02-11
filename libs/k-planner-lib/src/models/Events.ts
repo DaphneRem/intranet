@@ -1,4 +1,4 @@
-export class EventModel{
+export class EventModel {
 
     Id: number; // Id_Planning_Container
     Name: string; // Titre
@@ -9,33 +9,35 @@ export class EventModel{
     Operateur?: string;
     CodeRessourceSalle: number;
     Description?: string;
-    Container:Boolean;
-    numGroup:number; // Id_Planning_Container
+    Container: Boolean;
+    numGroup: number; // Id_Planning_Container
     AzaIsPere?: boolean;
     AzaNumGroupe?: number;
     DepartmentID?: number;
     DepartmentName?: string;
-   ConsultantID: number;
-   IsAllDay: boolean;
-   libchaine:string;
-   typetravail?:string;
-   titreoeuvre?:string;
-   numepisode?:number;
-   dureecommerciale?:string;
-   libtypeWO?: string;
-   Commentaire_Planning?: string;
-   Id_Planning_Container?:number;
-   IdGenerationWO:number;
-   isTempsReel?:number;
-   IsReadonly? : boolean;
-   Id_Planning_Events_TempsReel?:number;
-   DateDebutTheo?:Date;
-   DateFinTheo?:Date;
-   titreepisode:string;
-   DateDebutReel?:Date;
-   DateFinReel?:Date;
-   libelleStatut?:string;
-   CodeRessourceCoordinateur:number
+    ConsultantID: number;
+    IsAllDay: boolean;
+    libchaine: string;
+    typetravail?: string;
+    titreoeuvre?: string;
+    numepisode?: number;
+    dureecommerciale?: string;
+    libtypeWO?: string;
+    Commentaire_Planning?: string;
+    Id_Planning_Container?: number;
+    IdGenerationWO: number;
+    isTempsReel?: number;
+    IsReadonly?: boolean;
+    Id_Planning_Events_TempsReel?: number;
+    DateDebutTheo?: Date;
+    DateFinTheo?: Date;
+    titreepisode: string;
+    DateDebutReel?: Date;
+    DateFinReel?: Date;
+    libelleStatut?: string;
+    CodeRessourceCoordinateur: number;
+    CodeRessourceOperateur: number;
+    Commentaire?: string;
 }
 
     // Id: number;
