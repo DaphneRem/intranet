@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public userIsReady = false;
   public rightsAreReady = true ;
   public currentCoordinateur: Coordinateur;
-  public authUser = false
+  public authUser = true
   ngOnInit() {
     if (!this.authService.authenticated) {
       console.log(this.authService.authenticated,"this.authService.authenticated")
@@ -96,8 +96,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.appStore);
 
     this.compiler.clearCache();
-    this.store.subscribe(data => (this.globalStore = data));
+    this.store.subscribe(data => (this.globalStore = data)
+   
+    );
     this.navbarState = this.globalStore.navbar.open;
+
+    console.log(this.navbarState)
+    console.log(this.globalStore.navbar)
     this.checkHeader(this.navbarState);
 
   }

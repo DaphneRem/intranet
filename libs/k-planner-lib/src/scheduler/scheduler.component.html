@@ -40,7 +40,8 @@
                 <ejs-dropdownlist  class =" mt-3 mr-3" #selectplan 
                 [dataSource]='libGroupe' 
                 (change)='onSelectPlannig(selectplan.value)' 
-                [value]='selectplan.value' [fields]='fieldsPlanning' 
+                [value]='selectplan.value' 
+                [fields]='fieldsPlanning' 
                 [sortOrder]='sorting' 
                 [placeholder]='otherSchedule'
                 [allowFiltering]='true'
@@ -55,7 +56,7 @@
                 style="width: 15%" > -->
                 <div style="width: 15%"  class =" mt-3 mr-3" > 
                 <ejs-multiselect id='multiselect-checkbox' #checkbox 
-                [dataSource]='departmentGroupDataSource' 
+                [dataSource]='listeRegies' 
                 [fields]='checkFields'
                 [mode]='CheckBox'  
                 [showDropDownIcon]='true'
@@ -70,6 +71,7 @@
                 [placeholder]='placeholderRegie'
                 (open)='onOpen($event)'
                 [enableGroupCheckBox]= 'true'
+                popupHeight='700px'
                 ></ejs-multiselect>
             </div>
                 <table class="table-light table-sm " id="property" title="Properties"    >
@@ -104,7 +106,7 @@
                 </table>
                 <div  class="ml-3 mt-3 btn-modal">
                               
-                    <i  ejs-button id='dlgbtn' #ButtonInstance (click)="BtnClick()"  class="icofont icofont-keyboard  btn-keyboard" ></i>
+                    <i  ejs-button id='dlgbtn' #ButtonInstance (click)="BtnClick()" title="Liste des raccourcis Clavier"  class="icofont icofont-keyboard  btn-keyboard" ></i>
                       <ejs-dialog #Dialog  
                       [width]='width'
                       [visible]='false' 
@@ -170,7 +172,8 @@
                             idField='Id' 
                             colorField='Color' 
                             groupIDField="Id" 
-                            [allowMultiple]='allowMultiple'>
+                            [allowMultiple]='allowMultiple'
+                            >
                         </e-resource>
                     </e-resources>                
                     <!-- <ng-template #resourceHeaderTemplate let-data>
@@ -191,7 +194,7 @@
                                     <div>
                                         <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                             <!-- <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div> -->
-                                            <u class="e-inner-wrap" id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
+                                            <u class="e-inner-wrap"  id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
                                             <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                             <div *ngIf="data.Operateur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
@@ -305,7 +308,7 @@
                                 </button>
                             </div>
                             <div class="input-group" style="width: 500px" >
-                                <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search  [(ngModel)]="search.value"  (keyup)="onFilter(search.value,0,$event)" value="{{this.searchString}}" > -->
+                                <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search  [(ngModel)]="search.value"  (keyup)="onFilter(search.value,0,$event)" value="{{this.searchString}}" > 
                                 <br> 
                       <!-- <ejs-multiselect #workOrderBacklog 
                       id="workOrderBacklog" 
@@ -330,18 +333,21 @@
                             
                             </div>
                             <div class="treeview">
-                                <ejs-tooltip #tooltip 
-                                 target="#treeEvents"  
+                                <!-- <ejs-tooltip #tooltip 
+                                 target="#waitcategory"  
                                  [content]='tooltipContent' 
                                  (mouseover)="onBeforeRender($event)" 
-                                 (beforeRender)="onBeforeOpen($event)"
+                                 
                                  [showTipPointer]='true'
                                  [mouseTrail]='true'
                                  [width]='180'
                                  [offsetX]='10'
                                  [offsetY]='10'
+                                 [closeDelay]="100"
                                  cssClass='tooltip-treeview'
-                             >
+                                
+                                 [isSticky]='true'
+                             > -->
                             <ejs-treeview 
                                 #treeObj 
                                 id="treeEvents"
@@ -356,13 +362,14 @@
                                 (nodeExpanding)="onTreeExpanding($event)"
                                 (nodeDragging)="onItemDrag($event, 0)"                        
                                 [enablePersistence]="false"
+                                (nodeClicked)="onNodeClicked($event)" 
+                                
                                >
-                                <ng-template #nodeTemplate="" let-dataWorkOrder=""
-                                >
-                                    <div id="waiting" class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
-                                        <div id="dataWorkOrder.Id"   >
+                                <ng-template #nodeTemplate="" let-dataWorkOrder=""   id="treeEvents-template">
+                                    <div id="waiting"   class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
+                                        <div id="dataWorkOrder.Id"     >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
-                                            <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.typetravail}} - {{dataWorkOrder.libtypeWO}} <br>
+                                            <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.libtypeWO}} - {{dataWorkOrder.typetravail}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}} 
                                             </div>
                                         </div>
@@ -371,7 +378,7 @@
                              
                             </ejs-treeview>
                        
-                        </ejs-tooltip>
+                        <!-- </ejs-tooltip> -->
 
                             <ejs-contextmenu
                             id='contentmenutree'
