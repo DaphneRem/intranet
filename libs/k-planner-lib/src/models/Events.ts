@@ -1,4 +1,4 @@
-export class EventModel {
+export class EventModel{
 
     Id: number; // Id_Planning_Container
     Name: string; // Titre
