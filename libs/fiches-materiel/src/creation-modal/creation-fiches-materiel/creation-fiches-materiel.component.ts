@@ -86,7 +86,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
   //        this.create(this.creationState);
           if (this.creationProcessIsOk) {
             this.disabled = false;
-            this.createdOeuvre++;
+            // this.createdOeuvre++;
             this.updateFicheAchatDetailImport(
               IdFicheDetail,
               ficheAchatDetail
@@ -191,6 +191,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
     this.fichesAchatService
       .putFicheAchatDetail(detailsFicheAchat.id_fiche_det, detailsFicheAchat)
       .then(data => {
+        this.createdOeuvre++;
         console.log(data);
         console.log('this.oeuvreWithGaps.length - 1 => ', this.oeuvreWithGaps.length);
         console.log('this.createdOeuvre => ', this.createdOeuvre);
@@ -317,9 +318,7 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
             DateCreation: new Date().toJSON().slice(0, 19),
             UserCreation: this.user,
             SuiviPar: this.user,
-            RetourOri: retourOriOeuvre,
-            DateDebutDroit: oeuvreFicheDetail.debut_des_droits,
-            DateFinDroit: oeuvreFicheDetail.expiration_droits,
+            RetourOri: retourOriOeuvre
           })
         );
       }

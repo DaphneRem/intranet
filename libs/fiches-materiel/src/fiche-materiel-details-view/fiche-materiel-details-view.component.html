@@ -194,7 +194,7 @@
         <div class="sections">
           <i class="icofont icofont-law section-icon"></i>
           <div class="section-content droits">
-            <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
+            <!-- <p *ngIf="myFicheAchatDetailsExist">Date déb droits : 
               <span [ngClass]="!myFicheMateriel.DateDebutDroit ? 'empty-field' : ''">
                 <span *ngIf="myFicheMateriel.DateDebutDroit !== null">
                   {{myFicheMateriel.DateDebutDroit | date}}
@@ -213,15 +213,19 @@
                   {{messageEmptyField}}
                 </span>
               </span>
+            </p> -->
+            <p *ngIf="!myFicheAchatDetailsExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="myFicheAchatDetailsExist">Date déb droits :
+              <span *ngIf="myFicheAchatDetails.debut_des_droits">{{myFicheAchatDetails.debut_des_droits | date}}</span>
+              <span *ngIf="!myFicheAchatDetails.debut_des_droits">/</span>
             </p>
-            <!-- <p *ngIf="!myFicheAchatDetailsExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p> -->
-
-            <!--<p *ngIf="myFicheAchatDetails.duree_droits_annee">Fin des droits : {{myFicheAchatDetails.duree_droits_annee}} an(s)</p>
+            <p *ngIf="myFicheAchatDetails.duree_droits_annee">Fin des droits : {{myFicheAchatDetails.duree_droits_annee}} an(s)</p>
             <p *ngIf="myFicheAchatDetails.duree_droits_mois">Fin des droits : {{myFicheAchatDetails.duree_droits_mois}} mois</p>
-            <p *ngIf="!myFicheAchatDetails.duree_droits_annee && !myFicheAchatDetails.duree_droits_mois && myFicheAchatDetailsExist">Fin des droits : 
+            <p *ngIf="!myFicheAchatDetails.duree_droits_annee && !myFicheAchatDetails.duree_droits_mois && myFicheAchatDetails.expiration_droits">Expiration droits : {{myFicheAchatDetails.expiration_droits | json}}</p>
+            <p *ngIf="!myFicheAchatDetails.duree_droits_annee && !myFicheAchatDetails.duree_droits_mois && !myFicheAchatDetails.expiration_droits && myFicheAchatDetailsExist">Fin des droits : 
               <span class="empty-field">{{messageEmptyField}}</span>
             </p>
-            <p *ngIf="!myFicheAchatDetailsExist">Fin des droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p> -->
+            <p *ngIf="!myFicheAchatDetailsExist">Fin des droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
           </div>
         </div>
         <div class="sections">

@@ -34,7 +34,9 @@ $importantColor : #fd5f5f;
                         background: $creationBtnColor;
                         color: #ffffff;
                         border-radius : 100%;
-                        padding-left: 8px;
+                        display: flex;
+                        justify-content: center;
+                        // padding-left: 8px;
                     }
                     h4 {
                         font-size: 1em;

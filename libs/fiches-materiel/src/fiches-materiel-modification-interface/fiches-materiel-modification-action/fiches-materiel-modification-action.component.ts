@@ -632,7 +632,12 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
         // this.changedValues['Deadline'] = moment().format('YYYY-MM-DDTHH:mm:ss');
         // console.log('deadline error => ', this.changedValues['Deadline']);
       }
-      
+      if ((this.newObject.DateAcceptation === null || this.newObject.DateAcceptation === 'dd-mm-yyyy')) {
+        let nullDate = moment('01-01-1970').format('YYYY-MM-DDTHH:mm:ss');
+        // console.log('nullDate => --------------------------------------- ', nullDate);
+        // console.log('this.newObject.Deadline ===================================> ', this.newObject.Deadline);
+        this.changedValues['DateAcceptation'] = nullDate;
+      }
     }
     console.log('this.changedValues after deadline management =>', this.changedValues);
     for (let item in this.changedValues) {

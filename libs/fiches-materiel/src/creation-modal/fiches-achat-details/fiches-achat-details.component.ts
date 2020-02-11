@@ -14,6 +14,7 @@ import swal from 'sweetalert2';
 export class FichesAchatDetailsComponent implements OnInit {
   @Input() detailsFicheAchat;
   @Input() step;
+  @Input() faMajExist;
 
   @Output() nextStep = new EventEmitter();
 
