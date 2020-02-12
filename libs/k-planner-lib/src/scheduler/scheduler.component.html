@@ -238,24 +238,7 @@
                                     </div>
                                 </ng-template>
                     </e-view>
-                    <!-- <e-view option="WorkWeek" startHour='08:00' endHour='20:00'  [timeScale]="timeScaleWorkWeek" [readonly]="readonly" >
-                        <ng-template #eventTemplate let-data  class="event">
-                                <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
-                                    <div>
-                                        <div class="subject" style="margin-top: 10px; font-size: 8px " *ngIf="data.AzaIsPere" id="{{data.Id}}">
-                                            <div class="float-right fixed initiales"><p style=" font-size: 8px; text-align: center " >{{data.coordinateurCreate}}</p></div>
-                                            <u id="{{data.Id}}"> </u> 
-                                        
-                                            <div *ngIf="data.Operateur" class="float-right mt-1 operateur"></div>
-                                           
-                                        </div>
-                                        <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: white; display: flex;">
-                                            <span style="padding-top: 5px; width: 100%; z-index: 2 !important"> </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </ng-template>
-                </e-view> -->
+                  
                     <e-view option='TimelineMonth'>
                             <ng-template #eventTemplate let-data  class="event" >
                                 <div class='template-wrap' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
