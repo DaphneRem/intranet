@@ -175,12 +175,14 @@ $InfoBtnHoverColor :  #2eced6;
     padding-bottom: 10px;
 }
 
-.treeview-external-drag #waiting {
+.treeview-external-drag {
+    
+    #waiting {
     height: 100%;
     padding: 0;
+   
 }
-
-.treeview-external-drag #waitid {
+#waitid {
     float: left;
     width: 13%;
     text-align: center;
@@ -192,15 +194,13 @@ $InfoBtnHoverColor :  #2eced6;
     margin: 9px 0;
     padding: 0 2px 0 0;
 }
-
-.treeview-external-drag #waitdetails {
+#waitdetails {
     width: 95%;
     float: left;
      height: 100%;
     padding: 0;
 }
-
-.treeview-external-drag #waitlist {
+#waitlist {
     width: 100%;
     height: 40%;
     font-weight: bold;
@@ -212,7 +212,7 @@ $InfoBtnHoverColor :  #2eced6;
     text-overflow: ellipsis;
 }
 
-.treeview-external-drag #waitcategory {
+#waitcategory {
     height: 60%;
     font-family: "Segoe UI";
     font-size: 9px;
@@ -224,6 +224,13 @@ $InfoBtnHoverColor :  #2eced6;
     text-overflow: ellipsis;
     padding-bottom:5px
 }
+}
+
+// .treeview-external-drag {
+//     overflow: hidden
+// }
+
+
 
 .treeview-external-drag .e-list-text,
 .treeview-external-drag.e-rtl .e-list-text,
@@ -548,8 +555,8 @@ $InfoBtnHoverColor :  #2eced6;
    
 }
 /deep/ .BT_Remove:before{
-    content:'\e94a';
-    color:rgba(172, 28, 28, 0.863);
+    content:'\e94a';  //modifier l'icone delete en retour au backlog
+    color:white;
     margin-top:8px;
     height:2.5em;
     width:2.5em;
@@ -679,6 +686,7 @@ $InfoBtnHoverColor :  #2eced6;
 /deep/ .e-treeview .e-list-item.e-active {
     .e-text-content {
         border: 1px red solid;
+
     }
     &:hover {
         .e-text-content {

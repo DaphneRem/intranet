@@ -27,7 +27,8 @@ export class WorkorderDetailsModalComponent {
     let containerModal = document.getElementsByClassName('cdk-overlay-container');
     console.log(containerModal);
     for (let i = 0; i < containerModal.length ; i++) {
-      containerModal[i].className += ' hidden';
+      // containerModal[i].className += 'hidden';
+      containerModal[i]['style'].display='none'
     }
   }
 
