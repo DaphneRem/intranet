@@ -1,31 +1,42 @@
 <div style="margin: -25px;height: 310px; overflow-y: hidden; overflow-x: hidden;">
-    <div style="padding: 2px;  color: #0a0a0a;height: 90px;"  [ngStyle]="{'background-color': data.color ? data.color : '#bbb7b7'}">
+    <div style="padding: 2px;  color: #0a0a0a;height: 90px;"
+        [ngStyle]="{'background-color': data.color ? data.color : '#bbb7b7'}">
         <!-- <h1 mat-dialog-title style="margin: 26px 0 0 15px;"></h1> -->
-       
-        <h2 mat-dialog-title class="title"> {{data.workorder.titreoeuvre}}&nbsp;/&nbsp;{{data.workorder.titreepisode}}  ep {{data.workorder.numepisode}} </h2>
+
+        <h2 mat-dialog-title class="title"> {{data.workorder.titreoeuvre}}&nbsp;/&nbsp;{{data.workorder.titreepisode}}
+            ep {{data.workorder.numepisode}} </h2>
     </div>
     <div mat-dialog-content style="margin: 0; height: 155px;">
         <!-- <p>{{data.StartTime}} ({{ data.StartTime}} - {{ data.EndTime}})</p> -->
-        <div  *ngIf="data.placeClick =='planner'">
-        <p class="date">
-            {{ changeDateFormat(data.workorder.StartTime) | date }} - 
-            ( {{ changeDateFormat(data.workorder.StartTime) | date:'shortTime' }} - 
-            {{ changeDateFormat(data.workorder.EndTime) | date:'shortTime' }} )
-        </p>
-        <p >  {{data.workorder.Description }}</p>
-        <p >Regie: {{data.regie.Text}}</p>
+        <!-- <div [ngStyle]="{'display':data.placeClick =='planner' ? 'block': 'none'}"> -->
+        <div *ngIf="data.placeClick =='planner'">
+
+            <p class="date">
+                {{ changeDateFormat(data.workorder.StartTime) | date }} -
+                ( {{ changeDateFormat(data.workorder.StartTime) | date:'shortTime' }} -
+                {{ changeDateFormat(data.workorder.EndTime) | date:'shortTime' }} )
+            </p>
+            <p> {{data.workorder.Description }}</p>
+            <p> Regie: {{data.regie.Text}}</p>
         </div>
 
-        <p>  {{data.workorder.typetravail}}</p>
+        <p> {{data.workorder.typetravail}}</p>
         <p> Libellé chaine : {{data.workorder.libchaine}}</p>
-        <p> Type de travail :   {{data.workorder.libtypeWO}}</p>
-        <div  *ngIf="data.placeClick =='backlog'">            
-        <p >Durée Commerciale:{{data.workorder.dureecommerciale }}</p>
+        <p> Type de travail : {{data.workorder.libtypeWO}}</p>
+        <!-- <div [ngStyle]="{'display':data.placeClick =='backlog' ? 'block': 'none'}"> -->
+        <div *ngIf="data.placeClick =='backlog'">
+            <p>Durée Commerciale:{{data.workorder.dureecommerciale }}</p>
         </div>
-      
+        <!-- *ngIf="data.placeClick =='backlog'" -->
+        <!-- *ngIf="data.placeClick =='planner'" -->
+
     </div>
     <div mat-dialog-actions style="padding-left: 20px;">
         <!-- <button mat-button (click)="onNoClick()" color="primary">No Thanks</button> -->
-        <button class="btn  " [ngStyle]="{'background-color': data.color ? data.color : '#bbb7b7'}"  (click)="close()" [mat-dialog-close]="data" cdkFocusInitial>Fermer</button>
+        <button class="btn btn-close-modal " [ngStyle]="{'background-color': data.color ? data.color : '#bbb7b7'}" (click)="close()"
+            [mat-dialog-close]="data" cdkFocusInitial>Fermer</button>
+        <!-- <button class="btn  " [ngStyle]="{'background-color': data.color ? data.color : '#bbb7b7'}" mat-button  [mat-dialog-close]="true" cdkFocusInitial>Fermer</button> -->
+
     </div>
+
 </div>

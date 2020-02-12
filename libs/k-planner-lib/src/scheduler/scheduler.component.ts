@@ -603,18 +603,37 @@ public targetModal: string = '.control-section';
         console.log('ON TREE SELECTED ====> ', event);
        
     }
+    contClickEvent = 1
     onNodeClicked(event){
         console.log('ON event clicked ====> ', event);
-        if(event.event.button == 0){
+        
+        // &&  this.contClickEvent == 1
+        if(event.event.button == 0 && this.contClickEvent == 1  ){
             console.log("click event")
-        console.log(this.WorkOrderByidgroup)
+            this.contClickEvent = 0
+        console.log(this.contClickEvent,"contClickEvent")
         let id = +event.node.dataset.uid
         let workorderSelected = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === id)
         console.log(workorderSelected)
         this.openDialog(this.workOrderColor,workorderSelected,workorderSelected[0], this.departmentDataSource,"backlog");
+        let containerModal = document.getElementsByClassName('cdk-overlay-container');
+        let btn = document.getElementsByClassName('btn-close-modal');
+console.log(btn)
+
+        for (let i = 0; i < btn.length; i++) {
+            btn[i].addEventListener('click',() =>{
+                this.contClickEvent = 1 
+                console.log(" click fermer")
+                console.log(this.contClickEvent,"contClickEvent")
+            })
+        }
     }else{
         console.log("contextmenu click")
     }
+    }
+
+    onKeyPress(event){
+console.log("On Key Press ====>",event)
     }
     onTreeExpanding(event) {
         console.log('ON TREE EXPANDING ====> ', event);
@@ -802,7 +821,7 @@ public targetModal: string = '.control-section';
       
         }
         this.eventClick = true;
-        // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut
+        // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut 
     }
     public eventHoverData
     onHover(args: HoverEventArgs) {
@@ -4035,21 +4054,14 @@ deleteContainerForGood(id,event){
             } else {
                 interval = this.scheduleObj.timeScale.interval
                 console.log(diff, interval)
-            }
-            if (diff === Math.trunc(interval)) {
-                args.cancel = true;
+              }
+                if (diff === Math.trunc(interval)) {
+                    args.cancel = true;
 
-            }
-                    //   let btnCalendar =  document.getElementsByClassName("e-date-time-icon e-icons");
-                      
-                       
-                      
-                    //   console.log(btnCalendar)
-                    //   btnCalendar[0].addEventListener('click', () => {  
-                    //     // (this.scheduleObj.element.querySelectorAll(' .e-date-time-icon  .e-date-range')[0] as any).click();
-                    //     console.log("clique du btn calendar")
-                       
-                    // }, true);
+                }
+
+           
+
 
             let buttonElementDelete = args.type === "QuickInfo" ? ".e-event-popup .e-delete" : ".e-schedule-dialog .e-event-delete";
            let deleteButton = document.querySelector(buttonElementDelete)
@@ -4931,11 +4943,12 @@ deleteContainerForGood(id,event){
         this.drowDownExist = true;
     }
 
-    openDialog(couleurWorkorder, object, subObject, categories,placeClick): void { // open workorder modal from container list
+    openDialog(couleurWorkorder, object, subObject, categories,placeClick?): void { // open workorder modal from container list
         let category;
         let containerModal = document.getElementsByClassName('cdk-overlay-container');
         for (let i = 0; i < containerModal.length; i++) {
-            containerModal[i].classList.remove('hidden');
+            // containerModal[i].classList.remove('hidden');
+            containerModal[i]['style'].display='block'
         }
         categories.map(item => {
             if (object.DepartmentID === item.Id) {
@@ -6855,14 +6868,18 @@ if(this.resultFilterRegie.length>0){
     onRenderCell(args: RenderCellEventArgs, value: CellTemplateArgs): void {
 
         if (this.scheduleObj.currentView == 'TimelineWeek') {
-            if (args.element.classList.contains('e-work-cells') && ((args.date.getDay() % 2) != 0)) {
-                args.element['style'].background = '#E5FCFD';
-
+            if (args.element.classList.contains('e-work-cells') ) {
+                if (((args.date.getDay() % 2) != 0) || (args.date.getDay() === 0)) {
+                    args.element['style'].background = '#E5FCFD';
+                //     if (args.element.classList.contains('e-selected-cell') ) {
+                     
+                //     args.element['style'].border = 'gray solide 3px'; 
+                // }
             }
-            if (args.element.classList.contains('e-work-cells') && (args.date.getDay() === 0)) {
-                args.element['style'].background = '#E5FCFD';
-            }
 
+       
+            }
+                 
             if (args.elementType === "dateHeader") {
 
             }
@@ -7137,6 +7154,8 @@ if(this.resultFilterRegie.length>0){
             console.log(this.offsetLeftCell)
             let close = document.getElementsByClassName("e-popup-footer")
             console.log(close);
+
+          
 
         }
         if(args["requestType"] ==="eventSelect"){

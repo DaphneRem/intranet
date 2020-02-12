@@ -128,12 +128,12 @@
             <div class="schedule" id="schedule">
                 <ejs-schedule #scheduleObj 
                     (dragStart) = "onDragStart($event)"
-                   (dragStop) = "onDragStop($event)"
+                    (dragStop) = "onDragStop($event)"
                     locale="fr-CH"
                     (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
                     (popupClose) = "onPopupClose($event)"
-                   
+                    
                     cssClass='schedule-drag-drop' 
                     [group]="group" 
                     [currentView]="currentView" 
@@ -363,7 +363,7 @@
                                 (nodeDragging)="onItemDrag($event, 0)"                        
                                 [enablePersistence]="false"
                                 (nodeClicked)="onNodeClicked($event)" 
-                                
+                               
                                >
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""   id="treeEvents-template">
                                     <div id="waiting"   class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
