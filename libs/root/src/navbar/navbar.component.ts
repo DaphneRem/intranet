@@ -76,8 +76,8 @@ export class NavbarComponent implements OnInit {
   }
 
   displayItemIfSpecificRights(item) {
-    console.log('item navbar =>', item);
-    console.log('users rights => ', this.userSpecifiRights);
+    // console.log('item navbar =>', item);
+    // console.log('users rights => ', this.userSpecifiRights);
     if (item.hasOwnProperty('needSpecificRights')) { // check if need rights to display route
       if (this.specificRightsExist && item.needSpecificRights.length > 0) { // check if user rights are specified in app
         if (this.userSpecifiRights.length > 0 ) { // check if user has rights for display route
