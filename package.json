@@ -24,7 +24,7 @@
     "materiel-production": "ng build --app=fiches-materiel --prod --aot=false --baseHref https://fichemateriel.karina.app.groupe-ab.fr",
     "k-planner-release": "ng build  --app=k-planner --aot=true --build-optimizer=false --baseHref  https://planner.karinarc.app.groupe-ab.fr",
     "k-planner-test": "ng build  --app=k-planner   --aot=true  --build-optimizer=false   --baseHref  https://planner.karinatest.app.groupe-ab.fr",
-    "k-planner-prod": "ng build  --prod --aot=true --app=k-planner --build-optimizer=false  --baseHref  https://planner.karina.app.groupe-ab.fr",
+    "k-planner-prod": "ng build  --prod   --aot=true --app=k-planner --build-optimizer=false  --baseHref  https://planner.karina.app.groupe-ab.fr",
     "k-planner-optimizer": "ng build --prod --aot --build-optimizer --app=k-planner --baseHref  https://planner.karinatest.app.groupe-ab.fr"
   },
   "private": true,
