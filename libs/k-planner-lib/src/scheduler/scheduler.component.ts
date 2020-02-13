@@ -120,11 +120,11 @@ import { WorkOrderTempsReelService } from "../services/workorder-tempsReel.servi
 
 import { UtilisateurService } from "../services/utilisateur.service";
 
-const localeFrenchData = require('./scheduler-fr.json');
-const numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
-const gregorian = require('cldr-data/main/fr-CH/ca-gregorian.json');
-const numbers = require('cldr-data/main/fr-CH/numbers.json');
-const timeZoneNames = require('cldr-data/main/fr-CH/timeZoneNames.json');
+var localeFrenchData = require('./scheduler-fr.json');
+var numberingSystems = require('cldr-data/supplemental/numberingSystems.json');
+var gregorian = require('cldr-data/main/fr-CH/ca-gregorian.json');
+var numbers = require('cldr-data/main/fr-CH/numbers.json');
+var timeZoneNames = require('cldr-data/main/fr-CH/timeZoneNames.json');
 
 loadCldr(numberingSystems, gregorian, numbers, timeZoneNames);
 
@@ -616,12 +616,11 @@ public targetModal: string = '.control-section';
         let workorderSelected = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === id)
         console.log(workorderSelected)
         this.openDialog(this.workOrderColor,workorderSelected,workorderSelected[0], this.departmentDataSource,"backlog");
-        let containerModal = document.getElementsByClassName('cdk-overlay-container');
+
         let btn = document.getElementsByClassName('btn-close-modal');
-console.log(btn)
 
         for (let i = 0; i < btn.length; i++) {
-            btn[i].addEventListener('click',() =>{
+            document.getElementsByClassName('btn-close-modal')[i].addEventListener('click',() =>{
                 this.contClickEvent = 1 
                 console.log(" click fermer")
                 console.log(this.contClickEvent,"contClickEvent")
@@ -911,6 +910,7 @@ console.log("On Key Press ====>",event)
 
                 this.dataRegieReady = true;
                 this.salleDataSource = donnees;
+         
                 console.log('salles group result : ', donnees);
                 this.salleDataSource.map(item => {
                     console.log(item);        
@@ -925,7 +925,21 @@ console.log("On Key Press ====>",event)
                     let newItem = [{ Text: item.NomSalle, Id: item.CodeSalle }];
                     // this.departmentDataSource = this.departmentDataSource.concat(newItem);           
                     console.log('regie departmentGroupDataSource', this.departmentGroupDataSource);
-                    this.departmentDataSource = this.departmentGroupDataSource.sort(this.compareValues('Text', 'desc'));
+                    this.departmentDataSource=  this.departmentGroupDataSource
+                    this.departmentDataSource=  this.departmentDataSource.sort((a,b) => {
+                    var regieA = a["Text"].toUpperCase(); // ignore upper and lowercase
+                    var regieB = b['Text'].toUpperCase(); // ignore upper and lowercase
+                    if (regieA < regieB) {
+                      return -1;
+                    }
+                    if (regieA > regieB) {
+                      return 1;
+                    }
+                  
+                    // names must be equal
+                    return 0;
+                } );
+                    // .sort(this.compareValues('Text', 'asc'));
                     console.log('regie departmentDataSource', this.departmentDataSource);
                     console.log('item code salle fot container request : ', item.CodeSalle);
                     // this.getContainersByRessource(item.CodeRessource);
@@ -965,34 +979,43 @@ console.log("On Key Press ====>",event)
                 //   this.timelineResourceDataOut = []
                 //   if(this.firstCallGetContainersByRessourceStartDateEndDate == 0 ){
            
-                    this.listeRegies = this.departmentGroupDataSource.sort(this.compareValues('Text', 'asc'));
+                    this.listeRegies = this.departmentGroupDataSource
+                    // .sort(this.compareValues('Text', 'asc'));
             })
   
 
     }
-    compareValues(key, order = 'asc') {
-        return function innerSort(a, b) {
-        if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-          // property doesn't exist on either object
-          return 0;
-        }
-    
-        const varA = (typeof a[key] === 'string')
-          ? a[key].toUpperCase() : a[key];
-        const varB = (typeof b[key] === 'string')
-          ? b[key].toUpperCase() : b[key];
-    
-        let comparison = 0;
-        if (varA > varB) {
-          comparison = 1;
-        } else if (varA < varB) {
-          comparison = -1;
-        }
-        return (
-          (order === 'desc') ? (comparison * -1) : comparison
-        );
-      };
-    }
+// public comparison : number;
+// public varA;
+// public varB ;
+//     compareValues(a, b) {
+//     //     return function innerSort(a, b) {
+//     //     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+//     //       return 0;
+//     //     }
+//     // console.log(a[key]);
+ 
+//     //     let varA =(typeof a[key] === 'string')
+//     //       ? a[key].toUpperCase() : a[key];
+//     //      let varB = (typeof b[key] === 'string')
+//     //       ? b[key].toUpperCase() : b[key];
+//     //       console.log( this.varA)
+//     //     this.comparison = 0;
+//     //     if (varA > varB) {
+//     //       this.comparison = 1;
+//     //     } else if (varA < varB) {
+//     //       this.comparison = -1;
+//     //     }
+//     //     return (
+//     //       (order === 'desc') ? (this.comparison * -1) : this.comparison
+//     //     );
+//     //   };
+//     if (a[0] === b[0]) {
+//         return 0;
+//       }
+//       return (a[1] < b[1]) ? 1 : -1;
+
+    // }
 
     getSalleAll(currentGroup, start, end) {
         this.departmentDataSourceAll = [];
@@ -1289,7 +1312,7 @@ console.log("On Key Press ====>",event)
                     //     enableTooltip: true, tooltipTemplate: this.temp
                     // };
                     this.updateEventSetting(this.timelineResourceDataOut);
-                    // this.createTooltipWorkorder();
+                    this.createTooltipWorkorder();
                     // console.log('this.scheduleObj.eventSettings.dataSource ', this.scheduleObj.eventSettings.dataSource);
                     console.log(this.timelineResourceDataOut, "timelineDataOut getContainer ")
                 } else {
@@ -4032,6 +4055,7 @@ deleteContainerForGood(id,event){
     public openEditor = false
     public dataToEdit;
     public editor = false
+    public deleteButton
     onPopupOpen(args) { // open container modal and display workorder list
         let workOrders = [];
         console.log(args);
@@ -4064,10 +4088,10 @@ deleteContainerForGood(id,event){
 
 
             let buttonElementDelete = args.type === "QuickInfo" ? ".e-event-popup .e-delete" : ".e-schedule-dialog .e-event-delete";
-           let deleteButton = document.querySelector(buttonElementDelete)
-            console.log(deleteButton)
-            if(deleteButton != null){
-            deleteButton['title'] = "Retour au backlog"
+           this.deleteButton = document.querySelector(buttonElementDelete)
+            console.log(this.deleteButton)
+            if(this.deleteButton != null){
+            this.deleteButton['title'] = "Retour au backlog"
         }
             let btnclose = document.getElementsByClassName('e-close e-control');
             btnclose[0].addEventListener('click', () => {
@@ -4942,7 +4966,7 @@ deleteContainerForGood(id,event){
         args.data.Operateur = this.drowDownOperateurList.value;
         this.drowDownExist = true;
     }
-
+public dialogRef
     openDialog(couleurWorkorder, object, subObject, categories,placeClick?): void { // open workorder modal from container list
         let category;
         let containerModal = document.getElementsByClassName('cdk-overlay-container');
@@ -4962,7 +4986,7 @@ deleteContainerForGood(id,event){
                 couleur = statut['Color']
             }
         })
-        const dialogRef = this.dialog.open(WorkorderDetailsModalComponent, {
+      this.dialogRef = this.dialog.open(WorkorderDetailsModalComponent, {
             width: '365px',
             data: {
                 workorder: subObject,
@@ -5113,7 +5137,7 @@ deleteContainerForGood(id,event){
                     this.treeObj.fields.dataSource as { [key: string]: Object }[];
                 if (event.target.classList.contains('e-work-cells')) {
                     console.log(treeviewData)
-                    const filteredData: { [key: string]: Object }[] =
+                    var filteredData: { [key: string]: Object }[] =
                         treeviewData.filter((item: any) => item.Id === parseInt(event.draggedNodeData.id as string, 10));
                     this.randomId();
                     console.log('last Random id : ', this.lastRandomId);
@@ -5218,7 +5242,7 @@ deleteContainerForGood(id,event){
                         if(!this.checkIfContainerHasATempsReel(containerSelected,containerSelected.Id)){
                             console.log( this.statutDifferent,"this.statutDifferent")
                         console.log('containerSelected => ', containerSelected);
-                        const filteredDataW =
+                       var filteredDataW =
                             treeviewData.filter((item: any) => item.Id === parseInt(event.draggedNodeData.id as string, 10));
                         let container = this.allDataContainers.filter(item => item.Id_Planning_Container === containerSelected.Id);
                         let containerDataSelected = container[0];
@@ -5323,7 +5347,7 @@ deleteContainerForGood(id,event){
                 console.log('treeviewData  : ', treeviewData);
                 console.log('fieldMonteur  : ', this.fieldMonteur);
 
-                const filteredData: { [key: string]: Object }[] =
+                var filteredData: { [key: string]: Object }[] =
                     treeviewData.filter((item: any) => item.idressourcetype === parseInt(event.draggedNodeData.id as string, 10) && item.Username === operateur[0]);
                 console.log(filteredData)
                 if (event.target.classList.contains('e-work-cells')) {
@@ -5365,7 +5389,7 @@ deleteContainerForGood(id,event){
                     }
                     );
                 } else { // Emplacement déjà pris par un event (container)
-                    const filteredData: { [key: string]: Object }[] =
+                    var filteredData: { [key: string]: Object }[] =
                         treeviewData.filter((item: any) => item.idressourcetype === parseInt(event.draggedNodeData.id as string, 10) && item.Username === operateur[0]);
                     if (event.target.classList.contains('e-work-cells')) {
                         let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(event.target);
@@ -5635,7 +5659,7 @@ deleteContainerForGood(id,event){
             console.log(this.openSideBar, "open Sidebar")
             // FUNCTION FROM TEMPLATE => Call when workodre is drag and drop from backlog to create container
             let treeViewdata: { [key: string]: Object }[] = this.treeObj.fields.dataSource as { [key: string]: Object }[];
-            const filteredPeople: { [key: string]: Object }[] =
+            var filteredPeople: { [key: string]: Object }[] =
                 treeViewdata.filter((item: any) => item.Id !== parseInt(this.draggedItemId, 10));
             this.treeObj.fields.dataSource = filteredPeople;
             let elements: NodeListOf<HTMLElement> =
@@ -6247,7 +6271,7 @@ deleteContainerForGood(id,event){
         let tempmaxdate = maxDateGroup;
         for (let entry of atimelineResourceData) {
             if (entry.AzaNumGroupe === numGroup && entry.isTempsReel === 0) {
-                const properties = Object.getOwnPropertyNames(entry);
+                // const properties = Object.getOwnPropertyNames(entry);
                 if (entry['AzaIsPere']) { // IF CONTAINER DISPLAY STARTTIME AND ENDTIME MAX
                     entry['StartTime'] = minDateGroup;
                     entry['EndTime'] = maxDateGroup;
@@ -6486,7 +6510,8 @@ if(this.resultFilterRegie.length>0){
         let regie = []
         regie.push(event.itemData)
         this.resultFilterRegie.push(event.itemData)
-        this.resultFilterRegie = [...new Set([...this.resultFilterRegie, ...regie])]
+        // this.resultFilterRegie =  [...new Map( regie.map(item => [item[key], item])).values()]
+        // this.resultFilterRegie = [...new Set([...this.resultFilterRegie])] 
 
         console.log(this.resultFilterRegie)
         console.log(this.checkFields)
@@ -6616,7 +6641,7 @@ if(this.resultFilterRegie.length>0){
         let workorderItems = []
         workorderItems.push(event.itemData)
         this.resultFilterWorkorder.push(event.itemData)
-        this.resultFilterWorkorder = [...new Set([...this.resultFilterWorkorder, ...workorderItems])]
+        // this.resultFilterWorkorder = [...new Set([...this.resultFilterWorkorder, ...workorderItems])]
         console.log(this.resultFilterWorkorder)
     }
     onOpenWorkOrderList(event) {
@@ -6625,7 +6650,7 @@ if(this.resultFilterRegie.length>0){
         this.workOrderBacklog.showSelectAll = false
         this.workOrderBacklog.noRecordsTemplate = " Aucune tache trouvée"
         this.workOrderBacklog.locale = "fr-CH"
-        this.workOrderBacklog['dataSource'] = [...new Set([...this.workOrderToBacklog, ...this.workOrderToBacklog])]
+        // this.workOrderBacklog['dataSource'] = [...new Set([...this.workOrderToBacklog, ...this.workOrderToBacklog])]
    
     }
     onCloseWorkOrderList(event) {
@@ -6932,7 +6957,7 @@ if(this.resultFilterRegie.length>0){
     onChangeDataSource() { //a essayer avec la nouvelle méthode predicate
         let predicate: Predicate;
         let checkBoxes: CheckBoxComponent[] = [this.reel, this.theorique];
-        const timelineDataOutitems = this.timelineResourceDataOut
+        // const timelineDataOutitems = this.timelineResourceDataOut
         console.log(this.timelineDataOutitems, "aaaaa")
         console.log(this.Check)
 
