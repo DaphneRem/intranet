@@ -562,6 +562,9 @@ $InfoBtnHoverColor :  #2eced6;
     width:2.5em;
 
 }
+/deep/ .e-icons .RowDragMove:before{
+    content:'\e905'
+}
 
 /deep/ .e-quick-popup-wrapper .e-delete-icon::before {
     content: '\e354';

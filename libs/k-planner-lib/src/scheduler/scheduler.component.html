@@ -272,7 +272,8 @@
         </div>
     </div>
 
-    
+    <ejs-contextmenu #contentmenutree cssClass='schedule-context-menu' target='.e-schedule' [items]='menuItemsSchedule' (beforeOpen)='beforeopen($event,3)'
+    (select)='menuclick($event,3)'></ejs-contextmenu>
         
    <!--************************************** tabItem ***********************************************************************-->
    <div class="sidebar"  *ngIf="!isnotMyGroup " [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
