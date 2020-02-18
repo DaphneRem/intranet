@@ -238,7 +238,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public selectedDate: Date = moment().toDate();
     public data: EventModel[] = <EventModel[]>extend([], this.containerData, null, true);
     public temp
-
+ public lastTimelineResourceDataOut = [];
     public eventSettings: EventSettingsModel = {
         dataSource: <Object[]>extend([], this.calculDateAll(this.data, true, null, false, false), null, true),
         // fields: {
@@ -1278,7 +1278,7 @@ console.log("On Key Press ====>",event)
                             initiales = ''
                         }
                         //  console.log(initiales,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-                        this.timelineResourceDataOut.push({
+                     let Event={
                             Id: data.Id_Planning_Container,
                             Name: (data.Titre === null || typeof (data.Titre) === 'undefined') ? 'Titre' : data.Titre,
                             StartTime: dateDebut,
@@ -1301,7 +1301,9 @@ console.log("On Key Press ====>",event)
                             isTempsReel: 0,
                             CodeRessourceCoordinateur: data.CodeRessourceCoordinateur,
                             CodeRessourceOperateur:data.CodeRessourceOperateur
-                        });
+                        }
+                        this.timelineResourceDataOut.push(Event);
+                        this.lastTimelineResourceDataOut.push(Event)
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
 
@@ -1446,6 +1448,7 @@ console.log("On Key Press ====>",event)
 
 
                         this.timelineResourceDataOut.push(newWorkorderEvent);
+                        this.lastTimelineResourceDataOut.push(newWorkorderEvent);
                         this.updateEventSetting(this.timelineResourceDataOut);
                     });
                     // récuperer les containers de la derniére régie
@@ -2726,7 +2729,7 @@ console.log(this.WorkorderTempsReelEvent)
                     });
                     console.log(this.allDataWorkorders);
                     console.log('this.scheduleObj.getEvents() ==> ', this.scheduleObj.getEvents());
-                    this.scheduleObj.saveEvent(eventWorkorder); //07/11/2019
+                   //07/11/2019
 
                     //   this.scheduleObj.dataBind();
                     //   dataSource: <Object[]>extend([], this.calculDateAll(this.data, true, null, false, false), null, true),
@@ -2738,7 +2741,7 @@ console.log(this.WorkorderTempsReelEvent)
                     console.log(this.openEditor, "this.openEditor when update container")
                     this.DropEventWithNavigation = false
  
-
+                    // this.scheduleObj.saveEvent(eventWorkorder);
                     this.scheduleObj.refreshEvents()
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                         dataSource: <Object[]>extend(
@@ -3708,8 +3711,7 @@ deleteContainerForGood(id,event){
     public argsOnNavigating
 
     /***** refresh backlog********* */
-    public lastTimelineResourceDataOut = [];
-
+   
     onNavigating(args) {
         console.log(' =========================== NEW NAVIGATION ==================== ');
         console.log('onNavigating(args) function => args ==> ', args);
@@ -3720,7 +3722,6 @@ deleteContainerForGood(id,event){
         console.log("this.scheduleObj.eventsProcessed() before reset =>", this.scheduleObj.eventsProcessed)
         console.log('COORDINATEUR GROUPE => ', this.idGroupeCoordinateur);
         this.argsOnNavigating = args
-        this.lastTimelineResourceDataOut = this.timelineResourceDataOut;
         this.lastAllDataContainers = this.allDataContainers;
         this.lastAllDataWorkorders = this.allDataWorkorders;
         console.log('this.lastTimelineResourceDataOut ===> ', this.lastTimelineResourceDataOut);
@@ -6876,11 +6877,15 @@ if(this.resultFilterRegie.length>0){
                     args.cancel = true;
                     return;
                 }
-        
+             console.log(targetElement)
+     
+            console.log(args)
+            
+            console.log(  this.selectedTarget);
         
               let selectedCells: Element[] = this.scheduleObj.getSelectedElements();
               this.activeCellsData = this.scheduleObj.getCellDetails(selectedCells.length > 0 ? selectedCells : this.selectedTarget); 
-              this.RegieSelected= this.scheduleObj.getResourcesByIndex(this.activeCellsData.groupIndex)
+              this.RegieSelected= this.scheduleObj.getResourcesByIndex(+this.selectedTarget.getAttribute("data-group-index"))
 
 
             } else {
@@ -6966,14 +6971,16 @@ if(this.resultFilterRegie.length>0){
             console.log(this.contentmenutree)
             console.log(this.scheduleObj)
             console.log(this.RegieSelected)
-            let StartTime = this.activeCellsData.startTime,
+            let dateStartCell =moment(+this.selectedTarget.getAttribute("data-date")).toDate()
+            console.log( dateStartCell )
+            let StartTime = dateStartCell,
                 EndTime = this.activeCellsData.endTime,
                 DepartementId = this.RegieSelected.groupData.DepartmentID;
-            let endTime = moment(StartTime).add(diff, 'minute').toDate()
+            let endTime = moment(dateStartCell).add(diff, 'minute').toDate()
           
             console.log(DepartementId)
             console.log(endTime)
-        if(!this.DropEventWithNavigation || (this.DropEventWithNavigation && !this.clickDeplacer ) ) {
+        if(!this.DropEventWithNavigation  ) {
           
             this.timelineResourceDataOut.map(item => {
                 if (item.AzaNumGroupe === this.idContainerSelected) {
@@ -6987,7 +6994,7 @@ if(this.resultFilterRegie.length>0){
             })
          
             this.updateEventSetting(this.timelineResourceDataOut)
-            let newEvent = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === this.idContainerSelected );
+            let newEvent = this.timelineResourceDataOut.filter(item => item.Id === this.idContainerSelected );
             console.log(newEvent)
             this.updateContainer(newEvent[0])
         }else{
@@ -7004,15 +7011,18 @@ if(this.resultFilterRegie.length>0){
 
             })
          console.log(this.lastTimelineResourceDataOut)
-            let newEvent = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === this.idContainerSelected );
+            let newEvent = this.lastTimelineResourceDataOut.filter(item => item.Id === this.idContainerSelected );
             console.log(newEvent)
-            // if(newEvent.length>0){
+            if(newEvent.length>0){
             this.updateContainer(newEvent[0])
-            // }else{
-            //     let newEvent = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === this.idContainerSelected );
-            //     console.log(newEvent)
-            //     this.updateContainer(newEvent[0])
-            // }
+           
+            }else{
+
+                console.log(this.timelineResourceDataOut)
+                let newEvent = this.timelineResourceDataOut.filter(item => item.Id === this.idContainerSelected );
+                console.log(newEvent)
+                this.updateContainer(newEvent[0])
+            }
         }
         //else{
 //             console.log("click aprés la navigation ")
@@ -7358,9 +7368,10 @@ if(this.resultFilterRegie.length>0){
 
     //Triggers when multiple cells or events are selected on the Scheduler.
     offsetLeftCell
-    public isCellClick
-    public debutCellClick
-    public finCellClick
+    public isCellClick:boolean;
+    public debutCellClick;
+    public finCellClick;
+    public attributeArgsSelect
     onSelectMultipleCell(args: SelectEventArgs) {
         console.log("on select =====>", args, this.scheduleObj)
         args["showQuickPopup"] = true
@@ -7391,6 +7402,10 @@ if(this.resultFilterRegie.length>0){
        
        }
     }
+        
+    this.attributeArgsSelect = args["element"].attributes[1].value 
+        
+
     }
 
 
