@@ -197,7 +197,13 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('reel')
     public reel: CheckBoxComponent;
     @ViewChild('theorique')
-    public theorique: CheckBoxComponent;
+    public   theorique: CheckBoxComponent;
+    @ViewChild('workorder')
+    public workorder: CheckBoxComponent;
+    @ViewChild('Ecriture')
+    public Ecriture: CheckBoxComponent;
+    @ViewChild('operateur')
+    public operateur: CheckBoxComponent;
     @ViewChild('selectplan')
     public listObj: DropDownListComponent;
     @ViewChild('selectplage')
@@ -282,7 +288,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public colorStatut: Object[] = [
         { Id: 0, Color: '#e8e2ae' },
         { Id: 1, Color: '#e8e2ae' },
-        { Id: 2, Color: '#2471A3' }, // pise en charge
+        { Id: 15, Color: '#2471A3' }, // pise en charge
         { Id: 3, Color: '#F3BE09' }, //  STATUT_A_AFFECTER JAUNE
         { Id: 4, Color: '#F3BE09' },
         { Id: 5, Color: '#7FB3D5' }, //  STATUT_A_FINIR(pause)
@@ -344,7 +350,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public group: GroupModel = { enableCompactView: false, resources: ['Departments'] };
     public allowMultiple: Boolean = false;
     public filteredData: Object;
-    public color: string = '#ea7a57'
+    public color: string = '#DD57EA'
     public cancelObjectModal = false;
     public salleDataSource;
     public containersPlanning;
@@ -440,6 +446,7 @@ export class SchedulerComponent implements OnInit, AfterViewInit, OnDestroy {
     public isClickZoom = true
     public offsetCell;
     public disabledrefresh: boolean = false;
+    public multiSelectionBacklog :boolean = false;
 //Dialog INIT 
   
 public header: string = 'Raccourcis Clavier';
@@ -508,7 +515,9 @@ public targetModal: string = '.control-section';
                     console.log(btnrefresh, btnrefreshWo)
 
                 }
-
+                if(eKey.keyCode === 17){
+                    this.multiSelectionBacklog = false
+                }
 
             })
         }, 700);
@@ -516,7 +525,9 @@ public targetModal: string = '.control-section';
             let btnrefresh = document.getElementById('btn-refresh');
             let btnrefreshWo = document.getElementById('btn-refreshWo');
             let scheduleElement = document.getElementsByClassName('schedule-drag-drop');
-
+               if(eKey.keyCode === 17){
+                this.multiSelectionBacklog = true
+               }
 
             if (eKey.keyCode === 115) {
 
@@ -594,13 +605,10 @@ public targetModal: string = '.control-section';
 
 
         this.storeAppSubscription();
-        window.addEventListener('scroll', this.scroll, true);
+        // window.addEventListener('scroll', this.scroll, true);
 
     }
-
-    @HostListener('mouseenter') onMouseEnter() {
-        // alert("Don't touch my bacon!");
-    }
+ 
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
         console.log(event)
@@ -613,13 +621,26 @@ public targetModal: string = '.control-section';
     }
     onTreeSelected(event) {
         console.log('ON TREE SELECTED ====> ', event);
+        if(event.action== "select"){
+            let id = +event.nodeData.id
+            let treeviewData: { [key: string]: Object }[] =
+            this.treeObj.fields.dataSource as { [key: string]: Object }[];
+            let workorderSelected =  treeviewData.filter(item => item.Id === id)
+            this.workorderSelectedInBacklog.push(workorderSelected[0])
+        }
+        if(event.action== "un-select"){
+            let id = +event.nodeData.id
+            this.workorderSelectedInBacklog = this.workorderSelectedInBacklog.filter(item => item.Id != id)
+        }
        
     }
     contClickEvent = 1
+    public workorderSelectedInBacklog = []
     onNodeClicked(event){
         console.log('ON event clicked ====> ', event);
         
         // &&  this.contClickEvent == 1
+        if( !this.multiSelectionBacklog ){
         if(event.event.button == 0 && this.contClickEvent == 1  ){
             console.log("click event")
             this.contClickEvent = 0
@@ -641,11 +662,12 @@ public targetModal: string = '.control-section';
     }else{
         console.log("contextmenu click")
     }
+    }else {   
+        console.log( this.workorderSelectedInBacklog,"multiselect workorder in backlog")
+     console.log("multiselection ",this.multiSelectionBacklog)
     }
 
-    onKeyPress(event){
-console.log("On Key Press ====>",event)
-    }
+}
     onTreeExpanding(event) {
         console.log('ON TREE EXPANDING ====> ', event);
     }
@@ -666,8 +688,10 @@ console.log("On Key Press ====>",event)
     }
 
     ngOnDestroy() {
-        this.onDestroy$.next();
-        window.removeEventListener('scroll', this.scroll, true);
+        this.onDestroy$.next(true);
+        this.onDestroy$.unsubscribe();
+        // window.removeEventListener('scroll', this.scroll, true);
+  
         //   document.body.removeEventListener('keyup', (eKey: KeyboardEvent)=>{})
         //   document.body.removeEventListener('keydown', (eKey: KeyboardEvent) => {})
     }
@@ -680,7 +704,7 @@ console.log("On Key Press ====>",event)
         this.disabledrefresh = true;
         this.hiderefresh = true;
         this.planningChanged = false;
-        // this.statutDifferent = false;
+        // this.statutDifferent = false;    
         console.log('refresh scheduler click in refreshScheduler() => ', this.disabledrefresh);
         this.scheduleObj.eventSettings.dataSource = []
         this.timelineResourceDataOut = []
@@ -711,12 +735,14 @@ console.log("On Key Press ====>",event)
         this.Check = 0
         setTimeout(() => {
             this.onChangeDataSource()
+            this.onChangeDataSourceEvents()
+            // this.onChangeDataSourceOperateur()
             if (this.resultFilterRegie.length != 0) {
                 this.departmentDataSource = this.resultFilterRegie
             } else {
                 // this.departmentDataSource = this.departmentDataSource
             }
-        }, 1000);
+        }, 1200);
         this.createTooltipWorkorder()
     }
     public disabledrefreshBacklog: boolean = true
@@ -726,25 +752,11 @@ console.log("On Key Press ====>",event)
         this.disabledrefreshBacklog = true
         console.log('refresh workorders backlog click');
         this.workOrderData = [];
-        this.workOrderToBacklog = []
+        this.workOrderToBacklog = [];
+        this.workorderSelectedInBacklog = [];
         this.getWorkOrderByidGroup(this.currentCoordinateur.Groupe);
-        //   this.titreepisodeObj.text = null;
-        //   this.titreepisodeObj.text = null;
-        // if(this.searchString != undefined )
-        // {
-        // if (!this.navigation ) {
-        //   let valueSearch = document.getElementsByClassName('recherche-wo');
-        //   console.log("clic bouton refresh ", this.searchString, this.argsKeyboardEvent)
-        //   this.searchwo.value = ""
-
-        //   console.log(this.searchString,valueSearch)
+        
         setTimeout(() => {
-            // if (this.resultFilterWorkorder.length != 0) {
-            //     this.treeObj.fields['dataSource'] = this.resultFilterWorkorder
-            // }
-            // this.workOrderBacklog['dataSource'] = this.workOrderBacklog.selectData
-            // this.workOrderBacklog['dataSource'] = this.workOrderToBacklog
-
             if (this.searchString != undefined) {
                 console.log("clic bouton refresh ")
                 this.searchwo.value = this.searchString
@@ -752,9 +764,6 @@ console.log("On Key Press ====>",event)
             } else {
             }   
         }, 200);
-
-
-        //}
     }
     refreshDate() {
         if ((this.refreshDateStart === undefined || this.refreshDateEnd === undefined) && this.scheduleObj.currentView === 'TimelineDay') {
@@ -762,8 +771,7 @@ console.log("On Key Press ====>",event)
             this.refreshDateEnd = moment().add(1, 'd').toDate();
         }
     }
-    dialogRefresh(){
-  
+    dialogRefresh(){ // le container contient des taches commencée et pas visible sur kplanner   
         swal({
             title: 'Attention',
             html: 'Le container contient une ou plusieurs tâches commencées, veuillez rafraichir pour pouvoir les afficher ',
@@ -819,7 +827,7 @@ console.log("On Key Press ====>",event)
         }
     }
 
-
+public eventSelecte =[]
     onEventClick(e: ActionEventArgs) {
         console.log('event clicked !!!!!!!!!!!', e);
         if (e.event["Statut"] != 3 && !e.event["AzaIsPere"]) {
@@ -832,22 +840,42 @@ console.log("On Key Press ====>",event)
       
         }
         this.eventClick = true;
-        // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut 
+        let eventArray =[]
+        //si la touche ctrl est pressée
+        if(this.multiSelectionBacklog ){ // &&  e.event["Statut"] == 3 && !e.event["AzaIsPere"]
+            console.log('add multiselect')
+        
+            this.eventSelecte.push(e.event)
+
+            this.eventSelecte.sort((a,b)=>{
+                return +a.Id - +b.Id
+            })
+            console.log(this.eventSelecte)
+                for(let i =0; i <this.eventSelecte.length ; i++){
+                    if( i == 0){
+                        eventArray.push(this.eventSelecte[i])
+                    }else if(+this.eventSelecte[i-1].Id != +this.eventSelecte[i].Id ){
+                        console.log("item different ", this.eventSelecte[i-1].Id, this.eventSelecte[i].Id)
+                    eventArray.push(this.eventSelecte[i])
+                    console.log(eventArray)
+                   }
+                }
+                console.log(eventArray,"eventArray ===>")
+                this.eventSelecte = eventArray
+           
+           
+            console.log(this.eventSelecte)// liste des events selectionnées 
+          }
+
+
+       
+      // this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut 
     }
     public eventHoverData
     onHover(args: HoverEventArgs) {
-        // console.log(args)
-        this.offsetCell = args.element["offsetLeft"]
         if (args.element.className === "e-appointment e-lib e-draggable") {
-            //   console.log(args)
             this.eventHoverData = args.element
-            //   console.log( this.eventHoverData)
-
-        } else {
-
-            // this.eventHoverData = args.element.dataset 
-
-        }
+        } 
     }
 
     zoomWithScroll() {
@@ -857,46 +885,21 @@ console.log("On Key Press ====>",event)
         if (this.eventHoverData != null) {
             for (let i = 0; i < len - 1; i++) {
                 let event = document.querySelectorAll('.e-appointment')[i] as any;
-
-
                 if (this.eventHoverData != null || undefined) {
                     if (event.getAttribute("data-id") === this.eventHoverData.dataset.id) {
                         console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
                         console.log(event, 'event ')
-                        // console.log((event.getAttribute("aria-label") === this.eventClickData['Name']))
-                        // document.querySelector('.e-content-wrap').scrollTop = document.querySelector('.e-content-wrap').scrollTop;
                         document.querySelector('.e-content-wrap').scrollLeft = event.offsetLeft;
-                        // this.scheduleObj.dataBind()
                         this.isClickZoom = true
                     } else {
-                        // document.querySelector('.e-content-wrap').scrollLeft = this.offsetLeftCell
                         this.isClickZoom = true
                     }
                 }
             }
         }
-        //else{
-        // let cell = document.querySelectorAll('.e-work-cells') as any;
-        //  console.log("Cell click",this.offsetCell  )
-
-
-        //  for(let i = 0 ; i<cell.length ; i++){
-        //            if (this.offsetLeftCell.dataset.date === cell[i].dataset.date && this.offsetLeftCell.dataset.groupIndex === cell[i].dataset.groupIndex ){
-        //               console.log(cell[i],'event ')
-        //             // document.querySelector('.e-content-wrap').scrollLeft = 
-        //             document.querySelector('.e-content-wrap').scrollLeft = cell[i].offsetLeft || cell[i].offsetLeft +100 || cell[i].offsetLeft -100   
-        //             console.log( document.querySelector('.e-content-wrap').scrollLeft)
-        //          }
-        //          if(i === cell.length - 1){
-        //             this.isClickZoom = true
-        //         }
-        //           }
-
-
-        // }
+        
     }
 
-    //    
 
 
     /****************************************************************************************************************************************/
@@ -922,25 +925,9 @@ console.log("On Key Press ====>",event)
 
                 this.dataRegieReady = true;
                 this.salleDataSource = donnees;
-         
-                console.log('salles group result : ', donnees);
-                this.salleDataSource.map(item => {
-                    console.log(item);        
-                    this.departmentGroupDataSource.push({
-                        Text: item.NomSalle,
-                        Id: item.CodeRessource,
-                        Color: '#95b9',
-                        codeSalle: item.CodeSalle,
-                        codeRessource: item.CodeRessource,
-                        libelletype: item.libelletype
-                    });
-                    let newItem = [{ Text: item.NomSalle, Id: item.CodeSalle }];
-                    // this.departmentDataSource = this.departmentDataSource.concat(newItem);           
-                    console.log('regie departmentGroupDataSource', this.departmentGroupDataSource);
-                    this.departmentDataSource=  this.departmentGroupDataSource
-                    this.departmentDataSource=  this.departmentDataSource.sort((a,b) => {
-                    var regieA = a["Text"].toUpperCase(); // ignore upper and lowercase
-                    var regieB = b['Text'].toUpperCase(); // ignore upper and lowercase
+                 this.salleDataSource = this.salleDataSource.sort((a,b) => {
+                    var regieA = a["NomSalle"].toUpperCase(); // ignore les  upper & lowercase
+                    var regieB = b['NomSalle'].toUpperCase(); // ignore les upper & lowercase
                     if (regieA < regieB) {
                       return -1;
                     }
@@ -951,7 +938,22 @@ console.log("On Key Press ====>",event)
                     // names must be equal
                     return 0;
                 } );
-                    // .sort(this.compareValues('Text', 'asc'));
+                console.log('salles group result : ', this.salleDataSource);
+                this.salleDataSource.map(item => {
+                    console.log(item);        
+                    this.departmentGroupDataSource.push({
+                        Text: item.NomSalle,
+                        Id: item.CodeRessource,
+                        Color: '#bb87c0',
+                        codeSalle: item.CodeSalle,
+                        codeRessource: item.CodeRessource,
+                        libelletype: item.libelletype
+                    });
+                    let newItem = [{ Text: item.NomSalle, Id: item.CodeSalle }];
+                    // this.departmentDataSource = this.departmentDataSource.concat(newItem);           
+                    console.log('regie departmentGroupDataSource', this.departmentGroupDataSource);
+                    this.departmentDataSource=  this.departmentGroupDataSource
+              
                     console.log('regie departmentDataSource', this.departmentDataSource);
                     console.log('item code salle fot container request : ', item.CodeSalle);
                     // this.getContainersByRessource(item.CodeRessource);
@@ -978,56 +980,20 @@ console.log("On Key Press ====>",event)
                     let fin = moment(end).format('YYYY-MM-DD').toString();
 
                     if (this.planningChanged || this.clicFermerOnActionComplete) {
-                        if (this.reel.checked) {
+                        if (this.reel.checked) { // affiche le temps réel 
                             console.log(" this.planningChanged  was changed ", idGroup)
                             this.getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroup, debut, fin, item.CodeRessource, item.CodeSalle)
 
                         }
                     }
                 });
-                  this.filterAfterRefresh();
-                // let startofDay = moment().toDate()
-                // let endofDay = moment().add(1, 'd').toDate();
-                //   this.timelineResourceDataOut = []
-                //   if(this.firstCallGetContainersByRessourceStartDateEndDate == 0 ){
-           
-                    this.listeRegies = this.departmentGroupDataSource
-                    // .sort(this.compareValues('Text', 'asc'));
+                          
+                    this.listeRegies = this.departmentGroupDataSource                   
             })
   
 
     }
-// public comparison : number;
-// public varA;
-// public varB ;
-//     compareValues(a, b) {
-//     //     return function innerSort(a, b) {
-//     //     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-//     //       return 0;
-//     //     }
-//     // console.log(a[key]);
- 
-//     //     let varA =(typeof a[key] === 'string')
-//     //       ? a[key].toUpperCase() : a[key];
-//     //      let varB = (typeof b[key] === 'string')
-//     //       ? b[key].toUpperCase() : b[key];
-//     //       console.log( this.varA)
-//     //     this.comparison = 0;
-//     //     if (varA > varB) {
-//     //       this.comparison = 1;
-//     //     } else if (varA < varB) {
-//     //       this.comparison = -1;
-//     //     }
-//     //     return (
-//     //       (order === 'desc') ? (this.comparison * -1) : this.comparison
-//     //     );
-//     //   };
-//     if (a[0] === b[0]) {
-//         return 0;
-//       }
-//       return (a[1] < b[1]) ? 1 : -1;
 
-    // }
 
     getSalleAll(currentGroup, start, end) {
         this.departmentDataSourceAll = [];
@@ -1143,25 +1109,6 @@ console.log("On Key Press ====>",event)
             });
         console.log('fieldmonteur:', this.fieldMonteur);
         console.log('monteur:', this.monteurDataSource);
-        // if( this.monteurDataSource != undefined){
-        //       this.monteurDataSource.map(monteur =>{
-
-        //         this.typeRessourceMonteur.map(statut =>{
-        //          console.log(statut.Code, monteur.typeressource)
-        //           if(statut.Code == monteur.typeressource){
-        //                this.statutMonteur.push({
-        //                 Name: monteur.Username,
-        //                 Libelle: statut.Libelle
-        //                })
-        //                console.log( this.statutMonteur,"++++++++++++++++++++")
-        //           } else{
-
-        //           }
-
-        //         })
-        //     })
-        // }   
-
     }
 
 
@@ -1303,7 +1250,10 @@ console.log("On Key Press ====>",event)
                             CodeRessourceOperateur:data.CodeRessourceOperateur
                         }
                         this.timelineResourceDataOut.push(Event);
-                        this.lastTimelineResourceDataOut.push(Event)
+                        // this.lastTimelineResourceDataOut.push(Event)
+                      
+                  
+                        // console.log(   this.lastTimelineResourceDataOut ,"this.lastTimelineResourceDataOut ====>>")
                         let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
                         let length = this.dataContainersByRessourceStartDateEndDate.length;
 
@@ -1335,7 +1285,7 @@ console.log("On Key Press ====>",event)
                     if (indexSalle === (this.salleDataSource.length - 1)) {
                         this.lastSalleCall = true;
                         console.log("pas de container")
-
+                        // this.updateEventSetting(this.timelineResourceDataOut);
                         console.log("length last call", length, indexSalle, this.lastContainerCallLength)
                         this.disableNavigation = false;
                         if (!this.disableNavigation) {
@@ -1354,17 +1304,7 @@ console.log("On Key Press ====>",event)
                     }
 
                 }
-                //   if( this.timelineResourceDataOut.length === 0){
-
-                //       let toolbar = document.getElementsByClassName('e-toolbar-items');
-                //       for(let i =0; i<toolbar.length; i++){
-
-                //               toolbar[i]["style"].display = 'block'
-
-
-
-                //       }
-                //   }
+         
 
             });
 
@@ -1448,8 +1388,28 @@ console.log("On Key Press ====>",event)
 
 
                         this.timelineResourceDataOut.push(newWorkorderEvent);
-                        this.lastTimelineResourceDataOut.push(newWorkorderEvent);
-                        this.updateEventSetting(this.timelineResourceDataOut);
+                    //     this.lastTimelineResourceDataOut.push(newWorkorderEvent);
+           
+                        
+                    //     this.lastTimelineResourceDataOut.sort(function (a, b) {
+                    //         return +a.Id -  +b.Id;
+                    //       });
+                    //       let newlastTimelineResourceDataOut = []
+                    //  for(let i =0; i<= this.lastTimelineResourceDataOut.length-1;i++){
+                    //           if(i == 0  ){
+                    //             console.log(i)
+                    //             newlastTimelineResourceDataOut.push(this.lastTimelineResourceDataOut[i])
+
+                    //         }else if( this.lastTimelineResourceDataOut[i-1].Id !=this.lastTimelineResourceDataOut[i].Id ){
+                           
+                    //          newlastTimelineResourceDataOut.push(this.lastTimelineResourceDataOut[i])
+                        
+                    //      }
+                    //  }
+                    //  this.lastTimelineResourceDataOut =  newlastTimelineResourceDataOut
+                     
+                    //     console.log(   this.lastTimelineResourceDataOut ,"this.lastTimelineResourceDataOut ====>>")
+                      
                     });
                     // récuperer les containers de la derniére régie
                     let containerEvent = this.timelineResourceDataOut.filter(item => item.CodeRessourceSalle === this.salleDataSource[(this.salleDataSource.length - 1)].CodeRessource && item.AzaIsPere === true);
@@ -1462,7 +1422,7 @@ console.log("On Key Press ====>",event)
                     //    if){
                     if ((indexContainer === (containerEvent.length - 1)) && (indexSalle === (this.salleDataSource.length - 1))) {
                         this.lastSalleCall = true;
-
+                                
                         console.log('*********** end to initial request for all regies container and workorders ***********');
 
                         // récuperer les workOrders du dérnier container de la derniére régie
@@ -1491,7 +1451,15 @@ console.log("On Key Press ====>",event)
                             this.lastSalle = false
                             // }
                             console.log("THIS.ALLDATAWORKORDER", this.allDataWorkorders)
-                        } else {
+                            if(this.Ecriture.checked ==false){
+                                this.onChangeDataSourceEvents()
+                            }
+                            // if( this.operateur.checked == true){
+                            //     this.onChangeDataSourceOperateur()
+                            // }
+                     
+
+                        } else {          
                             if (indexWorkorder === (workorderEvent.length - 1)) {
                                 console.log("+sieurs workorders", workorderEvent, workorderEvent[indexWorkorder])
                                 if (!this.disableNavigation) {
@@ -1508,44 +1476,20 @@ console.log("On Key Press ====>",event)
                                 }, 100);
                                 this.lastSalle = false
                             }
+                            if(this.Ecriture.checked == false){
+                                this.onChangeDataSourceEvents()
+                            }
+                            // if( this.operateur.checked == true){
+                            //     this.onChangeDataSourceOperateur()
+                            // }
+                           
 
                         }
-                        this.createTooltipWorkorder();                      
+                        // this.createTooltipWorkorder();                      
                       
                     }
-                    // }
-                    // console.log('Planning Events', this.scheduleObj.eventSettings.dataSource);
-                    // console.log('Planning Events', this.timelineResourceDataOut[0].AzaIsPere );
-                    //    for(let i = 0 ; i< this.timelineResourceDataOut.length; i++)
-                    //    {
-                    //        let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
-                    //        numepisode = this.timelineResourceDataOut[i].numepisode,
-                    //        dureecommerciale=this.timelineResourceDataOut[i].dureecommerciale,
-                    //         AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere
-                    //         this.temp =  
-                    //         '<div class="tooltip-wrap">' +
-                    //         '${if( titreoeuvre !== null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" > ${libtypeWO}<br> Durée Commerciale :&nbsp;${dureecommerciale} </>  </div> ${/if}' +
-                    //         '<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div>' +
-                    //         '<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div></div></div> ';
-                    //    }
-
-                    // console.log('workorder function get : call calculDateAll function');
-
-                    // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                    //     dataSource: <Object[]>extend(
-                    //         [], this.calculDateAll(this.timelineResourceDataOut, false, null, false, false), null, true
-                    //     ),
-                    //     enableTooltip: true, tooltipTemplate: this.temp
-                    // };
-
-                    this.eventSettings = {
-                        dataSource: <Object[]>extend(
-                            [], this.timelineResourceDataOut, null, true
-                        ),
-                        enableTooltip: true, tooltipTemplate: this.temp
-                    };
-                    // this.getWorkorderTempsReelByIdGroupeStartDateEndDate(idGroup, debut,fin,codeSalle)
-
+                    this.updateEventSetting(this.timelineResourceDataOut);
+         
 
                 } else {
                     // récuperer les container de la derniére régie
@@ -1559,6 +1503,7 @@ console.log("On Key Press ====>",event)
                         console.log(containerEvent, "containers present on last regie ")
                         console.log("dernier Container sans workoders ===>", containerEvent[indexContainer])
                         console.log("length last call", length, indexSalle, this.lastContainerCallLength)
+                        this.updateEventSetting(this.timelineResourceDataOut);
                         this.disableNavigation = false;
                         if (!this.disableNavigation) {
                             let toolbar = document.getElementsByClassName('e-toolbar-items');
@@ -1570,12 +1515,14 @@ console.log("On Key Press ====>",event)
                         this.disabledrefresh = false
                         this.hiderefresh = false
                         this.lastSalle = false
-
-                        this.updateEventSetting(this.timelineResourceDataOut);
-                        //   this.eventSettings = {
-
-                        //     enableTooltip: true, tooltipTemplate: this.temp
-                        // };
+                      
+                                     
+                        if(this.Ecriture.checked == false){
+                            this.onChangeDataSourceEvents()
+                        }
+                        // if( this.operateur.checked == true){
+                        //     this.onChangeDataSourceOperateur()
+                        // }                  
                         this.createTooltipWorkorder();
                     }
 
@@ -1584,8 +1531,7 @@ console.log("On Key Press ====>",event)
                 }
 
             });
-
-
+        
     }
     public dataWorkorderTempsReelByIdGroupeStartDateEndDate
     public EndTimeReel; StartTimeReel
@@ -1707,7 +1653,7 @@ console.log("On Key Press ====>",event)
                             console.log(this.disabledrefresh)
                         }
                     })
-
+                   
                 } else {
 
 
@@ -1740,7 +1686,7 @@ console.log("On Key Press ====>",event)
 
     }
 
-    getWorkorderTempsReelByIdPlannigEvents(idPlanningEvents) {    
+    getWorkorderTempsReelByIdPlannigEvents(idPlanningEvents) {
         this.workOrderTempsReelService
             .getWorkorderTempsReelByIdPlannigEvents(idPlanningEvents)
             .pipe(takeUntil(this.onDestroy$))
@@ -1748,56 +1694,56 @@ console.log("On Key Press ====>",event)
                 console.log(res)
                 this.WorkorderTempsReelEvent = res
             })
-console.log(this.WorkorderTempsReelEvent)
+        console.log(this.WorkorderTempsReelEvent)
     }
 
     createTooltipWorkorder() {
-        let nameService = false
-        this.libGroupe.map(libelle => {
-            if (this.nameService === "BANDES ANNONCES") {
-                if (this.nameService === libelle.Libelle) {
-                    nameService = true
-                    console.log(nameService)
-                }
-            }
-        })
-        console.log('TOOLTIP')
-        let libelleStatut 
-        for (let i = 0; i < this.timelineResourceDataOut.length; i++) {
+        // let nameService = false
+        // this.libGroupe.map(libelle => {
+        //     if (this.nameService === "BANDES ANNONCES") {
+        //         if (this.nameService === libelle.Libelle) {
+        //             nameService = true
+        //             console.log(nameService)
+        //         }
+        //     }
+        // })
+        // console.log('TOOLTIP')
+        // let libelleStatut 
+        // for (let i = 0; i < this.timelineResourceDataOut.length; i++) {
 
          
 
-            let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
-                titreepisode = this.timelineResourceDataOut[i].titreepisode,
-                numepisode = this.timelineResourceDataOut[i].numepisode,
-                dureecommerciale = this.timelineResourceDataOut[i].dureecommerciale,
-                AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere,
-                libchaine = this.timelineResourceDataOut[i].libchaine,
-                coordinateurCreate = this.timelineResourceDataOut[i].coordinateurCreate,
-                Operateur = this.timelineResourceDataOut[i].Operateur,
-                statut = this.timelineResourceDataOut[i].Statut,
-                DateDebutTheo = this.timelineResourceDataOut[i].DateDebutTheo,
-                DateFinTheo = this.timelineResourceDataOut[i].DateFinTheo,
-                DateDebutReel = this.timelineResourceDataOut[i].DateDebutReel,
-                DateFinReel = this.timelineResourceDataOut[i].DateFinReel
+        //     let titreoeuvre = this.timelineResourceDataOut[i].titreoeuvre,
+        //         titreepisode = this.timelineResourceDataOut[i].titreepisode,
+        //         numepisode = this.timelineResourceDataOut[i].numepisode,
+        //         dureecommerciale = this.timelineResourceDataOut[i].dureecommerciale,
+        //         AzaIsPere = this.timelineResourceDataOut[i].AzaIsPere,
+        //         libchaine = this.timelineResourceDataOut[i].libchaine,
+        //         coordinateurCreate = this.timelineResourceDataOut[i].coordinateurCreate,
+        //         Operateur = this.timelineResourceDataOut[i].Operateur,
+        //         statut = this.timelineResourceDataOut[i].Statut,
+        //         DateDebutTheo = this.timelineResourceDataOut[i].DateDebutTheo,
+        //         DateFinTheo = this.timelineResourceDataOut[i].DateFinTheo,
+        //         DateDebutReel = this.timelineResourceDataOut[i].DateDebutReel,
+        //         DateFinReel = this.timelineResourceDataOut[i].DateFinReel
              
             
               
              
-            this.temp = '<div class="tooltip-wrap">' +
-                '<div class="tooltip-wrap">' +
-                '${if(!AzaIsPere && titreoeuvre != null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" >   Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp;<br>  Titre épisode :${titreepisode}  &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${libtypeWO} <br> Libellé chaine : &nbsp; ${libchaine}  <br>  Durée Commerciale :&nbsp;${dureecommerciale} <br> Statut :&nbsp; ${libelleStatut} </>  </>  </div> ${/if}' +
-                '${if (!AzaIsPere && isTempsReel === 0 && Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null) }<div class="time">Retour Opérateur : &nbsp; ${Commentaire_Planning}   </div>  ${/if} </div> ' +
-                '${if(   Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null && AzaIsPere )}<div>Commentaire Coordinateur: &nbsp; ${Commentaire_Planning}  </>  </div> ${/if}' +
-                '${if (AzaIsPere  ) }<div class="time"> Titre: &nbsp;${Name} <br>  Coordinateur: &nbsp; ${coordinateurCreate}  </div> ${/if}' +
-                '${if ( Operateur != null && Operateur !== "" && Operateur !== undefined  ) }<div class="time">Opérateur:&nbsp;${Operateur} </div> ${/if}' +
-                '${if (Statut === 3 || AzaIsPere ) }<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div> ${/if}' +
-                '${if (Statut === 3 || AzaIsPere ) }<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div> ${/if}' +
-                '${if (!AzaIsPere && Statut !== 3 &&   isTempsReel === 0  ) }<div class="time">Début Réel&nbsp;:&nbsp; ${DateDebutReel.toLocaleString()} </div> ${/if}' + //la date valide
-                '${if (!AzaIsPere && Statut !== 3 && Statut !== 2 && Statut !== 5 && isTempsReel === 0  ) }<div class="time">Fin Réel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${ DateFinReel.toLocaleString()} </div> ${/if}' +
-                '${if (!AzaIsPere && isTempsReel === 1 ) }<div class="time">Retour Opérateur : &nbsp; ${Commentaire_Planning} <br>  Coordinateur: &nbsp; ${coordinateurCreate} <br>   Début théorique &nbsp;:&nbsp; ${DateDebutTheo.toLocaleString()} <br>Fin théorique &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${DateFinTheo.toLocaleString()}  </div>  ${/if} </div></div> ';
+        //     this.temp = '<div class="tooltip-wrap">' +
+        //         '<div class="tooltip-wrap">' +
+        //         '${if(!AzaIsPere && titreoeuvre != null && titreoeuvre !== undefined )}<div class="content-area"><div class="name" >   Titre Oeuvre :  &nbsp; ${titreoeuvre} &nbsp;<br>  Titre épisode :${titreepisode}  &nbsp; ep &nbsp;${numepisode} <br> Type de Travail: &nbsp; ${libtypeWO} <br> Libellé chaine : &nbsp; ${libchaine}  <br>  Durée Commerciale :&nbsp;${dureecommerciale} <br> Statut :&nbsp; ${libelleStatut} </>  </>  </div> ${/if}' +
+        //         '${if (!AzaIsPere && isTempsReel === 0 && Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null) }<div class="time">Retour Opérateur : &nbsp; ${Commentaire_Planning}   </div>  ${/if} </div> ' +
+        //         '${if(   Commentaire_Planning !== undefined &&  Commentaire_Planning  !== "" &&  Commentaire_Planning  != null && AzaIsPere )}<div>Commentaire Coordinateur: &nbsp; ${Commentaire_Planning}  </>  </div> ${/if}' +
+        //         '${if (AzaIsPere  ) }<div class="time"> Titre: &nbsp;${Name} <br>  Coordinateur: &nbsp; ${coordinateurCreate}  </div> ${/if}' +
+        //         '${if ( Operateur != null && Operateur !== "" && Operateur !== undefined  ) }<div class="time">Opérateur:&nbsp;${Operateur} </div> ${/if}' +
+        //         '${if (Statut === 3 || AzaIsPere ) }<div class="time">Début&nbsp;:&nbsp;${StartTime.toLocaleString()} </div> ${/if}' +
+        //         '${if (Statut === 3 || AzaIsPere ) }<div class="time">Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;${EndTime.toLocaleString()} </div> ${/if}' +
+        //         '${if (!AzaIsPere && Statut !== 3 &&   isTempsReel === 0  ) }<div class="time">Début Réel&nbsp;:&nbsp; ${DateDebutReel.toLocaleString()} </div> ${/if}' + //la date valide
+        //         '${if (!AzaIsPere && Statut !== 3 && Statut !== 2 && Statut !== 5 && isTempsReel === 0  ) }<div class="time">Fin Réel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${ DateFinReel.toLocaleString()} </div> ${/if}' +
+        //         '${if (!AzaIsPere && isTempsReel === 1 ) }<div class="time">Retour Opérateur : &nbsp; ${Commentaire_Planning} <br>  Coordinateur: &nbsp; ${coordinateurCreate} <br>   Début théorique &nbsp;:&nbsp; ${DateDebutTheo.toLocaleString()} <br>Fin théorique &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; ${DateFinTheo.toLocaleString()}  </div>  ${/if} </div></div> ';
 
-        }
+        // }
     }
 
     public workOrderToBacklog = []
@@ -1878,7 +1824,7 @@ console.log(this.WorkorderTempsReelEvent)
                         this.workOrderToBacklog.push(WorkorderBacklog)
                     }),
                         this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                            enableTooltip: true, tooltipTemplate: this.temp
+                            // enableTooltip: true, tooltipTemplate: this.temp
                         };
                     this.field = {
                         dataSource: this.workOrderData,
@@ -1937,7 +1883,7 @@ console.log(this.WorkorderTempsReelEvent)
     /*************************** DELETE **************************/
 
     public deleteContainerAction = false;
-    deleteContainer(id, event) {
+    deleteContainer(id, event) { // remise au backlog
         this.containersService.deleteContainer(id)
             .pipe(takeUntil(this.onDestroy$))
             .subscribe(res => {
@@ -1969,6 +1915,7 @@ console.log(this.WorkorderTempsReelEvent)
                     )
                 };
                 this.disabledrefresh = false
+                this.eventSelecte = []
             }, error => {
                 console.error('error for delete container request : ', error);
             }
@@ -1989,7 +1936,7 @@ console.log(this.WorkorderTempsReelEvent)
                 if (res) {
                     console.log('res from post => ', res);
                     this.allDataContainers.push(res);
-                    event.Id = res.Id_Planning_Container;
+                    event.Id = res.Id_Planning_Container; //data container for planner
                     event.AzaNumGroupe = res.Id_Planning_Container;
                     console.log(event)
                     console.log('event after post and update id')
@@ -1998,6 +1945,8 @@ console.log(this.WorkorderTempsReelEvent)
                     console.log('workorderEventToUpdate=> ', workorderEventToUpdate);
                     console.log('this.creationArray => ', this.creationArray);
                     console.log('event postContainer',event)
+                    console.log('departement id',event.Id)
+                    this.timelineResourceDataOut.push(event);
                     if (workorderEventToUpdate.length > 0) {
                         this.createJustContainerAction = false;
                         workorderEventToUpdate.map(item => {
@@ -2032,18 +1981,20 @@ console.log(this.WorkorderTempsReelEvent)
                                 libelleStatut: item.libelleStatut,
                                 CodeRessourceCoordinateur: event.CodeRessourceCoordinateur
                             };
-                            this.updateWorkorderInDragDrop(newItemWorkorderAfterEditorUpdate, containerToCreate);
+                            // this.updateWorkorderInDragDrop(newItemWorkorderAfterEditorUpdate, containerToCreate);
+                            this.updateWorkorderInDragDropAddToContainer(newItemWorkorderAfterEditorUpdate, containerToCreate); //ajout multiSelection 
                             console.log('new workorder from post container function: ', newItemWorkorderAfterEditorUpdate);
+                            console.log('startTime new workorder from post container function: ',  newItemWorkorderAfterEditorUpdate.StartTime)
+                            console.log('endtime new workorder from post container function: ',  newItemWorkorderAfterEditorUpdate.EndTime)
                         })
-                    }
-                    this.timelineResourceDataOut.push(event);
+                    }             
                     console.log(this.timelineResourceDataOut, 'timelineResourceDataOut');
-                    this.createTooltipWorkorder();
+                    // this.createTooltipWorkorder();
                     this.eventSettings = { // Réinitialise les events affichés dans le scheduler
                         dataSource: <Object[]>extend(
                             [], this.timelineResourceDataOut, null, true
                         ),
-                        enableTooltip: true, tooltipTemplate: this.temp
+                        // enableTooltip: true, tooltipTemplate: this.temp
                     };
                     this.creationArray = [];
                     this.disabledrefresh = false
@@ -2117,7 +2068,7 @@ console.log(this.WorkorderTempsReelEvent)
             DateFin: endTime,
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
-            CodeRessourceSalle: codeRessourceSalle,
+            CodeRessourceSalle: event.DepartmentID,
             LibelleRessourceSalle: libelleRessourceSalle,
             Commentaire: event.Commentaire,
             Commentaire_Planning: event.Commentaire_Planning,
@@ -2161,7 +2112,7 @@ console.log(this.WorkorderTempsReelEvent)
     })
 
     console.log(chekIfContainerExist,"chekIfContainerExist")
-        if(chekIfContainerExist.length ==0 && this.clickDrop){
+        if(chekIfContainerExist.length ==0 && this.clickDrop){  //si le container args n'existe pas dans timelineResourceDataOut et que j'ai cliqué sur déposer
             this.containerSelected.map(item=>{
                 this.timelineResourceDataOut.push(item)
             })
@@ -2172,12 +2123,11 @@ console.log(this.WorkorderTempsReelEvent)
            this.workorderbrutSelected.map(item =>{
             this.allDataWorkorders.push(item)
            })
-           console.log(this.allDataContainers,"this.containerBrutSelected")
         }
         console.log('update container function');
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         args['Operateur'] = args['Operateur'] === 'Aucun Opérateur' ? '' : args['Operateur'];
-        let event = args;
+        let event = args; //args == data
         console.log(event, 'event container')
         let oldEvent = this.timelineResourceDataOut.filter(item => item.Id === event.Id);
         console.log('old Event container :', oldEvent);
@@ -2191,9 +2141,7 @@ console.log(this.WorkorderTempsReelEvent)
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
         let userEnvoi = this.coordinateurListeArray.filter(item => item.Username === containerResult[0].UserMaj)
         console.log(userEnvoi)
-        let codeRessourceOperateur;
-        //   let codeRessourceCoordinateur = oldEvent[0].CodeRessourceCoordinateur.length === 0? oldEvent[0].CodeRessourceCoordinateur : this.currentCoordinateur.IdCoord
-        //   console.log(codeRessourceCoordinateur,"codeRessourceCoordinateur")
+        let codeRessourceOperateur;   
         let libelleRessourceSalle;
         let codeRessourceSalle;
         this.monteurDataSource.map(item => {
@@ -2308,40 +2256,7 @@ console.log(this.WorkorderTempsReelEvent)
                         }
                     })
                     console.log(this.allDataContainers, 'allDataContainers')
-                    console.log('this.lastTimelineResourceDataOut => ', this.lastTimelineResourceDataOut);
-
-
-                    //   this.lastTimelineResourceDataOut.map(item =>{
-                    //     //   if(item.EndTime.getDate() !== event.DepartmentID){ //provisoire
-                    //       if (item.Id === id) {
-
-                    //           item.DepartmentID = event.DepartmentID;
-
-                    //           console.log('old container to push in timelineResourceDataOut =>', item);
-                    //           this.timelineResourceDataOut.push(item);
-                    //           console.log('timelineResourceDataOut with new item => ', this.timelineResourceDataOut);
-                    //       }
-                    // // }
-                    //   })
-                    //   let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel ===0);
-
-
-
-                    // ************************************************** =========>> a revoir 
-                    //     if(this.lastTimelineResourceDataOut.length > 0 ){
-                    //   let workorderFromLastTime = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel ===0);
-                    //   if (workorderFromLastTime.length > 0) {
-                    //       console.log('workorderFromLastTime ==> ', workorderFromLastTime);
-                    //       this.lastTimelineResourceDataOut = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe !== id);
-                    //       this.timelineResourceDataOut = [...this.timelineResourceDataOut, ...workorderFromLastTime];
-                    //       console.log('this.timelineResourceDataOut ==> ', this.timelineResourceDataOut);
-                    //   }
-                    // }
-                    // let newAllDataContainers = [];
-                    // let newAllDataWorkorders = [];
-                    // this.timelineResourceDataOut.map(item => {
-                    // })
-
+        
                     this.calculDateGroup(this.timelineResourceDataOut, event.AzaNumGroupe, true, event, startDifferent, endDifferent);
                     let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel === 0);
                     //   this.allDataWorkorders.filter(item => item.Id_Planning_Container === id  && item.Id_Planning_Events_TempsReel===0);
@@ -2350,7 +2265,7 @@ console.log(this.WorkorderTempsReelEvent)
                     console.log(this.timelineResourceDataOut)
                     if (workorderEventToUpdate.length > 0) {
                         console.log(workorderEventToUpdate)
-                        this.updateWorkorderInContainerUpdate(id, container, event);
+                        this.updateWorkorderInContainerUpdate(id, container, event);       
                     }else{
                         this.DropEventWithNavigation = false;
                         this.disabledrefresh = false
@@ -2358,19 +2273,13 @@ console.log(this.WorkorderTempsReelEvent)
                         this.openEditor = false
                     }
 
-
-                    this.eventSettings = {
-                        dataSource: <Object[]>extend(
-                            [], this.timelineResourceDataOut, null, true
-                        ),
-                        enableTooltip: true, tooltipTemplate: this.temp
-                    };
+                    
                     // this.eventSettings = {
                     //     dataSource: <Object[]>extend(
-                    //         [], this.calculDateAll(this.timelineResourceDataOut, true, event, startDifferent, endDifferent), null, true
+                    //         [], this.timelineResourceDataOut, null, true
                     //     ),
-                    //     enableTooltip: true, tooltipTemplate: this.temp
-                    // };           
+                    //     // enableTooltip: true, tooltipTemplate: this.temp
+                    // };                 
                     if(this.clickDrop){
                         this.containerSelected = [];
                         this.clickDrop = false
@@ -2397,53 +2306,19 @@ console.log(this.WorkorderTempsReelEvent)
                             }
                             console.log(" ok ")
                             this.eventSettings = {
-                                enableTooltip: true, tooltipTemplate: this.temp
+                                // enableTooltip: true, tooltipTemplate: this.temp
                             };
                         });
 
 
 
-                        this.DropEventWithNavigation = false
+                        // this.DropEventWithNavigation = false
 
                         this.eventSettings = {
                             enableTooltip: false //disable tooltip
                         };
                     }
-            }
-                //   , error => {
-                //       console.error('error updatecontainer', error);
-                //       this.disabledrefresh = false
-                //       this.openEditor = false 
-                //       this.startResize= false
-                //     //   this.scheduleObj.readonly = false
-                //       swal({
-                //           title: 'Attention',
-                //           html: 'Le déplacement est impossible car l\'emplacement est occupé par un autre container. <br> <br> Veuillez cliquer sur le bouton  Rafraichir pour l\'afficher',
-                //           showCancelButton: false,
-                //           confirmButtonText: 'Rafraichir',
-                //           cancelButtonText: 'Annuler',
-                //           allowOutsideClick:false
-                //       }).then((refresh) => {
-                //           if(refresh.value){
-                //           this.refreshScheduler()
-                //       }else{
-                //           console.log("click annuler")
-                //       }
-                //       console.log(" ok ")
-                //       this.eventSettings = {
-                //           enableTooltip: true, tooltipTemplate: this.temp
-                //       };          
-                //   });
-
-
-
-
-
-                //       this.eventSettings = {              
-                //           enableTooltip: false //disable tooltip
-                //       };
-
-                //   }
+                }
             )
 
     }
@@ -2483,8 +2358,7 @@ console.log(this.WorkorderTempsReelEvent)
                     this.timelineResourceDataOut[indexContainerEvent]['Operateur'] = operateurObject.Username;
                     //   let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel===0);
                     let Operateur = operateurObject.Username;
-                    this.updateWorkorderInContainerUpdate(id, container, containerEvent, Operateur);
-                    this.onActionComplete('e');
+                    this.updateWorkorderInContainerUpdate(id, container, containerEvent, Operateur);     
                 } else
                     if (res["error"]) {
                         console.error('error updatecontainer');
@@ -2527,65 +2401,31 @@ console.log(this.WorkorderTempsReelEvent)
         console.log('update workorer ! ==> event ==> ', event);
         // AJOUTER ICI UNE CONDITION SI DATE ACTIVE EST DIFFERENTE DE CELLE PRECEDENTE :
         // FILTRER ALORS SUR ANCIEN TIMELINEDATAOUT
-        console.log('this.lastTimelineResourceDataOut ===> ', this.lastTimelineResourceDataOut);
+        // console.log('this.lastTimelineResourceDataOut ===> ', this.lastTimelineResourceDataOut);
         console.log('this.startofDay ==> ', this.startofDay);
         // this.startofDay = moment(newStartOfDay).toDate();
         // if (this.scheduleObj['activeView'].renderDates[0] === container.st )
         let timelineDataOut = this.timelineResourceDataOut;
         let workorderEventToUpdate = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel === 0);
-        let workorderFromLastTime = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel === 0);
-        console.log('workorderEventToUpdate => ', workorderEventToUpdate);
-        console.log(workorderFromLastTime)
+        // let workorderFromLastTime = this.lastTimelineResourceDataOut.filter(item => item.AzaNumGroupe === id && !item.AzaIsPere && item.isTempsReel === 0);
+        console.log('workorderEventToUpdate => ', workorderEventToUpdate);     
         let numberOfWorkorder = workorderEventToUpdate.length;
-        if (workorderEventToUpdate.length > 0) {
+        // if (workorderEventToUpdate.length > 0) {
             // this.createJustContainerAction = false;
             workorderEventToUpdate.map(item => {
 
                 this.putWorkorderFromUpdateContainer(id, container, event, item, Operateur);
             });
-            // } else if (workorderFromLastTime.length > 0) {
-            //     workorderFromLastTime.map(item => {
-            //         console.log('!!!!!!!!!!!!!!! ========> item.StartTime before change ===> ', item.StartTime)
-            //         let containerStartDay = moment(container.DateDebutTheo).get('date');
-            //         let containerStartMonth = moment(container.DateDebutTheo).get('month');
-            //         let containerStartYear = moment(container.DateDebutTheo).get('year');
-            //         let containerEndDay = moment(container.DateFinTheo).get('date');
-            //         let containerEndMonth = moment(container.DateFinTheo).get('month');
-            //         let containerEndYear = moment(container.DateFinTheo).get('year');
-            //         let dateDebut = item.StartTime;
-            //         let dateFin = item.EndTime;
-            //         let objectDateDebut = moment(dateDebut).toObject();
-            //         let objectDateFin = moment(dateFin).toObject();
-            //         let newDateDebut = moment(
-            //             `${containerStartDay}.${containerStartMonth}.${containerStartYear} ${objectDateDebut.hours}:${objectDateDebut.minutes}`,
-            //             'DD.MM.YYYY HH:mm').toDate();
-            //         let newDateFin = moment(
-            //             `${containerEndDay}.${containerEndMonth}.${containerEndYear} ${objectDateFin.hours}:${objectDateFin.minutes}`,
-            //             'DD.MM.YYYY HH:mm').toDate();
-            //         console.log('newDateDebut => ', newDateDebut);
-            //         console.log('newDateFin => ', newDateFin);
-            //         // newDate.date = containerDay;
-            //         // newDate.months = containerMonth;
-            //         // newDate.years = containerYear;
-            //         // let startTime = moment(newDate).toString();
-            //         // console.log(newDate);
-            //         item.StartTime = newDateDebut;
-            //         console.log('nouvelle dateDebut avec bon format ==> ', newDateDebut);
-            //         item.EndTime = newDateFin;
-            //         console.log('nouvelle dateFin avec bon format ==> ', newDateFin);
-            //         console.log('!!!!!!!!!!!!!!! ========> item after change ===> ', item)
-            //         // this.putWorkorderFromUpdateContainer(id, container, event, item);
-            //     });
-
-        } else {
-            this.disabledrefresh = false
-            this.fincalculDateGroup = false
-            this.openEditor = false
-            this.startResize = false
-            console.log("container without workorder")
-            //   this.scheduleObj.readonly = false
-            this.DropEventWithNavigation = false
-        }
+           
+        // } else {
+        //     this.disabledrefresh = false
+        //     this.fincalculDateGroup = false
+        //     this.openEditor = false
+        //     this.startResize = false
+        //     console.log("container without workorder")
+        //     //   this.scheduleObj.readonly = false
+        //     this.DropEventWithNavigation = false
+        // }
     }
 
     putWorkorderFromUpdateContainer(id, container, eventContainer, eventWorkorder, Operateur?) { // RESIZE AND EDITOR
@@ -2663,7 +2503,7 @@ console.log(this.WorkorderTempsReelEvent)
             .then(res => {
                 if (!res["error"]) {
                     console.log('update workorder with success : ', res);
-                    console.log(this.allDataWorkorders); // all brut workorder data in backlog
+                    // console.log(this.allDataWorkorders); // all brut workorder data in backlog
                     // LUNDI ====> AJOUTER UN REFRESH DES EVENEMENTS !!!!!!!!!!
 
                     this.timelineResourceDataOut.map(item => {
@@ -2727,13 +2567,21 @@ console.log(this.WorkorderTempsReelEvent)
 
                         }
                     });
-                    console.log(this.allDataWorkorders);
-                    console.log('this.scheduleObj.getEvents() ==> ', this.scheduleObj.getEvents());
+                    // console.log(this.allDataWorkorders);
+                    // console.log('this.scheduleObj.getEvents() ==> ', this.scheduleObj.getEvents());
                    //07/11/2019
 
                     //   this.scheduleObj.dataBind();
                     //   dataSource: <Object[]>extend([], this.calculDateAll(this.data, true, null, false, false), null, true),
-                    console.log(this.eventSettings.dataSource);
+                    // console.log(this.eventSettings.dataSource);
+                    // this.scheduleObj.refreshEvents()
+                    this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                        dataSource: <Object[]>extend(
+                            [], this.timelineResourceDataOut, null, true
+                        ),
+                        // enableTooltip: true, tooltipTemplate: this.temp
+                    };
+                    this.updateEventSetting(this.timelineResourceDataOut)
                     this.disabledrefresh = false
                     this.fincalculDateGroup = false
                     this.openEditor = false
@@ -2741,14 +2589,7 @@ console.log(this.WorkorderTempsReelEvent)
                     console.log(this.openEditor, "this.openEditor when update container")
                     this.DropEventWithNavigation = false
  
-                    // this.scheduleObj.saveEvent(eventWorkorder);
-                    this.scheduleObj.refreshEvents()
-                    this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                        dataSource: <Object[]>extend(
-                            [], this.timelineResourceDataOut, null, true
-                        ),
-                        enableTooltip: true, tooltipTemplate: this.temp
-                    };
+                    // this.scheduleObj.saveEvent(eventWorkorder);    
 
                 } else
                     if (res["error"]) {
@@ -2780,38 +2621,39 @@ console.log(this.WorkorderTempsReelEvent)
 
                     }
                 //   this.scheduleObj.readonly = false
-            }, error => {
-                // this.scheduleObj.readonly = false
-                swal({
-                    title: 'Attention',
-                    text: 'Impossible de superpositionner les containers',
-                    showCancelButton: false,
-                    confirmButtonText: 'Fermer',
-                    allowOutsideClick: false
-
-                }).then((Fermer) => {
-                    console.log(Fermer)
-                    this.scheduleObj.eventSettings.dataSource = []
-                    this.departmentGroupDataSource = [];
-                    if (Fermer.value) {
-                        this.clicFermerOnActionComplete = true
-                        this.refreshDate()
-                        this.getSalleByGroup(this.groupCoordinateur, this.refreshDateStart, this.refreshDateEnd)
-
-                    }
-                })
-                this.openEditor = false
-                this.startResize = false
-                console.error('error update workorder : ', error)
             }
+            // , error => {
+            //     // this.scheduleObj.readonly = false
+            //     swal({
+            //         title: 'Attention',
+            //         text: 'Impossible de superpositionner les containers',
+            //         showCancelButton: false,
+            //         confirmButtonText: 'Fermer',
+            //         allowOutsideClick: false
+
+            //     }).then((Fermer) => {
+            //         console.log(Fermer)
+            //         this.scheduleObj.eventSettings.dataSource = []
+            //         this.departmentGroupDataSource = [];
+            //         if (Fermer.value) {
+            //             this.clicFermerOnActionComplete = true
+            //             this.refreshDate()
+            //             this.getSalleByGroup(this.groupCoordinateur, this.refreshDateStart, this.refreshDateEnd)
+
+            //         }
+            //     })
+            //     this.openEditor = false
+            //     this.startResize = false
+            //     console.error('error update workorder : ', error)
+            // }
             );
     }
 
     /**** PUT WORKORDER IN DRAG AND DROP ****/
 
     updateWorkorderInDragDrop(event, containerParent) {
-        console.log('event to workorder backlog => ', event);
-        console.log('containerParent to workorder backlog => ', containerParent);
+        console.log('event to workorder backlog => ', event); //data container
+        console.log('containerParent to workorder backlog => ', containerParent); //data brut container
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         let workorderResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id);
         console.log('workorderResult', workorderResult)
@@ -2819,6 +2661,8 @@ console.log(this.WorkorderTempsReelEvent)
         console.log('workorderSelected', workorderSelected);
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
+        console.log(startTime,'startTime ==>');
+        console.log(endTime,'endTime ==>');
         this.calculWorkorderTime(startTime, endTime);
         let codeRessourceOperateur;
         let libelleRessourceSalle;
@@ -2835,17 +2679,35 @@ console.log(this.WorkorderTempsReelEvent)
                 codeRessourceSalle = item['codeRessource'];
             }
         });
+        // let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+        // let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+      
+        //  let calculegroup = this.calculDateGroup(
+        //             this.timelineResourceDataOut,
+        //             event.AzaNumGroupe,
+        //             true,
+        //            event,
+        //             startDifferent,
+        //             endDifferent
+        //         )
+        // console.log( calculegroup)
+        // let workorderSelectedInBacklog
+        //                  for(let i =0;i<calculegroup.length;i++){
+        //                      if(calculegroup['Id'] === workorderSelected.Id_Planning_Events ){
+        //                     workorderSelectedInBacklog = calculegroup[i]
+        //                  }}
+    //    console.log(workorderSelectedInBacklog,"**********")
         let newWorkorder = {
             Id_Planning_Events: workorderSelected.Id_Planning_Events,
             Iddetail: workorderSelected.Iddetail,
             IdTypeWO: workorderSelected.IdTypeWO,
             UserEnvoi: workorderSelected.UserEnvoi,
             DateEnvoi: workorderSelected.DateEnvoi,
-            CodeRessourceOperateur: containerParent.CodeRessourceOperateur, // voir ou et si on récupère la donnée par la suite
+            CodeRessourceOperateur: containerParent.CodeRessourceOperateur, 
             CodeRessourceCoordinateur: workorderSelected.CodeRessourceCoordinateur,
             DateSoumission: workorderSelected.DateSoumission,
-            DateDebut: workorderSelected.DateDebut, // changement pour remy
-            DateFin: workorderSelected.DateFin, // changement pour remy
+            DateDebut: workorderSelected.DateDebut, 
+            DateFin: workorderSelected.DateFin, 
             DateDebutTheo: startTime,
             DateFinTheo: endTime,
             CodeRessourceSalle: containerParent.CodeRessourceSalle,
@@ -2885,8 +2747,10 @@ console.log(this.WorkorderTempsReelEvent)
 
         }
         console.log('workorder data selected', newWorkorder);
+//  this.putWorkorderWithCalcul(newWorkorder,event,containerParent,this.timelineResourceDataOut,true)
         this.putWorkorder(newWorkorder.Id_Planning_Events, newWorkorder, event);
     }
+// }
 
     putWorkorder(id, workorder, event) {
         this.workorderService
@@ -2902,17 +2766,34 @@ console.log(this.WorkorderTempsReelEvent)
                     this.allDataWorkorders.push(workorder);
                     this.displayWorkorderInBacklogWorkorderData(event, 'delete')
                     this.timelineResourceDataOut.push(event);
-                    this.createTooltipWorkorder();
-                    this.eventSettings = { // Réinitialise les events affichés dans le scheduler
-                        dataSource: <Object[]>extend(
-                            [], this.timelineResourceDataOut, null, true
-                        ),
-                        enableTooltip: true, tooltipTemplate: this.temp
-                    };
+                    // this.createTooltipWorkorder();
+                    // this.eventSettings = { // Réinitialise les events affichés dans le scheduler
+                    //     dataSource: <Object[]>extend(
+                    //         [], this.timelineResourceDataOut, null, true
+                    //     ),
+                    //     // enableTooltip: true, tooltipTemplate: this.temp
+                    // };
                     this.WorkOrderByidgroup.push(workorder);
                     this.scheduleObj.refreshEvents()
                     this.disabledrefresh = false
-
+                    let startDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                    let endDifferent = this.checkDiffExistById(event, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+                    this.eventSettings = {
+                        dataSource: <Object[]>extend(
+                            [],
+                            this.calculDateGroup(
+                                this.timelineResourceDataOut,
+                                event.AzaNumGroupe,
+                                true,
+                               event,
+                                startDifferent,
+                                endDifferent
+                            ),
+                            null, true
+                        ),
+                        // enableTooltip: true, tooltipTemplate: this.temp
+                    };
+                    this.workorderSelectedInBacklog = []
                 } else
                     if (res["error"]) {
                         swal({
@@ -2924,20 +2805,11 @@ console.log(this.WorkorderTempsReelEvent)
 
                         })
                         console.error('error update workorder : ')
+                        this.workorderSelectedInBacklog = []
                     }
 
             }
-                //   , error => {
-                //   swal({
-                //       title: 'Attention',
-                //    text: 'Erreur dans la mise à jour du workorder',
-                //   showCancelButton: false,
-                //   confirmButtonText: 'Fermer',
-                //   allowOutsideClick:false
-
-                //  })
-                //  console.error('error update workorder : ', error)
-                //  }
+            
             );
     }
 
@@ -2956,14 +2828,20 @@ console.log(this.WorkorderTempsReelEvent)
         };
     }
 
-    updateWorkorderInDragDropAddToContainer(event, containerParent) {
+    updateWorkorderInDragDropAddToContainer(event, containerParent) { //event ==>workorder
         console.log('event to workorder backlog => ', event);
         console.log('containerParent to workorder backlog => ', containerParent);
 
         let now = moment().format('YYYY-MM-DDTHH:mm:ss');
         let workorderResult = this.WorkOrderByidgroup.filter(item => item.Id_Planning_Events === event.Id);
         let workorderSelected = workorderResult[0];
-        let otherWorkorderExistForCOntainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere && item.isTempsReel === 0);
+        
+        let otherWorkorderExistForCOntainer;
+        if(this.workorderSelectedInBacklog.length == 0){
+        otherWorkorderExistForCOntainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere && item.isTempsReel === 0);
+    }else{
+        otherWorkorderExistForCOntainer = this.workorderSelectedInBacklog
+    }
         console.log('otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
@@ -3011,7 +2889,7 @@ console.log(this.WorkorderTempsReelEvent)
                 console.log(eventNewDates);
                 for (let i = 0; i < eventNewDates.length; i++) {
                     console.log(eventNewDates[i]);
-                    this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent, provisionalTimelineDataOut);
+                    this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent, provisionalTimelineDataOut); 
                     console.log(checkIfCloture, "checkIfCloture if")
                 }
             } else {
@@ -3022,10 +2900,11 @@ console.log(this.WorkorderTempsReelEvent)
                 this.creationArray.pop()
 
             }
-
+       
         } else {
             console.log('NO otherWorkorderExistForCOntainer => ', otherWorkorderExistForCOntainer);
-            this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
+            // this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
+        
             let newWorkorder = {
                 Id_Planning_Events: workorderSelected.Id_Planning_Events,
                 Iddetail: workorderSelected.Iddetail,
@@ -3074,9 +2953,9 @@ console.log(this.WorkorderTempsReelEvent)
                 coordinateurCreate: this.currentCoordinateur.Username
             }
             console.log('workorder data selected', newWorkorder);
-       
+        
             this.putWorkorderWithCalcul(newWorkorder, event, containerParent, this.timelineResourceDataOut, true);
-        }
+     }
 
     }
 
@@ -3094,6 +2973,8 @@ console.log(this.WorkorderTempsReelEvent)
                     let containerPere = containerEvent[0];
                     console.log(containerPere)
                     this.allDataWorkorders.push(newWorkorder);
+                    console.log('newWorkOerder ==========>',newWorkorder)
+                    eventWorkorder.DepartmentID = newWorkorder.CodeRessourceSalle
                     console.log('eventWorkorder =================>', eventWorkorder);
                     if (pushEvent) {
                         this.timelineResourceDataOut.push(eventWorkorder);
@@ -3101,6 +2982,8 @@ console.log(this.WorkorderTempsReelEvent)
                     let startDifferent = this.checkDiffExistById(containerPere, timelineDataOut, 'StartTime', 'StartTime');
                     let endDifferent = this.checkDiffExistById(containerPere, timelineDataOut, 'EndTime', 'EndTime');
                     console.log('update only group in timelinesDataOut');
+                
+                    console.log('this.timelineResourceDataOut after calcul workorder update => ', this.timelineResourceDataOut);
                     this.timelineResourceDataOut = this.calculDateGroup(
                         timelineDataOut,
                         containerPere.Id_Planning_Container,
@@ -3112,13 +2995,41 @@ console.log(this.WorkorderTempsReelEvent)
                     console.log('this.timelineResourceDataOut after calcul workorder update => ', this.timelineResourceDataOut);
                     this.eventSettings = {
                         dataSource: <Object[]>extend([], this.timelineResourceDataOut, null, true),
-                        enableTooltip: true, tooltipTemplate: this.temp
+                        // enableTooltip: true, tooltipTemplate: this.temp
                     };
+                        // this.eventSettings = {
+                        //     dataSource: <Object[]>extend(
+                        //         [],
+                        //         this.calculDateGroup(
+                        //             this.timelineResourceDataOut,
+                        //             containerPere.Id_Planning_Container,
+                        //             true,
+                        //             containerPere,
+                        //             startDifferent,
+                        //             endDifferent
+                        //         ),
+                        //         null, true
+                        //     ),
+                        //     // enableTooltip: true, tooltipTemplate: this.temp
+                        // };
+                     
+                        // enableTooltip: true, tooltipTemplate: this.temp
+                        // this.updateEventSetting(this.timelineResourceDataOut)
+
                     this.disabledrefresh = false
                     if (this.creationArray.length == 1) {
                         this.creationArray.pop()
 
                     }
+
+                    
+                    this.workorderSelectedInBacklog = []
+                    console.log(this.numberOfDeleteWorkOrder, this.eventSelecte.length,"LENGTH ====>" )
+                //   if(this.workorderSelectedInBacklog.length == 0){
+                //      console.log(this.timelineResourceDataOut) 
+                    //   this.updateEventSetting(this.timelineResourceDataOut)
+                //   }
+                    this.eventSelecte = []
                 } else
                     if (res["error"]) {
                         swal({
@@ -3130,6 +3041,7 @@ console.log(this.WorkorderTempsReelEvent)
 
                         })
                         console.error('error update workorder : ')
+                        this.workorderSelectedInBacklog = []
                     }
 
             }
@@ -3201,7 +3113,7 @@ console.log(this.WorkorderTempsReelEvent)
             DateFinReel: workorder.DateFinTheo,
             libelleStatut: workorder.libelleStatut
         }
-
+       
         console.log('workorder after => ', newWorkorder);
         this.putWorkorderWithCalcul(newWorkorder, event, containerParent, provisionalTimelineDataOut, false);
     }
@@ -3220,21 +3132,7 @@ console.log(this.WorkorderTempsReelEvent)
         let workorderSelected = workorderResult[0];
         console.log(workorderSelected, "workorderSelected")
         let othersWorkorderForContainer = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === event.AzaNumGroupe && !item.AzaIsPere && item.isTempsReel === 0);
-
-        if (othersWorkorderForContainer.length <= 0) {
-            swal({
-                title: 'Supprimer le container associé',
-                text: 'Vous supprimez le dernier workorder du container, ' + 'souhaitez-vous supprimer le container ?',
-                showCancelButton: true,
-                allowOutsideClick: false,
-                cancelButtonText: 'NON',
-                confirmButtonText: 'SUPPRIMER'
-            }).then((result) => {
-                if (result.value) {
-                   this.deleteContainerForGood(containerPere.Id,event)
-                }
-            })
-        } else {
+ 
             // console.log('other workorders presents for container');
             // let provisionaldeletetimelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
             //     if (+event.Id !== +item.Id) {
@@ -3259,7 +3157,7 @@ console.log(this.WorkorderTempsReelEvent)
             //     console.log(eventNewDates[i]);
             //     // this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerPere, provisionalTimelineDataOut);
             // }
-        }
+      
         console.log('othersWorkorderForContainer : ', othersWorkorderForContainer);
         let startTime = moment(event.StartTime).format('YYYY-MM-DDTHH:mm:ss');
         let endTime = moment(event.EndTime).format('YYYY-MM-DDTHH:mm:ss');
@@ -3326,7 +3224,7 @@ console.log(this.WorkorderTempsReelEvent)
                 if (this.deleteContainerAction) {
                     this.eventSettings = {
                         dataSource: <Object[]>extend([], this.timelineResourceDataOut, null, true),
-                        enableTooltip: true, tooltipTemplate: this.temp
+                        // enableTooltip: true, tooltipTemplate: this.temp
                     };
                 } else {
                     this.eventSettings = {
@@ -3339,7 +3237,7 @@ console.log(this.WorkorderTempsReelEvent)
                                 startDifferent,
                                 endDifferent
                             ), null, true),
-                        enableTooltip: true, tooltipTemplate: this.temp
+                        // enableTooltip: true, tooltipTemplate: this.temp
                     };
                     console.log('this.timelineResourceDataOut => ', this.timelineResourceDataOut)
                     console.log(event.Id);
@@ -3352,6 +3250,22 @@ console.log(this.WorkorderTempsReelEvent)
                         this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent[0], this.timelineResourceDataOut);
                     }
                 }
+
+                
+        if (othersWorkorderForContainer.length <= 0) {
+            swal({
+                title: 'Supprimer le container associé',
+                text: 'Vous supprimez le dernier workorder du container, ' + 'souhaitez-vous supprimer le container ?',
+                showCancelButton: true,
+                allowOutsideClick: false,
+                cancelButtonText: 'NON',
+                confirmButtonText: 'SUPPRIMER'
+            }).then((result) => {
+                if (result.value) {
+                   this.deleteContainerForGood(containerPere.Id,event)
+                }
+            })
+        }
             }, error => {
                 swal({
                     title: 'Attention',
@@ -3419,7 +3333,7 @@ console.log(this.WorkorderTempsReelEvent)
         let targetNodeId: string = this.treeObj.selectedNodes[0];
         let nodeId: string = 'tree_' + newWorkorderForList.Id;
         this.eventSettings = {
-            enableTooltip: true, tooltipTemplate: this.temp
+            // enableTooltip: true, tooltipTemplate: this.temp
         };
         this.treeObj.addNodes([newWorkorderForList], targetNodeId, null); // TreeViewComponent
 
@@ -3436,6 +3350,7 @@ console.log(this.WorkorderTempsReelEvent)
             } else {
             }
         }, 200);
+        this.eventSelecte = [] // vider la liste des workorders remis au backlog
     }
     /************************************************ PUT ---orkorder *****************************************/
     updateWorkOrder(args) {
@@ -3578,7 +3493,7 @@ console.log(this.WorkorderTempsReelEvent)
                         ),
                         null, true
                     ),
-                    enableTooltip: true, tooltipTemplate: this.temp
+                    // enableTooltip: true, tooltipTemplate: this.temp
                 };
                 this.scheduleObj.refreshEvents()
 
@@ -3625,15 +3540,22 @@ deleteWorkOrderForGood(id){
        if(workOrderDelete.isbacklog == 1){
           setTimeout(() => {
             this.displayWorkorderInBacklogWorkorderData(this.workorderDelete , 'delete')
-           
+            this.eventSelecte = []
           }, 200);
-        }
+        }else{
+            // this.timelineResourceDataOut =  this.timelineResourceDataOut.filter(item => item.Id !=  this.workorderDelete.AzaNumGroupe);
+            this.updateEventSetting(this.timelineResourceDataOut)
+            // console.log(this.timelineResourceDataOut)
+            this.eventSelecte = []
+    }
     })
+  
 }else{
     this.dialogRefresh()
+    this.eventSelecte = []
 }}
 
-deleteContainerForGood(id,event){
+deleteContainerForGood(id,event){ // suppression définitive
     if(!this.statutDifferent){
     this.containersService.deleteContainer(id)
     .pipe(takeUntil(this.onDestroy$))
@@ -3655,18 +3577,29 @@ deleteContainerForGood(id,event){
     this.updateEventSetting(this.timelineResourceDataOut)
 }else{
     this.dialogRefresh()
-}}
+}
+this.disableNavigation = false;
+if (!this.disableNavigation) {
+    let toolbar = document.getElementsByClassName('e-toolbar-items');
+    for (let i = 0; i < toolbar.length; i++) {
+        toolbar[i]["style"].display = 'block'
+  
+    }
+}
+
+}
 
 
     /*************************************************************************/
     /*************************** UTILITY FUNCTIONS ***************************/
 
     updateEventSetting(data) {
+console.log("**** UPDATE EVENTSETTING**********")
         this.eventSettings = { // Réinitialise les events affichés dans le scheduler
             dataSource: <Object[]>extend(
                 [], data, null, true
             ),
-            enableTooltip: true, tooltipTemplate: this.temp
+            // enableTooltip: true, tooltipTemplate: this.temp
         };
     }
 
@@ -3724,7 +3657,7 @@ deleteContainerForGood(id,event){
         this.argsOnNavigating = args
         this.lastAllDataContainers = this.allDataContainers;
         this.lastAllDataWorkorders = this.allDataWorkorders;
-        console.log('this.lastTimelineResourceDataOut ===> ', this.lastTimelineResourceDataOut);
+        // console.log('this.lastTimelineResourceDataOut ===> ', this.lastTimelineResourceDataOut);
         this.timelineResourceDataOut = [];
         this.scheduleObj.eventsProcessed = []
         // this.allDataContainers = [];
@@ -3874,6 +3807,7 @@ deleteContainerForGood(id,event){
             console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
             this.refreshDateStart = this.startofWeek;
             this.refreshDateEnd = this.endofWeek;
+    console.log(this.scheduleObj["injector"].view.component.timelineResourceDataOut,"++++++++++++++++++++++++++++++++")
             this.salleDataSource.forEach(salle => {
                 let indexSalle = this.salleDataSource.indexOf(salle);
                 if (this.theorique.checked) {
@@ -3898,7 +3832,7 @@ deleteContainerForGood(id,event){
             this.scheduleObj.refreshEvents();
             console.log('timelineResourceDataOut => ', this.timelineResourceDataOut);
             console.log("this.scheduleObj.getEvents() =>", this.scheduleObj.getEvents(), this.scheduleObj.eventsProcessed)
-
+            console.log(this.scheduleObj,"eeeeeeeeeeeeeee")
             // TIMELINEMONTH
         } else if ((args.currentView === 'TimelineMonth') || (args.currentView == undefined && (this.scheduleObj.currentView === 'TimelineMonth'))) {
             //   this.valueMax = 80
@@ -4037,7 +3971,7 @@ deleteContainerForGood(id,event){
         // console.log(args)
         // args.element.draggable = true
 
-        scheduleElement[0]['style'].zoom = "100%"
+       
 
         if (args.data.AzaIsPere) {
             if (this.scheduleObj.currentView === 'TimelineMonth') {
@@ -4141,7 +4075,7 @@ deleteContainerForGood(id,event){
             if(this.deleteButton != null){
             this.deleteButton['title'] = "Retour au backlog"
         }
-            let btnclose = document.getElementsByClassName('e-close e-control');
+            let btnclose = document.getElementsByClassName('e-close e-control');  //btn fermer de la modale de multiselection 
             btnclose[0].addEventListener('click', () => {
                 this.editor = false
                 let cellPopup = document.getElementsByClassName('e-cell-popup');
@@ -4154,18 +4088,17 @@ deleteContainerForGood(id,event){
                 }
                 console.log(btnclose)
             }, true);
-            let save = document.getElementsByClassName("e-event-save")
+          //  let save = document.getElementsByClassName("e-event-save")
 
-            save[0].addEventListener('click', () => {
-                if (this.filtreRegie && args.target === "e-appointment") {
+            // save[0].addEventListener('click', () => {
+            //     if (this.filtreRegie && args.target === "e-appointment") {
 
-                    this.openSideBar = false
-                    console.log('click save ', this.openSideBar)
-                }
-            }, true)
+            //         this.openSideBar = false
+            //         console.log('click save ', this.openSideBar)
+            //     }
+            // }, true)
 
-            // e-subject e-field e-input
-            console.log(args.data.StartTime.getHours())
+     
             let title = document.getElementsByClassName('e-subject-container');
             let subTitle = document.getElementsByClassName('e-location-container');
             let Debut = document.getElementsByClassName('e-start-container');
@@ -4186,173 +4119,13 @@ deleteContainerForGood(id,event){
             }
             let DepartmentID = document.getElementsByClassName('e-DepartmentID');
             console.log("DepartmentID dbclick cell", DepartmentID)
-            DepartmentID[0]["ej2_instances"][0].value = DepartmentID[0]["ej2_instances"][0].text
+            DepartmentID[0]["ej2_instances"][0].value = DepartmentID[0]["ej2_instances"][0].text //afficher le nom de la regie sans la modale
             // DepartmentID[0]["ej2_instances"][0].itemData = DepartmentID[0]["ej2_instances"][0].itemData.concat(this.listeRegies)
             DepartmentID[0]["ej2_instances"][0].dataSource = this.listeRegies
             this.editor = true
-            let titleContainer = document.getElementsByClassName('e-subject e-text-ellipsis')
-         
-        if( this.eventClick && (args.data.Statut == 3 || args.data.AzaIsPere) ){
-        let elementPopOpen  = args.element.querySelector('.e-header-icon-wrapper');
-        console.log(elementPopOpen)
-        // let btnCalendar = createElement('div'); 
-        if(elementPopOpen!= null){
-        let row= createElement('div');
-        // elementPopOpen.appendChild(btnCalendar)
-        // btnCalendar.innerHTML =`<div  class='e-icons BT_Remove icon-vue ' title='' ></div>`
-        elementPopOpen.prepend(row)
-        // prepend 
-        console.log(args.data.Id)
-       
-        row.innerHTML=`<div id='${args.data.Id}id' class='e-icons BT_Remove icon-vue ' title='Supprimer définitivement' ></div>`
-  
-        // target.innerHTML = '<div class="e-icons e-edit-icon1 icon-vue" ></div>';
-        console.log(row)
-    }
-        let btnDelete = document.getElementById(args.data.Id+ 'id')
-        console.log(btnDelete)
-        console.log(isTempsReel)
-        if( isTempsReel.length==0){
-            let removeIcone = document.getElementsByClassName('BT_Remove');
-            removeIcone[0]['style'].display = 'block';
-        }else{     
-            let removeIcone = document.getElementsByClassName('BT_Remove');
-            removeIcone[0]['style'].display = 'none';
-        }
-
-        if(!args.data.AzaIsPere && args.data.Statut ==3){
-            let removeIcone = document.getElementsByClassName('BT_Remove');
-            removeIcone[0]['style'].display = 'block';
-          }
-        
-            
-            btnDelete.addEventListener('click', () => { 
-                let container 
-                if(!args.data.AzaIsPere){
-                     container =  this.timelineResourceDataOut.filter(item => item.Id === args.data.AzaNumGroupe)
-                }else{
-                    container = args.data
-                }
-           console.log(container)
-           if(!this.checkIfContainerHasATempsReel(container,container.Id)){
-                if(!args.data.AzaIsPere && args.data.Statut == 3){
-              console.log("click new btn delete",btnDelete)
-              swal({
-                title: 'Supprimer définitivement le workorder',
-                text:  'souhaitez-vous supprimer définitivement le workorder ?',
-                showCancelButton: true,
-                allowOutsideClick: false,
-                cancelButtonText: 'NON',
-                confirmButtonText: 'SUPPRIMER'
-            }).then((result) => {
-                if (result.value) {
-                   this.deleteWorkOrderForGood(args.data.Id) 
-
-                   console.log(this.timelineResourceDataOut,this.allDataWorkorders,'befor')
-                   this.timelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
-                    if ((+args.data.Id !== +item.Id) ) {
-                        return item;
-                    }
-                });
-                this.allDataWorkorders = this.allDataWorkorders.filter(workorder => workorder.Id_Planning_Events !== args.data.Id );
-                let containerPere = this.timelineResourceDataOut.filter(item =>  args.data.AzaNumGroupe== item.Id && item.AzaIsPere )
-                let workorderexist = this.timelineResourceDataOut.filter(item =>  args.data.AzaNumGroupe== item.AzaNumGroupe && !item.AzaIsPere )
-                console.log(this.timelineResourceDataOut, this.allDataWorkorders,'after')
-
-               
-                console.log(containerPere)
-                console.log(workorderexist)
-                if(workorderexist.length>0){
-                let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-                let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-            this.eventSettings = {
-                        dataSource: <Object[]>extend([],
-                            this.calculDateGroup(
-                                this.timelineResourceDataOut,
-                                args.data.AzaNumGroupe,
-                                true,
-                                containerPere,
-                                startDifferent,
-                                endDifferent
-                            ), null, true),
-                        enableTooltip: true, tooltipTemplate: this.temp
-                    };
-                    let eventNewDates = this.timelineResourceDataOut.filter(item => item['AzaNumGroupe'] === containerPere[0].Id && !item['AzaIsPere'] && item["isTempsReel"] === 0);
-                    console.log(eventNewDates);
-                    let containerParent = this.allDataContainers.filter(item => item.Id_Planning_Container === containerPere[0].Id);
-                    for (let i = 0; i < eventNewDates.length; i++) {
-                        console.log(eventNewDates[i]);
-                        this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent[0], this.timelineResourceDataOut);
-                    }
-                }else{
-                    swal({
-                        title: 'Supprimer le container associé',
-                        text: 'Vous supprimez le dernier workorder du container, ' + 'souhaitez-vous supprimer le container ?',
-                        showCancelButton: true,
-                        allowOutsideClick: false,
-                        cancelButtonText: 'NON',
-                        confirmButtonText: 'SUPPRIMER'
-                    }).then((result) => {
-                        if (result.value) {
-                            this.deleteContainerForGood(containerPere[0].Id, this.workorderDelete)
-                            this.updateEventSetting(this.timelineResourceDataOut)
-                        }
-                    })
-                    
-                }
-               
-               
-                this.updateEventSetting(this.timelineResourceDataOut)
-                }
-            })
-            }else {
-                let containerPere = this.timelineResourceDataOut.filter(item =>  args.data.AzaNumGroupe== item.Id && item.AzaIsPere )
-                let workorderexist = this.timelineResourceDataOut.filter(item =>  args.data.AzaNumGroupe== item.AzaNumGroupe && !item.AzaIsPere )
-                swal({
-                    title: 'Supprimer le container ',
-                    text:  'souhaitez-vous supprimer le container définitivement ?',
-                    showCancelButton: true,
-                    allowOutsideClick: false,
-                    cancelButtonText: 'NON',
-                    confirmButtonText: 'SUPPRIMER'
-                }).then((result) => {
-                    if (result.value) {
-                        console.log(containerPere)
-                        console.log(workorderexist)
-                        if(workorderexist.length > 0){
-                           
-                          console.log("container avec workorder")
-                          workorderexist.map(item =>{
-                              this.deleteWorkOrderForGood(item.Id) 
-                          })
-                          let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'StartTime', 'StartTime');
-                          let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'EndTime', 'EndTime');
-                      this.eventSettings = {
-                                  dataSource: <Object[]>extend([],
-                                      this.calculDateGroup(
-                                          this.timelineResourceDataOut,
-                                          args.data.AzaNumGroupe,
-                                          true,
-                                          containerPere,
-                                          startDifferent,
-                                          endDifferent
-                                      ), null, true),
-                                  enableTooltip: true, tooltipTemplate: this.temp
-                              };
-                        }
-                        this.deleteContainerForGood(containerPere[0].Id, args.data);
-                    }
-                })
-            
-          
-            }
-            this.eventClick = false
-        }else{
-            this.dialogRefresh()
-        }
-            }, true);
-        }
-    
+      
+         this.addButtonDelete(args,isTempsReel)
+      
     }
         if (args.data.hasOwnProperty('AzaIsPere') && args.type !== 'Editor') {
             if (args.data.AzaIsPere) {
@@ -4367,12 +4140,16 @@ deleteContainerForGood(id,event){
                 let row: HTMLElement = createElement('div', {
                     className: 'e-sub-object-list'
                 });
+                let rowInfo: HTMLElement = createElement('div', {
+                    className: 'e-sub-object-list'
+                });
                 let datePicker : HTMLElement = createElement('div');
                 let elementParent: HTMLElement = <HTMLElement>args.element.querySelector('.e-popup-content');
                 console.log(elementParent)
                 if (elementParent != null) {
                     elementParent['style'].overflow = 'auto'
                     elementParent['style'].maxHeight = '40vh'
+                    elementParent.appendChild(rowInfo);
                     elementParent.appendChild(row);
                     elementParent.appendChild(datePicker);
                 }
@@ -4380,8 +4157,9 @@ deleteContainerForGood(id,event){
                 // let startElement: HTMLInputElement = elementParent.querySelector('#StartTime') as HTMLInputElement;
                 // console.log(startElement)
                 //     new Calendar({ value: new Date(args.data.StartTime) || new Date() }, startElement);
-                    // console.log(datePicker)
-                
+                    // console.log(datePicker) 
+                    // this.createTooltipWorkorder()
+                    // rowInfo.innerHTML += this.temp
 
                 for (let i = 0; i < workOrders.length; i++) {
                     let idRegie = workOrders[i].DepartmentID;
@@ -4596,21 +4374,21 @@ deleteContainerForGood(id,event){
             let containerOperateur = document.getElementsByClassName('custom-field-container');
             console.log(containerOperateur, "containerOperateur")
 
-            let annuler = document.getElementsByClassName("e-event-cancel")
-            console.log(annuler);
-            annuler[0].addEventListener('click', () => {
+            // let annuler = document.getElementsByClassName("e-event-cancel")
+            // console.log(annuler);
+            // annuler[0].addEventListener('click', () => {
+            //     console.log("click btn annuler");
+            //     this.disabledrefresh = false
+            //     this.openEditor = false
+            // }, true);
 
-                this.disabledrefresh = false
-                this.openEditor = false
-            }, true);
-
-            let btnClose = document.getElementsByClassName("e-dlg-closeicon-btn")
-            btnClose[0].addEventListener('click', () => {
-                this.disabledrefresh = false
-                this.openEditor = false
-                this.eventClick = false
-                console.log("click btn close");
-            }, true);
+            // let btnClose = document.getElementsByClassName("e-dlg-closeicon-btn")
+            // btnClose[0].addEventListener('click', () => {
+            //     this.disabledrefresh = false
+            //     this.openEditor = false
+            //     this.eventClick = false
+            //     console.log("click btn close");
+            // }, true);
 
             if (args.data.hasOwnProperty('AzaIsPere')) {
                 console.log('open Editor', args);
@@ -4750,17 +4528,17 @@ deleteContainerForGood(id,event){
                       console.log('repeat', repeat[0]);
                       repeat[0]['style'].display = 'none';
                       }
-                    let save = document.getElementsByClassName("e-event-save")
-                    console.log(save);
-                    save[0].addEventListener('click', () => {
-                        if (this.filtreRegie && args.target === "e-appointment") {
-                            console.log("this.departmentDataSource  before", this.departmentDataSource)
-                            this.departmentDataSource = this.listeRegies
-                            this.openEditor = false
-                            this.openSideBar = false
-                            console.log('click save ', this.departmentDataSource)
-                        }
-                    }, true);
+                    // let save = document.getElementsByClassName("e-event-save")
+                    // console.log(save);
+                    // save[0].addEventListener('click', () => {
+                    //     if (this.filtreRegie && args.target === "e-appointment") {
+                    //         console.log("this.departmentDataSource  before", this.departmentDataSource)
+                    //         this.departmentDataSource = this.listeRegies
+                    //         this.openEditor = false
+                    //         this.openSideBar = false
+                    //         console.log('click save ', this.departmentDataSource)
+                    //     }
+                    // }, true);
 
                     // args.duration =5;
                     // var dialogObj = (args.element as any).ej2_instances[0];
@@ -4854,6 +4632,188 @@ deleteContainerForGood(id,event){
   
     onPopupClose(args) {
         console.log(args)
+        /* clic sur le btn annuler ou fermer de la modale d'edition */ 
+        if(args.data == null ){ 
+            console.log("annuler ou btnclose")
+            console.log(this.creationArray);
+            this.creationArray = [];
+            this.disabledrefresh = false;
+            this.openEditor = false;
+            this.eventClick = false;
+            this.isTreeItemDropped=false;
+        }
+    }
+deleteWorkOrder(event){
+    this.deleteWorkOrderForGood(event.Id) 
+    
+    console.log(this.timelineResourceDataOut,this.allDataWorkorders,'before')
+    this.timelineResourceDataOut = this.timelineResourceDataOut.filter(item => {
+     if ((+event.Id !== +item.Id) ) {
+         return item;
+     }
+ });
+ this.allDataWorkorders = this.allDataWorkorders.filter(workorder => workorder.Id_Planning_Events !== event.Id );
+ let containerPere = this.timelineResourceDataOut.filter(item =>  event.AzaNumGroupe== item.Id && item.AzaIsPere )
+ let workorderexist = this.timelineResourceDataOut.filter(item =>  event.AzaNumGroupe== item.AzaNumGroupe && !item.AzaIsPere )
+ console.log(this.timelineResourceDataOut, this.allDataWorkorders,'after')
+
+
+ console.log(containerPere)
+ console.log(workorderexist)
+ if(workorderexist.length>0){
+ let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+ let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+this.eventSettings = {
+         dataSource: <Object[]>extend([],
+             this.calculDateGroup(
+                 this.timelineResourceDataOut,
+                 event.AzaNumGroupe,
+                 true,
+                 containerPere,
+                 startDifferent,
+                 endDifferent
+             ), null, true),
+         // enableTooltip: true, tooltipTemplate: this.temp
+     };
+     let eventNewDates = this.timelineResourceDataOut.filter(item => item['AzaNumGroupe'] === containerPere[0].Id && !item['AzaIsPere'] && item["isTempsReel"] === 0);
+     console.log(eventNewDates);
+     let containerParent = this.allDataContainers.filter(item => item.Id_Planning_Container === containerPere[0].Id);
+     for (let i = 0; i < eventNewDates.length; i++) {
+         console.log(eventNewDates[i]);
+         this.updateStartTimeAndEndTimeWorkorder(eventNewDates[i], containerParent[0], this.timelineResourceDataOut);
+     }
+ }else{
+     swal({
+         title: 'Supprimer le container associé',
+         text: 'Vous supprimez le dernier workorder du container, ' + 'souhaitez-vous supprimer le container ?',
+         showCancelButton: true,
+         allowOutsideClick: false,
+         cancelButtonText: 'NON',
+         confirmButtonText: 'SUPPRIMER'
+     }).then((result) => {
+         if (result.value) {
+             this.deleteContainerForGood(containerPere[0].Id, this.workorderDelete)
+             this.updateEventSetting(this.timelineResourceDataOut)
+         }
+     })
+     
+ }
+
+
+ this.updateEventSetting(this.timelineResourceDataOut)
+}
+    addButtonDelete(args, isTempsReel){ //Ajouter un bouton pour la suppression définitive 
+        if( this.eventClick && (args.data.Statut == 3 || args.data.AzaIsPere) ){
+            let elementPopOpen  = args.element.querySelector('.e-header-icon-wrapper');
+            console.log(elementPopOpen)
+            // let btnCalendar = createElement('div'); 
+            if(elementPopOpen!= null  ){
+            let rowBtnDelete= createElement('div');
+           
+            elementPopOpen.prepend(rowBtnDelete)
+       
+            console.log(args.data.Id)
+           
+            rowBtnDelete.innerHTML=`<div id='${args.data.Id}id' class='e-icons BT_Remove icon-vue ' title='Supprimer définitivement' ></div>`
+      
+            console.log(rowBtnDelete)
+        }
+            let btnDelete = document.getElementById(args.data.Id+ 'id') //btn de suppression définitive 
+            console.log(btnDelete)
+            console.log(isTempsReel)
+            if( isTempsReel.length==0 ){ //affichage uniquement pour les taches non commencées
+                let removeIcone = document.getElementsByClassName('BT_Remove');
+                removeIcone[0]['style'].display = 'block';
+                if( this.Ecriture.checked == false){ //masquer le btn si y'a que les workorders qui sont affichées
+                console.log(btnDelete)
+                    removeIcone[0]['hidden'] = true;
+                    console.log( removeIcone)
+                }
+            }else{     
+                let removeIcone = document.getElementsByClassName('BT_Remove');
+                removeIcone[0]['style'].display = 'none';
+    
+            }
+    
+            if(!args.data.AzaIsPere && args.data.Statut ==3 ){
+                let removeIcone = document.getElementsByClassName('BT_Remove');
+                removeIcone[0]['style'].display = 'block';
+              }
+            
+                
+                btnDelete.addEventListener('click', () => { 
+                    let container 
+                    if(!args.data.AzaIsPere){
+                         container =  this.timelineResourceDataOut.filter(item => item.Id === args.data.AzaNumGroupe)
+                    }else{
+                        container = args.data
+                    }
+               console.log(container)
+               if(!this.checkIfContainerHasATempsReel(container,container.Id)){
+                    if(!args.data.AzaIsPere && args.data.Statut == 3){
+                        let event = args.data
+                  console.log("click new btn delete",btnDelete)
+                  swal({
+                    title: 'Supprimer définitivement le workorder',
+                    text:  'souhaitez-vous supprimer définitivement le workorder ?',
+                    showCancelButton: true,
+                    allowOutsideClick: false,
+                    cancelButtonText: 'NON',
+                    confirmButtonText: 'SUPPRIMER'
+                }).then((result) => {
+                    if (result.value) {
+
+                        this.deleteWorkOrder(event)
+                 
+                    }
+                })
+                }else {
+                    let containerPere = this.timelineResourceDataOut.filter(item =>  args.data.AzaNumGroupe== item.Id && item.AzaIsPere )
+                    let workorderexist = this.timelineResourceDataOut.filter(item =>  args.data.AzaNumGroupe== item.AzaNumGroupe && !item.AzaIsPere )
+                    swal({
+                        title: 'Supprimer le container ',
+                        text:  'souhaitez-vous supprimer le container définitivement ?',
+                        showCancelButton: true,
+                        allowOutsideClick: false,
+                        cancelButtonText: 'NON',
+                        confirmButtonText: 'SUPPRIMER'
+                    }).then((result) => {
+                        if (result.value) {
+                            console.log(containerPere)
+                            console.log(workorderexist)
+                            if(workorderexist.length > 0){
+                               
+                              console.log("container avec workorder")
+                              workorderexist.map(item =>{
+                                  this.deleteWorkOrderForGood(item.Id) 
+                              })
+                              let startDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'StartTime', 'StartTime');
+                              let endDifferent = this.checkDiffExistById(containerPere, this.timelineResourceDataOut, 'EndTime', 'EndTime');
+                          this.eventSettings = {
+                                      dataSource: <Object[]>extend([],
+                                          this.calculDateGroup(
+                                              this.timelineResourceDataOut,
+                                              args.data.AzaNumGroupe,
+                                              true,
+                                              containerPere,
+                                              startDifferent,
+                                              endDifferent
+                                          ), null, true),
+                                    //   enableTooltip: true, tooltipTemplate: this.temp
+                                  };
+                            }
+                            this.deleteContainerForGood(containerPere[0].Id, args.data);
+                        }
+                    })
+                
+              
+                }
+                this.eventClick = false
+            }else{
+                this.dialogRefresh()
+            }
+                }, true);
+            }
         
     }
     checkIfContainerAlreadyExists(args): boolean {
@@ -5052,17 +5012,32 @@ public dialogRef
     onDragStart(args: DragEventArgs) {
         console.log('onDragStart args =======> ', args);
         this.eventDragStart = args.data
-        // drag interval time is changed to 5 minutes 
-        this.argsDragStart = args
-        //  args.navigation = { enable: true, timeDelay: 4000 };
-       
-        console.log(this.scheduleObj)
-        this.scheduleObj.dataBind()
-        //
-        //     args.cancel = false
-        // }
+        this.argsDragStart = args  
         this.checkIfContainerHasATempsReel(args["data"],+args["data"]["Id"])
+        // args.element["ej2_instances"][0].clone = false
+        if (args.data['AzaIsPere'] == false) {
+            swal({
+                title: 'Attention',
+                text: `Vous ne pouvez pas effectuer cette action `,
+                showCancelButton: false,
+                confirmButtonText: 'Fermer',
+                cancelButtonText: 'non',
+                allowOutsideClick: false
 
+            }).then((Fermer) => {
+                console.log(Fermer)
+
+                if (Fermer.value) {
+                    console.log(args)
+                    this.disabledrefresh = false
+                    this.updateEventSetting(this.timelineResourceDataOut)
+                }
+            })
+          
+        }else{
+            args.cancel = false
+        }
+        console.log(this.scheduleObj)
     }
     public groupIndex
     public eventItemDrag
@@ -5086,6 +5061,7 @@ public dialogRef
                 }
             }
         }
+       
 
     }
     targetDrop
@@ -5098,33 +5074,8 @@ public dialogRef
         if (args.event.target["className"] === "e-work-cells e-work-hours") {
             this.disabledrefresh = false
         }
-        if (args.data['AzaIsPere'] == false) {
-            swal({
-                title: 'Attention',
-                text: `Vous ne pouvez pas effectuer cette action `,
-                showCancelButton: false,
-                confirmButtonText: 'Fermer',
-                cancelButtonText: 'non',
-                allowOutsideClick: false
 
-            }).then((Fermer) => {
-                console.log(Fermer)
-
-                if (Fermer.value) {
-                    console.log(args)
-                    this.disabledrefresh = false
-                    this.updateEventSetting(this.timelineResourceDataOut)
-
-                    this.scheduleObj.refresh()
-                    let now = moment().subtract('h', 1).format('HH:mm')
-                    setTimeout(() => {
-                        this.scheduleObj.scrollTo(now)
-                        console.log("scroll to ", now)
-                    }, 2000);
-
-                }
-            })
-        }
+    
 
     }
 
@@ -5210,12 +5161,22 @@ public dialogRef
                         CodeRessourceCoordinateur: codeRessourceCoordinateur
                     };
                     console.log(filteredData[0], 'filteredData[0]');
+
+                    this.creationArray.push(containerData);
+                    if( this.workorderSelectedInBacklog.length == 0){
+                        this.workorderSelectedInBacklog.push(filteredData[0])
+                    }
+                    console.log( this.workorderSelectedInBacklog)
+              
+                    this.workorderSelectedInBacklog.map(item =>{
+                       
+                        filteredData[0] = item
                     let eventData: { [key: string]: Object } = { // DISPLAY DATA FOR EVENT
-                        Id: filteredData[0].Id,
+                        Id:filteredData[0].Id ,
 
                         Name: filteredData[0].titreoeuvre,
-                        StartTime: cellData.startTime,
-                        EndTime: cellData.endTime,
+                        StartTime: filteredData[0].StartTime,
+                        EndTime: filteredData[0].EndTime,
                         IsAllDay: false,
                         Description: filteredData[0].Description,
                         DepartmentID: resourceDetails.resourceData.Id,
@@ -5241,32 +5202,37 @@ public dialogRef
                         libelleStatut: filteredData[0].libelleStatut,
                         CodeRessourceCoordinateur: filteredData[0].codeRessourceCoordinateur
                     };
-                    this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
-                    let annuler = document.getElementsByClassName("e-event-cancel")
-                    let btnClose = document.getElementsByClassName("e-dlg-closeicon-btn")
-                    console.log(annuler);
 
-                    btnClose[0].addEventListener('click', () => {
-                        if (this.creationArray.length > 1) {
-                            this.creationArray.pop()
-
-                        }
-
-                        this.disabledrefresh = false
-
-                        this.isTreeItemDropped = false
-                        console.log("click btn close", this.creationArray);
-                    }, true);
-
-                    annuler[0].addEventListener('click', () => {
-                        if (this.creationArray.length > 1) {
-                            this.creationArray.pop()
-                        }
-                        this.isTreeItemDropped = false
-                        console.log(this.creationArray);
-                    }, true);
-                    this.creationArray.push(containerData);
+                    console.log(eventData,"eventData")
                     this.creationArray.push(eventData);
+               
+                })
+                    // this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
+                    // let annuler = document.getElementsByClassName("e-event-cancel")
+                    // let btnClose = document.getElementsByClassName("e-dlg-closeicon-btn")
+                    // console.log(annuler);
+                 //remplacer dans onpopupclose()
+                    // btnClose[0].addEventListener('click', () => {   
+                    //     if (this.creationArray.length > 1) {
+                    //         this.creationArray.pop()
+
+                    //     }
+
+                    //     this.disabledrefresh = false
+
+                    //     this.isTreeItemDropped = false
+                    //     console.log("click btn close", this.creationArray);
+                    // }, true);
+
+                    // annuler[0].addEventListener('click', () => {
+                    //     if (this.creationArray.length > 1) {
+                    //         this.creationArray.pop()
+                    //     }
+                    //     this.isTreeItemDropped = false
+                    //     console.log(this.creationArray);
+                    // }, true);
+                  
+                 
                     console.log(containerData);
                     console.log(this.creationArray);
                     this.scheduleObj.openEditor(containerData, 'Add', true);
@@ -5278,6 +5244,7 @@ public dialogRef
                         }
                     }
                     );
+
                 } else {  // IF EMPLACEMENT EST DEJA PRIS PAR UN CONTENEUR
                     if (event.target.id) {
                       
@@ -5297,6 +5264,14 @@ public dialogRef
                         console.log('container => ', container);
                         console.log('containerDataSelected => ', containerDataSelected);
                         console.log(filteredDataW, event.draggedNodeData.id)
+                        if( this.workorderSelectedInBacklog.length == 0){
+                            this.workorderSelectedInBacklog.push(filteredDataW[0])
+                        }
+                        console.log( this.workorderSelectedInBacklog)
+                        this.workorderSelectedInBacklog.map(item =>{
+                            console.log(item)
+                            
+                            filteredDataW[0] = item
                         let newEventData = { // DISPLAY DATA FOR EVENT
                             Id: filteredDataW[0].Id,
 
@@ -5329,7 +5304,7 @@ public dialogRef
                             libelleStatut: filteredDataW[0].libelleStatut,
                             CodeRessourceCoordinateur: containerSelected.CodeRessourceCoordinateur
                         };
-                        this.creationArray = [newEventData];
+                        this.creationArray.push(newEventData);
                         this.isTreeItemDropped = true;
                         console.log('filteredDataW : ', filteredDataW);
                         console.log(newEventData, "new event data")
@@ -5339,6 +5314,7 @@ public dialogRef
                             console.log('statut pas different')
                         this.updateWorkorderInDragDropAddToContainer(newEventData, containerDataSelected);
                         // this.timelineResourceDataOut.push(newEventData);
+                    // })
                         this.draggedItemId = event.draggedNodeData.id as string;
                         let nData = this.field['dataSource'].filter(item => {
                             if (+item.Id !== +this.draggedItemId) {
@@ -5348,8 +5324,8 @@ public dialogRef
                         );
                         this.field['dataSource'] = nData;
                         this.treeObj.fields.dataSource = this.field['dataSource'];
-                        this.onActionComplete('e');
-                        this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
+                        // this.onActionComplete('e');
+                        })    // this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
                     }else{
                         this.dialogRefresh()
                                 console.log('statut different')
@@ -5423,9 +5399,10 @@ public dialogRef
                         isTempsReel: 0,
                         CodeRessourceCoordinateur: codeRessourceCoordinateur
                     };
-                    console.log('création array ==============', this.creationArray);
+                  
                     // this.timelineResourceDataOut.push(containerData); // filteredData[0]
                     this.creationArray.push(containerData);
+                    console.log('creation array ==============', this.creationArray);
                     this.scheduleObj.openEditor(containerData, 'Add', true);
                     this.isTreeItemDropped = true;
                     this.isTreeItemDroppedMonteur = true;
@@ -5499,7 +5476,7 @@ public dialogRef
         console.log(this.isTreeItemDropped);
         this.scheduleObj.eventSettings.fields.subject.name='Name'
         console.log(this.scheduleObj, '====== scheduleobj');
-     
+     this.argsOnActionBegin = event
         console.log(event.cancel, "onActionBegin(e)")
         this.scheduleObj.eventSettings.fields.subject.default = "Titre"
         if (event.requestType === 'viewNavigate') {
@@ -5703,7 +5680,7 @@ public dialogRef
         }
         if (event.requestType === 'eventCreate' && this.isTreeItemDropped) {
             console.log('onActionBegin() ======> event create from drag and drop');
-            this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
+            // this.scheduleObj.eventSettings.tooltipTemplate = this.temp;
             console.log(this.openSideBar, "open Sidebar")
             // FUNCTION FROM TEMPLATE => Call when workodre is drag and drop from backlog to create container
             let treeViewdata: { [key: string]: Object }[] = this.treeObj.fields.dataSource as { [key: string]: Object }[];
@@ -5723,7 +5700,7 @@ public dialogRef
                 this.creationArray.map(item => {
                     console.log(item);
                     console.log(event.data[0].Subject || event.data[0].Name)
-                    console.log(event.data[0].Commentaire_Planning || event.data[0].Commentaire_Planning)
+                   
                     if (item.AzaIsPere) {
                         let newItemContainerAfterEditorUpdate = {
                             Id: item.Id,
@@ -5859,7 +5836,7 @@ public dialogRef
             console.log(this.openSideBar, '----------------------------------------------')
         }
         if (args.requestType === 'eventRemove') { // CUSTOM ACTION REMOVE
-            this.deleteEvent(args);
+            this.deleteEvent(args.data[0]);
         } else if (args.requestType === 'viewNavigate') {
 
             if (this.openSideBar == true) {
@@ -5887,6 +5864,11 @@ public dialogRef
             // };
         } else if (args.requestType === 'eventCreate') { // ADD EMPTY CONTAINER
             let data = args.data[0];
+            let checkIfContainerExist = this.timelineResourceDataOut.filter(item =>item.Id == data.Id) //vérifier si l'ID n'existe pas deja 
+            console.log(data),
+            console.log(this.timelineResourceDataOut)
+            console.log(checkIfContainerExist,"chek if container existe in planner")
+            if(checkIfContainerExist.length==0){
             this.randomId();
             let codeRessourceCoordinateur = this.currentCoordinateur.IdCoord
             console.log('last Random id : ', this.lastRandomId);
@@ -5916,6 +5898,7 @@ public dialogRef
             //           [], this.timelineResourceDataOut, null, true
             //       )
             //   };
+        }
         }
         //     if(args.requestType === "dateNavigate"){
         //         this.searchString = this.searchwo.value
@@ -6039,7 +6022,7 @@ public dialogRef
                 dataSource: <Object[]>extend(
                     [], this.timelineResourceDataOut, null, true
                 ),
-                enableTooltip: true, tooltipTemplate: this.temp
+                // enableTooltip: true, tooltipTemplate: this.temp
             };              // this.updateContainer(e); 
         }
         if (this.drowDownExist) {
@@ -6079,7 +6062,7 @@ public dialogRef
                 dataSource: <Object[]>extend(
                     [], this.timelineResourceDataOut, null, true
                 ),
-                enableTooltip: true, tooltipTemplate: this.temp
+                // enableTooltip: true, tooltipTemplate: this.temp
             };
             // this.onFilter( this.searchwo.value , 0, this.argsKeyboardEvent)
         } else {
@@ -6087,7 +6070,7 @@ public dialogRef
                 dataSource: <Object[]>extend(
                     [], this.timelineResourceDataOut, null, true
                 ),
-                enableTooltip: true, tooltipTemplate: this.temp
+                // enableTooltip: true, tooltipTemplate: this.temp
             };
             console.log('this.eventSettings ==> ', this.eventSettings);
         }
@@ -6116,7 +6099,7 @@ public dialogRef
         console.log('call deleteEvent()');
         console.log('args : ', args);
         console.log('this.allDataContainers : ', this.allDataContainers);
-        let data = args.data[0];
+        let data = args;
         let containerEvent;
         if(!this.statutDifferent){
         if (data['AzaIsPere']) { // REMOVE CONTAINER
@@ -6378,24 +6361,6 @@ public dialogRef
                 this.fieldMonteur = { dataSource: fieldMonteur, text: 'Username' };
                 this.countAdd = this.countAdd + 1
 
-
-
-                //   this.monteurDataSource.map(monteur =>{
-
-                //     this.typeRessourceMonteur.map(statut =>{
-                //      console.log(statut.Code, monteur.typeressource)
-                //       if(statut.Code == monteur.typeressource){
-                //            this.statutMonteur.push({
-                //             Name: monteur.Username,
-                //             Libelle: statut.Libelle
-                //            })
-                //            console.log( this.statutMonteur,"++++++++++++++++++++")
-                //       } else{
-
-                //       }
-
-                //     })
-                // })
                 if (this.searchStringM != undefined && !this.cancel) {
 
                     this.onFilter("", 1, this.argsKeyboardEvent)
@@ -6739,16 +6704,16 @@ if(this.resultFilterRegie.length>0){
         console.log(this.resultFilterWorkorder)
     }
 
-    public filterAfterRefresh() {
-        // if (this.searchRegie != undefined) {
-        //     console.log("clic bouton refresh ")
-        //     this.rechercheRegieByID.value = this.searchRegie
-        //     console.log(this.rechercheRegieByID.value)
-        //     this.onFilterRegie(this.rechercheRegieByID.value)
-        // } else {
-        // }
+    // public filterAfterRefresh() {
+    //     // if (this.searchRegie != undefined) {
+    //     //     console.log("clic bouton refresh ")
+    //     //     this.rechercheRegieByID.value = this.searchRegie
+    //     //     console.log(this.rechercheRegieByID.value)
+    //     //     this.onFilterRegie(this.rechercheRegieByID.value)
+    //     // } else {
+    //     // }
 
-    }
+    // }
 
 
     public filtreRegie
@@ -6965,6 +6930,7 @@ if(this.resultFilterRegie.length>0){
             let start = moment(event[0].StartTime),
                 end = moment(event[0].EndTime),
                 diff = end.diff(start, 'minute')
+                this.disabledrefresh = true
             this.clickDrop = true
 
             console.log(diff)
@@ -6974,78 +6940,26 @@ if(this.resultFilterRegie.length>0){
             let dateStartCell =moment(+this.selectedTarget.getAttribute("data-date")).toDate()
             console.log( dateStartCell )
             let StartTime = dateStartCell,
-                EndTime = this.activeCellsData.endTime,
-                DepartementId = this.RegieSelected.groupData.DepartmentID;
-            let endTime = moment(dateStartCell).add(diff, 'minute').toDate()
+                DepartementId = this.RegieSelected.groupData.DepartmentID,
+                EndTime = moment(dateStartCell).add(diff, 'minute').toDate();
           
             console.log(DepartementId)
-            console.log(endTime)
-        if(!this.DropEventWithNavigation  ) {
+            console.log(  EndTime)
+    
           
-            this.timelineResourceDataOut.map(item => {
-                if (item.AzaNumGroupe === this.idContainerSelected) {
+            this.containerSelected.map(item => {
+                if (item.AzaIsPere && item.AzaNumGroupe === this.idContainerSelected) {
                     item.StartTime = StartTime,
-                        item.EndTime = endTime,
+                        item.EndTime = EndTime,
                         item.DepartmentID = DepartementId,
                         item.CodeRessourceSalle = DepartementId
                 }
 
 
             })
-         
-            this.updateEventSetting(this.timelineResourceDataOut)
-            let newEvent = this.timelineResourceDataOut.filter(item => item.Id === this.idContainerSelected );
-            console.log(newEvent)
-            this.updateContainer(newEvent[0])
-        }else{
-  
-
-            this.lastTimelineResourceDataOut.map(item => {
-                if (item.Id === this.idContainerSelected ) {
-                    item.StartTime = StartTime,
-                        item.EndTime = endTime,
-                        item.DepartmentID = DepartementId,
-                        item.CodeRessourceSalle = DepartementId
-                }
-
-
-            })
-         console.log(this.lastTimelineResourceDataOut)
-            let newEvent = this.lastTimelineResourceDataOut.filter(item => item.Id === this.idContainerSelected );
-            console.log(newEvent)
-            if(newEvent.length>0){
-            this.updateContainer(newEvent[0])
-           
-            }else{
-
-                console.log(this.timelineResourceDataOut)
-                let newEvent = this.timelineResourceDataOut.filter(item => item.Id === this.idContainerSelected );
-                console.log(newEvent)
-                this.updateContainer(newEvent[0])
-            }
-        }
-        //else{
-//             console.log("click aprés la navigation ")
-//             this.timelineResourceDataOut.map(item => {
-//                 if (item.AzaNumGroupe === this.idContainerSelected) {
-//                     item.StartTime = StartTime,
-//                         item.EndTime = endTime,
-//                         item.DepartmentID = DepartementId,
-//                         item.CodeRessourceSalle = DepartementId
-//                 }
-
-
-//             })
-         
-//             this.updateEventSetting(this.timelineResourceDataOut)
-//             let newEvent = this.timelineResourceDataOut.filter(item => item.AzaNumGroupe === this.idContainerSelected );
-//             console.log(newEvent)
-//             this.updateContainer(newEvent[0])
-//             this.clickDeplacer = false
-//         }
-
-     //   }
-          
+         console.log( this.containerSelected)
+    
+            this.updateContainer(this.containerSelected[0])
      
           
     
@@ -7101,20 +7015,28 @@ if(this.resultFilterRegie.length>0){
 
         if (this.scheduleObj.currentView == 'TimelineWeek') {
             if (args.element.classList.contains('e-work-cells') ) {
-                if (((args.date.getDay() % 2) != 0) || (args.date.getDay() === 0)) {
-                    args.element['style'].background = '#E5FCFD';
-                //     if (args.element.classList.contains('e-selected-cell') ) {
-                     
+                // if (((args.date.getDay() % 2) != 0) || (args.date.getDay() === 0)) { // defférencier les journnées en vue semaine 
+                    // args.element['style'].backgroundColor = '#E5FCFD';
+                    // console.log(args)
+                    let date = moment(+args.element.getAttribute("data-date")).format('HH:mm')
+               if (date == '00:00' ) {
+                args.element['style'].borderLeft= '#3ae4e2 solid 3px';
                 //     args.element['style'].border = 'gray solide 3px'; 
-                // }
-            }
+                // }else if(date == '22:00' ){
+                //     args.element['style'].border= '#AFE5DE solid 1px';
+                 }  
+                 let timeSlot = document.getElementsByClassName('e-time-slots')
+            //    console.log(timeSlot)
+              for(let i= 0; i<= timeSlot.length-1;i++){
+                  if( timeSlot[i]["innerText"] == "00:00"){
+                timeSlot[i]['style'].borderLeft= '#3ae4e2 solid 3px';
+            }}
+             
+               
+            // }
 
-       
             }
-                 
-            if (args.elementType === "dateHeader") {
-
-            }
+           
 
         }
         if (this.scheduleObj.currentView == 'TimelineMonth') {
@@ -7161,17 +7083,18 @@ if(this.resultFilterRegie.length>0){
     public Check = 0
     public CheckTheoriqueNavig = true
     public timelineDataOutitems: object[] = []
-    onChangeDataSource() { //a essayer avec la nouvelle méthode predicate
+    onChangeDataSource() { 
         let predicate: Predicate;
         let checkBoxes: CheckBoxComponent[] = [this.reel, this.theorique];
         // const timelineDataOutitems = this.timelineResourceDataOut
         console.log(this.timelineDataOutitems, "aaaaa")
         console.log(this.Check)
-
+       
         // setTimeout(() => {
         checkBoxes.forEach((checkBoxObj: CheckBoxComponent) => {
             console.log(checkBoxObj)
             if (checkBoxObj.checked) {
+
                 if (checkBoxObj.value === '1' && this.Check == 0) {
 
                     // this.refreshDate()
@@ -7231,36 +7154,6 @@ if(this.resultFilterRegie.length>0){
                     this.scheduleObj.eventSettings.query = new Query().where(predicate);
                 }, 1000);
 
-
-
-                //   console.log(this.timelineDataOutitems, "this.timelineDataOutitems")
-                //   setTimeout(() => {
-
-                //       new DataManager(timelineDataOutitems)
-                //           .executeQuery(new Query().where(predicate))
-                //           .then((e: ReturnOption) => {
-                //               this.items = e.result as object[]
-                //               console.log("timelineressourcedataout e.result", e.result)
-                //               // this.timelineResourceDataOut = this.items
-                //               checkBoxes.forEach((checkBoxObj: CheckBoxComponent) => {
-                //                   if (checkBoxObj.checked) {
-                //                     console.log("timelineressourcedataout item ", this.items)
-                //                     this.timelineResourceDataOut =  [... new Set(this.items)] 
-                //                    this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut 
-                //                       console.log("item", this.items)
-                //                       console.log("timelineressourcedataout item ", this.timelineResourceDataOut)
-                //                       console.log(this.scheduleObj, "get event ")
-                //                   } else {
-                //                       // this.scheduleObj.element["ej2_instances"][0].eventSettings.dataSource = this.timelineResourceDataOut
-                //                       this.timelineResourceDataOut =  [... new Set(this.items)] 
-                //                       this.scheduleObj.eventSettings.dataSource = this.timelineResourceDataOut 
-
-                //                       console.log(" no check item", this.items, 'reel', this.reel.checked, 'theo', this.theorique.checked)
-                //                   }
-
-                //               });
-                //           })
-                //   }, 500);
                 if (this.theorique.checked) {
 
                     console.log(this.reel, " this.CheckTheoriqueNavig")
@@ -7296,8 +7189,44 @@ if(this.resultFilterRegie.length>0){
             }
 
         });
-
+        
+      
         console.log(this.reel, this.theorique)
+    }
+
+    onChangeDataSourceEvents(){
+    console.log(this.Ecriture)
+        if(this.Ecriture.checked == true)  {
+          
+            this.updateEventSetting(this.timelineResourceDataOut)
+             this.isnotMyGroup= false
+             this.scheduleObj.readonly = false
+            //  this.workorder.disabled = true
+        }else{
+            console.log("btn workorder checked",this.workorder )
+            let workorderTimeDataSource = this.timelineResourceDataOut.filter(item =>!item.AzaIsPere)
+            console.log('workorderTimeDataSource ===>',workorderTimeDataSource)
+            console.log('this.timelineResourceDataOut',this.timelineResourceDataOut)
+            this.updateEventSetting(workorderTimeDataSource)
+            this.scheduleObj.readonly =  true 
+            this.isnotMyGroup = true 
+        }
+
+    }
+
+    onChangeDataSourceOperateur(){
+
+        if(this.operateur.checked == true){
+            console.log('this.operateur.checked == true')
+            let containerWithoutOperateur = this.timelineResourceDataOut.filter(item =>item.Operateur == '' || item.Operateur == null )
+            console.log('workorderTimeDataSource ===>',containerWithoutOperateur)
+            this.updateEventSetting(containerWithoutOperateur)
+            this.isnotMyGroup= true
+            
+        }else{
+            console.log('this.operateur.checked == false')
+            this.updateEventSetting(this.timelineResourceDataOut)
+        }
     }
     disableBtnCloseAndEdit(args) {
         var buttonElementEdit = args.type === "QuickInfo" ? ".e-event-popup .e-edit" : ".e-schedule-dialog .e-event-edit";
@@ -7376,7 +7305,7 @@ if(this.resultFilterRegie.length>0){
         console.log("on select =====>", args, this.scheduleObj)
         args["showQuickPopup"] = true
         if (args["requestType"] === "cellSelect") {
-            this.hourContainer = moment(args["data"]['StartTime']).subtract('h', 1).format('HH:mm')
+            this.hourContainer = moment(args["data"]['StartTime']).subtract(1, 'h').format('HH:mm')
             this.isCellClick = true
             this.debutCellClick = args["data"]['StartTime']
             this.finCellClick = args["data"]['StartTime']
@@ -7385,11 +7314,6 @@ if(this.resultFilterRegie.length>0){
             console.log(moment(args["data"]['EndTime']).format('x'))
             this.offsetLeftCell = args["element"].offsetLeft
             console.log(this.offsetLeftCell)
-            let close = document.getElementsByClassName("e-popup-footer")
-            console.log(close);
-
-          
-
         }
         if(args["requestType"] ==="eventSelect"){
      if(args["data"]["AzaIsPere"]){
@@ -7455,8 +7379,57 @@ public BtnClick = (): void => {
     this.Dialog.show();
     console.log(this.Dialog)
 }
+//remise multiselection au backlog 
+public numberOfDeleteWorkOrder = 0
+remiseMultiselectionBacklog(){
+if(this.eventSelecte.length>0){
+    this.eventSelecte.map(item =>{
+        this.numberOfDeleteWorkOrder = this.numberOfDeleteWorkOrder +1
+        if(!item.AzaIsPere){
+        this.deleteEvent(item);
+    }else{
+        this.deleteContainer(item.Id, item);
+    }
+    })
+   console.log("LENGTH ====>",this.numberOfDeleteWorkOrder )
+}
+}
+suppressionDefinitive(){
+    if(this.eventSelecte.length>0){
+        this.eventSelecte.map(item =>{
+            if(!item.AzaIsPere){
+            this.deleteWorkOrder(item)
+            }else{
+
+                this.deleteContainerForGood(item.Id, item)
+              
+                this.updateEventSetting(this.timelineResourceDataOut)
+            }
+    //     let  containerPere = this.timelineResourceDataOut.filter(container=>container.Id == item.AzaNumGroupe && container.AzaIsPere)
+    //    console.log(containerPere)
+    //   let startDifferent = this.checkDiffExistById(containerPere[0], this.timelineResourceDataOut, 'StartTime', 'StartTime');
+    //   let endDifferent = this.checkDiffExistById(containerPere[0], this.timelineResourceDataOut, 'EndTime', 'EndTime');
+    // this.eventSettings = {
+    //         dataSource: <Object[]>extend([],
+    //             this.calculDateGroup(
+    //                 this.timelineResourceDataOut,
+    //                 item.AzaNumGroupe,
+    //                 true,
+    //                 containerPere[0],
+    //                 startDifferent,
+    //                 endDifferent
+    //             ), null, true),
+    //       //   enableTooltip: true, tooltipTemplate: this.temp
+    //     };
+    //     this.deleteWorkOrderForGood(item.Id)
 
 
+      
+    })
+
+    }
+    console.log("suppression definitive")
+}
 // tooltipContent
 
 // onBeforeRender(args){
