@@ -15,6 +15,7 @@ import {
 
 import { FichesAchatService } from '@ab/fiches-achat';
 import { FicheAchat } from '@ab/fiches-achat';
+import { FicheAchat2Exist } from '@ab/fiches-achat';
 
 import { FichesMaterielService } from '../services/fiches-materiel.service';
 import { FicheMateriel } from '../models/fiche-materiel';
@@ -36,6 +37,7 @@ import { StatusLibService } from '../services/status-lib.service';
 import { Status } from '../models/status';
 
 import { CustomIconBadge } from '@ab/custom-icons';
+import { mainColor, maintColorHover } from '../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'fiche-materiel-details-view',
@@ -146,8 +148,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   public back: CustomIconBadge = {
       bigIcon : {
         icon: 'icofont icofont-exit',
-        circleColor: '#17AAB2',
-        circleColorHover: '#2eced6',
+        circleColor: mainColor,
+        circleColorHover: maintColorHover,
         iconSize: '2.2em'
       },
       link : '../../../../',
@@ -370,6 +372,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
 
 
   getFicheAchatDetails(id: number) {
+    console.log('getFicheAchatDetails');
     this.fichesAchatService
       .getFichesAchatDetailByIdDetail(id)
       .pipe(takeUntil(this.onDestroy$))
@@ -377,9 +380,12 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         console.log(data);
         if (data !== null) {
           // this.myFicheAchatDetails = data[0];
+          console.log('res for getFicheAchatDetails => ', data);
+
           this.myFicheAchatDetails = data;
           this.dataDetailsReady = true;
           this.myFicheAchatDetailsExist = true;
+          this.getAllFichesAchatFOrOeuvre(data.numprogram);
         } else {
           this.myFicheAchatDetails = {};
           this.dataDetailsReady = true;
@@ -388,6 +394,26 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         console.log(this.myFicheAchatDetails);
       });
   }
+
+  public allFichesAchatForOeuvre: FicheAchat2Exist[] = [];
+  public allFichesAchatForOeuvreReady: boolean = false;
+  public otherFichesAchatForOeuvreExist: boolean = false;
+  getAllFichesAchatFOrOeuvre(numProgram) {
+    this.fichesAchatService.getAllFichesAchatFOrOeuvre(numProgram)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        console.log('res for allFichesAchatFoOeuvre => ', data);
+        if (data.length > 1) {
+          this.allFichesAchatForOeuvre = data;
+          this.allFichesAchatForOeuvreReady = true;
+          this.otherFichesAchatForOeuvreExist = true;
+        } else {
+          this.allFichesAchatForOeuvreReady = true;
+          this.otherFichesAchatForOeuvreExist = false;
+        }
+      });
+  }
+
 
   displayDurCom(durCom: string): string {
     console.log(durCom);
