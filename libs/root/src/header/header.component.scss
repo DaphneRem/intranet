@@ -20,6 +20,18 @@ i {
     background: $backgroundHeader;
     .navbar-wrapper {
         .navbar-logo {
+            .mediawan-logo {
+                display: flex;
+                color: $iconsHeader;
+                img {
+                    height : 40px;
+                }
+                p {
+                    font-size: 1.3em;
+                    margin: auto;
+                    padding-left: 10px;
+                }
+            }
             img {
                 height : 40px;
             }

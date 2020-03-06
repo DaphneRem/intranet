@@ -24,6 +24,7 @@ import { AccordionDirective } from './accordion/accordion.directive';
 // +state
 import { navbarReducer } from './+state/navbar.reducer';
 import { navbarInitialState } from './+state/navbar.init';
+import { WarningTestComponent } from './warning-test/warning-test.component';
 
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -50,11 +51,13 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FooterComponent,
     HeaderComponent,
     NavbarComponent,
+    WarningTestComponent,
   ],
   exports: [
     ClickOutsideModule,
     FooterComponent,
     HeaderComponent,
+    WarningTestComponent,
   ],
   providers: [
     {

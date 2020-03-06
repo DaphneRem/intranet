@@ -76,7 +76,7 @@ subscription: Subscription;
   public paddingTop;
   public marginLeft;
   public title = 'suivi-ingests';
-  public logo = 'logoABintranet';
+  public logo = 'logoMDWintranet';
   public headerNav = false;
   public userName;
   public name;
@@ -91,6 +91,8 @@ subscription: Subscription;
   public userSpecifiRights = [];
   public specificRightsExist = true;
   public userRightsForApp;
+  public testMode: boolean = false;
+  public currentUrl: string = '';
 
 
   ngOnInit() {
@@ -108,9 +110,19 @@ subscription: Subscription;
     this.checkHeader(this.navbarState);
   }
 
+  checkDevMode() {
+    this.currentUrl = window.location.href;
+    console.log('this.currentUrl => ', this.currentUrl);
+    if (this.currentUrl.indexOf('test') > 0 || this.currentUrl.indexOf('localhost:') > 0) {
+      console.log('test Mode');
+      this.testMode = true;
+    }
+  }
+
   ngAfterViewInit() {
     console.log(this.authService);
     if (this.authService) {
+        this.checkDevMode();
         console.log(this.authService);
       if (this.authService.userMSAL !== null && this.authService.userMSAL !== undefined) {
         //  this.displayUser();
