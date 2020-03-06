@@ -12,7 +12,7 @@
         <div class="details row form-group">
             <div class="col-lg-12" class="categories row">
                 <div *ngFor="let category of annexElementsCategories; let i = index" class="category col-lg-6">
-                  <p class="badge badge-lg bg-info">{{category.Libelle}} :</p>
+                  <p class="badge badge-lg">{{category.Libelle}} :</p>
                   <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="sub-category">
                       <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
                           <!-- <i *ngIf="checkElementIsValid(item.IdLibElementAnnexes)" class="icofont icofont-check-alt"></i> -->

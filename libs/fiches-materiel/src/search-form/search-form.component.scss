@@ -1,5 +1,4 @@
-$searchBtnColor :  #17AAB2;
-$searchBtnHoverColor :  #2eced6;
+@import "../../fiches-materiel-common-theme";
 
 form {
     padding-top :10px;
@@ -20,9 +19,9 @@ form {
             font-size: 19px;
             border-radius: 100px;
             &.search {
-                background: $searchBtnColor;
+                background: $main-color;
                 &:hover {
-                    background: $searchBtnHoverColor;
+                    background: $main-color-hover;
                 }
             }
             &.reply {
@@ -57,7 +56,7 @@ form {
             span {
                 margin-left: 10px;
                 i {
-                    color : $searchBtnColor;
+                    color : $main-color;
                 }
             }
         }

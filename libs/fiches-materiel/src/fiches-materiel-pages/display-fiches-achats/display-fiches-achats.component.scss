@@ -1,8 +1,4 @@
-$navbarColor : #3b4650;
-$creationBtnColor :  #17AAB2;
-$creationBtnHoverColor :  #2eced6;
-$cancelBtnColor : #c9c9c9;
-$importantColor : #fd5f5f;
+@import "../../../fiches-materiel-common-theme";
 
 .card {
     flex-direction: inherit;
@@ -24,12 +20,12 @@ $importantColor : #fd5f5f;
                     padding: 10px;
                     margin-top: 15px;
                     .helper::after {
-                        border: 0.125rem solid $creationBtnColor;
-                        background-color:  $creationBtnColor;
-                        border-color:  $creationBtnColor;
+                        border: 0.125rem solid $main-color;
+                        background-color:  $main-color;
+                        border-color:  $main-color;
                     }
                     .helper::before {
-                        border: 0.125rem solid $creationBtnColor;
+                        border: 0.125rem solid $main-color;
                     }
                 }
             }
@@ -40,9 +36,11 @@ $importantColor : #fd5f5f;
         justify-content: flex-start;
         align-items: center;
         button {
+            background-color:  $main-color;
+            border-color:  $main-color;
             &:hover {
-                background-color: $creationBtnHoverColor;
-                border-color: $creationBtnHoverColor;
+                background-color: $main-color-hover;
+                border-color: $main-color-hover;
             }
         }
     }

@@ -7,6 +7,7 @@ import {
 } from '@ab/fiches-materiel/src/fiches-materiel-tables/fiches-materiel-table/+state/datatable-filtered-data.interfaces';
 
 import swal from 'sweetalert2';
+import { mainColor, maintColorHover } from '../../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'creative-form-fiches-materiel',
@@ -68,8 +69,8 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
 
   /******* Init default oeuvre Model ********/
   initDefaultModels() {
-    // let oeuvreToImportFm = this.detailsFicheAchat.filter(item => (item.Import_FM === null || item.Import_FM === null));
-    let oeuvreToImportFm = this.detailsFicheAchat;
+    let oeuvreToImportFm = this.detailsFicheAchat.filter(item => (item.Import_FM === null || item.Import_FM === 0));
+    // let oeuvreToImportFm = this.detailsFicheAchat;
     this.oeuvreWithGaps = oeuvreToImportFm.map(oeuvre => {
       return {
         id_fiche: oeuvre.id_fiche,
@@ -417,7 +418,7 @@ export class CreativeFormFichesMaterielComponent implements OnInit {
           type: 'success',
           cancelButtonText: 'Fermer',
           confirmButtonText: 'Voir les fiches matériel',
-          confirmButtonColor: '#17AAB2'
+          confirmButtonColor: mainColor
         }).then(result => {
           if (result.value) {
             console.log('this.myFicheAchat.numero_fiche => ', this.myFicheAchat.numero_fiche);

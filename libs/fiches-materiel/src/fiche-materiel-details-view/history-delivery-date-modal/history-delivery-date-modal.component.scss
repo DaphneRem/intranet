@@ -1,5 +1,4 @@
-$creationBtnColor :  #17AAB2;
-$creationBtnHoverColor :  #2eced6;
+@import "../../../fiches-materiel-common-theme";
 
 // /deep/ .modal-content {
 //     border: 1px solid transparent;
@@ -22,13 +21,13 @@ $creationBtnHoverColor :  #2eced6;
 .history {
     margin-left: 20px;
     margin-top: -10px;
-    background: $creationBtnColor;
+    background: $main-color;
     border-radius: 100%;
     height: 40px;
     width: 40px;
     display: flex;
     &:hover {
-        background: $creationBtnHoverColor;
+        background: $main-color-hover;
     }
     i {
         color : #ffffff;
@@ -45,16 +44,16 @@ $creationBtnHoverColor :  #2eced6;
 }
 
 .btn-close-modal {
-    background-color: $creationBtnColor;
-    border-color: $creationBtnColor;
+    background-color: $main-color;
+    border-color: $main-color;
     color: #ffffff;
     background-image: none;
     transition: all ease-in 0.3s;
     font-size: 1em;
     &:hover {
         transition: all ease-in 0.3s;
-        background-color: $creationBtnHoverColor;
-        border-color: $creationBtnHoverColor;
+        background-color: $main-color-hover;
+        border-color: $main-color-hover;
     }
     i {
         font-size: 1.4em;
