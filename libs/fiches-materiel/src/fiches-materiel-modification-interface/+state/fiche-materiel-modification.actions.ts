@@ -4,6 +4,8 @@ export interface AddFichesMaterielInModif {
     modificationType: '',
     multiFicheAchat: false,
     multiOeuvre: false,
+    allOeuvres: number[],
+    allFichesAchat: number[],
     selectedFichesMateriel: [
       {
         idFicheMateriel: string;

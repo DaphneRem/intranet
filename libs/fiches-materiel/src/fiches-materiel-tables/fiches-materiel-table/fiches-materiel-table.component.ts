@@ -395,15 +395,21 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
     }
     if (this.selectedRows.length > 1) {
       console.log('this.selectedRow => ', this.selectedRows);
+      console.log('this.idFicheAchatArray => ', this.idFicheAchatArray);
+      console.log('this.idFicheAchatDetailArray => ', this.idFicheAchatDetailArray);
       this.displayOptionsBtnModif = false;
       this.uniqValuesIdFicheAchat = this.getUniqValues(this.idFicheAchatArray);
       this.uniqValuesIdFicheAchatDetail = this.getUniqValues(this.idFicheAchatDetailArray);
+      console.log('this.uniqValuesIdFicheAchat => ', this.uniqValuesIdFicheAchat);
+      console.log('this.uniqValuesIdFicheAchatDetail => ', this.uniqValuesIdFicheAchatDetail);
       this.store.dispatch({
         type: 'ADD_FICHE_MATERIEL_IN_MODIF',
         payload: {
           modificationType: 'multi',
           multiFicheAchat: this.uniqValuesIdFicheAchat.length > 1 ? true : false,
           multiOeuvre: this.uniqValuesIdFicheAchatDetail.length > 1 ? true : false,
+          allOeuvres: this.uniqValuesIdFicheAchatDetail,
+          allFichesAchat: this.uniqValuesIdFicheAchat,
           selectedFichesMateriel: this.selectedId
         }
       });
@@ -578,7 +584,9 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
           if (data.Deadline !== null) {
             let date = moment(data.Deadline).format('YYYY-MM-DD');
             let isBefore = moment(date).isBefore(today);
-            if (isBefore) {
+            if (data.Isurgence) {
+              return `<span class="label bg-danger" style="font-size: 0.9em">${data.Deadline.slice(0, 10)}</span>`;
+            } else if (isBefore && !data.Isurgence) {
               return `<span style="color: red">${data.Deadline.slice(0, 10)}</span>`;
             } else {
               return data.Deadline.slice(0, 10);
@@ -672,18 +680,36 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       },
       {
         title : 'distributeur',
-        data : 'distributeur',
-        className: 'datatble-fm-distributeur'
+        className: 'datatble-fm-distributeur',
+        data: function (data, type, row, meta) {
+            if (data.Isurgence && data.distributeur) {
+              return `<span class="label bg-danger" style="font-size: 0.9em">${data.distributeur}</span>`;
+            } else {
+              return data.distributeur;
+            }
+          }
       },
       {
         title : 'titre vf',
-        data : 'TitreEpisodeVF',
-        className: 'datatable-fm-title'
+        className: 'datatable-fm-title',
+        data: function (data, type, row, meta) {
+          if (data.Isurgence && data.TitreEpisodeVF) {
+            return `<span class="label bg-danger" style="font-size: 0.9em">${data.TitreEpisodeVF}</span>`;
+          } else {
+            return data.TitreEpisodeVF;
+          }
+        }
       },
       {
         title : 'titre vo',
-        data : 'TitreEpisodeVO',
-        className: 'datatable-fm-title'
+        className: 'datatable-fm-title',
+        data: function (data, type, row, meta) {
+          if (data.Isurgence && data.TitreEpisodeVO) {
+            return `<span class="label bg-danger" style="font-size: 0.9em">${data.TitreEpisodeVO}</span>`;
+          } else {
+            return data.TitreEpisodeVO;
+          }
+        }
       },
       // {
       //   title : 'IdFicheAchat', // delete after tests ok
@@ -695,7 +721,13 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       // },
       {
         title : 'ep. AB',
-        data: 'NumEpisodeAB',
+        data: function (data, type, row, meta) {
+          if (data.Isurgence && data.NumEpisodeAB) {
+            return `<span class="label bg-danger" style="font-size: 0.9em">${data.NumEpisodeAB}</span>`;
+          } else {
+            return data.NumEpisodeAB;
+          }
+        }
       },
       {
         title : 'Livraison',

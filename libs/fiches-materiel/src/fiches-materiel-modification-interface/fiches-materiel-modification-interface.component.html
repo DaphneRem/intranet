@@ -56,7 +56,7 @@
   </div>
   <div *ngIf="!fmInRecording">
     <div class="row top">
-      <div class="col-lg-3 left-infos">
+      <div class="col-lg-3 left-infos" [ngClass]="newObject.Isurgence === true ? 'urgent-deadline' : ''">
         <div *ngIf="!fmInRecording" class="form-group row">
           <i *ngIf="warningDeadlineExist" class="deadline-warning warning-icon icofont icofont-warning"></i>
           <label class="deadline clo-lg-4 col-form-label">
@@ -98,6 +98,10 @@
         </div>
       </div>
       <div class="col-lg-6 title" *ngIf="selectionType === 'one'">
+        <div *ngIf="newObject.Isurgence === true" class="urgent-warning">
+          <i class="icon icofont icofont-warning-alt"></i>
+          <p>Fiche urgente</p>
+        </div>
         <h1>
           {{newObject.TitreEpisodeVF}}
         </h1>
@@ -131,8 +135,11 @@
 
 
       </div>
-      <div class="col-lg-3 warning-fa">
-        <span class="warning-no-fa"></span>
+      <div class="col-lg-6" *ngIf="selectionType === 'multi'">
+        <div *ngIf="newObject.Isurgence === true" class="urgent-warning">
+          <i class="icon icofont icofont-warning-alt"></i>
+          <p>Fiches urgentes</p>
+        </div>
       </div>
     </div>
      <!-- {{newObject.IdLibstatut | json}}
@@ -203,21 +210,64 @@
       [valueNotToChangeLibelle]="valueNotToChangeLibelle"
       [allFichesMateriel]="allFichesMateriel">
     </steps-status-comment-modal>
-    <div class="row fm-detail-body">
+    <div class="row urgent-modif">
+      <div class="col-lg-6 urgent-checkbox">
+        <div class="checkbox-color checkbox-danger">
+          <i *ngIf="!newObject.Isurgence && selectionType === 'multi'" class="icofont icofont-close-line not-valid"></i>
+          <input 
+            id="Isurgence" 
+            type="checkbox" 
+            [checked]="displayCheckedIsUrgence()" 
+            (click)="displayIsUrgence()" 
+            name="Isurgence">
+            <!-- [disabled]="disabledUrgence()" -->
+          <label for="Isurgence">
+            Mettre en évidence <span *ngIf="newObject.Isurgence === valueNotToChangeLibelle">(certaines fiches sélectionnées sont mises en évidence)</span>
+          </label>
+        </div>
+        <div class="icons col-lg-2 ml-0 reply-urgent" *ngIf="selectionType === 'multi'">
+          <i *ngIf="(newObject.Isurgence !== valueNotToChangeLibelle) && !checkIsOriginalProperty('Isurgence', newObject.Isurgence)"
+            class="icofont icofont-ui-reply reply"
+            [placement]="'right'" 
+            [ngbTooltip]="replyTooltipMessage"
+            (click)="newObject.Isurgence = valueNotToChangeLibelle">
+          </i>
+          <i *ngIf="(newObject.Isurgence !== valueNotToChangeLibelle) 
+            && (checkIsOriginalProperty('Isurgence', newObject.Isurgence)
+            && newObject.Isurgence !== equalObject.Isurgence[0])" 
+            class="icofont icofont-ui-reply reply" 
+            [placement]="'right'"
+            [ngbTooltip]="replyTooltipMessage" 
+            (click)="checkIsOriginalProperty('Isurgence', newObject.Isurgence) ? 
+            newObject.Isurgence = equalObject.Isurgence[0] : 
+            newObject.Isurgence = valueNotToChangeLibelle">
+          </i>
+        </div>
+      </div>
+    </div>
+    <div class="row fm-detail-body"> <!-- CONTIENT TOUTES LES SECTIONS -->
       <div class="col-lg-4 fm-content">
          <!-- custom height -->
-        <div class="sections info" [ngStyle]="selectionType === 'multi' ? {'min-height': '580px'} : {'min-height': '740px'}"> 
+        <!-- <div class="sections info" #info [ngStyle]="selectionType === 'multi' ? {'min-height': '580px'} : {'min-height': '740px'}">  -->
+        <div class="sections info" #info [ngStyle]="{'min-height': '100%'}">
           <i class="icofont icofont-info-circle section-icon"></i>
-          <p *ngIf="selectionType === 'one'"> N° fiche Achat :
+          <p *ngIf="selectionType === 'one' || (selectionType === 'multi' && !multiFichesAchat)"> N° fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.numero_fiche}}</span>
           </p>
-          <p *ngIf="selectionType === 'one'">Nom cessionnaire : 
-            <span *ngIf="ficheAchatReady">
-              {{ficheAchat.nom_cessionnaire}}
-            </span>
+          <p *ngIf="selectionType === 'multi' && multiFichesAchat && ficheAchatReady && ficheAchatMulti.numero_fiche"> N° fiche Achat :
+            <span>{{ficheAchatMulti.numero_fiche}}</span>
           </p>
-          <p *ngIf="selectionType === 'one'">Type de fiche Achat :
+          <p *ngIf="selectionType === 'one' || (selectionType === 'multi' && !multiFichesAchat)">Nom cessionnaire : 
+            <span *ngIf="ficheAchatReady">{{ficheAchat.nom_cessionnaire}}</span>
+          </p>
+          <p *ngIf="selectionType === 'multi' && multiFichesAchat && ficheAchatReady && ficheAchatMulti.nom_cessionnaire">Nom cessionnaire :
+            <span>{{ficheAchatMulti.nom_cessionnaire}}</span>
+          </p>
+          <p *ngIf="selectionType === 'one' || (selectionType === 'multi' && !multiFichesAchat)">Type de fiche Achat :
             <span *ngIf="ficheAchatReady">{{ficheAchat.libelle_type_fiche}}</span>
+          </p>
+          <p *ngIf="selectionType === 'multi' && multiFichesAchat && ficheAchatReady && ficheAchatMulti.libelle_type_fiche">Type de fiche Achat :
+            <span>{{ficheAchatMulti.libelle_type_fiche}}</span>
           </p>
           <p *ngIf="selectionType === 'one'">
             <a href="{{detailedReportLink}}" target="_blank" class="rapport-link" placement="top" ngbTooltip="Voir le rapport détaillé de la Fiche Achat">
@@ -225,13 +275,16 @@
               <span>Rapport détaillé</span>
             </a>
           </p>
-          <p *ngIf="selectionType === 'one' && ficheAchatReady"> Distributeur :
+          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiFichesAchat)) && ficheAchatReady"> Distributeur :
             <span *ngIf="ficheAchat.Distributeur">
               {{ficheAchat.Distributeur}}
             </span>
             <span *ngIf="!ficheAchat.Distributeur">
               /
             </span>
+          </p>
+          <p *ngIf="selectionType === 'multi' && multiFichesAchat && ficheAchatReady && ficheAchatMulti.Distributeur">Type de fiche Achat :
+            <span>{{ficheAchatMulti.Distributeur}}</span>
           </p>
 
           <!-- <p *ngIf="selectionType === 'one'">Année prod :
@@ -323,7 +376,7 @@
               </div>
           </div>
 
-          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Format œuvre :
+          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady">Format œuvre :
               <span *ngIf="ficheAchatDetail.nombre_episodes">
                 {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisode(s)' : '/'}}
               </span>
@@ -337,8 +390,17 @@
                 de {{displayDurCom(ficheAchatDetail.DurCom)}}
               </span>
 
-          </p>
-          <p *ngIf="selectionType === 'one' && !ficheAchatDetailReady">Format œuvre :
+              <p *ngIf="selectionType === 'multi' && multiOeuvre && ficheAchatDetailReady && ficheAchatDetailMulti.nombre_episodes">Format œuvre :
+                  <span>{{ficheAchatDetailMulti.nombre_episodes}}</span>
+                  <span 
+                    *ngIf="ficheAchatDetail.nombre_episodes && propertyExist(ficheAchatDetailMulti.DurCom, ficheAchatDetailMulti)" 
+                    [placement]="'right'" 
+                    [ngbTooltip]="propertyExist(ficheAchatDetailMulti.DurCom, ficheAchatDetailMulti) ? ficheAchatDetailMulti.DurCom : ''">
+                    de {{displayDurCom(ficheAchatDetailMulti.DurCom)}}
+                  </span>
+              </p>
+        
+          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && !ficheAchatDetailReady">Format œuvre :
             <span>/</span>
           </p>
           <div class="row form-group">
@@ -454,7 +516,7 @@
           <div class="row form-group">
             <label class="col-form-label col-lg-3">Version : </label>
             <div *ngIf="selectionType !== 'multi'" class="right-details col-lg-6">
-              <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
+              <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-success">
                 <input 
                   id="{{item.version_mat}}"
                   type="checkbox"
@@ -478,7 +540,7 @@
               </div> -->
             </div>
             <div *ngIf="selectionType === 'multi' && versionMultiReady && versionLib" class="right-details col-lg-6">
-              <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-info">
+              <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-success">
                 <i class="icofont icofont-close-line not-valid" [ngClass]="checkIfVersionValueIsNotValid(item.id_version) ? 'itemNotValid' : 'itemValid' "></i>
                 <input 
                   id="{{item.version_mat}}"
@@ -516,7 +578,7 @@
           <div class="row form-group" *ngIf="qualiteFmReady">
             <label class="col-form-label col-lg-3">Qualité : </label>
             <div *ngIf="qualiteReady && selectionType !== 'multi'" class="right-details col-lg-6">
-              <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-info">
+              <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-success">
                 <input 
                   id="{{item.Libelle}}"
                   type="checkbox"
@@ -530,7 +592,7 @@
             </div>
 
             <div *ngIf="selectionType === 'multi' && qualityMultiReady && qualiteLib" class="right-details col-lg-6">
-              <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-info">
+              <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-success">
                 <i class="icofont icofont-close-line not-valid" [ngClass]="checkIfQualityValueIsNotValid(item.Code) ? 'itemNotValid' : 'itemValid' "></i>
                 <input 
                   id="{{item.Libelle}}"
@@ -606,7 +668,7 @@
               {{x === 0 ? item : ', '+item}}
             </span>
           </p> -->
-          <p *ngIf="selectionType === 'one'">Chaînes concernées :
+          <p *ngIf="selectionType === 'one' || (selectionType === 'multi' && !multiFichesAchat)">Chaînes concernées :
             <span *ngIf="ficheAchatReady && ficheAchat.hasOwnProperty('lib_chaines') && ficheAchat.lib_chaines !== null && ficheAchat.lib_chaines !== []">
               <span *ngFor="let item of ficheAchat.lib_chaines; let x = index">
                 {{x === 0 ? item : ', ' + item}}
@@ -614,6 +676,11 @@
             </span>
             <span *ngIf="ficheAchatReady && (!ficheAchat.hasOwnProperty('lib_chaines') || ficheAchat.lib_chaines === null || ficheAchat.lib_chaines === [])">
               / 
+            </span>
+          </p>
+          <p *ngIf="selectionType === 'multi' && multiFichesAchat && ficheAchatReady && ficheAchatMulti.lib_chaines && ficheAchatMulti.lib_chaines !== null && ficheAchatMulti.lib_chaines !== []">Chaînes concernées :
+            <span *ngFor="let item of ficheAchatMulti.lib_chaines; let x = index">
+              {{x === 0 ? item : ', ' + item}}
             </span>
           </p>
         </div>
@@ -674,7 +741,14 @@
 
       </div>
       <div class="col-lg-4 fm-content">
-        <div class="sections droits" *ngIf="selectionType === 'one' && ficheAchatDetailReady" [ngStyle]="{'min-height': '170px'}">
+        <!-- <div 
+          class="sections droits" 
+          *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady" 
+          [ngStyle]="{'min-height': '170px'}"> -->
+        <div 
+          class="sections droits" 
+          *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady" 
+          [ngStyle]="{'min-height': '25%'}">
           <i class="icofont icofont-law section-icon"></i>
 
           <p class="deb-droits">Date déb droits :
@@ -694,8 +768,35 @@
           </p>
         </div>
 
+        <!-- <div 
+          class="sections droits" 
+          *ngIf="selectionType === 'multi' && multiOeuvre && ficheAchatDetailReady && ficheAchatDetailMulti" 
+          [ngStyle]="{'min-height': '170px'}"> -->
+        <div 
+          class="sections droits" 
+          *ngIf="selectionType === 'multi' && multiOeuvre && ficheAchatDetailReady && ficheAchatDetailMulti" 
+          [ngStyle]="{'min-height': '25%'}">
+          <i class="icofont icofont-law section-icon"></i>
 
-        <div class="sections livraison" [ngStyle]="selectionType === 'multi' ? {'min-height': '455px'} : {'min-height': '480px', 'max-height': '480px'}">
+          <p *ngIf="ficheAchatDetailMulti.debut_des_droits" class="deb-droits">Date déb droits :
+            <!-- <span>{{newObject.DateDebutDroit | date}}</span> -->
+            <span>{{ficheAchatDetailMulti.debut_des_droits | date}}</span>
+          </p>
+          <!-- <p class="fin-droits">Fin des droits :
+            <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits | date}}</span>
+            <span *ngIf="!ficheAchatDetail.expiration_droits">/</span>
+          </p> -->
+          <p *ngIf="ficheAchatDetailMulti.hasOwnProperty('duree_droits_annee') && ficheAchatDetailMulti.duree_droits_annee !== null">Fin des droits : {{ficheAchatDetailMulti.duree_droits_annee}} an(s)</p>
+          <p *ngIf="ficheAchatDetailMulti.hasOwnProperty('duree_droits_mois') && ficheAchatDetailMulti.duree_droits_mois !== null">Fin des droits : {{ficheAchatDetailMulti.duree_droits_mois}} mois</p>
+          <p *ngIf="!ficheAchatDetailMulti.duree_droits_annee && !ficheAchatDetailMulti.duree_droits_mois && ficheAchatDetailMulti.expiration_droits">Expiration droits : {{ficheAchatDetailMulti.expiration_droits | json}}</p>
+          <p *ngIf="!ficheAchatDetailMulti.duree_droits_annee && !ficheAchatDetailMulti.duree_droits_mois && !ficheAchatDetailMulti.expiration_droits">Fin des droits :
+            <span class="empty-field">/</span>
+          </p>
+        </div>
+
+
+        <!-- <div class="sections livraison" [ngStyle]="selectionType === 'multi' ? {'min-height': '455px'} : {'min-height': '480px', 'max-height': '480px'}"> -->
+        <div class="sections livraison" [ngStyle]="{'min-height': 'calc(50% - 10px)'}">
           <i class="icofont icofont-clock-time section-icon"></i>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker livraison-date">
             <label class="col-lg-5 col-form-label">
@@ -736,12 +837,19 @@
             [livraisonIsValid]= "livraisonIsValid"
             (newComment)="displayDeliveryDateModelComment($event)"
             ></delivery-date-comment-modal>
-          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady">Délai de vérif :
+          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady">Délai de vérif :
              {{ficheAchatDetail.delai_verification}}
             <span *ngIf="propertyExist(ficheAchatDetail.delai_verification, ficheAchatDetail)">
               {{ficheAchatDetail.delai_verification}} jours
             </span>
             <span *ngIf="!ficheAchatDetail.delai_verification">/</span>
+          </p>
+          <p *ngIf="selectionType === 'multi' && multiOeuvre && ficheAchatDetailReady && ficheAchatDetailMulti">Délai de vérif :
+             {{ficheAchatDetailMulti.delai_verification}}
+            <span *ngIf="propertyExist(ficheAchatDetailMulti.delai_verification, ficheAchatDetailMulti)">
+              {{ficheAchatDetailMulti.delai_verification}} jours
+            </span>
+            <span *ngIf="!ficheAchatDetailMulti.delai_verification">/</span>
           </p>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker acceptation">
             <div class="form-check col-lg-5">
@@ -819,7 +927,8 @@
           </div>
           <div *ngIf="warningDateDiffExist && !fmInRecording && dateDiffDaysDiff < 0" class="diff-message">La date de première diff est dépassée</div>
         </div>
-        <div class="sections acces-vf" [ngStyle]="selectionType === 'multi' ? {'min-height': '195px'} : {'min-height': '290px', 'max-height': '290px'}">
+        <!-- <div class="sections acces-vf" [ngStyle]="selectionType === 'multi' ? {'min-height': '195px'} : {'min-height': '290px', 'max-height': '290px'}"> -->
+        <div class="sections acces-vf" [ngStyle]="{'min-height': 'calc(25% - 10px)'}">
           <i class="icofont icofont-unlock section-icon"></i>
           <label class="col-form-label col-lg-4">Accès VF :</label>
           <div class="row form-group">
@@ -865,7 +974,8 @@
         </div>
       </div>
       <div class="col-lg-4 fm-content">
-        <div class="sections press" [ngStyle]="selectionType === 'multi' ? {'min-height': '215px'} : {'min-height': '285px'}">
+        <!-- <div class="sections press" [ngStyle]="selectionType === 'multi' ? {'min-height': '215px'} : {'min-height': '285px'}"> -->
+        <div class="sections press" [ngStyle]="{'min-height': 'calc(30% - 10px)'}">
           <i class="icofont icofont-newspaper section-icon"></i>
           <div class="row form-group" [ngStyle]="selectionType === 'multi' ? {} : {'margin-top': '60px'}">
             <label class="col-form-label col-lg-5">Elements annexes :</label>
@@ -949,7 +1059,8 @@
 
           <!-- voir quel attribut correspond à ce commentaire -->
         </div>
-        <div class="sections ori" [ngStyle]="selectionType === 'multi' ? {'min-height': '140px'} : {'min-height': '270px'}">
+        <!-- <div class="sections ori" [ngStyle]="selectionType === 'multi' ? {'min-height': '140px'} : {'min-height': '270px'}"> -->
+        <div class="sections ori" [ngStyle]="{'min-height': '30%'}">
           <i class="icofont icofont-space-shuttle section-icon"></i>
           <div class="row form-group retour-ori" [ngStyle]="selectionType === 'multi' ? {'margin-top': '0'} : {'margin-top': '30px'}">
             <label class="col-form-label col-lg-3">Retour Ori : </label>
@@ -968,12 +1079,14 @@
               </option>
             </select>
           </div>
-          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady && newObject.RetourOri === 1">Durée du prêt :
+          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady && newObject.RetourOri === 1">Durée du prêt :
             
             <span>{{ficheAchatDetail.duree_du_pret}} jour(s)</span>
           </p>
-
-          <p *ngIf="selectionType === 'one' && ficheAchatDetailReady && newObject.RetourOri === 1">Retour Ori dernier délai :
+          <p *ngIf="selectionType === 'multi' && multiOeuvre && ficheAchatDetailReady && newObject.RetourOri === 1 && ficheAchatDetailMulti.duree_du_pret">Durée du prêt :
+            <span>{{ficheAchatDetailMulti.duree_du_pret}} jour(s)</span>
+          </p>
+          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady && newObject.RetourOri === 1">Retour Ori dernier délai :
             <span *ngIf="lendingDurationDate !== undefined ">
               {{lendingDurationDate | date}}
             </span>
@@ -1008,7 +1121,8 @@
         </div>
 
 <!--- ***************  SECTION RECEPTION LABO ***************** -->
-        <div class="sections labo" [ngStyle]="selectionType === 'multi' ? {'min-height': '285px'} : {'min-height': '385px'}">
+        <!-- <div class="sections labo" [ngStyle]="selectionType === 'multi' ? {'min-height': '285px'} : {'min-height': '385px'}"> -->
+        <div class="sections labo" [ngStyle]="{'min-height': 'calc(40% - 10px)'}">
           <i class="icofont icofont-beaker section-icon"></i>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker section-labo" [ngStyle]="selectionType === 'multi' ? {'margin-top': '10px'} : {'margin-top': '35px'}">
             <label class="col-lg-5 col-form-label">

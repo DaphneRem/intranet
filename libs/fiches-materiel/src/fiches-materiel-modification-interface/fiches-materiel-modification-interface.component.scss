@@ -1,6 +1,6 @@
+@import "../../fiches-materiel-common-theme";
+
 $navbarColor : #3b4650;
-$creationBtnColor :  #17AAB2;
-$creationBtnHoverColor :  #2eced6;
 $infoRecordingColor : #41bc9c;
 $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
@@ -50,6 +50,9 @@ $modificationColor: #FFB64D;
             padding-top : 100px;
             .left-infos {
                 padding-left: 40px;
+                &.urgent-deadline {
+                    color : $importantColor;
+                }
                 .input-group {
                     padding : 0;
                 }
@@ -58,7 +61,7 @@ $modificationColor: #FFB64D;
                     justify-content: flex-end;
                     .deadline-warning {
                         font-size: 2.2em;
-                        color: #fd5f5f;
+                        color: $importantColor;
                         margin-right: 5px; 
                     }
                     label {
@@ -68,7 +71,7 @@ $modificationColor: #FFB64D;
                         &.user {
                             // padding-left: 50px;
                             .empty-field {
-                                color : $creationBtnColor; 
+                                color : $main-color; 
                             }
                         }
                         &.deadline {
@@ -79,7 +82,7 @@ $modificationColor: #FFB64D;
                                 margin-right : 13px;
                             }
                             .empty-field {
-                                color : $creationBtnColor;
+                                color : $main-color;
                             }
                         }
                     }
@@ -90,8 +93,8 @@ $modificationColor: #FFB64D;
                         }
                         .deadline-calendar {
                             button {
-                                background-color: $creationBtnColor;
-                                border-color: $creationBtnColor;
+                                background-color: $main-color;
+                                border-color: $main-color;
                                 color: #ffffff;
                                 background-image: none;
                                 transition: all ease-in 0.3s;
@@ -100,8 +103,8 @@ $modificationColor: #FFB64D;
                                 margin-bottom : 20px;
                                 &:hover {
                                     transition: all ease-in 0.3s;
-                                    background-color: $creationBtnHoverColor;
-                                    border-color: $creationBtnHoverColor;
+                                    background-color: $main-color-hover;
+                                    border-color: $main-color-hover;
                                 }
                                 i {
                                     font-size: 1.4em;
@@ -133,18 +136,44 @@ $modificationColor: #FFB64D;
                     }
                 }
             }
+            .urgent-warning {
+                display: flex;
+                justify-content: center;
+                color: $importantColor;
+                font-weight: bold;
+                i {
+                    font-size: 2.2em;
+                }
+                p {
+                    font-size: 1.3em;
+                    padding: 5px 0 0 5px;
+                }
+            }
             .title {
                 text-align: center;
+                .urgent-warning {
+                    display: flex;
+                    justify-content: center;
+                    color: $importantColor;
+                    font-weight: bold;
+                    i {
+                        font-size: 2.2em;
+                    }
+                    p {
+                        font-size: 1.3em;
+                        padding: 5px 0 0 5px;
+                    }
+                }
                 h1 {
                     font-size: 2em;
                     &.empty-field {
-                        color :  $creationBtnColor;
+                        color :  $main-color;
                     }
                 }
                 h2 {
                     font-size: 1.5em;
                     &.empty-field {
-                        color :  $creationBtnColor;
+                        color :  $main-color;
                     }
                 }
                 .eps-ab {
@@ -195,7 +224,7 @@ $modificationColor: #FFB64D;
                 .add-just-comment {
                     height: 40px;
                     min-width: 40px;
-                    background-color: $creationBtnColor;
+                    background-color: $main-color;
                     border-radius: 100%;
                     color: #ffffff;
                     display: flex;
@@ -203,7 +232,7 @@ $modificationColor: #FFB64D;
                     align-items: center;
                     margin-left: 15px;
                     &:hover {
-                        background-color: $creationBtnHoverColor;
+                        background-color: $main-color-hover;
                         cursor: pointer;
                     }
                 }
@@ -228,8 +257,30 @@ $modificationColor: #FFB64D;
                 }
             }
         }
+        .urgent-modif {
+           .urgent-checkbox {
+               display: flex;
+               margin-left: 30px;
+               .not-valid {
+                   color : #b7b7b7;
+                   margin-right: 5px;
+               }
+               .reply-urgent {
+                    cursor: pointer;
+                    padding-top: 3px;
+                    height: 30px;
+                    width: 30px;
+                    .reply {
+                        color: #7f7f7f;
+                        font-size: 18px;
+                    }
+               }
+           } 
+        }
         .fm-detail-body {
-            margin-top : 30px;
+            // margin-top : 30px;
+            margin-bottom : 30px;
+            min-height: 800px;
             .fm-content {
                 .sections {
                     padding: 20px;
@@ -238,7 +289,7 @@ $modificationColor: #FFB64D;
                     border : 1px solid $modificationColor;
                     .rapport-link {
                         &:hover, &:focus{
-                            color: $creationBtnColor;
+                            color: $main-color;
                         }
                         &:visited {
                             color: #000000;
@@ -286,12 +337,12 @@ $modificationColor: #FFB64D;
                                     // margin-left: 10px;
                                 }
                                 .helper::after {
-                                    border: 0.125rem solid $creationBtnColor;
-                                    background-color:  $creationBtnColor;
-                                    border-color:  $creationBtnColor;
+                                    border: 0.125rem solid $main-color;
+                                    background-color:  $main-color;
+                                    border-color:  $main-color;
                                 }
                                 .helper::before {
-                                    border: 0.125rem solid $creationBtnColor;
+                                    border: 0.125rem solid $main-color;
                                 }
                             }
                         }
@@ -542,11 +593,11 @@ $modificationColor: #FFB64D;
                         }
                         span {
                             &.empty-field {
-                                color : $creationBtnColor;
+                                color : $main-color;
                             }
                         }
                         &.empty-field {
-                            color : $creationBtnColor;
+                            color : $main-color;
                         }
                     }
                     .materiel {
@@ -566,13 +617,13 @@ $modificationColor: #FFB64D;
                         }
                         span {
                             &.empty-field {
-                                color : $creationBtnColor;
+                                color : $main-color;
                             }
                         }
                     }
                     button {
-                        background-color: $creationBtnColor;
-                        border-color: $creationBtnColor;
+                        background-color: $main-color;
+                        border-color: $main-color;
                         color: #ffffff;
                         background-image: none;
                         transition: all ease-in 0.3s;
@@ -581,8 +632,8 @@ $modificationColor: #FFB64D;
                         margin-bottom : 20px;
                         &:hover {
                             transition: all ease-in 0.3s;
-                            background-color: $creationBtnHoverColor;
-                            border-color: $creationBtnHoverColor;
+                            background-color: $main-color-hover;
+                            border-color: $main-color-hover;
                         }
                         i {
                             font-size: 1.4em;
@@ -602,7 +653,7 @@ $modificationColor: #FFB64D;
                     margin: 10px;
                     padding : 10px;
                     &.empty-field {
-                        color : $creationBtnColor;
+                        color : $main-color;
                     }
                     textarea {
                         height: 80px;
