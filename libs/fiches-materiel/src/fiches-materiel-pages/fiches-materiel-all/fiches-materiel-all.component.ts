@@ -75,7 +75,8 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
       TitreEpisodeVF: '',
       isarchived: this.isArchived,
       distributeur: '',
-      numficheachat: ''
+      numficheachat: '',
+      Isdeal: 2
   };
   public globalStore;
   public userModifRights: boolean;

@@ -10,6 +10,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import swal from 'sweetalert2';
+import { mainColor, maintColorHover } from '../../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'delivery-date-comment-modal',
@@ -73,8 +74,9 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
       input: 'textarea',
       showCancelButton: true,
       cancelButtonText: 'Aucun commentaire',
+      cancelButtonColor: mainColor,
       confirmButtonText: 'Valider',
-      confirmButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
     }).then((result) => {
       if (result.value) {
         this.deliveryComment = result.value;

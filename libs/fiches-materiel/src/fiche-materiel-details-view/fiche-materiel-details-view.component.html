@@ -1,7 +1,7 @@
 <div *ngIf="dataGloralReady && dataDetailsReady && dataMaterielReady" class="row fm-details">
   <div class="card col-lg-12">
     <div class="row top">
-      <div class="col-lg-3 left-infos">
+      <div class="col-lg-3 left-infos" [ngClass]="myFicheMateriel.Isurgence ? 'urgent-deadline' : ''">
         <p class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
           <!-- ajouter une condition en fonction de la deadline (si proche ou lointaine) -->
           <i *ngIf="displayDeadlineIcon()" class="warning-icon icofont icofont-warning"></i>
@@ -38,6 +38,7 @@
         </p>
       </div>
       <div class="col-lg-6 title">
+        <div *ngIf="myFicheMateriel.Isurgence" class="urgent-warning"><i class="icon icofont icofont-warning-alt"></i><p>Fiche urgente</p></div>
         <h1 [ngClass]="!myFicheMateriel.TitreEpisodeVF ? 'empty-field' : ''">
           {{myFicheMateriel.TitreEpisodeVF}}
         </h1>
@@ -79,6 +80,15 @@
           [stepLib]="stepLib" 
           *ngIf="myFicheMaterielExist"
           ></history-steps-status-modal>
+      </div>
+    </div>
+    <div class="row fm-other-fiches-achat" *ngIf="allFichesAchatForOeuvreReady && otherFichesAchatForOeuvreExist">
+      <div class="col-lg-12 other-fiches-achat-content">
+        <div class="other-fiches-achat">Autres fiches contenant l'oeuvre :
+          <span *ngFor="let item of allFichesAchatForOeuvre">
+            <label class="label label-inverse-danger">{{item.Numero_fiche}}</label>
+          </span>
+        </div>
       </div>
     </div>
     <div class="row fm-detail-body">

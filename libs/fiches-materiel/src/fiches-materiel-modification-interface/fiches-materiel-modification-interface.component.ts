@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, ViewChild, AfterViewInit } from '@angular/core';
 import { identifierModuleUrl } from '@angular/compiler';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -48,6 +48,8 @@ import { CustomDatepickerI18n, I18n } from '../services/custom-datepicker-i18n';
 // import { browserRefresh } from '../../../../apps/fiches-materiel/src/app/app.component';
 import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
 import { NewObject, objectNoChanged } from './fiche-materiel-new-object';
+import { mainColor, maintColorHover } from '../../fiches-materiel-common-theme';
+import { InformationsKaiService } from '@ab/trace-segment/src/services/informations-kai.service';
 
 
 @Component({
@@ -73,7 +75,7 @@ import { NewObject, objectNoChanged } from './fiche-materiel-new-object';
     { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter }
   ]
 })
-export class FichesMaterielModificationInterfaceComponent implements OnInit, OnDestroy {
+export class FichesMaterielModificationInterfaceComponent implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
 
   private onDestroy$: Subject<any> = new Subject();
 
@@ -192,6 +194,17 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public newObject: NewObject;
   public allUsersRightsInApp: UsersInAppRights[];
 
+  // sections height
+  public infoSectionHeightMulti;
+
+  public droitsSectionHeightMulti: number;
+  public livraisonSectionHeightMulti: number;
+  public accesVFSectionHeightMulti: number;
+
+  public annexesSectionHeightMulti: number;
+  public oriSectionHeightMulti: number;
+  public laboSectionHeightMulti: number;
+
 
   constructor(
     private appRightsService: AppRightsService,
@@ -227,6 +240,60 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.displaySelectionMode(this.storeFichesToModif);
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
     console.log('this.newObject onInit end => ', this.newObject);
+  }
+
+  displayIsUrgence() {
+    if (this.newObject.Isurgence === this.valueNotToChangeLibelle) {
+      this.newObject.Isurgence = true;
+    } else {
+      this.newObject.Isurgence = !this.newObject.Isurgence;
+    }
+    console.log('newObject.Isurgence => ', this.newObject.Isurgence);
+  }
+
+  displayCheckedIsUrgence() {
+    if (this.newObject.Isurgence === this.valueNotToChangeLibelle || !this.newObject.Isurgence) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  // public oldIsUrgence: boolean; // ICI 06/03/2020 !!!!!!!!!!
+  // disabledUrgence() {
+  //   console.log('this.newObject.Isurgence => ', this.newObject.Isurgence);
+  //   // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
+  //   // console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
+  //   this.oldIsUrgence = this.newObject.Isurgence;
+  //   if (
+  //     this.newObject.IdLibEtape === 20 || // Terminé (accepté)
+  //     this.newObject.IdLibEtape === 21 || // Terminé (annulé)
+  //     this.newObject.IdLibEtape === 24 // traité par un autre service
+  //   ) {
+  //     console.log('this.oldIsUrgence1 => ', this.oldIsUrgence);
+  //     this.newObject.Isurgence = false;
+  //     console.log('this.oldIsUrgence2 => ', this.oldIsUrgence);
+  //     return true;
+  //   } else {
+  //     console.log('this.oldIsUrgence3 => ', this.oldIsUrgence);
+  //       this.newObject.Isurgence = this.oldIsUrgence;
+  //     this.oldIsUrgence = this.newObject.Isurgence;
+  //     return false;
+  //   }
+
+  // }
+
+  checkHeightSection() {
+    let ok = document.getElementById('info');
+    let oo = ok;
+    console.log('height of section info is => ', oo);
+  }
+  ngAfterViewChecked() {
+    this.checkHeightSection();
+  }
+
+  ngAfterViewInit() {
+    
   }
 
   ngOnDestroy() {
@@ -266,18 +333,19 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
             this.getCommentaireAnnexElementsFicheMateriel(id);
             this.getQualiteFicheMateriel(id);
             this.getVersionFicheMateriel(id);
-            if (index === length - 1) {
+            if (index === length - 1) { // SELECTION TYPE = ONE
               // console.log('call displayNewObject function !!!!!!!!!');
               this.displayNewObjectSelectionTypeOne(length, data[0]);
               // this.dataIdFicheMaterielReady = true;
             }
-          } else {
+          } else { // SELECTION TYPE = MULTI
             this.getAnnexElementsFicheMateriel(id, index, length);
             // this.getCommentaireAnnexElementsFicheMateriel(id);
             // this.getQualiteFicheMateriel(id);
             // this.getVersionFicheMateriel(id);
           }
-          if (index === length - 1) {
+          if (this.allFichesMateriel.length === length - 1) {
+            this.checkOeuvresAndFichesAchat();
             // console.log('call displayNewObject function !!!!!!!!!');
             // this.displayNewObject(length, data[0]);
             // this.dataIdFicheMaterielReady = true;
@@ -338,6 +406,93 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         this.ficheAchatDetailReady = true;
         this.displayOriLastDeadline(this.livraisonDateNgFormat);
       });
+  }
+
+  public allOeuvresId;
+  public allFichesAchatId;
+  checkOeuvresAndFichesAchat() {
+    this.allOeuvresId = this.storeFichesToModif.allOeuvres;
+    this.allFichesAchatId = this.storeFichesToModif.allFichesAchat;
+    this.getFicheAchatForMultiSelection(this.allFichesAchatId);
+    this.getFicheAchatDetailForMultiSelection(this.allOeuvresId);
+
+  }
+
+  getFicheAchatDetailForMultiSelection(idFicheAchatDetailArray) { // MULTI
+    let oeuvreMultiSelection = [];
+    idFicheAchatDetailArray.map(item => {
+      this.fichesAchatService.getFichesAchatDetailByIdDetail(item)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(data => {
+          console.log('oeuvre data => ', data);
+          oeuvreMultiSelection.push(data);
+          if (oeuvreMultiSelection.length === idFicheAchatDetailArray.length) {
+            if (oeuvreMultiSelection.length > 1) {
+              // action qui détermine les valeurs communes
+              this.ficheAchatDetailMulti = this.compareSameValues(oeuvreMultiSelection);
+              this.ficheAchatDetailReady = true;
+              console.log('this.ficheAchatDetailMulti => ', this.ficheAchatDetailMulti);
+            } else {
+              this.ficheAchatDetail = oeuvreMultiSelection[0];
+              this.ficheAchatDetailReady = true;
+              console.log('une seule oeuvre => ', this.ficheAchat);
+            }
+          }
+        });
+    });
+  }
+public ficheAchatMulti;
+public ficheAchatDetailMulti;
+  getFicheAchatForMultiSelection(idFicheAchatArray) { // MULTI
+    let ficheAchatMultiSelection = [];
+    idFicheAchatArray.map(item => {
+      this.fichesAchatService.getGlobalFIcheAchat(item)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(data => {
+          ficheAchatMultiSelection.push(data);
+          console.log('ficheAchatMultiSelection => ', ficheAchatMultiSelection);
+          if (ficheAchatMultiSelection.length === idFicheAchatArray.length) {
+            if (ficheAchatMultiSelection.length > 1) {
+              // action qui détermine les valeurs communes
+              this.ficheAchatMulti = this.compareSameValues(ficheAchatMultiSelection);
+              console.log('this.ficheAchatMulti => ', this.ficheAchatMulti);
+              this.ficheAchatReady = true;
+            } else {
+              this.ficheAchat = ficheAchatMultiSelection[0];
+              this.ficheAchatReady = true;
+              console.log('une seule fiche achat => ', this.ficheAchat);
+            }
+          }
+        });
+    });
+  }
+
+  compareSameValues(dataArrayToCompare) {
+    let multiValues = {};
+    let sameValues = {};
+    dataArrayToCompare.map((item, index) => {
+      for (let key in item) {
+        if (item[key] === dataArrayToCompare[0][key]) {
+          console.log('kjnfods');
+          if (multiValues[key]) {
+            multiValues[key].push(item[key]);
+          } else {
+            multiValues[key] = [];
+            multiValues[key].push(item[key]);
+          }
+
+        }
+      }
+    });
+    for (let value in multiValues) {
+      if (multiValues[value].length === dataArrayToCompare.length) {
+        // sameValues[value] = [];
+        sameValues[value] = multiValues[value][0];
+      }
+    }
+    console.log('multiValues => ', multiValues);
+    console.log('sameValues => ', sameValues);
+    return sameValues;
   }
 
   displayDurCom(durCom: string): string {
@@ -795,8 +950,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       allowEscapeKey: false,
       reverseButtons: true,
       confirmButtonText: 'Valider',
-      confirmButtonColor: 'rgb(23, 170, 178)',
-      cancelButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
+      cancelButtonColor: mainColor,
       onBeforeOpen: () => {
         const content = swal.getContent();
         const $ = content.querySelector.bind(content);
@@ -875,7 +1030,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         // console.log(this.steps);
       });
   }
-public firtsClickStep = true;
+
+  public firtsClickStep = true;
   clickStepOptions() {
     this.initValueSteps = false;
 

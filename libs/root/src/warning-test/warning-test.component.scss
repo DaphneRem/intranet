@@ -1,0 +1,20 @@
+.warning-test {
+    display: flex;
+    justify-content: center;
+    .warning-content {
+        background-color: rgba(77, 194, 108, 0.7);
+        color: #ffffff;
+        padding: 20px;
+        height: 56px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        i {
+            font-size: 30px;
+        }
+        p {
+            margin-bottom: 0;
+            padding-left: 10px;
+        }
+    }
+}

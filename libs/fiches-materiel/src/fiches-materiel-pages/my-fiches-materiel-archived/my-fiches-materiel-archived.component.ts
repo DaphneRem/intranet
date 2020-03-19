@@ -74,7 +74,8 @@ export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
       TitreEpisodeVF: '',
       isarchived: this.isArchived,
       distributeur: '',
-      numficheachat: ''
+      numficheachat: '',
+      Isdeal : 2
   };
 
   constructor(

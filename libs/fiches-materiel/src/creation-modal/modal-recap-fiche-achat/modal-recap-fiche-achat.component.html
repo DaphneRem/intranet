@@ -1,5 +1,5 @@
 <modal-animation [modalID]="'recap-fiche-achat'" [modalClass]="'md-effect-1'">
-  <h3 *ngIf="dataReady">Fiche Achat n° {{myFicheAchat.numero_fiche}}</h3>
+  <h3 class="modal-title-fa" *ngIf="dataReady">Fiche Achat n° {{myFicheAchat.numero_fiche}}</h3>
   <div class="modal-content my-content" *ngIf="dataReady">
     <fiches-achat-details 
       *ngIf="step === 1" 

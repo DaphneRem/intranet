@@ -1,4 +1,4 @@
-export const mainColor = 'rgb(23, 170, 178)'; // #17aab2
+export const mainColor = '#2ECCFA'; // 'rgb(23, 170, 178)'; // #17aab2
 export const maintColorHover = 'rgb(46, 206, 214)'; // #2eced6
 
 // TABLE CUSTOM THEME

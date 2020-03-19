@@ -19,6 +19,8 @@ export function ficheMaterielModificationReducer(
         modificationType: '',
         multiFicheAchat: false,
         multiOeuvre: false,
+        allOeuvres: [],
+        allFichesAchat: [],
         selectedFichesMateriel: []
       };
       return state;

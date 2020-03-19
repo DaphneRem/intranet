@@ -55,7 +55,8 @@ export class SearchFormComponent implements OnInit {
     TitreEpisodeVF: '',
     isarchived: 2,
     distributeur: '',
-    numficheachat: ''
+    numficheachat: '',
+    Isdeal: 2
   };
   public complexSearchModel = {
     SuiviPar: '',
@@ -63,7 +64,8 @@ export class SearchFormComponent implements OnInit {
     TitreEpisodeVF: '',
     isarchived: 2,
     distributeur: '',
-    numficheachat: ''
+    numficheachat: '',
+    Isdeal: 2
   };
 
   ngOnInit() {
@@ -121,6 +123,8 @@ export class SearchFormComponent implements OnInit {
     if (this.autofields) {
       this.complexSearchModel.SuiviPar = this.autofields.SuiviPar;
       this.complexSearchModel.isarchived = this.autofields.isarchived;
+      this.complexSearchModel.Isdeal = this.autofields.Isdeal;
+
    //   this.oldComplexSearch.SuiviPar = this.autofields.SuiviPar;
     //  this.oldComplexSearch.isarchived = this.autofields.isarchived;
     }
@@ -133,7 +137,7 @@ export class SearchFormComponent implements OnInit {
       payload: storeState
     });
   }
-  
+
   resetSearchFormStore() {
     this.store.dispatch({ type: 'RESET_SEARCH_HISTORY-FORM' });
   }
@@ -146,7 +150,8 @@ export class SearchFormComponent implements OnInit {
       TitreEpisodeVF: '',
       isarchived: 2,
       distributeur: '',
-      numficheachat: ''
+      numficheachat: '',
+      Isdeal: 2
     };
     for (let property in this.complexSearchModel) {
       if (this.fmParameterToPost[property]) {
@@ -204,7 +209,8 @@ export class SearchFormComponent implements OnInit {
         TitreEpisodeVF: '',
         isarchived: 2,
         distributeur: '',
-        numficheachat: ''
+        numficheachat: '',
+        Isdeal: 2
       };
     }
     if (this.showOnlyInProgressBtn && this.inProgressChecked) {

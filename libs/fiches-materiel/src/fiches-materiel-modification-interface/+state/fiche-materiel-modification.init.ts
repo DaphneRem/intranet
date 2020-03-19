@@ -4,5 +4,7 @@ export const ficheMaterielModificationInitialState: FicheMaterielModification = 
   modificationType: '',
   multiFicheAchat: false,
   multiOeuvre: false,
+  allOeuvres: [],
+  allFichesAchat: [],
   selectedFichesMateriel: []
 };

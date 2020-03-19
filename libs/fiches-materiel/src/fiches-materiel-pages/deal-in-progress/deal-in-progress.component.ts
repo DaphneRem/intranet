@@ -22,6 +22,9 @@ import { Store } from '@ngrx/store';
 export class DealInProgressComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<any> = new Subject();
+  public getDataOnInit: boolean = true;
+  public isArchived: number = 2;
+  public reloadOriginalData;
 
   public headerTableLinkExist = false;
   public tableTitle = 'Mes Deals en cours';
@@ -72,17 +75,34 @@ export class DealInProgressComponent implements OnInit, OnDestroy {
     tooltipMessage: 'Voir les fiches Achat'
   };
 
+  public autofields = {
+    SuiviPar: this.user,
+    TitreEpisodeVO: '',
+    TitreEpisodeVF: '',
+    isarchived: this.isArchived,
+    distributeur: '',
+    numficheachat: '',
+    Isdeal: 1
+  };
+
   constructor(
     private dealsService: DealsService,
     private store: Store<App>
   ) {}
 
   ngOnInit() {
-    this.store.subscribe(data => (this.globalStore = data));
-    console.log('this.globalStore => ', this.globalStore);
-    this.user = this.globalStore.app.user.shortUserName;
     this.icons = [this.fichesMaterielCreation, this.fichesAchatView];
-    this.getDealsInProgress(this.user);
+    this.storeAppSubscription();
+    // this.getDealsInProgress(this.user);
+  }
+
+  storeAppSubscription() {
+    this.store
+      .subscribe(data => {
+        this.user = data['app'].user.shortUserName;
+        this.autofields.SuiviPar = this.user;
+        console.log(this.user);
+      });
   }
 
   ngOnDestroy() {
@@ -105,4 +125,18 @@ export class DealInProgressComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  displayReloadOriginalData(event: boolean) {
+    console.log('displayReloadOriginalData CALL');
+    this.reloadOriginalData = event;
+    this.dataReady = false;
+    this.getDealsInProgress(this.user);
+  }
+
+  displayNewDataFromComplexSearch(event: FicheMateriel[]) {
+    this.dataReady = false;
+    this.data = event;
+    this.dataReady = true;
+  }
+
 }

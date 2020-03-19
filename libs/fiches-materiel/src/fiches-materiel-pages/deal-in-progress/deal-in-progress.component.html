@@ -10,6 +10,18 @@
     </custom-icon-badge>
   </div>
 </div>
+<div class="row card">
+  <div class="col-lg-11 search-form">
+    <search-form *ngIf="user" 
+      [autofields]="autofields" 
+      [title]="tableTitle" 
+      [getDataOnInit]="getDataOnInit"
+      [showAllDataBtnOption]="true"
+      (reloadOriginalData)="displayReloadOriginalData($event)"
+      (dataResult)="displayNewDataFromComplexSearch($event)">
+    </search-form>
+  </div>
+  </div>
 <fiches-materiel-table 
   *ngIf="dataReady"
   [headerTableLinkExist]="headerTableLinkExist"

@@ -10,6 +10,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import swal from 'sweetalert2';
+import { mainColor, maintColorHover } from '../../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'steps-status-comment-modal',
@@ -224,11 +225,12 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
       html: `<button id="backToOldValue" class="btn swal-btn-cancel" >Annuler</button>`,
       showCancelButton: true,
       cancelButtonText: 'Aucun commentaire',
+      cancelButtonColor: mainColor,
       allowOutsideClick: false,
       allowEscapeKey: false,
       reverseButtons: true,
       confirmButtonText: 'Valider',
-      confirmButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
       onBeforeOpen: () => {
         const content = swal.getContent();
         const $ = content.querySelector.bind(content);
@@ -306,7 +308,7 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
         les éléments annexes doivent être marqués comme traités et une date
         d’acceptation doit être renseignée (si différent de renouvellement).
         Vérifiez que ces conditions soient remplies et réessayez.`,
-      confirmButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
     }).then((result) => {
       if (this.changeStatus) {
         console.log('event send is status');

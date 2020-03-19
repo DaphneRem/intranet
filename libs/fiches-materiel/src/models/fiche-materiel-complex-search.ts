@@ -50,4 +50,5 @@ export class FicheMaterielComplexSearch {
     TitreOeuvre: string;
     NomSupport: string;
     chaines: string;
+    Isdeal: number;
 }

@@ -26,6 +26,9 @@ $iconColor : #7f7f7f;
                 justify-content: flex-end;
             }
             .left-infos {
+                &.urgent-deadline {
+                    color:  $importantColor;
+                }
                 p {
                     font-size: 1.1em;
                     margin-left: 20px;
@@ -58,6 +61,19 @@ $iconColor : #7f7f7f;
             .title {
                 text-align: center;
                 margin-top: 20px;
+                .urgent-warning {
+                    display: flex;
+                    justify-content: center;
+                    color: $importantColor;
+                    font-weight: bold;
+                    i {
+                        font-size: 2.2em;
+                    }
+                    p {
+                        font-size: 1.3em;
+                        padding: 5px 0 0 5px;
+                    }
+                }
                 h1 {
                     font-size: 2em;
                     &.empty-field {
@@ -123,6 +139,18 @@ $iconColor : #7f7f7f;
                         justify-content: center;
                         align-items: center;
                         cursor: pointer;
+                    }
+                }
+            }
+        }
+        .fm-other-fiches-achat {
+            margin-top: 20px;
+            margin-bottom: -20px;
+            .other-fiches-achat-content {
+                padding-left: 30px;
+                .other-fiches-achat {
+                    label {
+                        font-size: 1em;
                     }
                 }
             }
@@ -322,4 +350,11 @@ $iconColor : #7f7f7f;
     background-color: #ffffff !important;
     color: $label-waitEA-color-backgroud !important;
     border: 1px solid $label-waitEA-color-backgroud;
+}
+
+/deep/ .label-inverse-danger {
+    background: #ffffff;
+    background-color: #ffffff !important;
+    color: $importantColor !important;
+    border: 1px solid $importantColor;
 }
