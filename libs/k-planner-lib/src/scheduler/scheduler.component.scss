@@ -688,12 +688,14 @@ $InfoBtnHoverColor :  #2eced6;
 // BACLOG SELECTION ITEM
 /deep/ .e-treeview .e-list-item.e-active {
     .e-text-content {
-        border: 1px red solid;
-
+        border: 2px red solid;
+        // box-shadow: -24em 8em 2em #a5a5a5; 
+      
+        // , -1px -1px 2px white
     }
     &:hover {
         .e-text-content {
-            border: 1px blue solid;
+            border: 2px red solid;
         }
     }
 }

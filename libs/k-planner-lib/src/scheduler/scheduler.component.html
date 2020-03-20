@@ -74,10 +74,14 @@
                 popupHeight='700px'
                 ></ejs-multiselect>
             </div>
+        
                 <table class="table-light table-sm " id="property" title="Properties"    >
                     <tbody>
                         <tr style="height: 40px">
-                          
+                            <!-- <td style="width: 5%">
+                                <div style="text-align:center" *ngIf="scheduleObj.currentView != 'TimelineMonth'  "> Intervalle <br> (Minutes)</div>          
+                            </td> -->
+                           
                            
                             <td  style="width: 5%">
                                 <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="false" (change)="onChangeDataSource()" >
@@ -92,44 +96,46 @@
                                 </ejs-checkbox>
                             </td> -->
                             <td  style="width: 5%"  class="checkbox-control">
-                                <ejs-checkbox  #Ecriture cssClass="Ecriture" label="Ecriture"  [checked]="true"  (change)="onChangeDataSourceEvents()">
+                                <ejs-checkbox  #Ecriture cssClass="Ecriture" label="Affichage <br> workorders "  [checked]="false"  (change)="onChangeDataSourceEvents()">
                                 </ejs-checkbox>
                             </td>
+                            <td  style="width: 15%"  class="checkbox-control">
+                                <ejs-checkbox   #operateur cssClass="operateur mr-2" label="Containers sans <br> opérateur"  [checked]="false"  (change)="onChangeDataSourceOperateur()"> 
+                                     </ejs-checkbox>                    
+                                </td> 
+                                <div *ngIf="comptContainerWithoutOperateur > 0 " class="badge badge-danger ml-1 " title="Nombre de tâches sans opérateur"> {{comptContainerWithoutOperateur}}</div>
                         
-                            <td style="width: 5%">
-                                <div style="text-align:center" *ngIf="scheduleObj.currentView != 'TimelineMonth'  "> Intervalle <br> (Minutes)</div>          
-                            </td>
-                            <td  style="width: 10%"  *ngIf="scheduleObj.currentView !='TimelineMonth'   ">
-                                <div style="width: 100%">
-                                    <ejs-dropdownlist  class =" mt-2 ml-3" [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
-                                </div>
-                            </td>
-                            <td  style="width: 30%" >
-                         <ejs-dropdownlist class =" mt-2 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>        
-                             </td>
-                        
-                           
                              <td  style="width: 5%"  class="checkbox-control">
-                                <!-- <ejs-checkbox  #operateur cssClass="operateur mr-1" label="tâches sans <br> operateur"  [checked]="false"  (change)="onChangeDataSourceOperateur()"> -->
-                                    <!-- </ejs-checkbox> -->
-                                    <i ejs-button  #ButtonInstance class=" icofont  icofont-redo color-icons mt-2"  (click)="remiseMultiselectionBacklog()" title="Remise multiple au backLog"></i>
+                                
+                                    <i ejs-button  #ButtonInstance class=" icofont  icofont-redo color-icons mt-2 ml-2"  (click)="remiseMultiselectionBacklog()" title="Remise multiple au backLog"></i> 
                                               
                                 </td> 
+                        
                                 <td  style="width: 5%"  class="checkbox-control">
                             
                                         <i ejs-button  #ButtonInstance class=" icofont icofont-ui-delete color-icons mt-2"  (click)="suppressionDefinitive()" title="Suppression définitive"></i>
                                                   
                                     </td> 
                                     <div class="badge badge-info"> {{eventSelecte.length}}</div>
-                                 
-                           
+
+                                    <td>
+                                    <div style="width: 100%" >
+                                        <ejs-dropdownlist  id="change-intervalle" class ="  ml-3" [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px" [placeholder] = 'intervalle'
+                                        ></ejs-dropdownlist>
+                                    </div>
+                                
+                                <div  >
+                                <ejs-dropdownlist class =" ml-3" id="selectplage" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>        
+                                </div>  
+                            </td>
                         </tr>
                      
                     </tbody>
                 </table>
-                <div  class="ml-3 mt-3 btn-modal">
+         
+                <div  class="ml-1 mt-3 btn-modal">
                               
-                    <i  ejs-button id='dlgbtn' #ButtonInstance (click)="BtnClick()" title="Liste des raccourcis Clavier"  class="icofont icofont-keyboard  color-icons " ></i>
+                    <i  ejs-button id='dlgbtn' #ButtonInstance (click)="BtnClick()" title="Raccourcis Clavier"  class="icofont icofont-keyboard  color-icons " ></i>
                       <ejs-dialog #Dialog  
                       [width]='width'
                       [visible]='false' 
@@ -235,6 +241,7 @@
                                     </div>
                                 </div>
                             </ng-template>
+                        
                             <!-- <ng-template #tipContent  > <div *ngFor="let data of timelineResourceDataOut"> 
                                 {{data.typetravail }} {{data.dureecommerciale }} 
                             </div></ng-template> -->
@@ -305,15 +312,19 @@
       
         <ejs-tab id="element" #element  class="content"  (selecting)="selectTabWitoutSwip($event)" >
             <e-tabitems>
-  
-                <e-tabitem [header]='headerText[0]' id="{{headerText[0]}}" (click)="alert('ok')">
+             
+                 
+                <e-tabitem [header]='headerText[0]' id="{{headerText[0]}}"    >
                     <ng-template #content>
+                            <div *ngIf="!containerWithoutOperateurIsCheched">
                         <div class="treeview-container">
                             <div class="title-container">
                                 <button id="btn-refreshWo" (click)="refreshWorkordersBacklog()" class="btn btn-info regie refresh-btn-workorder " [disabled]="disabledrefreshBacklog"   >
                                     <i class="icofont icofont-refresh"></i>
                                     Rafraichir
                                 </button>
+                                <i ejs-button  #ButtonInstance class=" icofont icofont-ui-delete color-icons mt-2 ml-4"  (click)="suppressionDefinitiveWorkOrderBacklog()" title="Suppression définitive"></i>
+                                <div class="badge badge-info ml-1 mb-3"> {{workorderSelectedInBacklog.length}}</div>
                             </div>
                             <div class="input-group" style="width: 500px" >
                                 <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search  [(ngModel)]="search.value"  (keyup)="onFilter(search.value,0,$event)" value="{{this.searchString}}" > 
@@ -389,6 +400,7 @@
                         <!-- </ejs-tooltip> -->
 
                             <ejs-contextmenu
+                            #treeViewContextMenu
                             id='contentmenutree'
                              target='#treeEvents'
                               [items]='menuItems' 
@@ -400,9 +412,11 @@
                    
 
                         </div>
-                    
+                    </div>
                     </ng-template>
                 </e-tabitem>
+
+          
                 <e-tabitem [header]='headerText[1]'>
                     <ng-template #content>
                         <div class="treeview-container" >
@@ -448,6 +462,7 @@
                             </ejs-treeview>
                         </div>
                         <ejs-contextmenu
+                        #treeViewContextMenu
                         id='contentmenutree'
                          target='#treeMonteur'
                           [items]='menuItems' 
@@ -483,3 +498,4 @@
         </div>
     </div>
 </div>  
+

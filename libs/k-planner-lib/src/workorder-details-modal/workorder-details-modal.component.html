@@ -2,9 +2,16 @@
     <div style="padding: 2px;  color: #0a0a0a;height: 90px;"
         [ngStyle]="{'background-color': data.color ? data.color : '#bbb7b7'}">
         <!-- <h1 mat-dialog-title style="margin: 26px 0 0 15px;"></h1> -->
-
+        <div *ngIf = "data.placeClick != 'Operateur'">
         <h2 mat-dialog-title class="title"> {{data.workorder.titreoeuvre}}&nbsp;/&nbsp;{{data.workorder.titreepisode}}
-            ep {{data.workorder.numepisode}} </h2>
+            ep {{data.workorder.numepisode}} </h2> 
+        
+        </div>
+        <div *ngIf = "data.placeClick == 'Operateur'">
+            <h2 mat-dialog-title class="title"> {{data.workorder.Username}}
+                 </h2> 
+            
+            </div>
     </div>
     <div mat-dialog-content style="margin: 0; height: 155px;">
         <!-- <p>{{data.StartTime}} ({{ data.StartTime}} - {{ data.EndTime}})</p> -->
@@ -19,17 +26,24 @@
             <p> {{data.workorder.Description }}</p>
             <p> Regie: {{data.regie.Text}}</p>
         </div>
-
+      <div *ngIf = "data.placeClick != 'Operateur'">
         <p> {{data.workorder.typetravail}}</p>
         <p> Libellé chaine : {{data.workorder.libchaine}}</p>
         <p> Type de travail : {{data.workorder.libtypeWO}}</p>
+    </div>
         <!-- <div [ngStyle]="{'display':data.placeClick =='backlog' ? 'block': 'none'}"> -->
         <div *ngIf="data.placeClick =='backlog'">
             <p>Durée Commerciale:{{data.workorder.dureecommerciale }}</p>
         </div>
         <!-- *ngIf="data.placeClick =='backlog'" -->
         <!-- *ngIf="data.placeClick =='planner'" -->
+            <div *ngIf="data.placeClick == 'Operateur'">
+              <p>Nom opérateur : {{data.workorder.Nom}}</p>
+              <p>Prénom opérateur :  {{data.workorder.Prenom}} </p>
+              <p>Groupe :  {{data.workorder.libellegroupe}} </p>
 
+
+            </div>
     </div>
     <div mat-dialog-actions style="padding-left: 20px;">
         <!-- <button mat-button (click)="onNoClick()" color="primary">No Thanks</button> -->
