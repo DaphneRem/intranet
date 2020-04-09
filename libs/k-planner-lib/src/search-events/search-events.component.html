@@ -1,0 +1,52 @@
+
+<!-- Affficher le resultat de recherche dans le planner    -->
+
+<div class="property-panel-content">
+    <input type="text" class="e-input" id="events-search" placeholder="Faites votre recherche" (keyup)="globalSearch($event)"  />
+</div>
+
+
+<div class="control-section" *ngIf="resultSearch.length > 0">
+    <ejs-dialog #DialogSearchEvent
+    [width]='width'
+    [visible]='false' 
+    [header]='header'
+    [animationSettings]='animationSettings'  
+    [showCloseIcon]='showCloseIcon' 
+    (open)="dialogOpen()" 
+    (close)="dialogClose()" 
+     [target]='targetModal' 
+     cssClass='dialog-ClassEvent'
+    >
+    <ng-template #content> 
+        <ejs-listview
+        #listview
+         id='sample-list-flat' 
+        [dataSource]='resultSearch' 
+        [fields]='fields' 
+        (select)="selectItemGrid($event)"  
+       
+        >
+            <ng-template #template let-dataSource="">
+                <span class="e-list-item-header"  id={{dataSource.Id}} >{{dataSource.Name}} </span>
+                <span *ngIf="dataSource.AzaIsPere"  class="e-list-content " > -{{dataSource.Operateur}}  -- {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
+                        {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) ---  {{dataSource.DepartmentName}}  <br></span>
+                <span *ngIf="!dataSource.AzaIsPere"   class="e-list-content "> -{{dataSource.titreepisode}} - ep :{{dataSource.numepisode}} /  {{dataSource.libchaine}} --
+             Type de travail :{{dataSource.libtypeWO}} --  {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
+             {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) </span>
+           <span>   {{dataSource.DepartmentName}}</span>
+                <!-- <span   class="e-list-content ">Date debut : {{dataSource.StartTime}} </span>
+                <span   class="e-list-content ">Date fin : {{dataSource.EndTime}} </span> -->
+
+                <ng-template #groupTemplate let-dataSource="">
+                        <div class="e-list-wrapper">
+                            <span class="e-list-item-content">  {{ changeDateFormat(dataSource.StartTime) | date }} </span>
+                        </div>
+                    </ng-template>
+
+              </ng-template>
+        </ejs-listview>
+   
+</ng-template>
+</ejs-dialog>
+</div>

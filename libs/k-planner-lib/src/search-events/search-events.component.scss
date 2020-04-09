@@ -1,0 +1,91 @@
+/deep/ .e-headercelldiv{
+    width : 160px !important;
+    padding-right: 40px;
+    // border-bottom: rgb(163, 161, 161) solid 1px;
+    // border:red solid 2px
+    // display :none
+}
+
+/deep/ .e-rowcell{
+    border-bottom: rgb(195, 193, 193) solid 1px;
+    padding-right: 15px;
+    width: 20px !important; 
+    overflow-wrap: break-word !important;
+    // max-width: 150px
+    // border:green solid 2px
+}
+
+
+#sample-list {
+    max-width: 500px;
+  }
+  #sample-list,
+  #sample-list-flat
+ {
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin: auto;
+  }
+  .control-section {
+    overflow: auto;
+    // padding-bottom: 10px;
+   
+  }
+  #flat-list
+  {
+    width:100%;
+    padding: 5px;
+    margin: 0;
+    overflow:scroll;
+  }
+
+  .e-listview .e-list-icon {
+    height: auto;
+    width: 50px;
+  }
+  #listview {
+    max-width: 500px;
+    margin: auto;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+  }
+  .e-list-template .e-list-wrapper {
+    height: inherit;
+    position: relative;
+  }
+
+  .badge{
+    font-size: 12px
+    }
+
+   /deep/ #listview.e-listview .e-list-item {
+      cursor: pointer;
+  }
+  
+ /deep/ #listview.e-listview .e-content {
+      height: 450px;
+      overflow-y: scroll;
+  }
+  
+ /deep/ #listview.e-listview .e-list-group-item {
+      color: #837c7c;
+      padding: 0;
+      height: inherit;
+  }
+  
+  /deep/ .dialog-ClassEvent{
+        
+    top:60px !important; 
+       height:100%;
+       overflow: scroll;
+    }
+
+    /deep/.e-listview .e-list-text{
+      display : none
+    }
+
+    .delete-icon::before {
+      content: '\e7e9';
+      height:2.5em;
+      width:2.5em;
+  }
