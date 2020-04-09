@@ -1,0 +1,58 @@
+#sample-list {
+    max-width: 500px;
+  }
+  #sample-list,
+  #sample-list-flat
+ {
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin: auto;
+  }
+  .control-section {
+    overflow: auto;
+    // padding-bottom: 10px;
+   
+  }
+  #flat-list
+  {
+    width:100%;
+    padding: 5px;
+    margin: 0;
+    overflow:scroll;
+  }
+
+  .e-listview .e-list-icon {
+    height: auto;
+    width: 50px;
+  }
+  #listview {
+    max-width: 500px;
+    margin: auto;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+  }
+  .e-list-template .e-list-wrapper {
+    height: inherit;
+    position: relative;
+  }
+
+  .badge{
+    font-size: 12px
+    }
+  /deep/ .dialog-Class{
+        
+    top:20px !important; 
+       
+    }
+/deep/ .e-lib  .e-dialog  .dialog-Class  .e-popup  .e-control  .e-popup-open{
+  top:20px !important; 
+}
+    /deep/.e-listview .e-list-text{
+      display : none
+    }
+
+    .delete-icon::before {
+      content: '\e7e9';
+      height:2.5em;
+      width:2.5em;
+  }

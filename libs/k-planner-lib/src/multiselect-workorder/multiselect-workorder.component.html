@@ -1,0 +1,72 @@
+
+  
+<!-- Affficher les wororders ou containers sélectionnée dans le planner en cliquant sur le compteur   -->
+  
+  <button class="badge badge-info"  style="font-size: 12px" (click)="onCliqueComptEventSelect()" > {{eventSelect.length}}</button>
+  <div *ngIf="cliqueComptEventMultiSelect"  >
+<ejs-dialog #DialogMultiSelect  
+[width]='width'
+[visible]='false' 
+[header]='header'
+[animationSettings]='animationSettings'  
+[showCloseIcon]='showCloseIcon' 
+(open)="dialogOpen()" 
+(close)="dialogClose()" 
+ [target]='targetModal' 
+cssClass='dialog-Class'
+>
+<ng-template #content>
+    <!-- {{eventSelect | json}} -->
+    <div class="control_wrapper">
+        <div class="control-section" >
+            <div id = 'flat-list'>
+        <!-- <ejs-treeview id="default" [fields]='field'  ></ejs-treeview> -->
+        <ejs-listview id='sample-list-flat' 
+        [dataSource]='eventSelect' 
+        [fields]='fields' 
+        (select)="onselectItem($event)"  
+        (actionComplete)="onActionComplete($event)"
+        >
+            <ng-template #template let-dataSource="">
+                <span class="e-list-item-header"  id={{dataSource.Id}} >{{dataSource.Name}} </span>
+                <span *ngIf="dataSource.AzaIsPere"  class="e-list-content " > -{{dataSource.Operateur}}  -- {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
+                        {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} )  <br></span>
+                <span *ngIf="!dataSource.AzaIsPere"   class="e-list-content "> -{{dataSource.titreepisode}} - ep :{{dataSource.numepisode}} /  {{dataSource.libchaine}} --
+             Type de travail :{{dataSource.libtypeWO}} --  {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
+             {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) </span>
+           
+                <!-- <span   class="e-list-content ">Date debut : {{dataSource.StartTime}} </span>
+                <span   class="e-list-content ">Date fin : {{dataSource.EndTime}} </span> -->
+
+                <ng-template #groupTemplate let-dataSource="">
+                        <div class="e-list-wrapper">
+                            <span class="e-list-text">  {{ changeDateFormat(dataSource.StartTime) | date }} </span>
+                        </div>
+                    </ng-template>
+
+              </ng-template>
+        </ejs-listview>
+      </div>
+  
+    </div>
+    </div>
+      
+        <!-- <ejs-grid  #grid id='grid' [dataSource]='eventSelect' height= 505  width= 'auto' rowHeight= 30, [gridLines]='Vertical' >
+            <e-columns>
+                <e-column  field= 'Name' headerText= 'Titre' width= '140' ></e-column>
+                <e-column  field= 'typetravail' headerText= 'Type de travail' width= '140'   ></e-column>
+                <e-column field= 'titreoeuvre'  headerText= 'Titre oeuvre' width='140'></e-column>
+                <e-column field = 'titreepisode' headerText = 'Titre episode' width='140' ></e-column>
+                <e-column field='libchaine' headerText='Chaine' width='140' ></e-column>
+                <e-column field='Description' headerText='Description' width='140' ></e-column>
+                <e-column field='StartTime' headerText='Date debut' width='140' ></e-column>
+                <e-column field='EndTime' headerText='Date fin' width='140' ></e-column>
+    
+            </e-columns>
+        </ejs-grid>   -->
+            
+  
+  
+</ng-template>
+</ejs-dialog>
+</div>
