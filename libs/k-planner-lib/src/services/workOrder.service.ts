@@ -9,7 +9,9 @@ import {
   urlKPlanner,
   urlPlanningEventsByidContainer,
   urlPlanningEventsByidGroup,
-  urlPanningEventsById
+  urlPanningEventsById,
+  urlPlanningEvents,
+  urlPutStatut
 } from '.privates-url';
 import { Workorder } from '../models/workorder';
 
@@ -38,6 +40,18 @@ export class WorkOrderService {
     });
   }
 
+
+  getAllWorkorders(){
+    return this.http
+    .get(urlKPlanner + urlPlanningEvents)
+    .map((res: any) => {
+  
+   
+      return res as Workorder[];
+  });
+}
+
+
   /************************* PUT ************************/
 
   updateWorkOrder(id: number, workorder): Observable<Workorder> {
@@ -48,6 +62,18 @@ export class WorkOrderService {
       )
       .pipe(catchError(this.handleError));
   }
+
+  /**** Put *******/
+
+putStatutWorkorder(id: number, workorder): Observable<Workorder> {
+  return this.http
+    .put<Workorder>(
+      urlKPlanner + urlPutStatut + id,
+      workorder
+    )
+    .pipe(catchError(this.handleError));
+}
+
   
   /************************* PUT onPromise  ************************/
   extractData(res: HttpResponse<Object>) {
