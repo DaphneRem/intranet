@@ -16,10 +16,7 @@ import { registerEvents } from '@syncfusion/ej2-angular-base';
   selector: 'search-events',
   templateUrl: './search-events.component.html',
   styleUrls: ['./search-events.component.scss'],
-  providers: [
-    ContainersService,
-    WorkOrderService,
-    SalleService]
+
 })
 
 export class SearchEventsComponent implements OnInit {
@@ -36,9 +33,7 @@ public DialogSearchEvent: any;
 @ViewChild('listview')
 public listview :any
   constructor(
-    private containersService: ContainersService,
-    private workorderService: WorkOrderService,
-    private salleService: SalleService,
+
   ) { }
 
   ngOnInit() {
@@ -101,7 +96,7 @@ public searchEvent
 
 dataManagerFilter(searchString){
   new DataManager(this.timelineRessourceData).executeQuery(new Query().
-  search(searchString, ['Name','Operateur','typetravail','titreoeuvre','libtypeWO', 'titreepisode','numepisode','libchaine', 'Commentaire_Planning','StartTime','EndTime'], null, true, true)).then((e: ReturnOption) => {
+  search(searchString, ['Name','Operateur','coordinateurCreate','typetravail','titreoeuvre','libtypeWO', 'titreepisode','numepisode','libchaine', 'Commentaire_Planning','StartTime','EndTime',''], null, true, true)).then((e: ReturnOption) => {
       console.log(e.result)
       this.resultSearch = e.result
     if ((e.result as any).length > 0) {
@@ -219,217 +214,4 @@ public dialogOpen = (): void => {
     let newDate = new Date(date);
     return newDate;
   }
-           
- public  dataContainersByRessourceStartDateEndDate
-public salleDataSource
- getSalleByGroup(idGroup, start, end) {
-  this.timelineRessourceData ==[]
-  this.salleService
-      .getGroupSalle(idGroup)
-      
-      .subscribe(donnees => {
-          //   .then(donnees => {
-
-        
-          this.salleDataSource = donnees;
-         
-          console.log('salles group result : ', this.salleDataSource);
-          this.salleDataSource.map(item => {
-
-              let indexSalle = this.salleDataSource.indexOf(item);
-              this.getContainersByRessourceStartDateEndDate(
-                  item.CodeRessource,
-                  start,
-                  end,
-                  item.CodeSalle,
-                  indexSalle,
-                  idGroup
-              );
-
-
-
-          });       
-      })
-
-
 }
-
-  getContainersByRessourceStartDateEndDate(coderessource, datedebut, datefin, codeSalle, indexSalle, idGroup) {
-
-
-    // console.log('CALL getContainersByRessourceStartDateEndDate() with codeRegie : ', coderessource, ' / dateDebut : ', datedebut, ' / dateFin : ', datefin);
-    this.timelineRessourceData ==[]
-    let debut = moment(datedebut).format('YYYY-MM-DD').toString();
-    let fin = moment(datefin).format('YYYY-MM-DD').toString();
-
-
-    // console.log('******************************** this.lastSalleCall ===> ', this.lastSalleCall);
-    // console.log('debut =>', debut);
-    // console.log('fin =>', fin);
-
-    // console.log('coderessource salle => ', coderessource);
-    this.containersService
-        .getContainersByRessourceStartDateEndDate(coderessource, debut, fin)
-        .subscribe(res => {
-            //   .then(res => {
-
-            this.dataContainersByRessourceStartDateEndDate = res;
-            // console.log('container present in regie : ',  this.dataContainersByRessourceStartDateEndDate);
-            // console.log('debut =>', debut);
-            // console.log('fin =>', fin);
-            // console.log('coderessource salle => ', coderessource);
-            // console.log("res ===>", res)
-
-            if (res.length > 0) {
-            
-                this.dataContainersByRessourceStartDateEndDate.map(data => {
-                    // console.log("data ===>", data)
-                  
-                    let dateDebut = moment(data.DateDebutTheo).format('DD/MM/YYYY').toString();
-                    let dateFin = moment(data.DateFinTheo).format('DD/MM/YYYY').toString();
-                    //   let arrName = data.UserEnvoi.split('-');
-                    let initiales
-                    if (data.UserEnvoi != null) {
-                        initiales = data.UserEnvoi.slice(-1) + data.UserEnvoi.slice(0, 1);
-                    } else {
-                        initiales = ''
-                    }
-                    //  console.log(initiales,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-                 let Event={
-                        Id: data.Id_Planning_Container,
-                        Name: (data.Titre === null || typeof (data.Titre) === 'undefined') ? 'Titre' : data.Titre,
-                        StartTime: dateDebut,
-                        EndTime: dateFin,
-                        CodeRessourceSalle: coderessource,
-                        Container: true,
-                        numGroup: data.Id_Planning_Container,
-                        Description: data.Commentaire_Planning,
-                        Operateur: data.LibelleRessourceOperateur === null ? '' : data.LibelleRessourceOperateur,
-                        coordinateurCreate: (initiales === null || typeof (initiales) === 'undefined') ? '' : initiales,
-                        AzaIsPere: true,
-                        AzaNumGroupe: data.Id_Planning_Container,
-                        DepartmentID: coderessource,
-                        ConsultantID: 2,
-                        DepartmentName: '',
-                        IsAllDay: false,
-                        Commentaire: data.Commentaire,
-                        Commentaire_Planning: data.Commentaire_Planning,
-                        IsReadonly: false,
-                        isTempsReel: 0,
-                        CodeRessourceCoordinateur: data.CodeRessourceCoordinateur,
-                        CodeRessourceOperateur:data.CodeRessourceOperateur
-                    }
-                    // this.timelineRessourceData.push(Event);
-                    // this.lastTimelineResourceDataOut.push(Event)
-                  
-              
-                    // console.log(   this.lastTimelineResourceDataOut ,"this.lastTimelineResourceDataOut ====>>")
-                    let index = this.dataContainersByRessourceStartDateEndDate.indexOf(data);
-                    let length = this.dataContainersByRessourceStartDateEndDate.length;
-
-                    // console.log('--------------------------------------------------index  length => ', index, length);
-                    this.getWorkorderByContainerId(data.Id_Planning_Container, coderessource, index, length, indexSalle, debut, fin, data.LibelleRessourceOperateur);
-
-
-
-
-
-                });
-              
-            
-            } 
-            
-                
-
-            
-     
-
-        });
-
-
-}
-public WorkorderByContainerId
-getWorkorderByContainerId(id, coderessource, index, containerArrayLength, indexSalle, debut, fin, Operateur) {
-  console.log('CALL getWorkorderByContainerId() with idContainer : ', id);
-  // console.log('--------------------------------------------------indexSalle => ', indexSalle);
-  // console.log('id container to check workorder => ', id)
-
-  // console.log('index => ', indexSalle);
-  // console.log('containerArrayLength => ', containerArrayLength);
-
-  this.workorderService
-      .getWorkOrderByContainerId(id)
-      .subscribe(res => {
-          //   .then(res => {
-
-          // console.log('response workorder for container : ', res);
-          this.WorkorderByContainerId = res;
-         
-          // console.log('this.WorkorderByContainerId.length => ', this.WorkorderByContainerId.length);
-          let libelleStatut
-          if (this.WorkorderByContainerId.length > 0) {
-              this.WorkorderByContainerId.map(data => {
-                  let StartTime = moment(data.DateDebutTheo, moment.defaultFormat).toDate(),
-                      EndTime = moment(data.DateFinTheo, moment.defaultFormat).toDate(),
-                      dateDebut = StartTime,
-                      dateFin = EndTime,
-                      StartTimeReel = moment(data.DateDebut, moment.defaultFormat).toDate(),
-                      EndTimeReel = moment(data.DateFin, moment.defaultFormat).toDate()
-
-
-                  let newWorkorderEvent = {
-                      Id: data.Id_Planning_Events,
-                      Name: data.titreoeuvre,
-                      StartTime: dateDebut,
-                      EndTime: dateFin, // date provisoire
-                      CodeRessourceSalle: coderessource,
-                      Container: false,
-                      numGroup: data.Id_Planning_Container,
-                      Description: data.Commentaire_Planning,
-                      Operateur: Operateur,
-                      coordinateurCreate: data.UserEnvoi,
-                      Statut: data.Statut,
-                      AzaIsPere: false,
-                      AzaNumGroupe: data.Id_Planning_Container,
-                      DepartmentID: coderessource,
-                      ConsultantID: 2,
-                      DepartmentName: '',
-                      IsAllDay: false,
-                      libchaine: data.libchaine,
-                      typetravail: data.typetravail,
-                      titreoeuvre: (data.titreoeuvre === null || typeof (data.titreoeuvre) === 'undefined') ? '' : data.titreoeuvre,
-                      numepisode: data.numepisode,
-                      dureecommerciale: data.dureecommerciale,
-                      libtypeWO: data.libtypeWO,
-                      Commentaire_Planning: data.Commentaire_Planning,
-                      Commentaire_Planning_rtf:data.Commentaire_Planning,
-                      IdGenerationWO: data.IdGenerationWO,
-                      isTempsReel: 0,
-                      IsReadonly: false,
-                      Id_Planning_Events_TempsReel: 0,
-                      titreepisode: data.titreepisode,
-                      DateDebutReel:StartTimeReel ,
-                      DateFinReel:EndTimeReel ,
-                      libelleStatut: libelleStatut,
-                      CodeRessourceCoordinateur: data.CodeRessourceCoordinateur,
-                      CodeRessourceOperateur:data.CodeRessourceOperateur
-
-                  }
-
-
-                  // this.timelineRessourceData.push(newWorkorderEvent);
-                  console.log(   this.timelineRessourceData)
-                                   
-              
-       
-           });
-          
-    
-          }
-
-        });
-     
-      }
-  
-
-    }
