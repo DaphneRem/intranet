@@ -38,6 +38,12 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoadersModule } from '@ab/loaders';
 import { ErrorPagesModule } from '@ab/error-pages';
 import { KeyboardShortcutComponent } from './keyboard-shortcut/keyboard-shortcut.component';
+import { MultiselectWorkorderComponent } from './multiselect-workorder/multiselect-workorder.component';
+import { SearchEventsComponent } from './search-events/search-events.component';
+import { GridAllModule } from '@syncfusion/ej2-angular-grids';
+import { DisplayDataSourcePlannerComponent } from './display-data-source-planner/display-data-source-planner.component';
+
+
 
 @NgModule({
   imports: [
@@ -73,7 +79,9 @@ import { KeyboardShortcutComponent } from './keyboard-shortcut/keyboard-shortcut
     ErrorPagesModule,
     AutoCompleteModule,
     MultiSelectModule,
-    DialogModule
+    DialogModule,
+    GridAllModule,
+    
   ],
   declarations: [
     SchedulerComponent,
@@ -81,7 +89,12 @@ import { KeyboardShortcutComponent } from './keyboard-shortcut/keyboard-shortcut
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
     FilterPipe,
-    KeyboardShortcutComponent
+    KeyboardShortcutComponent,
+    MultiselectWorkorderComponent,
+    SearchEventsComponent,
+    DisplayDataSourcePlannerComponent,
+    
+    
   ],
   entryComponents: [
     MonPlanningComponent,
