@@ -2,7 +2,7 @@
   
 <!-- Affficher les wororders ou containers sélectionnée dans le planner en cliquant sur le compteur   -->
   
-  <button class="badge badge-info"  style="font-size: 12px" (click)="onCliqueComptEventSelect()" > {{eventSelect.length}}</button>
+  <button class="badge badge-info" type="button" style="font-size: 12px"  (click)="onCliqueComptEventSelect()" > {{eventSelect.length}}</button>
   <div *ngIf="cliqueComptEventMultiSelect"  >
 <ejs-dialog #DialogMultiSelect  
 [width]='width'
@@ -30,7 +30,7 @@ cssClass='dialog-Class'
             <ng-template #template let-dataSource="">
                 <span class="e-list-item-header"  id={{dataSource.Id}} >{{dataSource.Name}} </span>
                 <span *ngIf="dataSource.AzaIsPere"  class="e-list-content " > -{{dataSource.Operateur}}  -- {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
-                        {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} )  <br></span>
+                        {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) &nbsp;  &nbsp; {{dataSource.DepartmentName}} <br></span>
                 <span *ngIf="!dataSource.AzaIsPere"   class="e-list-content "> -{{dataSource.titreepisode}} - ep :{{dataSource.numepisode}} /  {{dataSource.libchaine}} --
              Type de travail :{{dataSource.libtypeWO}} --  {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
              {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) </span>

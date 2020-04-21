@@ -68,16 +68,19 @@ onCliqueComptEventSelect(){
   console.log("compt click",  this.cliqueComptEventMultiSelect )
   console.log(this.DialogMultiSelect)
 
-
+setTimeout(() => {
   this.DialogMultiSelect.show()
   console.log(this.DialogMultiSelect)
+}, 100);
+
  
 
 }
-
+public numberOfEventSelect = 0
 onselectItem(args){
   console.log(args)
   this.eventSelect = this.eventSelect.filter(item =>item.Id != args.data.Id)
+  this.numberOfEventSelect = this.eventSelect.length
   this.selectItemInMulutiselction.emit(this.eventSelect)
 }
 onActionComplete(args){
