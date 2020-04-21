@@ -9,16 +9,16 @@ import { takeUntil } from 'rxjs/operators';
 // import { Adal5HTTPService, Adal5Service } from 'adal-angular5';
 import { AuthService } from './auth/auth.service';
 
-import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
+import { Navbar, navbarInitialState,  CloseNavbar } from '@ab/root';
 
 import { config, CodeModuleKplanner, coordinateurRight, editRight } from './../../../../.privates-url';
-import { AuthAdalService } from 'apps/fiches-materiel/src/app/auth-adal.service';
-import { App } from 'apps/fiches-materiel/src/app/+state/app.interfaces';
+
 
 import { Coordinateur } from '@ab/k-planner-lib/src/models/coordinateur';
 import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur.service';
 import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.service';
 import { UserAccessRightsService } from './accessRights/users-access-rights-service';
+import { App } from './+state/app.interfaces';
 
 
 @Component({
@@ -50,6 +50,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private _zone: NgZone
   ) {
+    // navbarInitialState.open = false 
+
     this.navbarStoreOpen = this.store;
     // this.adal5Service.init(config);
   }
@@ -62,8 +64,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public marginTop = '56px';
   public paddingTop;
   public marginLeft;
- 
-  public logo = 'logoABintranet';
+ public navbar :Navbar
+  public logo = 'logoMDWintranet';
   public headerNav = false;
   public userName: string;
   public name: string;
@@ -77,7 +79,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public userIsReady = false;
   public rightsAreReady = true ;
   public currentCoordinateur: Coordinateur;
-  public authUser = true
+  public authUser = true;
+  public actionNavBar :CloseNavbar
   ngOnInit() {
     if (!this.authService.authenticated) {
       console.log(this.authService.authenticated,"this.authService.authenticated")
@@ -91,7 +94,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     // Handle callback if this is a redirect from Azure
     // this.adal5Service.handleWindowCallback(); // ajouter condition
     // check navbar.open state from store
-
+  
     console.log(this.store);
     console.log(this.appStore);
 
@@ -99,11 +102,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.store.subscribe(data => (this.globalStore = data)
    
     );
+   
+    // this.globalStore.navbar.open = false;
+    // navbarInitialState.open  = false
     this.navbarState = this.globalStore.navbar.open;
 
     console.log(this.navbarState)
     console.log(this.globalStore.navbar)
     this.checkHeader(this.navbarState);
+
 
   }
 
@@ -115,6 +122,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.authService.user !== null && this.authService.user !== undefined) {
          this.displayUser();
          this.authUser = true
+        
+      
+
+       
       }else{
         this.authUser = false
       }
@@ -142,6 +153,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayUser() {
     console.log(this.authService);
+
   
     this.userName = this.authService.user["displayableId"]; // prenom.nom@mediawan.com
     this.name = this.authService.user['name']; // NOM Prénom
@@ -196,10 +208,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
               initials: this.initials,
               shortUserName:  data["UTI_USERNAME"],
               numGroup: ''
-            }
-          }
+            },
+          },
+          
         });
-         
+      
+    
+     
     this.userIsReady = true;
  
         console.log("appStore",this.appStore)
@@ -208,16 +223,16 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     });     
 
   }
-
+public UsersAccessRights
 getAccessRightsUser(){
   this.userAccessRightsService
   .getAccessRightsUser(CodeModuleKplanner , this.userName   )
   .pipe(takeUntil(this.onDestroy$))
   .subscribe(data => {
-     let UsersAccessRights = data
-     console.log('access rights user kplanner',UsersAccessRights)
+     this.UsersAccessRights = data
+     console.log('access rights user kplanner',this.UsersAccessRights)
   
-     if(UsersAccessRights["Droits"][editRight]  === true && UsersAccessRights["Droits"][coordinateurRight] === true){
+     if(this.UsersAccessRights["Droits"][editRight]  === true && this.UsersAccessRights["Droits"][coordinateurRight] === true){
                 console.log("user have rights to access")
                     this.getUtilisateurByLogin(this.userName)
                     this.rightsAreReady = true
