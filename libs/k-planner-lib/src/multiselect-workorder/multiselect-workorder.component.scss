@@ -39,10 +39,16 @@
   .badge{
     font-size: 12px
     }
-  /deep/ .dialog-Class{
+  /deep/ .dialog-Class {
         
     top:20px !important; 
+    left: 20px !important;
        
+    }
+
+    /deep/ .event-multiselect{
+border : red solid 3px;
+margin-left : 45% !important;
     }
 /deep/ .e-lib  .e-dialog  .dialog-Class  .e-popup  .e-control  .e-popup-open{
   top:20px !important; 
@@ -56,3 +62,27 @@
       height:2.5em;
       width:2.5em;
   }
+
+  .e-listview:not(.e-list-template) .e-list-item {
+    height: auto !important;
+    border : gray solid 1px;
+    margin-bottom:2px
+   
+}
+
+.icofontdrag:before{
+  content:'\e657';  
+  color:#17AAB2;
+  margin-top:10px;
+  height:3.5em;
+  width:3.5em;
+}
+
+.color-icons{
+  font-size:25px;
+   padding:0; 
+   color:#17AAB2;
+   left:0
+}
+
+

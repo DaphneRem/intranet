@@ -1,9 +1,13 @@
 
   
-<!-- Affficher les wororders ou containers sélectionnée dans le planner en cliquant sur le compteur   -->
+<!-- Affficher les wororders ou containers sélectionnée dans le planner en cliquant sur le btn compteur   -->
+
+
+<i ejs-button id="deplacementMultiple"  #ButtonInstance class=" icofont icofont-drag color-icons mt-2 ml-1" (click)="deplacementMultiple()"  title="Déplacement multiple" ></i>
   
   <button class="badge badge-info" type="button" style="font-size: 12px"  (click)="onCliqueComptEventSelect()" > {{eventSelect.length}}</button>
-  <div *ngIf="cliqueComptEventMultiSelect"  >
+  <div  *ngIf="eventSelect.length>0">
+  <div *ngIf="cliqueComptEventMultiSelect || clickDeplacementMultiple"  >
 <ejs-dialog #DialogMultiSelect  
 [width]='width'
 [visible]='false' 
@@ -17,25 +21,37 @@ cssClass='dialog-Class'
 >
 <ng-template #content>
     <!-- {{eventSelect | json}} -->
-    <div class="control_wrapper">
+    <div class="control_wrapper  "  *ngIf="cliqueComptEventMultiSelect && !clickDeplacementMultiple"  >
         <div class="control-section" >
             <div id = 'flat-list'>
-        <!-- <ejs-treeview id="default" [fields]='field'  ></ejs-treeview> -->
+         <!-- <ejs-treeview id="default" [fields]='field'  >
+                <ng-template #nodeTemplate="" let-dataWorkOrder=""   id="treeEvents-template">
+                        <div id="waiting"   class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
+                            <div id="dataWorkOrder.Id"     >
+                                <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
+                                <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.libtypeWO}} - {{dataWorkOrder.typetravail}} <br>
+                                     {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}} 
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+         </ejs-treeview> -->
         <ejs-listview id='sample-list-flat' 
         [dataSource]='eventSelect' 
         [fields]='fields' 
         (select)="onselectItem($event)"  
         (actionComplete)="onActionComplete($event)"
         >
-            <ng-template #template let-dataSource="">
-                <span class="e-list-item-header"  id={{dataSource.Id}} >{{dataSource.Name}} </span>
-                <span *ngIf="dataSource.AzaIsPere"  class="e-list-content " > -{{dataSource.Operateur}}  -- {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
-                        {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) &nbsp;  &nbsp; {{dataSource.DepartmentName}} <br></span>
-                <span *ngIf="!dataSource.AzaIsPere"   class="e-list-content "> -{{dataSource.titreepisode}} - ep :{{dataSource.numepisode}} /  {{dataSource.libchaine}} --
+            <ng-template #template let-dataSource=""> 
+                <span class="e-list-item-header"  id={{dataSource.Id}} >{{dataSource.Name}}  </span>
+                <span *ngIf="dataSource.AzaIsPere"  class="e-list-content " > <br> {{dataSource.Operateur}}  -- {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
+                        {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) <br> {{dataSource.DepartmentName}} <br></span>
+                <span *ngIf="!dataSource.AzaIsPere"   class="e-list-content "> / &nbsp;{{dataSource.titreepisode}}  ep :{{dataSource.numepisode}} <br> {{dataSource.libchaine}} --
              Type de travail :{{dataSource.libtypeWO}} --  {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
-             {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) </span>
+             {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) <br>   {{dataSource.DepartmentName}}</span> 
            
-                <!-- <span   class="e-list-content ">Date debut : {{dataSource.StartTime}} </span>
+                 <!-- <span   class="e-list-content ">Date debut : {{dataSource.StartTime}} </span>
                 <span   class="e-list-content ">Date fin : {{dataSource.EndTime}} </span> -->
 
                 <ng-template #groupTemplate let-dataSource="">
@@ -46,27 +62,16 @@ cssClass='dialog-Class'
 
               </ng-template>
         </ejs-listview>
-      </div>
+    </div>
   
     </div>
-    </div>
+    </div> 
       
-        <!-- <ejs-grid  #grid id='grid' [dataSource]='eventSelect' height= 505  width= 'auto' rowHeight= 30, [gridLines]='Vertical' >
-            <e-columns>
-                <e-column  field= 'Name' headerText= 'Titre' width= '140' ></e-column>
-                <e-column  field= 'typetravail' headerText= 'Type de travail' width= '140'   ></e-column>
-                <e-column field= 'titreoeuvre'  headerText= 'Titre oeuvre' width='140'></e-column>
-                <e-column field = 'titreepisode' headerText = 'Titre episode' width='140' ></e-column>
-                <e-column field='libchaine' headerText='Chaine' width='140' ></e-column>
-                <e-column field='Description' headerText='Description' width='140' ></e-column>
-                <e-column field='StartTime' headerText='Date debut' width='140' ></e-column>
-                <e-column field='EndTime' headerText='Date fin' width='140' ></e-column>
-    
-            </e-columns>
-        </ejs-grid>   -->
-            
+       <div *ngIf=" clickDeplacementMultiple && !cliqueComptEventMultiSelect" class="" > 
+       <ejs-calendar    locale="fr-CH" class="  event-multiselect" (change)="onValueChange($event)"></ejs-calendar>
   
-  
+    </div>
 </ng-template>
 </ejs-dialog>
+</div>
 </div>
