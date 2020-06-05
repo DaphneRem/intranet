@@ -155,7 +155,7 @@ $InfoBtnHoverColor :  #2eced6;
     height : 88vh;
 
     .schedule-header {
-        display: flex;
+        display: flex;      // flex-direction: row;
         width: 90%;
         table {
             margin-left: 10px;
@@ -263,17 +263,17 @@ $InfoBtnHoverColor :  #2eced6;
     height: 55px;
 }
 
-.treeview-external-drag .e-list-item.e-hover>.e-fullrow,
-.treeview-external-drag .e-list-item.e-active>.e-fullrow,
-.treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow,
-.e-bigger .treeview-external-drag .e-list-item.e-hover>.e-fullrow,
-.e-bigger .treeview-external-drag .e-list-item.e-active>.e-fullrow,
-.e-bigger .treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow {
+// .treeview-external-drag .e-list-item.e-hover>.e-fullrow,
+// .treeview-external-drag .e-list-item.e-active>.e-fullrow,
+// .treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow,
+// .e-bigger .treeview-external-drag .e-list-item.e-hover>.e-fullrow,
+// .e-bigger .treeview-external-drag .e-list-item.e-active>.e-fullrow,
+// .e-bigger .treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow {
     // background-color: transparent;
     // border-color: transparent;
     // box-shadow: none !important;
    
-}
+//}
 
 .treeview-external-drag .e-text-content,
 .e-bigger .treeview-external-drag .e-text-content,
@@ -830,4 +830,7 @@ font-size: 12px
     .e-hide{
         display : none
     }
+}
+/deep/ .special {
+    background-color : red 1px solid  !important
 }

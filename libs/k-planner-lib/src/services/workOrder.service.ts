@@ -68,7 +68,7 @@ export class WorkOrderService {
 putStatutWorkorder(id: number, workorder): Observable<Workorder> {
   return this.http
     .put<Workorder>(
-      urlKPlanner + urlPutStatut + id,
+      urlKPlanner + urlPutStatut + 'id/' + id,
       workorder
     )
     .pipe(catchError(this.handleError));

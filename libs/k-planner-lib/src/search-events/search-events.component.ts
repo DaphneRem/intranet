@@ -48,7 +48,7 @@ public listview :any
   public width: string = '100%';
   public animationSettings: AnimationSettingsModel = { effect: 'None' };
   public targetModal: string = '.control-section';
-  public header: string = 'Events existant ';
+  public header: string = 'Résultats de recherche';
   // public timelineRessourceData = [];
   public fields: Object = {
     dataSource: this.resultSearch,

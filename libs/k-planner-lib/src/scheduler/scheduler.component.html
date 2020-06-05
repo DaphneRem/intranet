@@ -15,7 +15,7 @@
         </select>  
     </div>  -->
     <div class="drag-sample-wrapper">
-        <div class="schedule-container">
+        <div class="schedule-container ">
    
             <div class="schedule-header " [hidden]="hiderefresh">
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
@@ -123,8 +123,9 @@
                                     </td> 
                                   
                                     <!--" -->
-                                  <app-multiselect-workorder [eventSelect]="eventSelecte" (selectItemInMulutiselction)="newEventSelecte($event)"  *ngIf="scheduleObj.currentView !='TimelineMonth'" ></app-multiselect-workorder>
-                                    
+                                    <td  style="width: 5%" >
+                                  <app-multiselect-workorder   [eventSelect]="eventSelecte" (clickBtnDeplacement)="clickBtnDeplacement()"  (selectItemInMulutiselction)="newEventSelecte($event)"  (deplacementMultipleEvent) = "deplacementMultiple($event)" *ngIf="scheduleObj.currentView !='TimelineMonth'" ></app-multiselect-workorder>
+                                    </td>
                                     <td>
                                     <div style="width: 50%" >
                                         <ejs-dropdownlist  id="change-intervalle" class ="  ml-3" [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px" [placeholder] = 'intervalle'
@@ -156,7 +157,6 @@
                     (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
                     (popupClose) = "onPopupClose($event)"
-                    
                     cssClass='schedule-drag-drop' 
                     [group]="group" 
                     [currentView]="currentView" 
@@ -166,15 +166,14 @@
                     (actionBegin)="onActionBegin($event)" 
                     (actionComplete)="onActionComplete($event)"
                     (actionFailure)="onActionFailure($event)"
-                   
                     (eventRendered)="onEventRendered($event)"
                     (renderCell)="onRenderCell($event)"
                     (navigating)="onNavigating($event)"
                     (resizeStart)="onResizing($event)"
                     (resizeStop)="onResizingStop($event)"
                     (select)= "onSelectMultipleCell($event)"
-                    (hover) = "onHover($event)"
                     (cellClick) = "cellClick($event) "
+                    (cellDoubleClick) = "cellDoubleClick($event)"
                     [enablePersistence]="false"
                     [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
@@ -182,8 +181,12 @@
                     [showHeaderBar]='true'
                     timezone="Europe/Paris"
                     height ='100%'
-                  
+            
+                   
+     
                     >
+                    <!-- (hover) = "onHover($event)" -->
+
                      <!-- (drag)="onItemDrag($event)"-->
                     <!-- (created)="onCreated($event)" -->
                     <!-- (renderCell)="onRenderCell($event)" 
@@ -407,7 +410,7 @@
                                >
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""   id="treeEvents-template">
                                     <div id="waiting"   class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
-                                        <div id="dataWorkOrder.Id"     >
+                                        <div id="{{dataWorkOrder.Id}}"     >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
                                             <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.libtypeWO}} - {{dataWorkOrder.typetravail}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}} 
@@ -465,13 +468,13 @@
                                     (nodeDragStart)="onTreeDragStart($event)"
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
                                     (nodeDragging)="onItemDrag($event, 1)"
-                                    
+                                    (nodeClicked)="onNodeClicked($event)" 
                                     >
 
                                <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon=""  class="ngtemplate-Monteur">
                                       
                                    <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe), 'background-color': getBackgroundColor(dataMon.Username, dataMon.codegroupe)}">
-                                        <div id="waitdetails" class="monteurs">
+                                        <div id="{{dataMon.Id}}" class="monteurs">
                                            <div id="waitlist" class=" {{dataMon.Username}} " >{{dataMon.Username}}.   </div> 
                                             <div id="waitcategory">   {{dataMon.libelletype }}<span *ngFor = "let libelle of statutMonteur ">  
                                               <span *ngIf="libelle.Name === dataMon.Username  ">   - {{libelle.Libelle }}</span></span> 

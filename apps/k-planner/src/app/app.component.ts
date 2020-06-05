@@ -11,7 +11,7 @@ import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState,  CloseNavbar } from '@ab/root';
 
-import { config, CodeModuleKplanner, coordinateurRight, editRight } from './../../../../.privates-url';
+
 
 
 import { Coordinateur } from '@ab/k-planner-lib/src/models/coordinateur';
@@ -19,7 +19,10 @@ import { CoordinateurService } from '@ab/k-planner-lib/src/services/coordinateur
 import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.service';
 import { UserAccessRightsService } from './accessRights/users-access-rights-service';
 import { App } from './+state/app.interfaces';
-
+   
+ const editRight = 'Modification';
+ const coordinateurRight ='Coordinateur';
+ const CodeModuleKplanner = 135
 
 @Component({
   selector: 'app-root',
@@ -81,6 +84,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public currentCoordinateur: Coordinateur;
   public authUser = true;
   public actionNavBar :CloseNavbar
+
   ngOnInit() {
     if (!this.authService.authenticated) {
       console.log(this.authService.authenticated,"this.authService.authenticated")
@@ -162,6 +166,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.firstName = arrName[1]; // Prénom
     this.lastName = arrName[0]; // Nom
     this.initials = `${this.firstName.slice(0, 1).toUpperCase()}${this.lastName.slice(0, 1).toUpperCase()}`;
+    console.log(this.initials)
     // this.shortUserName = this.authService.user['samaccountname'];
     // console.log(this.adal5Service);
     // console.log(this.authAdalService);
@@ -225,21 +230,25 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 public UsersAccessRights
 getAccessRightsUser(){
+  console.log("call service access rights")
   this.userAccessRightsService
-  .getAccessRightsUser(CodeModuleKplanner , this.userName   )
-  .pipe(takeUntil(this.onDestroy$))
+  .getAccessRightsUser(CodeModuleKplanner , this.userName )
+  // .pipe(takeUntil(this.onDestroy$))
   .subscribe(data => {
+    console.log('access rights user kplanner',data)
      this.UsersAccessRights = data
-     console.log('access rights user kplanner',this.UsersAccessRights)
+   
   
-     if(this.UsersAccessRights["Droits"][editRight]  === true && this.UsersAccessRights["Droits"][coordinateurRight] === true){
+     if(this.UsersAccessRights.Droits[editRight]  && this.UsersAccessRights.Droits[coordinateurRight]){
                 console.log("user have rights to access")
                     this.getUtilisateurByLogin(this.userName)
                     this.rightsAreReady = true
         }else{
+          console.log("403 accees non autorisé")
                    this.rightsAreReady = false
         }
-     })
+     },
+     (err) => {console.log(err)})
      console.log(this.rightsAreReady)
   
  

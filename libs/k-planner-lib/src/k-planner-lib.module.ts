@@ -4,7 +4,7 @@ import { SchedulerComponent } from './scheduler/scheduler.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from 'apps/k-planner/src/app/app-routing.module';
 import { ScheduleAllModule, RecurrenceEditorAllModule } from '@syncfusion/ej2-angular-schedule';
-import { DatePickerAllModule, TimePickerAllModule, DateTimePickerAllModule } from '@syncfusion/ej2-angular-calendars';
+import { DatePickerAllModule, TimePickerAllModule, DateTimePickerAllModule, CalendarModule } from '@syncfusion/ej2-angular-calendars';
 import { NumericTextBoxAllModule } from '@syncfusion/ej2-angular-inputs';
 import { CheckBoxAllModule, ButtonModule } from '@syncfusion/ej2-angular-buttons';
 import { ToolbarAllModule, SidebarModule } from '@syncfusion/ej2-angular-navigations';
@@ -31,7 +31,7 @@ import { ListePlanningComponent } from './liste-planning/liste-planning.componen
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { FilterPipe } from './filter.pipe';
+
 import { HttpModule, JsonpModule } from '@angular/http';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -42,6 +42,7 @@ import { MultiselectWorkorderComponent } from './multiselect-workorder/multisele
 import { SearchEventsComponent } from './search-events/search-events.component';
 import { GridAllModule } from '@syncfusion/ej2-angular-grids';
 import { DisplayDataSourcePlannerComponent } from './display-data-source-planner/display-data-source-planner.component';
+import { JourFeriesComponent } from './jour-feries/jour-feries.component';
 
 
 
@@ -81,6 +82,7 @@ import { DisplayDataSourcePlannerComponent } from './display-data-source-planner
     MultiSelectModule,
     DialogModule,
     GridAllModule,
+    CalendarModule
     
   ],
   declarations: [
@@ -88,11 +90,12 @@ import { DisplayDataSourcePlannerComponent } from './display-data-source-planner
     MonPlanningComponent,
     WorkorderDetailsModalComponent,
     ListePlanningComponent,
-    FilterPipe,
+  
     KeyboardShortcutComponent,
     MultiselectWorkorderComponent,
     SearchEventsComponent,
     DisplayDataSourcePlannerComponent,
+    JourFeriesComponent,
     
     
   ],
