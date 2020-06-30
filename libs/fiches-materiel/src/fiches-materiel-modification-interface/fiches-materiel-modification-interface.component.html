@@ -208,31 +208,42 @@
       [status]="newObject.IdLibstatut" 
       [newObject]="newObject"
       [valueNotToChangeLibelle]="valueNotToChangeLibelle"
+      [acceptedStatusIsPossible]="acceptedStatusIsPossible"
       [allFichesMateriel]="allFichesMateriel">
     </steps-status-comment-modal>
+    <div class="row fm-other-fiches-achat" *ngIf="allFichesAchatForOeuvreReady && otherFichesAchatForOeuvreExist">
+      <div class="col-lg-12 other-fiches-achat-content">
+        <div *ngFor="let item of allFichesAchatForOeuvre" class="other-fiches-achat">L'oeuvre n°<span>{{item[0].NumProgram}}</span> apparait dans plusieurs fiches Achat :
+          <span *ngFor="let ficheAchat of item">
+            <label class="label label-inverse-danger">{{ficheAchat.Numero_fiche}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
     <div class="row urgent-modif">
       <div class="col-lg-6 urgent-checkbox">
         <div class="checkbox-color checkbox-danger">
-          <i *ngIf="!newObject.Isurgence && selectionType === 'multi'" class="icofont icofont-close-line not-valid"></i>
+          <i *ngIf="newObject.Isurgence === false && selectionType === 'multi'" class="icofont icofont-close-line not-valid"></i>
           <input 
             id="Isurgence" 
             type="checkbox" 
             [checked]="displayCheckedIsUrgence()" 
-            (click)="displayIsUrgence()" 
+            (click)="displayIsUrgence()"
+            [disabled]="disabledUrgence()"
             name="Isurgence">
             <!-- [disabled]="disabledUrgence()" -->
           <label for="Isurgence">
-            Mettre en évidence <span *ngIf="newObject.Isurgence === valueNotToChangeLibelle">(certaines fiches sélectionnées sont mises en évidence)</span>
+            Mettre en évidence<span *ngIf="newObject.Isurgence === valueNotToChangeLibelle">(certaines fiches sélectionnées sont mises en évidence)</span>
           </label>
         </div>
         <div class="icons col-lg-2 ml-0 reply-urgent" *ngIf="selectionType === 'multi'">
-          <i *ngIf="(newObject.Isurgence !== valueNotToChangeLibelle) && !checkIsOriginalProperty('Isurgence', newObject.Isurgence)"
+          <i *ngIf="!disabledUrgence() && (newObject.Isurgence !== valueNotToChangeLibelle) && !checkIsOriginalProperty('Isurgence', newObject.Isurgence)"
             class="icofont icofont-ui-reply reply"
             [placement]="'right'" 
             [ngbTooltip]="replyTooltipMessage"
             (click)="newObject.Isurgence = valueNotToChangeLibelle">
           </i>
-          <i *ngIf="(newObject.Isurgence !== valueNotToChangeLibelle) 
+          <i *ngIf="!disabledUrgence() && (newObject.Isurgence !== valueNotToChangeLibelle) 
             && (checkIsOriginalProperty('Isurgence', newObject.Isurgence)
             && newObject.Isurgence !== equalObject.Isurgence[0])" 
             class="icofont icofont-ui-reply reply" 
@@ -799,10 +810,10 @@
         <div class="sections livraison" [ngStyle]="{'min-height': 'calc(50% - 10px)'}">
           <i class="icofont icofont-clock-time section-icon"></i>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker livraison-date">
-            <label class="col-lg-5 col-form-label">
-              Date de livraison :
+            <label class="col-lg-3 col-form-label label-livraison">
+              Livraison :
             </label>
-            <div *ngIf="!fmInRecording" class="input-group col-lg-5" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
+            <div *ngIf="!fmInRecording" class="input-group col-lg-6" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
               <input class="form-control" 
                 [ngClass]="!checkValidDate(newObject.DateLivraison) && !fmInRecording ? 'form-control-danger' : ''"
                 placeholder="{{newObject.DateLivraison}}" 
@@ -819,24 +830,27 @@
                 </button>
               </div>
             </div>
-            <div class="col-lg-2 history-delivery-date">
-              <history-delivery-date-modal 
-                *ngIf="selectionType === 'one'"
-                [myFicheMateriel]="newObject"
-                [reload]="reload">
-              </history-delivery-date-modal>
+            <div class="col-lg-3 history-delivery-date">
+              <delivery-date-comment-modal 
+                [deliveryDate]="newObject.DateLivraison"
+                [selectionType]="selectionType"
+                [valueNotToChangeLibelle]="valueNotToChangeLibelle"
+                [livraisonIsValid]= "livraisonIsValid"
+                (newComment)="displayDeliveryDateModelComment($event)"
+              ></delivery-date-comment-modal>
+              <div class="history">
+                <history-delivery-date-modal 
+                  *ngIf="selectionType === 'one'"
+                  [myFicheMateriel]="newObject"
+                  [reload]="reload">
+                </history-delivery-date-modal>
+              </div>
               <!-- <div class="history" *ngIf="selectionType === 'multi'">
                 <i class="icofont icofont-history"></i>
               </div> -->
             </div>
           </div>
           <div *ngIf="!checkValidDate(newObject.DateLivraison) && !fmInRecording" class="col-form-label invalid-form">La date de livraison n'est pas valide</div>
-          <delivery-date-comment-modal 
-            [deliveryDate]="newObject.DateLivraison"
-            [selectionType]="selectionType"
-            [livraisonIsValid]= "livraisonIsValid"
-            (newComment)="displayDeliveryDateModelComment($event)"
-            ></delivery-date-comment-modal>
           <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady">Délai de vérif :
              {{ficheAchatDetail.delai_verification}}
             <span *ngIf="propertyExist(ficheAchatDetail.delai_verification, ficheAchatDetail)">
