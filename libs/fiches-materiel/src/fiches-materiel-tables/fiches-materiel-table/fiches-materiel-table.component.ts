@@ -270,11 +270,12 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
 
   displayDefaultColumnsOrder() {
     if (this.multiColumnsOrderExist) {
-      this.customdatatablesOptions.defaultOrder = [
-        [10, 'desc'], // n°FA du plus récent au plus ancien
-        [5, 'asc'], // TF par ordre alphabétique
-        [7, 'asc'], // n° épidose AB par ordre croissant
-      ];
+      this.customdatatablesOptions.defaultOrder = this.multiColumnsOrder;
+      // this.customdatatablesOptions.defaultOrder = [
+      //    [10, 'desc'], // n°FA du plus récent au plus ancien
+      //    [5, 'asc'], // TF par ordre alphabétique
+      //    [7, 'asc'], // n° épidose AB par ordre croissant
+      // ];
     } else {
       this.customdatatablesOptions.defaultOrder = [[0, 'asc']];
     }
