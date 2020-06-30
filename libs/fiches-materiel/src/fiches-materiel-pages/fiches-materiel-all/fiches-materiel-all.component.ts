@@ -30,6 +30,12 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
   public daysNumber = 100;
   public isArchived = 2;
   public changeView;
+  public multiColumnsOrderExist: boolean = true;
+  public multiColumnsOrder = [
+    [10, 'desc'], // n°FA du plus récent au plus ancien
+    [5, 'asc'], // TF par ordre alphabétique
+    [7, 'asc'], // n° épidose AB par ordre croissant
+  ];
 
   public data: FicheMateriel[];
   public dataReady: boolean;
@@ -76,7 +82,8 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
       isarchived: this.isArchived,
       distributeur: '',
       numficheachat: '',
-      Isdeal: 2
+      Isdeal: 2,
+      Isurgence: false
   };
   public globalStore;
   public userModifRights: boolean;

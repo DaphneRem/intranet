@@ -8,6 +8,7 @@ export interface AddSearchHistoryFormAction {
     distributeur: string;
     numficheachat: string;
     Isdeal: number;
+    Isurgence: boolean;
   };
 }
 

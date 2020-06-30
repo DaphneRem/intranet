@@ -7,5 +7,6 @@ export const SearchHistoryFormInitialState: SearchHistoryFormInterface = {
   isarchived: 2,
   distributeur: '',
   numficheachat: '',
-  Isdeal: 2
+  Isdeal: 2,
+  Isurgence: false
 };
