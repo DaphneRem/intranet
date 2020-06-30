@@ -51,4 +51,5 @@ export class FicheMaterielComplexSearch {
     NomSupport: string;
     chaines: string;
     Isdeal: number;
+    Isurgence: boolean;
 }
