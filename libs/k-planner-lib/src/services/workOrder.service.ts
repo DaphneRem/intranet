@@ -65,10 +65,10 @@ export class WorkOrderService {
 
   /**** Put *******/
 
-putStatutWorkorder(id: number, workorder): Observable<Workorder> {
+putStatutWorkorder(iddetail: number, workorder): Observable<Workorder> {
   return this.http
     .put<Workorder>(
-      urlKPlanner + urlPutStatut + 'id/' + id,
+      urlKPlanner + urlPutStatut + 'iddetail/' + iddetail,
       workorder
     )
     .pipe(catchError(this.handleError));

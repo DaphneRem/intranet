@@ -2,7 +2,7 @@
 <!-- Affficher le resultat de recherche dans le planner    -->
 
 <div class="property-panel-content">
-    <input type="text" class="e-input" id="events-search" placeholder="Faites votre recherche" (keyup)="globalSearch($event)"  />
+    <input type="text" #inputsearch class="e-input" id="events-search" placeholder="Faites votre recherche" (keyup)="globalSearch($event)"  />
 </div>
 
 
@@ -34,7 +34,7 @@
                 <span *ngIf="!dataSource.AzaIsPere"   class="e-list-content "> -{{dataSource.titreepisode}} - ep :{{dataSource.numepisode}} /  {{dataSource.libchaine}} --
              Type de travail :{{dataSource.libtypeWO}} --  {{ changeDateFormat(dataSource.StartTime) | date }} - ( {{ changeDateFormat(dataSource.StartTime) | date:'shortTime' }} -
              {{ changeDateFormat(dataSource.EndTime) | date:'shortTime' }} ) </span>
-           <span>   {{dataSource.DepartmentName}}</span>
+           <span *ngIf="!dataSource.AzaIsPere" >   {{dataSource.DepartmentName}}</span>
                 <!-- <span   class="e-list-content ">Date debut : {{dataSource.StartTime}} </span>
                 <span   class="e-list-content ">Date fin : {{dataSource.EndTime}} </span> -->
 

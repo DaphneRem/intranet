@@ -51,7 +51,7 @@ registerLocaleData(localeFr, 'fr');
     RouterStateModule.forRoot(),
     EffectsModule.forRoot([]),
     HttpClientModule,
-    CustomDatatablesModule,
+
     NxModule.forRoot(),
     StoreRouterConnectingModule,
     StoreModule.forRoot(

@@ -181,11 +181,11 @@
                     [showHeaderBar]='true'
                     timezone="Europe/Paris"
                     height ='100%'
-            
-                   
+                    (drag)="onItemDrag($event)"
      
                     >
                     <!-- (hover) = "onHover($event)" -->
+                  
 
                      <!-- (drag)="onItemDrag($event)"-->
                     <!-- (created)="onCreated($event)" -->
@@ -237,11 +237,12 @@
                     <e-views>
                         <e-view option='TimelineDay'  #scheduleObjDay   >
                             <ng-template #eventTemplate let-data  class="event">
-                                <div class='template-wrap  container{{data.Id}} ' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
+                                <div class='template-wrap  container{{data.Id}} ' style="width: 100%" id="{{data.Id}}"  [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
+                                    <!-- -->
                                     <div>
-                                        <div class="subject " style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                        <div class="subject  " style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                             <!-- <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div> -->
-                                            <u class="e-inner-wrap"  id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
+                                            <u class="e-inner-wrap defile"  id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
                                             <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                             <div *ngIf="data.Operateur && !displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
                                             <div *ngIf="data.Operateur && displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.DepartmentName}}</div>
@@ -254,7 +255,7 @@
                                             <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br> -->
                                         
-                                            <span class="mt-1 workorders" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
+                                            <span id="{{data.Id}}" class="mt-1 workorders defile" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
                                             
                                         </div>
                                     </div>
@@ -272,7 +273,7 @@
                                         <div>
                                             <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                                 <!-- <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div> -->
-                                                <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }}/ <span  >{{data.coordinateurCreate}}</span> </u> <br>
+                                                <u  class="e-inner-wrap defile" id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }}/ <span  >{{data.coordinateurCreate}}</span> </u> <br>
                                                 <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
                                                 <div *ngIf="data.Operateur && !displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
                                                 <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
@@ -282,7 +283,7 @@
                                             </div>
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                                 <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br> -->
-                                                <span  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span><br>
+                                                <span  id="{{data.Id}}" class="mt-1 workorders defile" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span><br>
                                                 
                                                 
                                             </div>
@@ -297,7 +298,7 @@
                                     <div >
                                         <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
                                    
-                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} / <span  >{{data.coordinateurCreate}}</span> </u> <br> 
+                                            <u class="e-inner-wrap defile" id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} / <span  >{{data.coordinateurCreate}}</span> </u> <br> 
                                       
                                             <div *ngIf="data.Operateur && !displayRessourceMonteur " class="operateur mt-1 " [ngStyle]="{'color': user.initials=== data.coordinateurCreate ? ' #FFFFFF':'#000000'}" >{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
@@ -307,7 +308,7 @@
                                         </div>
                                         <div *ngIf="!data.AzaIsPere" class="show-user mb-1" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span> -->
-                                            <span  style="padding-top: 5px; width: 100%; z-index: 2 !important; text-overflow: ellipsis;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }} <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
+                                            <span id="{{data.Id}}" class="mt-1 workorders defile" style="padding-top: 5px; width: 100%; z-index: 2 !important; text-overflow: ellipsis;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }} <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
                                         </div>
                                     </div>
                                 </div>
