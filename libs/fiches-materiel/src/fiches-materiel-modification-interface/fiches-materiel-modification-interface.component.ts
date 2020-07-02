@@ -259,30 +259,62 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     }
   }
 
-  // public oldIsUrgence: boolean; // ICI 06/03/2020 !!!!!!!!!!
-  // disabledUrgence() {
-  //   console.log('this.newObject.Isurgence => ', this.newObject.Isurgence);
+  public oldIsUrgence: boolean; // ICI 06/03/2020 !!!!!!!!!!
+  public disabledOptionIsUrgence: boolean = false;
+  disabledUrgence() {
+    console.log('this.newObject.Isurgence => ', this.newObject.Isurgence);
+    console.log('this.newObject.IdLibstatut => ', this.newObject.IdLibstatut);
+    console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
+    // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
+    // this.oldIsUrgence = this.newObject.Isurgence;
+    if (!this.disabledOptionIsUrgence) {
+      this.oldIsUrgence = this.newObject.Isurgence;
+    }
+    if (
+      this.newObject.IdLibEtape === 20 || // Terminé (accepté)
+      this.newObject.IdLibEtape === 21 || // Terminé (annulé)
+      this.newObject.IdLibEtape === 24 // traité par un autre service
+    ) {
+      console.log('this.oldIsUrgence1 => ', this.oldIsUrgence);
+      this.newObject.Isurgence = false;
+      this.disabledOptionIsUrgence = true;
+      console.log('this.oldIsUrgence2 => ', this.oldIsUrgence);
+      return true;
+    } else {
+      console.log('this.oldIsUrgence3 => ', this.oldIsUrgence);
+        this.disabledOptionIsUrgence = false;
+        this.newObject.Isurgence = this.oldIsUrgence;
+        return false;
+      
+    }
+  }
+
+  // disabledDeadline() {
+  //   console.log('this.newObject.Deadline in disabledDeadline function => ', this.newObject.Deadline);
   //   // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
   //   // console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
-  //   this.oldIsUrgence = this.newObject.Isurgence;
+  //   if (this.selectionType === 'multi' && this.newObject.Deadline !== 'dd-mm-yyyy') {
+  //     this.oldDeadline = this.newObject.Deadline;
+  //   }
   //   if (
   //     this.newObject.IdLibEtape === 20 || // Terminé (accepté)
   //     this.newObject.IdLibEtape === 21 || // Terminé (annulé)
   //     this.newObject.IdLibEtape === 24 // traité par un autre service
   //   ) {
-  //     console.log('this.oldIsUrgence1 => ', this.oldIsUrgence);
-  //     this.newObject.Isurgence = false;
-  //     console.log('this.oldIsUrgence2 => ', this.oldIsUrgence);
+  //     if (this.selectionType === 'multi') {
+  //       this.newObject.Deadline = 'dd-mm-yyyy';
+  //     }
   //     return true;
   //   } else {
-  //     console.log('this.oldIsUrgence3 => ', this.oldIsUrgence);
-  //       this.newObject.Isurgence = this.oldIsUrgence;
-  //     this.oldIsUrgence = this.newObject.Isurgence;
+  //     if (this.selectionType === 'multi') {
+  //       console.log('oldDeadline => ', this.oldDeadline);
+  //       if (this.oldDeadline) {
+  //         this.newObject.Deadline = this.oldDeadline;
+  //       }
+  //     }
   //     return false;
   //   }
-
   // }
-
   checkHeightSection() {
     let ok = document.getElementById('info');
     let oo = ok;
@@ -415,26 +447,34 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.allFichesAchatId = this.storeFichesToModif.allFichesAchat;
     this.getFicheAchatForMultiSelection(this.allFichesAchatId);
     this.getFicheAchatDetailForMultiSelection(this.allOeuvresId);
-
   }
 
   getFicheAchatDetailForMultiSelection(idFicheAchatDetailArray) { // MULTI
     let oeuvreMultiSelection = [];
+    let numProgramOeuvres = [];
     idFicheAchatDetailArray.map(item => {
       this.fichesAchatService.getFichesAchatDetailByIdDetail(item)
         .pipe(takeUntil(this.onDestroy$))
-        .subscribe(data => {
+        .subscribe(data => { // res = null si pas d'oeuvre
           console.log('oeuvre data => ', data);
           oeuvreMultiSelection.push(data);
+          numProgramOeuvres.push(data.numprogram);
+          console.log('oeuvreMultiSelection => ', oeuvreMultiSelection);
           if (oeuvreMultiSelection.length === idFicheAchatDetailArray.length) {
             if (oeuvreMultiSelection.length > 1) {
               // action qui détermine les valeurs communes
               this.ficheAchatDetailMulti = this.compareSameValues(oeuvreMultiSelection);
+              // ICI MAPPER APPEL POUR MULTI OEUVRE !!!!!!!!!!!!!!!!!!!!
+              this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
               this.ficheAchatDetailReady = true;
               console.log('this.ficheAchatDetailMulti => ', this.ficheAchatDetailMulti);
             } else {
               this.ficheAchatDetail = oeuvreMultiSelection[0];
+              console.log('this.ficheAchatDetail !!! => ', this.ficheAchatDetail);
+              console.log('this.ficheAchatDetail.numprogram !!! => ', this.ficheAchatDetail['numprogram']);
+              this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
               this.ficheAchatDetailReady = true;
+              // ICI METTRE APPEL POUR MULTI OEUVRE !!!!!!!!!!!!!!!!!!!!
               console.log('une seule oeuvre => ', this.ficheAchat);
             }
           }
@@ -643,6 +683,7 @@ public ficheAchatDetailMulti;
     }`;
     this.getFicheAchat(ficheMateriel.IdFicheAchat);
     this.getFicheAchatDetail(ficheMateriel.IdFicheAchat, ficheMateriel);
+    this.getAllFichesAchatFOrOeuvre([this.newObject.NumProgram]);
     this.changeDateFormat('arg');
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
     // this.fmInRecording = false;
@@ -650,8 +691,70 @@ public ficheAchatDetailMulti;
     this.displayNewObjectReady = true;
   }
 
+  public allFichesAchatForOeuvre = [];
+  public allFichesAchatForOeuvreReady: boolean = false;
+  public otherFichesAchatForOeuvreExist: boolean = false;
+  getAllFichesAchatFOrOeuvre(numProgram) {
+    let oeuvreChecked = [];
+    numProgram.map(item => {
+      this.fichesAchatService.getAllFichesAchatFOrOeuvre(item)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(data => {
+          oeuvreChecked.push(item);
+          console.log('res for allFichesAchatFoOeuvre => ', data);
+          // for test :
+        //  console.log('oeuvreChecked.length => ', oeuvreChecked.length);
+        //  console.log('numProgram.length => ', numProgram.length);
+        //  if (oeuvreChecked.length === numProgram.length) {
+        //    console.log('push data => ', data);
+        //    data.push(
+        //      {
+        //        id_fiche: 1066,
+        //        Numero_fiche: 'FA-2020-00030',
+        //        NumProgram: '2020-00112'
+        //      }
+        //    );
+        //  }
+          //
+          if (data.length > 1) {
+            if (oeuvreChecked.length === numProgram.length) {
+              this.allFichesAchatForOeuvre.push(data);
+              this.allFichesAchatForOeuvreReady = true;
+              this.otherFichesAchatForOeuvreExist = true;
+            }
+          } else {
+              if (oeuvreChecked.length === numProgram.length) {
+              this.allFichesAchatForOeuvreReady = true;
+              this.otherFichesAchatForOeuvreExist = false;
+            }
+          }
+        },
+        error => {
+          swal({
+            text: 'Impossible de rechercher la correspondance de l\'oeuvre item avec d\'autres fiches Achats',
+            type: 'warning',
+            showCancelButton: false,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: mainColor,
+          });
+        });
+      }
+    );
+  }
+
+  checkAcceptedStatusIsPossible(acceptationDate, renouvellement) {
+    if (acceptationDate === null && (renouvellement === null || !renouvellement)) {
+      this.acceptedStatusIsPossible = false;
+    }
+    console.log('this.acceptedStatusIsPossible => ', this.acceptedStatusIsPossible);
+  }
+
   public displayNewObjectReady = false;
+  public acceptedStatusIsPossible = true;
+
   displayNewObjectSelectionTypeMulti() {
+    console.log('this.acceptedStatusIsPossible first => ', this.acceptedStatusIsPossible);
+    this.acceptedStatusIsPossible = true;
     this.newObject = objectNoChanged;
     for (let key in this.newObject) {
       if (key) {
@@ -667,6 +770,7 @@ public ficheAchatDetailMulti;
     console.log('fiches matériel ==> ', this.allFichesMateriel);
     this.allFichesMateriel.map(item => {
       let index = this.allFichesMateriel.indexOf(item);
+      this.checkAcceptedStatusIsPossible(item.DateAcceptation, item.Renouvellement);
       for (let key in item) {
         if ((index + 1) < this.allFichesMateriel.length) {
           if (item[key] === this.allFichesMateriel[index + 1][key]) {
@@ -1454,6 +1558,7 @@ public ficheAchatDetailMulti;
           // console.log('i => ', i);
           // console.log('object => ', object);
           // console.log(object);
+          // PROBLEME LAURENT 06/03/2020 modification multiple fiche 1490
             if (object.IsValid === this.allAnnexElementsFicheMateriel[0][i].IsValid) { // remplacer par this.allAnnexElementsFicheMateriel[index+1][i].IsValid
               let key = object.IdPackageAttendu;
               if (!this.sameValueElementsAnnexes[key] || this.sameValueElementsAnnexes[key].length === 0) {
@@ -2225,8 +2330,8 @@ public categoriesReady: Boolean = false;
 
   displayDeliveryDateModelComment(comment) {
     this.newObject.CommentairesDateLivraison = comment;
-    // console.log(`Delivery Date Comment : '${this.newObject.CommentairesDateLivraison}'`);
-    // console.log(this.newObject);
+    console.log(`Delivery Date Comment : '${this.newObject.CommentairesDateLivraison}'`);
+    console.log(this.newObject);
   }
 
   propertyExist(property, object): boolean {

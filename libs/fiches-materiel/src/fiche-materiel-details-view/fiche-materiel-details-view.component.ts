@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import swal from 'sweetalert2';
 
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
@@ -363,6 +364,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
           this.getVersionLib();
           this.getQualiteFicheMateriel(id);
           this.getVersionFicheMateriel(id);
+          this.getAllFichesAchatFOrOeuvre(this.myFicheMateriel.NumProgram);
         } else {
           this.myFicheMateriel = {};
           this.myFicheMaterielExist = false;
@@ -385,7 +387,6 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
           this.myFicheAchatDetails = data;
           this.dataDetailsReady = true;
           this.myFicheAchatDetailsExist = true;
-          this.getAllFichesAchatFOrOeuvre(data.numprogram);
         } else {
           this.myFicheAchatDetails = {};
           this.dataDetailsReady = true;
@@ -411,7 +412,16 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
           this.allFichesAchatForOeuvreReady = true;
           this.otherFichesAchatForOeuvreExist = false;
         }
+      },
+    error => {
+      swal({
+        text: 'Impossible de rechercher la correspondance de l\'oeuvre avec d\'autres fiches Achats',
+        type: 'warning',
+        showCancelButton: false,
+        confirmButtonText: 'Ok',
+        confirmButtonColor: mainColor,
       });
+    });
   }
 
 

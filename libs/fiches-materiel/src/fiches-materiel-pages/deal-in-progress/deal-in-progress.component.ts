@@ -35,9 +35,13 @@ export class DealInProgressComponent implements OnInit, OnDestroy {
   public dataReady: boolean;
   public multiColumnsOrderExist = true;
   public multiColumnsOrder = [
-    [5, 'asc'],
-    [7, 'asc'],
-    [10, 'asc']
+    [10, 'asc'], // n°FA du plus ancien au plus récent
+    [5, 'asc'], // TF par ordre alphabétique
+    [7, 'asc'], // n° épidose AB par ordre croissant
+
+    // [5, 'asc'], // TF par ordre alphabétique
+    // [7, 'asc'], // n° épidose AB par ordre croissant
+    // [10, 'asc'] // n°FA du plus ancien au plus récent
   ];
 
   public widgetLink = '/';
@@ -82,7 +86,8 @@ export class DealInProgressComponent implements OnInit, OnDestroy {
     isarchived: this.isArchived,
     distributeur: '',
     numficheachat: '',
-    Isdeal: 1
+    Isdeal: 1,
+    Isurgence: false
   };
 
   constructor(

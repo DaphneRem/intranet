@@ -24,6 +24,8 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
   @Input() newObject;
   @Input() allFichesMateriel;
   @Input() valueNotToChangeLibelle;
+  @Input() acceptedStatusIsPossible;
+
 
   @Output() lastStatus = new EventEmitter<string>();
   @Output() lastStep = new EventEmitter<number>();
@@ -118,8 +120,11 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
           // console.log('dateAcceptationIsOk => ', dateAcceptationIsOk);
           if (!statusIsOk || (!renouvellementIsOk && !dateAcceptationIsOk)) {
             // console.log('warning modal call');
-            this.openWarningSwalModal = true;
-            this.openWarningSwal();
+            console.log('acceptedStatusIsPossible => ', this.acceptedStatusIsPossible);
+            if (!this.acceptedStatusIsPossible || !statusIsOk) {
+              this.openWarningSwalModal = true;
+              this.openWarningSwal(); // ICI !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            }
             // } else if (this.allFichesMateriel.length > 1) {
             //   const arrayIdStatutElementsAnnexes = [];
             //   const arrayRenouvellementDateAcceptation = [];

@@ -47,18 +47,22 @@ form {
         }
     }
 }
-.data-row {
-    .data-message {
-        display: flex;
-        justify-content: center;
-        p {
-            color: #000000;
-            span {
-                margin-left: 10px;
-                i {
-                    color : $main-color;
+.all-checkbox {
+    margin-bottom : 20px;
+    .data-row {
+        .data-message {
+            display: flex;
+            justify-content: center;
+            p {
+                color: #000000;
+                span {
+                    margin-left: 10px;
+                    i {
+                        color : $main-color;
+                    }
                 }
             }
         }
     }
 }
+
