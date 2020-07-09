@@ -11,7 +11,7 @@ import { AuthService } from './auth/auth.service';
 
 import { Navbar, navbarInitialState, navbarReducer } from '@ab/root';
 
-import { config, CodeModuleKplanner, coordinateurRight, editRight } from './../../../../.privates-url';
+// import { config, CodeModuleKplanner, coordinateurRight, editRight } from './../../../../.privates-url';
 import { AuthAdalService } from 'apps/fiches-materiel/src/app/auth-adal.service';
 import { App } from 'apps/fiches-materiel/src/app/+state/app.interfaces';
 
@@ -21,7 +21,9 @@ import { UtilisateurService } from '@ab/k-planner-lib/src/services/utilisateur.s
 import { UserAccessRightsService } from './accessRights/users-access-rights-service';
 import { environment } from '../environments/environment';
 
-
+const editRight = 'Modification';
+const coordinateurRight ='Coordinateur';
+const CodeModuleKplanner = 135
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -53,7 +55,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this.navbarStoreOpen = this.store;
     // this.adal5Service.init(config);
-    this.versionApp = environment.version;
+    // this.versionApp = environment.version;
   }
 
   private onDestroy$: Subject<any> = new Subject();

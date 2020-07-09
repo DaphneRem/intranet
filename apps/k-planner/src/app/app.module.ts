@@ -36,7 +36,7 @@ registerLocaleData(localeFr, 'fr');
     MsalModule.forRoot({
       clientID: OAuthSettings.appId,
       // protectedResourceMap : OAuthSettings.protectedResourceMap,
-      // authority: OAuthSettings.authority,
+      authority: OAuthSettings.authority,
       // validateAuthority: true,
     }),
     RootModule,
