@@ -6,6 +6,7 @@ $creationBtnHoverColor :  #2eced6;
 $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
 $iconColor : #7f7f7f;
+$warningColor: #FFB64D;
 
 // $label-color: #ffffff;
 // $in-progress-color-background:  #0040FF;
@@ -152,6 +153,9 @@ $iconColor : #7f7f7f;
                     label {
                         font-size: 1em;
                     }
+                    .warning {
+                        color: $warningColor;
+                    }
                 }
             }
         }
@@ -216,6 +220,9 @@ $iconColor : #7f7f7f;
                         }
                         .ban {
                             color : $importantColor;
+                        }
+                        .warning  {
+                            color : $warningColor;
                         }
                         span {
                             &.empty-field {

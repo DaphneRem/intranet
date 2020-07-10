@@ -211,9 +211,28 @@
       [acceptedStatusIsPossible]="acceptedStatusIsPossible"
       [allFichesMateriel]="allFichesMateriel">
     </steps-status-comment-modal>
-    <div class="row fm-other-fiches-achat" *ngIf="allFichesAchatForOeuvreReady && otherFichesAchatForOeuvreExist">
+    <div class="row fm-other-fiches-achat" 
+      *ngIf="allFichesAchatForOeuvreReady 
+        && checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres)
+        && otherFichesAchatForOeuvreExist">
       <div class="col-lg-12 other-fiches-achat-content">
         <div *ngFor="let item of allFichesAchatForOeuvre" class="other-fiches-achat">L'oeuvre n°<span>{{item[0].NumProgram}}</span> apparait dans plusieurs fiches Achat :
+          <span *ngFor="let ficheAchat of item">
+            <label class="label label-inverse-danger">{{ficheAchat.Numero_fiche}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- <span>multioeuvre : {{!multiOeuvre}}</span>
+    <span>!checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres) : {{!checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres)}}</span>
+    <span>allFichesAchatForOeuvreReady : {{allFichesAchatForOeuvreReady}}</span><-->
+    <div class="row fm-other-fiches-achat" 
+        *ngIf="!multiOeuvre 
+          && !checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres) 
+          && allFichesAchatForOeuvreReady">
+      <div class="col-lg-12 other-fiches-achat-content">
+        <div *ngFor="let item of allFichesAchatsForAllOeuvres" class="other-fiches-achat">L'oeuvre n°
+          <span>{{item[0].NumProgram}}</span> a été retirée de la fiche Achat mais elle apparait dans d'autres fiches :
           <span *ngFor="let ficheAchat of item">
             <label class="label label-inverse-danger">{{ficheAchat.Numero_fiche}}</label>
           </span>
@@ -388,14 +407,18 @@
           </div>
 
           <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady">Format œuvre :
-              <span *ngIf="ficheAchatDetail.nombre_episodes">
+              <span *ngIf="ficheAchatDetailsExist && ficheAchatDetail.nombre_episodes">
                 {{ficheAchatDetail.nombre_episodes ? ficheAchatDetail.nombre_episodes + ' épisode(s)' : '/'}}
               </span>
-              <span *ngIf="!ficheAchatDetail.nombre_episodes">
+              <span *ngIf="ficheAchatDetailsExist && !ficheAchatDetail.nombre_episodes">
                 /
               </span>
+              <span *ngIf="!ficheAchatDetailsExist">
+                <i class="icofont icofont-minus-circle warning"></i>
+                {{messageNoFicheAchatDetail}}
+              </span>
               <span 
-                *ngIf="ficheAchatDetail.nombre_episodes && propertyExist(ficheAchatDetail.DurCom, ficheAchatDetail)" 
+                *ngIf="ficheAchatDetailsExist && ficheAchatDetail.nombre_episodes && propertyExist(ficheAchatDetail.DurCom, ficheAchatDetail)" 
                 [placement]="'right'" 
                 [ngbTooltip]="propertyExist(ficheAchatDetail.DurCom, ficheAchatDetail) ? ficheAchatDetail.DurCom : ''">
                 de {{displayDurCom(ficheAchatDetail.DurCom)}}
@@ -761,21 +784,28 @@
           *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady" 
           [ngStyle]="{'min-height': '25%'}">
           <i class="icofont icofont-law section-icon"></i>
-
-          <p class="deb-droits">Date déb droits :
+          <p class="deb-droits" *ngIf="ficheAchatDetailsExist">Date déb droits :
             <!-- <span>{{newObject.DateDebutDroit | date}}</span> -->
             <span *ngIf="ficheAchatDetail.debut_des_droits">{{ficheAchatDetail.debut_des_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.debut_des_droits">/</span>
+          </p>
+          <p class="deb-droits" *ngIf="!ficheAchatDetailsExist">Date déb droits :
+            <i class="icofont icofont-minus-circle warning"></i>
+            <span>{{messageNoFicheAchatDetail}}</span>
           </p>
           <!-- <p class="fin-droits">Fin des droits :
             <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.expiration_droits">/</span>
           </p> -->
-          <p *ngIf="ficheAchatDetail.duree_droits_annee">Fin des droits : {{ficheAchatDetail.duree_droits_annee}} an(s)</p>
-          <p *ngIf="ficheAchatDetail.duree_droits_mois">Fin des droits : {{ficheAchatDetail.duree_droits_mois}} mois</p>
-          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && ficheAchatDetail.expiration_droits">Expiration droits : {{ficheAchatDetail.expiration_droits | json}}</p>
-          <p *ngIf="!ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && !ficheAchatDetail.expiration_droits">Fin des droits :
+          <p *ngIf="ficheAchatDetailsExist && ficheAchatDetail.duree_droits_annee">Fin des droits : {{ficheAchatDetail.duree_droits_annee}} an(s)</p>
+          <p *ngIf="ficheAchatDetailsExist && !ficheAchatDetail.duree_droits_annee && ficheAchatDetail.duree_droits_mois && ficheAchatDetailsExist">Fin des droits : {{ficheAchatDetail.duree_droits_mois}} mois</p>
+          <p *ngIf="ficheAchatDetailsExist && !ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && ficheAchatDetail.expiration_droits">Expiration droits : {{ficheAchatDetail.expiration_droits | json}}</p>
+          <p *ngIf="ficheAchatDetailsExist && !ficheAchatDetail.duree_droits_annee && !ficheAchatDetail.duree_droits_mois && !ficheAchatDetail.expiration_droits">Fin des droits :
             <span class="empty-field">/</span>
+          </p>
+          <p *ngIf="!ficheAchatDetailsExist">Fin des droits :
+            <i class="icofont icofont-minus-circle warning"></i>
+            <span>{{messageNoFicheAchatDetail}}</span>
           </p>
         </div>
 
@@ -851,12 +881,16 @@
             </div>
           </div>
           <div *ngIf="!checkValidDate(newObject.DateLivraison) && !fmInRecording" class="col-form-label invalid-form">La date de livraison n'est pas valide</div>
-          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady">Délai de vérif :
-             {{ficheAchatDetail.delai_verification}}
-            <span *ngIf="propertyExist(ficheAchatDetail.delai_verification, ficheAchatDetail)">
+          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady">
+            <span *ngIf="ficheAchatDetailsExist">délai de vérif : {{ficheAchatDetail.delai_verification}}</span> 
+            <span *ngIf="ficheAchatDetailsExist && propertyExist(ficheAchatDetail.delai_verification, ficheAchatDetail)">
               {{ficheAchatDetail.delai_verification}} jours
             </span>
-            <span *ngIf="!ficheAchatDetail.delai_verification">/</span>
+            <span *ngIf="ficheAchatDetailsExist &&!ficheAchatDetail.delai_verification">/</span>
+            <span *ngIf="!ficheAchatDetailsExist">délai de vérif :
+              <i class="icofont icofont-minus-circle warning"></i>
+              {{messageNoFicheAchatDetail}}
+            </span>
           </p>
           <p *ngIf="selectionType === 'multi' && multiOeuvre && ficheAchatDetailReady && ficheAchatDetailMulti">Délai de vérif :
              {{ficheAchatDetailMulti.delai_verification}}

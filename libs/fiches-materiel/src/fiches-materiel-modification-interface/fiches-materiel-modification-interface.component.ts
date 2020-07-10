@@ -83,7 +83,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
 
   // annexes elements :
   public comments: AnnexElementCommentsFicheMAteriel[];
-  public annexElementsStatus: any;
+  public annexElementsStatus: any = []; // push pro issue
   public annexElementsReady: Boolean = false;
   public annexElementsCategories;
   public initAnnexElements: Boolean = true;
@@ -100,6 +100,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public ficheAchatReady: Boolean = false;
   public ficheAchatDetail: FicheAchatDetails;
   public ficheAchatDetailReady: Boolean = false;
+  public ficheAchatDetailsExist: Boolean = false;
   public multiFichesAchat: boolean;
   // store informations :
   public user;
@@ -141,6 +142,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public valueNotToChangeLibelle = 'Valeur d\'origine';
   public resetTooltipMessage = 'Vider le champs';
   public replyTooltipMessage = 'Retour aux valeurs d\'origines';
+  public messageNoFicheAchatDetail = ' œuvre retirée de la fiche Achat';
   // qualite :
   public qualiteLib: any;
   public qualiteReady: Boolean = false;
@@ -174,7 +176,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public versionMultiReady: Boolean = false;
   public originVersionValues;
   // retour ori :
-  public retourOri: any;
+  public retourOri: any = []; // push pro issue
   public retourOriReady: Boolean = false;
   public initValueRetourOri: Boolean = true;
   // multi selection :
@@ -422,21 +424,33 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   getFicheAchatDetail(id, ficheMateriel) {
-    this.fichesAchatService.getFichesAchatDetails(id)
+    this.ficheAchatDetailsExist = false;
+    this.fichesAchatService.getFichesAchatDetails(234567)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        if (data.length > 1) {
-          data.map(item => {
-            if (item.id_fiche_det === ficheMateriel.IdFicheDetail) {
-              this.ficheAchatDetail = item;
-            }
-          });
+        console.log('fiche achat detail => ', data);
+        if (data !== null) {
+          if (data.length > 1) {
+            data.map(item => {
+              if (item.id_fiche_det === ficheMateriel.IdFicheDetail) {
+                this.ficheAchatDetail = item;
+                this.ficheAchatDetailsExist = true;
+              }
+            });
+          } else if (data.length) {
+            this.ficheAchatDetail = data[0];
+            this.ficheAchatDetailsExist = true;
+          } else {
+            this.ficheAchatDetailsExist = false;
+          }
         } else {
-          this.ficheAchatDetail = data[0];
+          this.ficheAchatDetailsExist = false;
+          console.log('here');
         }
         console.log('ficheAchatDetail => ', this.ficheAchatDetail);
         this.ficheAchatDetailReady = true;
         this.displayOriLastDeadline(this.livraisonDateNgFormat);
+        console.log('ficheAchatDetailReady => ', this.ficheAchatDetailReady);
       });
   }
 
@@ -692,10 +706,13 @@ public ficheAchatDetailMulti;
   }
 
   public allFichesAchatForOeuvre = [];
+  public allFichesAchatsForAllOeuvres = [];
   public allFichesAchatForOeuvreReady: boolean = false;
   public otherFichesAchatForOeuvreExist: boolean = false;
   getAllFichesAchatFOrOeuvre(numProgram) {
     let oeuvreChecked = [];
+    this.allFichesAchatsForAllOeuvres = [];
+    this.otherFichesAchatForOeuvreExist = false;
     numProgram.map(item => {
       this.fichesAchatService.getAllFichesAchatFOrOeuvre(item)
         .pipe(takeUntil(this.onDestroy$))
@@ -703,31 +720,45 @@ public ficheAchatDetailMulti;
           oeuvreChecked.push(item);
           console.log('res for allFichesAchatFoOeuvre => ', data);
           // for test :
-        //  console.log('oeuvreChecked.length => ', oeuvreChecked.length);
-        //  console.log('numProgram.length => ', numProgram.length);
-        //  if (oeuvreChecked.length === numProgram.length) {
-        //    console.log('push data => ', data);
-        //    data.push(
-        //      {
-        //        id_fiche: 1066,
-        //        Numero_fiche: 'FA-2020-00030',
-        //        NumProgram: '2020-00112'
-        //      }
-        //    );
-        //  }
-          //
+          console.log('oeuvreChecked.length => ', oeuvreChecked.length);
+          console.log('numProgram.length => ', numProgram.length);
+          if (oeuvreChecked.length === 1) {
+            console.log('push data => ', data);
+            data = [
+              {
+                id_fiche: 1066,
+                Numero_fiche: 'FA-2020-00030',
+                NumProgram: '2020-00112'
+              }
+            ];
+          }
+          if (oeuvreChecked.length === 2) {
+            console.log('push data => ', data);
+           data.push(
+             {
+               id_fiche: 1066,
+               Numero_fiche: 'FA-2020-00031',
+                NumProgram: '2020-00113'
+             }
+           );
+          }
+          this.allFichesAchatsForAllOeuvres.push(data);
+          console.log('oeuvreChecked => ', oeuvreChecked);
+          console.log('numProgram => ', numProgram);
           if (data.length > 1) {
+            this.allFichesAchatForOeuvre.push(data);
+            this.otherFichesAchatForOeuvreExist = true;
+            console.log('this.allFichesAchatForOeuvre => ', this.allFichesAchatForOeuvre);
             if (oeuvreChecked.length === numProgram.length) {
-              this.allFichesAchatForOeuvre.push(data);
               this.allFichesAchatForOeuvreReady = true;
-              this.otherFichesAchatForOeuvreExist = true;
             }
           } else {
               if (oeuvreChecked.length === numProgram.length) {
               this.allFichesAchatForOeuvreReady = true;
-              this.otherFichesAchatForOeuvreExist = false;
             }
           }
+          console.log('final this.allFichesAchatForOeuvre => ', this.allFichesAchatForOeuvre);
+
         },
         error => {
           swal({
@@ -740,6 +771,29 @@ public ficheAchatDetailMulti;
         });
       }
     );
+  }
+
+  checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allOeuvres): boolean {
+    console.log('ficheAchatDetail ! => ', ficheAchatDetail);
+    if (ficheAchatDetail === undefined) {
+      ficheAchatDetail = {};
+    }
+    let currentOeuvre = [];
+    let othersOeuvres = [];
+    let oeuvreExistInAllFichesAchatForOeuvre = false;
+    allOeuvres.map((item, i) => {
+      if (item.NumProgram === ficheAchatDetail.numprogram) {
+        currentOeuvre.push(item);
+      } else {
+        othersOeuvres.push(item);
+      }
+      if (i === (allOeuvres.length - 1)) {
+        if (currentOeuvre.length) {
+          oeuvreExistInAllFichesAchatForOeuvre = true;
+        }
+      }
+    });
+    return oeuvreExistInAllFichesAchatForOeuvre;
   }
 
   checkAcceptedStatusIsPossible(acceptationDate, renouvellement) {

@@ -101,6 +101,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   public dataDetailsReady: boolean = false;
 
   public messageNoFicheAchat = ' pas de fiche Achat rattachée';
+  public messageNoFicheAchatDetail = ' œuvre retirée de la fiche Achat';
   public messageEmptyField = 'donnée non renseignée';
 
   public annexElementsStatus: AnnexElementStatus[];
@@ -383,7 +384,6 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         if (data !== null) {
           // this.myFicheAchatDetails = data[0];
           console.log('res for getFicheAchatDetails => ', data);
-
           this.myFicheAchatDetails = data;
           this.dataDetailsReady = true;
           this.myFicheAchatDetailsExist = true;
@@ -404,11 +404,23 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
         console.log('res for allFichesAchatFoOeuvre => ', data);
+//        data = [
+//          {
+//            id_fiche: 1066,
+//            Numero_fiche: 'FA-2020-00030',
+//            NumProgram: '2020-00112'
+//          },
+//          {
+//            id_fiche: 1064,
+//            Numero_fiche: 'FA-2020-00031',
+//            NumProgram: '2020-00113'
+//          }];
         if (data.length > 1) {
           this.allFichesAchatForOeuvre = data;
           this.allFichesAchatForOeuvreReady = true;
           this.otherFichesAchatForOeuvreExist = true;
         } else {
+          this.allFichesAchatForOeuvre = data;
           this.allFichesAchatForOeuvreReady = true;
           this.otherFichesAchatForOeuvreExist = false;
         }
@@ -424,6 +436,24 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
     });
   }
 
+  checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allOeuvres): boolean {
+    let currentOeuvre = [];
+    let othersOeuvres = [];
+    let oeuvreExistInAllFichesAchatForOeuvre = false;
+    allOeuvres.map((item, i) => {
+      if (item.NumProgram === ficheAchatDetail.numprogram) {
+        currentOeuvre.push(item);
+      } else {
+        othersOeuvres.push(item);
+      }
+      if (i === (allOeuvres.length - 1)) {
+        if (currentOeuvre.length) {
+          oeuvreExistInAllFichesAchatForOeuvre = true;
+        }
+      }
+    });
+    return oeuvreExistInAllFichesAchatForOeuvre;
+  }
 
   displayDurCom(durCom: string): string {
     console.log(durCom);
