@@ -722,13 +722,14 @@ export class FichesMaterielTableComponent implements OnInit, OnDestroy, OnChange
       // },
       {
         title : 'ep. AB',
+        type: 'num',
         data: function (data, type, row, meta) {
           if (data.Isurgence && data.NumEpisodeAB) {
             return `<span class="label bg-danger" style="font-size: 0.9em">${data.NumEpisodeAB}</span>`;
           } else {
             return data.NumEpisodeAB;
           }
-        }
+        },
       },
       {
         title : 'Livraison',
