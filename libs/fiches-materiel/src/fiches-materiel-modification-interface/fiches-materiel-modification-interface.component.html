@@ -52,7 +52,7 @@
   <div *ngIf="fmInRecording && selectionType === 'multi'" class="modif-in-progress">
     <loader-animation ></loader-animation>
     <div class="recording-message"><p>{{modifInProgressMessage}}</p></div>
-    <div class="warning-message"><p><i class="warning-icon icofont icofont-warning"></i>Quitter la page entrainera des pertes de données</p></div>
+    <div class="warning-message"><p><i class="warning-icon icofont icofont-warning"></i>Quitter la page entraînera des pertes de données</p></div>
   </div>
   <div *ngIf="!fmInRecording">
     <div class="row top">
@@ -211,34 +211,58 @@
       [acceptedStatusIsPossible]="acceptedStatusIsPossible"
       [allFichesMateriel]="allFichesMateriel">
     </steps-status-comment-modal>
-    <div class="row fm-other-fiches-achat" 
+    <!-- <div class="row fm-other-fiches-achat" 
       *ngIf="allFichesAchatForOeuvreReady 
         && checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres)
+        && multiOeuvre
         && otherFichesAchatForOeuvreExist">
       <div class="col-lg-12 other-fiches-achat-content">
-        <div *ngFor="let item of allFichesAchatForOeuvre" class="other-fiches-achat">L'oeuvre n°<span>{{item[0].NumProgram}}</span> apparait dans plusieurs fiches Achat :
+        <div *ngFor="let item of allFichesAchatForOeuvre" class="other-fiches-achat">OUI (1) L'oeuvre n°<span>{{item[0].NumProgram}}</span> apparait dans plusieurs fiches Achat :
           <span *ngFor="let ficheAchat of item">
             <label class="label label-inverse-danger">{{ficheAchat.Numero_fiche}}</label>
           </span>
         </div>
       </div>
     </div>
+    <div class="row fm-other-fiches-achat" 
+      *ngIf="allFichesAchatForOeuvreReady 
+        && !multiOeuvre
+        && otherFichesAchatForOeuvreExist">
+      <div class="col-lg-12 other-fiches-achat-content">
+        <div *ngFor="let item of allFichesAchatForOeuvre" class="other-fiches-achat">L'oeuvre apparait dans d'autres fiches Achat :
+          <span *ngFor="let ficheAchat of item">
+            <label class="label label-inverse-danger">{{ficheAchat.Numero_fiche}}</label>
+          </span>
+        </div>
+      </div>
+    </div> -->
+    <div class="row fm-other-fiches-achat" 
+      *ngIf="allFichesAchatForOeuvreReady && otherFichesAchatForOeuvreExist">
+      <div class="col-lg-12 other-fiches-achat-content">
+        <div *ngFor="let item of messageOthersFichesAchatForOeuvre" class="other-fiches-achat">{{item.text}}
+          <!-- <span *ngFor="let ficheAchat of item.fichesAchat"> -->
+            <label *ngFor="let numeroFiche of item.fichesAchat[0]" class="label label-inverse-danger">{{numeroFiche.Numero_fiche}}</label>
+          <!-- </span> -->
+        </div>
+      </div>
+    </div>
     <!-- <span>multioeuvre : {{!multiOeuvre}}</span>
     <span>!checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres) : {{!checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres)}}</span>
-    <span>allFichesAchatForOeuvreReady : {{allFichesAchatForOeuvreReady}}</span><-->
-    <div class="row fm-other-fiches-achat" 
+    <span>allFichesAchatForOeuvreReady : {{allFichesAchatForOeuvreReady}}</span> -->
+
+    <!-- <div class="row fm-other-fiches-achat" 
         *ngIf="!multiOeuvre 
           && !checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allFichesAchatsForAllOeuvres) 
           && allFichesAchatForOeuvreReady">
       <div class="col-lg-12 other-fiches-achat-content">
-        <div *ngFor="let item of allFichesAchatsForAllOeuvres" class="other-fiches-achat">L'oeuvre n°
+        <div *ngFor="let item of allFichesAchatsForAllOeuvres" class="other-fiches-achat">OUI (2)L'oeuvre n°
           <span>{{item[0].NumProgram}}</span> a été retirée de la fiche Achat mais elle apparait dans d'autres fiches :
           <span *ngFor="let ficheAchat of item">
             <label class="label label-inverse-danger">{{ficheAchat.Numero_fiche}}</label>
           </span>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="row urgent-modif">
       <div class="col-lg-6 urgent-checkbox">
         <div class="checkbox-color checkbox-danger">
@@ -423,11 +447,10 @@
                 [ngbTooltip]="propertyExist(ficheAchatDetail.DurCom, ficheAchatDetail) ? ficheAchatDetail.DurCom : ''">
                 de {{displayDurCom(ficheAchatDetail.DurCom)}}
               </span>
-
               <p *ngIf="selectionType === 'multi' && multiOeuvre && ficheAchatDetailReady && ficheAchatDetailMulti.nombre_episodes">Format œuvre :
                   <span>{{ficheAchatDetailMulti.nombre_episodes}}</span>
                   <span 
-                    *ngIf="ficheAchatDetail.nombre_episodes && propertyExist(ficheAchatDetailMulti.DurCom, ficheAchatDetailMulti)" 
+                    *ngIf="ficheAchatDetailMulti.nombre_episodes && propertyExist(ficheAchatDetailMulti.DurCom, ficheAchatDetailMulti)" 
                     [placement]="'right'" 
                     [ngbTooltip]="propertyExist(ficheAchatDetailMulti.DurCom, ficheAchatDetailMulti) ? ficheAchatDetailMulti.DurCom : ''">
                     de {{displayDurCom(ficheAchatDetailMulti.DurCom)}}
@@ -823,6 +846,10 @@
             <!-- <span>{{newObject.DateDebutDroit | date}}</span> -->
             <span>{{ficheAchatDetailMulti.debut_des_droits | date}}</span>
           </p>
+          <p *ngIf="!ficheAchatDetailMulti.debut_des_droits" class="deb-droits">Date déb droits :
+            <!-- <span>{{newObject.DateDebutDroit | date}}</span> -->
+            <span>/</span>
+          </p>
           <!-- <p class="fin-droits">Fin des droits :
             <span *ngIf="ficheAchatDetail.expiration_droits">{{ficheAchatDetail.expiration_droits | date}}</span>
             <span *ngIf="!ficheAchatDetail.expiration_droits">/</span>
@@ -843,15 +870,15 @@
             <label class="col-lg-3 col-form-label label-livraison">
               Livraison :
             </label>
-            <div *ngIf="!fmInRecording" class="input-group col-lg-6" (click)="selectionType === 'one' ? displayOriLastDeadline(newObject.DateLivraison): ''">
+            <div *ngIf="!fmInRecording" class="input-group col-lg-6" (click)="displayOriLastDeadline(newObject.DateLivraison, newObject.duree_du_pret)">
               <input class="form-control" 
                 [ngClass]="!checkValidDate(newObject.DateLivraison) && !fmInRecording ? 'form-control-danger' : ''"
                 placeholder="{{newObject.DateLivraison}}" 
                 name="livDate" 
                 [(ngModel)]="newObject.DateLivraison" 
                 ngbDatepicker
-                (dateSelect)="displayValidDate(newObject.DateLivraison, 'livraison')" 
-                (keyup)="displayValidDate(newObject.DateLivraison, 'livraison')"
+                (dateSelect)="displayValidDate(newObject.DateLivraison, 'livraison'); displayOriLastDeadline(newObject.DateLivraison, newObject.duree_du_pret)" 
+                (keyup)="displayValidDate(newObject.DateLivraison, 'livraison'); displayOriLastDeadline(newObject.DateLivraison, newObject.duree_du_pret)"
                 #livraison="ngModel"
                 #livDate="ngbDatepicker">
               <div class="input-group-append">
@@ -882,7 +909,7 @@
           </div>
           <div *ngIf="!checkValidDate(newObject.DateLivraison) && !fmInRecording" class="col-form-label invalid-form">La date de livraison n'est pas valide</div>
           <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady">
-            <span *ngIf="ficheAchatDetailsExist">délai de vérif : {{ficheAchatDetail.delai_verification}}</span> 
+            <span *ngIf="ficheAchatDetailsExist">délai de vérif : {{ficheAchatDetail.delai_verification}} jours</span> 
             <span *ngIf="ficheAchatDetailsExist && propertyExist(ficheAchatDetail.delai_verification, ficheAchatDetail)">
               {{ficheAchatDetail.delai_verification}} jours
             </span>
@@ -1127,7 +1154,18 @@
               </option>
             </select>
           </div>
-          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailReady && newObject.RetourOri === 1">Durée du prêt :
+          <div class="row form-group">
+            <label class="col-lg-5 col-form-label">Durée du prêt (en jours) :</label>
+            <input [(ngModel)]="newObject.duree_du_pret" 
+              type="text" 
+              class="form-control input-group col-lg-4" 
+              id="dureePret" 
+              name="dureePret"
+              (keyup)="displayOriLastDeadline(newObject.DateLivraison, newObject.duree_du_pret)"
+              (keypress)="checkInputNumberOnly($event)"
+              autocomplete="off">
+          </div>
+          <!-- <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && ficheAchatDetailsExist && ficheAchatDetailReady && newObject.RetourOri === 1">Durée du prêt :
             
             <span>{{ficheAchatDetail.duree_du_pret}} jour(s)</span>
           </p>
@@ -1141,7 +1179,12 @@
             <span *ngIf="lendingDurationDate === undefined">
               /
             </span>
+          </p> -->
+          <p *ngIf="newObject.RetourOri === 1 && displayRetourOriDernierDelai">Retour Ori dernier délai :
+            <span *ngIf="newObject.RetourOriDernierDelai !== valueNotToChangeLibelle">{{newObject.RetourOriDernierDelai | date}}</span>
+            <span *ngIf="newObject.RetourOriDernierDelai === valueNotToChangeLibelle">{{newObject.RetourOriDernierDelai}}</span>
           </p>
+           
           <div class="form-group row livraison-datepicker" *ngIf="newObject.RetourOri === 3">
             <label class="col-lg-4 col-form-label">
               Date de retour :
@@ -1335,7 +1378,6 @@
         </custom-icon-badge>
       </div>
     </div> -->
-
     <fiches-materiel-modification-action
       (modificationMessage)="displayModificationMessage($event)"
       (propertiesChanged)="resetPropertiesChanged($event)"
@@ -1370,6 +1412,5 @@
       [qualityFmNgModel]="qualityFmNgModel"
       [newObject]="newObject">
     </fiches-materiel-modification-action>
-
   </form>
 </div>
