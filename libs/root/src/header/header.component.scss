@@ -32,6 +32,17 @@ i {
                     padding-left: 10px;
                 }
             }
+            .mediawan-black-logo {
+                color: $iconsHeader;
+                img {
+                    height : 40px;
+                }
+                p {
+                    font-size: 1em;
+                    margin: auto;
+                    margin-top: -14px;
+                }
+            }
             img {
                 height : 40px;
             }
