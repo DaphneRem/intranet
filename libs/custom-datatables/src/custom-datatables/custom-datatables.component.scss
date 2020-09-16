@@ -120,6 +120,7 @@ $disabledColor : rgb(189, 189, 189);
 /deep/ .dataTables_wrapper .dataTables_filter {
     input[type="search"] {
         border-radius : 5px;
+        border: 1px solid #a8a8a8;
     }
     label {
         color : rgb(128, 126, 126);
@@ -272,6 +273,7 @@ $disabledColor : rgb(189, 189, 189);
             width: 150px;
             height: 50px;
             display: flex;
+            align-items: center;
             border-radius: 2px 0 0 2px;
             padding-left: 40px;
             margin-right: -10px;

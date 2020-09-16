@@ -40,6 +40,7 @@ export class Columns {
   // createdCell?: any;
   render?: any;
   width?: string;
+  type?: string;
 }
 
 export class ColumnDefs {
