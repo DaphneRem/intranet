@@ -407,19 +407,19 @@
             </p>
             <!-- Retour Ori => ajouter libellé plutot que number -->
 
-            <p *ngIf="myFicheAchatDetailsExist">Durée du prêt : 
-              <span [ngClass]="myFicheAchatDetails.duree_du_pret === null ? 'empty-field' : ''">
-                {{myFicheAchatDetails.duree_du_pret !== null ? myFicheAchatDetails.duree_du_pret + ' jour(s)' : messageEmptyField}}
+            <p>Durée du prêt :
+              <span [ngClass]="myFicheMateriel.duree_du_pret === null ? 'empty-field' : ''">
+                {{myFicheMateriel.duree_du_pret !== null ? myFicheMateriel.duree_du_pret + ' jour(s)' : messageEmptyField}}
               </span>
             </p>
-            <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Durée du prêt : 
+            <!-- <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Durée du prêt : 
               <i class="icofont icofont-minus-circle warning"></i>
               <span>{{messageNoFicheAchatDetail}}</span>
             </p>
             <p *ngIf="!myFicheAchatGlobalExist">Durée du prêt :
               <i class="icofont icofont-ban ban"></i>
               <span>{{messageNoFicheAchat}}</span>
-            </p>
+            </p> -->
             <p>Retour Ori dernier délai : 
               <span [ngClass]="!myFicheMateriel.RetourOriDernierDelai ? 'empty-field' : ''">
                 <span *ngIf="myFicheMateriel.RetourOriDernierDelai !== null">
@@ -438,7 +438,7 @@
       <div class="col-lg-12 comment">
         <p>Commentaire :</p>
         <div class="comment-content" [ngClass]="!myFicheMateriel.Commentaires ? 'empty-field' : ''">
-          {{myFicheMateriel.Commentaires ? myFicheMateriel.Commentaires : messageEmptyField}}
+          <pre>{{myFicheMateriel.Commentaires ? myFicheMateriel.Commentaires : messageEmptyField}}</pre>
         </div>
       </div>
     </div>
