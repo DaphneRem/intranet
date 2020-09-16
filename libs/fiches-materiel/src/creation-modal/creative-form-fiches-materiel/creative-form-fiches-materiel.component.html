@@ -4,8 +4,8 @@
       <i *ngIf="checkIfErrorExist(oeuvre.gaps)" class="warning-icon icofont icofont-warning"></i>
       <div *ngIf="!checkIfErrorExist(oeuvre.gaps)" class="warning-icon-false"></div>
       <div class="number">{{oeuvre.index}}</div>
-      <h4>{{oeuvre.titre_vf}}</h4>
-      <p> -  {{oeuvre.nombre_episodes}} épisodes</p>
+      <h4>{{oeuvre.titre_vf}} : </h4>
+      <p>{{oeuvre.nombre_episodes}} épisode{{oeuvre.nombre_episodes > 1 ? 's' : ''}}</p>
     </div>
     <div class="details row" *ngFor="let gap of oeuvre.gaps;let i = index;">
       <div class="space "><span *ngIf="!oeuvre.gaps.indexOf(gap)">N° épisodes :</span></div>
