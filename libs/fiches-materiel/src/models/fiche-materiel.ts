@@ -42,4 +42,5 @@ export class FicheMateriel {
     CommentairesStatutEtape: string;
     DateDebutDroit: Date | string;
     DateFinDroit: Date | string;
+    duree_du_pret: number | string;
 }

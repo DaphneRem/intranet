@@ -47,6 +47,7 @@ export class NewObject {
     expiration_droit: any;
     Isurgence: any;
     Isdeal: any;
+    duree_du_pret: any;
 }
 
  export class FichesElementsAnnexes {
@@ -100,4 +101,5 @@ export const objectNoChanged: NewObject = {
     expiration_droit: valueNoChanged,
     Isurgence: valueNoChanged,
     Isdeal: valueNoChanged,
+    duree_du_pret: valueNoChanged,
   };

@@ -31,4 +31,5 @@ export class FicheMaterielCreation {
 
     DateDebutDroit: Date | string;
     DateFinDroit: Date | string;
+    duree_du_pret: number | string;
 }
