@@ -239,8 +239,12 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
       onBeforeOpen: () => {
         const content = swal.getContent();
         const $ = content.querySelector.bind(content);
+        console.log('content = ', content);
         const backToOldValue = $('#backToOldValue');
+        console.log('backToOldValue => ', backToOldValue);
+        
         backToOldValue.addEventListener('click', () => {
+          console.log('cancel btn click !!!!!');
           // this.lastStep.emit(this.previousValueStep);
           // this.previousValueStep = undefined;
           // this.previousValueStatus = undefined;
