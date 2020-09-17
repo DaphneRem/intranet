@@ -107,6 +107,13 @@
         </div>
       </div>
     </div>
+    <div class="row error-fiche-achat-details" *ngIf="errorFicheAchatDetails">
+      <div class="col-lg-12 error-message-fad-content">
+        <div class="error-message">
+          {{ errorMessageFicheAchatDetails }}
+        </div>
+      </div>
+    </div>
     <div class="row fm-detail-body">
       <div class="col-lg-4 fm-content">
         <div class="sections">

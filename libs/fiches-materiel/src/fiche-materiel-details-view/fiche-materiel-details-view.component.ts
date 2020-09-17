@@ -399,6 +399,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   public allFichesAchatForOeuvre: FicheAchat2Exist[] = [];
   public allFichesAchatForOeuvreReady: boolean = false;
   public otherFichesAchatForOeuvreExist: boolean = false;
+  public errorFicheAchatDetails: boolean = false;
+  public errorMessageFicheAchatDetails: string = '';
   getAllFichesAchatFOrOeuvre(numProgram) {
     this.fichesAchatService.getAllFichesAchatFOrOeuvre(numProgram)
       .pipe(takeUntil(this.onDestroy$))
@@ -426,13 +428,18 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         }
       },
     error => {
-      swal({
-        text: 'Impossible de rechercher la correspondance de l\'oeuvre avec d\'autres fiches Achats',
-        type: 'warning',
-        showCancelButton: false,
-        confirmButtonText: 'Ok',
-        confirmButtonColor: mainColor,
-      });
+      this.errorFicheAchatDetails = true;
+      this.errorMessageFicheAchatDetails = 'Impossible de rechercher la correspondance de l\'oeuvre avec d\'autres fiches Achats.';
+      if (numProgram === null || numProgram === '' || !numProgram) {
+        this.errorMessageFicheAchatDetails += ' L\'information n° œuvre est manquante.';
+      }
+      // swal({
+      //   text: 'Impossible de rechercher la correspondance de l\'oeuvre avec d\'autres fiches Achats',
+      //   type: 'warning',
+      //   showCancelButton: false,
+      //   confirmButtonText: 'Ok',
+      //   confirmButtonColor: mainColor,
+      // });
     });
   }
 

@@ -159,6 +159,16 @@ $warningColor: #FFB64D;
                 }
             }
         }
+        .error-fiche-achat-details {
+            margin-top: 20px;
+            margin-bottom: -20px;
+            .error-message-fad-content {
+                padding-left: 30px;
+                .error-message {
+                    font-size: 1em;
+                }
+            }
+        }
         .fm-detail-body {
             margin-top : 30px;
             .fm-content {
