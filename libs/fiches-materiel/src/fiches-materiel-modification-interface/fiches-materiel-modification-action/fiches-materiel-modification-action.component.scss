@@ -5,14 +5,18 @@
         justify-content: flex-end;
     }
     .buttons {
-        .cancel-btn {
-            color: #a8a8a8;
-            border-color: #a8a8a8;
-            &:hover {
-                background-color: #a8a8a8;
-                color: #ffffff;
+        button {
+            margin-bottom: 5px;
+            &.cancel-btn {
+                color: #a8a8a8;
+                border-color: #a8a8a8;
+                &:hover {
+                    background-color: #a8a8a8;
+                    color: #ffffff;
+                }
             }
         }
+
     }
 }
 

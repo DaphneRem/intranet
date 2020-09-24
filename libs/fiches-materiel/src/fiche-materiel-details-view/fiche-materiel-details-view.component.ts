@@ -265,7 +265,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   diplayAnnexStatus(IdStatus) {
     let libelleStatusSelected = this.annexElementsStatus.filter(item => item.IdStatutElementsAnnexes === IdStatus);
     console.log('libelleStatusSelected : ', libelleStatusSelected);
-    return `${this.myFicheMateriel.IdStatutElementsAnnexes} - ${libelleStatusSelected[0].Libelle}`;
+    // return `${this.myFicheMateriel.IdStatutElementsAnnexes} - ${libelleStatusSelected[0].Libelle}`;
+    return ` ${libelleStatusSelected[0].Libelle}`;
   }
 
   getRetourOriLib() {
@@ -281,7 +282,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   diplayRetourOri(IdRetourOri) {
     let libelleRetourOriSelected = this.retourOri.filter(item => item.IdLibRetourOri === IdRetourOri);
     console.log('libelleStatusSelected : ', libelleRetourOriSelected);
-    return `${this.myFicheMateriel.RetourOri} - ${libelleRetourOriSelected[0].Libelle}`;
+    // return `${this.myFicheMateriel.RetourOri} - ${libelleRetourOriSelected[0].Libelle}`;
+    return ` ${libelleRetourOriSelected[0].Libelle}`;
   }
   /*********************** GET LIBS ******************/
 

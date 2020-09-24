@@ -13,8 +13,12 @@
             <!-- {{item | json}} -->
             <span>{{item.DateModification | date:'shortDate'}} </span>
             <span>par {{item.UserModification.length > 0 ? item.UserModification : 'utilisateur non spécifié'}} – </span>
-            <span>Statut : </span><span [ngClass]="displayStatusClassColor(item)">{{item.libelleStatus}}</span>
+            <p>
+              <span>Statut : </span><span [ngClass]="displayStatusClassColor(item)">{{item.libelleStatus}}</span>
+            </p>
+            <p>
             <span> - Etape : </span><span [ngClass]="displayStepClassColor(item)">{{item.libelleStep}}</span>
+            </p>
           </div>
         </ng-template>
         <ng-template ngbPanelContent>

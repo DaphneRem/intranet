@@ -395,6 +395,13 @@ $disabledColor : rgb(189, 189, 189);
     }
 }
 
+/deep/ div.dataTables_wrapper div.dataTables_info {
+    display: flex;
+    .select-info {
+        display: block;
+    }
+}
+
 @media only screen and (max-width: 1024px) {
 
     /deep/ .dataTables_wrapper .dt-buttons {
@@ -413,6 +420,15 @@ $disabledColor : rgb(189, 189, 189);
 
 }
 
+@media only screen and (max-width: 1250px) {
+
+    /deep/ div.dataTables_wrapper div.dataTables_info {
+        .select-info {
+            display: none;
+        }
+    }
+
+}
 
 @media only screen and (max-width: 768px) {
 

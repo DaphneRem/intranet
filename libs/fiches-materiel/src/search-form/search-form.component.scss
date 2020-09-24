@@ -7,33 +7,41 @@ form {
     .field {
         display : flex;
         margin : auto;
+        flex-wrap: wrap;
+        padding-bottom: 5px;
         // margin-top: 10px;
         label {
             width: 70%;
             margin-bottom: 0;
             padding-top : 5px;
+            width: 100px;
         }
-        button {
-            margin-right: 5px;
-            padding: 5px 10px;
-            font-size: 19px;
-            border-radius: 100px;
-            &.search {
-                background: $main-color;
-                &:hover {
-                    background: $main-color-hover;
+        &.button {
+            margin-bottom: 0;
+            display: flex;
+            flex-wrap: nowrap;
+            button {
+                margin-right: 5px;
+                padding: 5px 10px;
+                font-size: 19px;
+                border-radius: 100px;
+                &.search {
+                    background: $main-color;
+                    &:hover {
+                        background: $main-color-hover;
+                    }
                 }
-            }
-            &.reply {
-                background: #b5b3b3;
-                &:hover {
-                    background: #c6c4c4;
+                &.reply {
+                    background: #b5b3b3;
+                    &:hover {
+                        background: #c6c4c4;
+                    }
                 }
-            }
-            i {
-                color: #ffffff;
-                margin: 0;
-                cursor: pointer;
+                i {
+                    color: #ffffff;
+                    margin: 0;
+                    cursor: pointer;
+                }
             }
         }
     }
@@ -49,10 +57,15 @@ form {
 }
 .all-checkbox {
     margin-bottom : 20px;
+    padding-left: 20px;
     .data-row {
+        margin: 5px;
         .data-message {
             display: flex;
             justify-content: center;
+            .checkbox-color {
+                display: flex;
+            }
             p {
                 color: #000000;
                 span {
@@ -60,6 +73,22 @@ form {
                     i {
                         color : $main-color;
                     }
+                }
+            }
+        }
+    }
+}
+.search-message {
+    .search-data-message {
+        display: flex;
+        p {
+            color: #000000;     
+        }
+        div {
+            span {
+                margin-left: 10px;
+                i {
+                    color : $main-color;
                 }
             }
         }

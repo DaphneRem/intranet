@@ -2,8 +2,7 @@
   <div class="card col-lg-12">
     <div class="row top">
       <div class="col-lg-3 left-infos" [ngClass]="myFicheMateriel.Isurgence ? 'urgent-deadline' : ''">
-        <p class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
-          <!-- ajouter une condition en fonction de la deadline (si proche ou lointaine) -->
+      <!--  <p class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
           <i *ngIf="displayDeadlineIcon()" class="warning-icon icofont icofont-warning"></i>
           Deadline :
           <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
@@ -11,7 +10,15 @@
               {{myFicheMateriel.Deadline | date}}
             </span>
           </span>
-        </p>
+        </p> -->
+        <div class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
+          <i *ngIf="displayDeadlineIcon()" class="warning-icon icofont icofont-warning"></i>
+          <p>Deadline : 
+            <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
+                {{myFicheMateriel.Deadline | date}}
+            </span>
+          </p>
+        </div>
         <p class="user" 
           [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''" 
           [ngStyle]="myFicheMateriel.Deadline === null ? {'margin-top': '25px'} : {'margin-top': 0}" >
@@ -63,13 +70,13 @@
       </div>
     </div>
     <div class="row state-content">
-      <div class="col-lg-6 state">
+      <div class="col-lg-6 col-md-6 state">
         <label for="">Statut : </label>
         <span *ngIf="statusActiveExist" [ngClass]="displayStatusClassColor(statusActive)">
           {{statusActive.Libelle}}
         </span>
       </div>
-      <div class="col-lg-6 step">
+      <div class="col-lg-6 col-md-6 step">
         <label for="">Etape : </label>
         <span *ngIf="stepActiveExist" [ngClass]="displayStepClassColor(statusActive, stepActive)">
           {{stepActive.Libelle}}

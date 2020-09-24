@@ -57,11 +57,11 @@
   <div *ngIf="!fmInRecording">
     <div class="row top">
       <div class="col-lg-3 left-infos" [ngClass]="newObject.Isurgence === true ? 'urgent-deadline' : ''">
-        <div *ngIf="!fmInRecording" class="form-group row">
+        <div *ngIf="!fmInRecording" class="form-group row deadline-group">
           <i *ngIf="warningDeadlineExist" class="deadline-warning warning-icon icofont icofont-warning"></i>
           <label class="deadline clo-lg-4 col-form-label">
             Deadline :</label>
-              <div *ngIf="!fmInRecording" class="input-group deadline-datepicker col-lg-8">
+              <div *ngIf="!fmInRecording" class="input-group deadline-datepicker inline-datepicker col-lg-8">
                 <input class="form-control input-deadline"
                   [ngClass]="!checkValidDate(newObject.Deadline) && !fmInRecording ? 'form-control-danger' : ''"
                   placeholder="{{newObject.Deadline}}" 
@@ -86,7 +86,7 @@
                 <span *ngIf="deadlineDaysDiff === 1">jour</span>
               </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row suivi-group">
           <label class="user clo-lg-4 col-form-label">
             Suivi par :</label>
           <select name="select" class="form-control col-lg-8" [(ngModel)]="newObject.SuiviPar" >
@@ -146,8 +146,7 @@
      {{newObject.IdLibEtape | json}}
      {{stepsReady}} -->
     <div class="row state-content" *ngIf="stepsReady && statusReady">
-      <div class="col-lg-4"></div>
-      <div class="col-lg-2 state form-group">
+      <div class="col-lg-6 state form-group">
         <label class="col-form-label">Statut : </label>
           <select name="statut" class="form-control" [(ngModel)]="newObject.IdLibstatut" (click)="clickStatusOptions()">
             <option *ngIf="initValueStatus" [ngValue]="newObject.IdLibstatut">
@@ -158,7 +157,7 @@
               <span *ngIf="stat.Libelle !== valueNotToChangeLibelle">{{status.indexOf(stat) + 1}} - </span>{{stat.Libelle}}</option>
           </select>
         </div>
-      <div class="col-lg-4 step form-group" *ngIf="steps['id'+newObject.IdLibstatut] !== [] && newObject.IdLibstatut !== valueNotToChangeLibelle">
+      <div class="col-lg-6 step form-group" *ngIf="steps['id'+newObject.IdLibstatut] !== [] && newObject.IdLibstatut !== valueNotToChangeLibelle">
         <label class="col-form-label">Etape : </label>
           <select name="myStep" class="form-control" 
                   [(ngModel)]="newObject.IdLibEtape" 
@@ -175,7 +174,9 @@
             </option>
           </select>
 <!-- {{newObject | json }} -->
-          <div 
+<div class="step-status-icons">
+
+        <div 
             class="add-just-comment"
             [placement]="'right'" 
             [ngbTooltip]="'Ajouter un commentaire'"
@@ -193,6 +194,8 @@
           <div class="history" *ngIf="selectionType === 'multi'">
             <i class="icofont icofont-history"></i>
           </div>
+</div>
+
       </div>
 
     </div>
@@ -348,12 +351,12 @@
           </p> -->
 
           <div class="row form-group" [ngClass]="selectionType === 'multi' ? 'first-label' : ''">
-            <label class="col-form-label col-lg-4">N° Episode Prod : </label>
+            <label class="col-form-label col-lg-4 inline-label">N° Episode Prod : </label>
             <input 
               [(ngModel)]="newObject.NumEpisodeProd"
               placeholder="{{newObject.NumEpisodeProd ? valueNotToChangeLibelle : ''}}"
               type="text"
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4 inline-input" 
               id="epProd" 
               name="epProd"
               autocomplete="off">
@@ -396,11 +399,11 @@
           </div>
           <!-- <p>N° Episode Prod : ooooooooooo</p> -->
           <div class="row form-group">
-            <label class="col-form-label col-lg-4">N° Episode AB : </label>
+            <label class="col-form-label col-lg-4 inline-label">N° Episode AB : </label>
             <input 
               [(ngModel)]="newObject.NumEpisodeAB"
               type="text" 
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4 inline-input" 
               id="epAb" 
               name="epAb"
               autocomplete="off">              
@@ -457,15 +460,15 @@
                   </span>
               </p>
         
-          <p *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && !ficheAchatDetailReady">Format œuvre :
+          <p class="inline-label" *ngIf="(selectionType === 'one' || (selectionType === 'multi' && !multiOeuvre)) && !ficheAchatDetailReady">Format œuvre :
             <span>/</span>
           </p>
           <div class="row form-group">
-            <label class="col-form-label col-lg-4">N° œuvre : </label>
+            <label class="col-form-label col-lg-4 inline-label">N° œuvre : </label>
             <input 
               [(ngModel)]="newObject.NumProgram"
               type="text" 
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4 inline-input" 
               id="numProg" 
               name="numProg"
               autocomplete="off">              
@@ -502,11 +505,11 @@
           </div>
             
           <div class="row form-group">
-            <label class="col-form-label col-lg-4">Titre épisode VF : </label>
+            <label class="col-form-label col-lg-4 inline-label">Titre épisode VF : </label>
             <input 
               [(ngModel)]="newObject.TitreEpisodeVF"
               type="text" 
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4 inline-input" 
               id="titleEpVf" 
               name="titleEpVf"
               autocomplete="off">
@@ -533,11 +536,11 @@
           </div>
 
           <div class="row form-group">
-            <label class="col-form-label col-lg-4">Titre épisode VO :</label>
+            <label class="col-form-label col-lg-4 inline-label">Titre épisode VO :</label>
             <input 
               [(ngModel)]="newObject.TitreEpisodeVO"
               type="text" 
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4 inline-input" 
               id="titleEpVo" 
               name="titleEpVo"
               autocomplete="off">
@@ -571,10 +574,11 @@
 {{versionFicheMateriel | json}}
 {{versionLib | json}} -->
           <div class="row form-group">
-            <label class="col-form-label col-lg-3">Version : </label>
+            <label class="col-form-label col-lg-3 inline-label">Version : </label>
             <div *ngIf="selectionType !== 'multi'" class="right-details col-lg-6">
               <div *ngFor="let item of versionLib; let i = index" class="checkbox-color checkbox-success">
                 <input 
+                  class="inline-input"
                   id="{{item.version_mat}}"
                   type="checkbox"
                   (click)="changeModelVersion(item.id_version)"
@@ -633,10 +637,11 @@
 
 
           <div class="row form-group" *ngIf="qualiteFmReady">
-            <label class="col-form-label col-lg-3">Qualité : </label>
+            <label class="col-form-label col-lg-3 inline-label">Qualité : </label>
             <div *ngIf="qualiteReady && selectionType !== 'multi'" class="right-details col-lg-6">
               <div *ngFor="let item of qualiteLib; let i = index" class="checkbox-color checkbox-success">
                 <input 
+                  class="inline-input"
                   id="{{item.Libelle}}"
                   type="checkbox"
                   (click)="changeModelQualite(item.Code)"
@@ -681,11 +686,11 @@
           <!-- {{qualityFmNgModel | json}} -->
 
           <div class="row form-group">
-            <label class="col-form-label col-lg-4">Support :</label>
+            <label class="col-form-label col-lg-4 inline-label">Support :</label>
             <input 
               [(ngModel)]="newObject.NomSupport"
               type="text" 
-              class="form-control col-lg-4"
+              class="form-control col-lg-4 inline-input"
               id="support" 
               name="support"
               autocomplete="off">
@@ -867,10 +872,10 @@
         <div class="sections livraison" [ngStyle]="{'min-height': 'calc(50% - 10px)'}">
           <i class="icofont icofont-clock-time section-icon"></i>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker livraison-date">
-            <label class="col-lg-3 col-form-label label-livraison">
+            <label class="col-lg-3 col-form-label label-livraison inline-label">
               Livraison :
             </label>
-            <div *ngIf="!fmInRecording" class="input-group col-lg-6" (click)="displayOriLastDeadline(newObject.DateLivraison, newObject.duree_du_pret)">
+            <div *ngIf="!fmInRecording" class="input-group col-lg-6 inline-datepicker" (click)="displayOriLastDeadline(newObject.DateLivraison, newObject.duree_du_pret)">
               <input class="form-control" 
                 [ngClass]="!checkValidDate(newObject.DateLivraison) && !fmInRecording ? 'form-control-danger' : ''"
                 placeholder="{{newObject.DateLivraison}}" 
@@ -927,7 +932,7 @@
             <span *ngIf="!ficheAchatDetailMulti.delai_verification">/</span>
           </p>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker acceptation">
-            <div class="form-check col-lg-5">
+            <div class="form-check col-lg-5 inline-group">
               <label class=" radio">
                 <input type="radio" 
                   name="radio" 
@@ -937,7 +942,7 @@
                 <i class="helper"></i>Date d'acceptation :
               </label>
             </div>
-            <div class="input-group col-lg-6">
+            <div class="input-group col-lg-6 inline-datepicker">
               <input class="form-control"
                 [ngClass]="!checkValidDate(newObject.DateAcceptation) && !fmInRecording ? 'form-control-danger' : ''"
                 placeholder="{{newObject.DateAcceptation}}" 
@@ -972,10 +977,10 @@
           </div>
 
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker diff">
-            <label class="col-lg-5 col-form-label">
+            <label class="col-lg-5 col-form-label inline-label">
               Date de première diff :
             </label>
-            <div class="input-group col-lg-6">
+            <div class="input-group col-lg-6 inline-datepicker">
               <input 
                 [ngClass]="!checkValidDate(newObject.DatePremiereDiff) && !fmInRecording ? 'form-control-danger' : ''"
                 class="form-control" 
@@ -1005,8 +1010,8 @@
         <!-- <div class="sections acces-vf" [ngStyle]="selectionType === 'multi' ? {'min-height': '195px'} : {'min-height': '290px', 'max-height': '290px'}"> -->
         <div class="sections acces-vf" [ngStyle]="{'min-height': 'calc(25% - 10px)'}">
           <i class="icofont icofont-unlock section-icon"></i>
-          <label class="col-form-label col-lg-4">Accès VF :</label>
-          <div class="row form-group">
+          <label class="col-form-label col-lg-4 inline-label">Accès VF :</label>
+          <div class="row form-group textarea-inline">
             <textarea 
               [(ngModel)]="newObject.AccesVF"
               type="text" 
@@ -1053,8 +1058,8 @@
         <div class="sections press" [ngStyle]="{'min-height': 'calc(30% - 10px)'}">
           <i class="icofont icofont-newspaper section-icon"></i>
           <div class="row form-group" [ngStyle]="selectionType === 'multi' ? {} : {'margin-top': '60px'}">
-            <label class="col-form-label col-lg-5">Elements annexes :</label>
-            <select name="step" class="form-control col-lg-6" 
+            <label class="col-form-label col-lg-5 inline-label">Elements annexes :</label>
+            <select name="step" class="form-control col-lg-6 inline-input" 
                     [disabled]="newObject.IdLibstatut === 3 ? true : false"
                     [(ngModel)]="newObject.IdStatutElementsAnnexes" 
                     (click)="clickAnnexElementOptions()">
@@ -1138,8 +1143,8 @@
         <div class="sections ori" [ngStyle]="{'min-height': '30%'}">
           <i class="icofont icofont-space-shuttle section-icon"></i>
           <div class="row form-group retour-ori" [ngStyle]="selectionType === 'multi' ? {'margin-top': '0'} : {'margin-top': '30px'}">
-            <label class="col-form-label col-lg-3">Retour Ori : </label>
-            <select name="ori" class="form-control col-lg-6" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
+            <label class="col-form-label col-lg-3 inline-label">Retour Ori : </label>
+            <select name="ori" class="form-control col-lg-6 inline-input" [(ngModel)]="newObject.RetourOri" (click)="clickRetourOriOptions()">
               <option [ngValue]="newObject.RetourOri" *ngIf="initValueRetourOri">
                 <span *ngIf="newObject.RetourOri !== valueNotToChangeLibelle">
                   {{retourOri[newObject.RetourOri-1].IdLibRetourOri}} - {{retourOri[newObject.RetourOri-1].Libelle}}
@@ -1155,10 +1160,10 @@
             </select>
           </div>
           <div class="row form-group">
-            <label class="col-lg-5 col-form-label">Durée du prêt (en jours) :</label>
+            <label class="col-lg-5 col-form-label inline-label">Durée du prêt (en jours) :</label>
             <input [(ngModel)]="newObject.duree_du_pret" 
               type="text" 
-              class="form-control input-group col-lg-4" 
+              class="form-control input-group col-lg-4 inline-input" 
               id="dureePret" 
               name="dureePret"
               (keyup)="displayOriLastDeadline(newObject.DateLivraison, newObject.duree_du_pret)"
@@ -1216,10 +1221,10 @@
         <div class="sections labo" [ngStyle]="{'min-height': 'calc(40% - 10px)'}">
           <i class="icofont icofont-beaker section-icon"></i>
           <div *ngIf="!fmInRecording" class="form-group row livraison-datepicker section-labo" [ngStyle]="selectionType === 'multi' ? {'margin-top': '10px'} : {'margin-top': '35px'}">
-            <label class="col-lg-5 col-form-label">
+            <label class="col-lg-5 col-form-label inline-label">
               Réception accès labo :
             </label>
-            <div class="input-group col-lg-6">
+            <div class="input-group col-lg-6 inline-datepicker">
               <input 
                 [ngClass]="!checkValidDate(newObject.ReceptionAccesLabo) && !fmInRecording ? 'form-control-danger' : ''"
                 class="form-control" 
@@ -1240,11 +1245,11 @@
           </div>
           <div *ngIf="!checkValidDate(newObject.ReceptionAccesLabo) && !fmInRecording" class="col-form-label invalid-form">La date d'accès Labo n'est pas valide</div>
           <div class="row form-group form-labo">
-            <label class="col-form-label col-lg-4">Nom du labo :</label>
+            <label class="col-form-label col-lg-4 inline-label">Nom du labo :</label>
             <input 
               [(ngModel)]="newObject.NomLabo"
               type="text" 
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4 inline-input" 
               id="laboName" 
               name="laboName"
               autocomplete="off">
@@ -1280,11 +1285,11 @@
               </div>
           </div>
           <div class="row form-group form-labo">
-            <label class="col-form-label col-lg-4">Coût labo :</label>
+            <label class="col-form-label col-lg-4 inline-label">Coût labo :</label>
             <input 
               [(ngModel)]="newObject.CoutLabo"
               type="text" 
-              class="form-control col-lg-4" 
+              class="form-control col-lg-4 inline-input" 
               id="laboCost" 
               name="laboCost"
               autocomplete="off">

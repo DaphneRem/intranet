@@ -58,6 +58,28 @@ $warningColor: #FFB64D;
                         }
                     }
                 }
+                .deadline {
+                        font-size: 18px;
+                        font-weight: bold;
+                        display: flex;
+                        margin-top: 20px;
+                        i {
+                            font-size: 2.2em;
+                            color: $importantColor;
+                            margin-right : 10px;
+                            margin-left: 10px;
+                        }
+                        p {
+                            display: flex;
+                            flex-wrap: wrap;
+                            span {
+                                margin-left: 3px;
+                                &.empty-field {
+                                    color : $creationBtnColor;
+                                }
+                            }
+                        }
+                    }
             }
             .title {
                 text-align: center;
@@ -172,11 +194,18 @@ $warningColor: #FFB64D;
         .fm-detail-body {
             margin-top : 30px;
             .fm-content {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: space-between;
                 .sections {
                     padding: 20px;
                     margin: 10px;
                     padding-bottom : 10px;
                     border : 1px solid $iconColor;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
                     .section-content {
                         display: flex;
                         flex-direction: column;
@@ -189,7 +218,8 @@ $warningColor: #FFB64D;
                         }
                         &.livraison {
                             min-height: 195px;
-                            max-height: 195px;
+                            margin-top: 25px;
+                            // max-height: 195px;
                         }
                         &.acces-vf {
                             min-height: 150px;
@@ -207,6 +237,7 @@ $warningColor: #FFB64D;
                     .section-icon {
                         color: grey;
                         float: right;
+                        align-self: flex-end;
                         font-size: 2em;
                     }
                     p {
@@ -384,4 +415,16 @@ $warningColor: #FFB64D;
     background-color: #ffffff !important;
     color: $importantColor !important;
     border: 1px solid $importantColor;
+}
+
+@media only screen and (max-width: 768px) {
+    .fm-details {
+        .card {
+            .state-content {
+                .state {
+                    text-align: left;
+                }
+            }
+        }
+    }
 }

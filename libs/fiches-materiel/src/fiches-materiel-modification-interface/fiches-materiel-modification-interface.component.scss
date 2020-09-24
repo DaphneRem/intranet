@@ -48,6 +48,7 @@ $modificationColor: #FFB64D;
         }
         .top {
             padding-top : 100px;
+            padding-bottom: 40px;
             .left-infos {
                 padding-left: 40px;
                 &.urgent-deadline {
@@ -59,14 +60,21 @@ $modificationColor: #FFB64D;
                 .form-group {
                     display : flex;
                     justify-content: flex-end;
-                    .deadline-warning {
-                        font-size: 2.2em;
-                        color: $importantColor;
-                        margin-right: 5px; 
+                    &.deadline-group, &.suivi-group {
+                        justify-content: flex-start;
+                        margin-left: 15px;
+                        .deadline-warning {
+                            font-size: 2.2em;
+                            color: $importantColor;
+                            margin-right: 5px; 
+                        }
+                        select {
+                            min-width: 175px;
+                            max-width: 175px;
+                        }
                     }
                     label {
                         font-size: 1.1em;
-                        margin-left: 20px;
                         margin-right: 10px;
                         &.user {
                             // padding-left: 50px;
@@ -88,7 +96,7 @@ $modificationColor: #FFB64D;
                     }
                     .deadline-datepicker {
                         .input-deadline {
-                            max-width: 250px;
+                            max-width: 200px;
                             max-height: 40px;
                         }
                         .deadline-calendar {
@@ -213,48 +221,54 @@ $modificationColor: #FFB64D;
             }
             .step {
                 display: flex;
+                flex-wrap: wrap;
                 padding-left: 0;
                 label {
                     margin-right: 10px;
+                    margin-bottom: 10px;
                 }
                 select {
                     width: min-content;
                     max-width: 240px;
                 }
-                .add-just-comment {
-                    height: 40px;
-                    min-width: 40px;
-                    background-color: $main-color;
-                    border-radius: 100%;
-                    color: #ffffff;
+                .step-status-icons {
                     display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin-left: 15px;
-                    &:hover {
-                        background-color: $main-color-hover;
-                        cursor: pointer;
+                    .add-just-comment {
+                        height: 40px;
+                        min-width: 40px;
+                        background-color: $main-color;
+                        border-radius: 100%;
+                        color: #ffffff;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-left: 15px;
+                        &:hover {
+                            background-color: $main-color-hover;
+                            cursor: pointer;
+                        }
+                    }
+                    .history-steps-status-modal-component {
+                        margin-top: 10px;
+                        margin-left: -10px;
+                    }
+                    .history {
+                        margin-left: 10px;
+                        background: #dddddd;
+                        border-radius: 100%;
+                        height: 40px;
+                        width: 40px;
+                        display: flex;             
+                        i {
+                            color : #ffffff;
+                            font-size: 2.1em;
+                            margin-left: 1px;
+                            margin-top: 3px;
+                            cursor: not-allowed;
+                        }
                     }
                 }
-                .history-steps-status-modal-component {
-                    margin-top: 10px;
-                    margin-left: -10px;
-                }
-                .history {
-                    margin-left: 10px;
-                    background: #dddddd;
-                    border-radius: 100%;
-                    height: 40px;
-                    width: 40px;
-                    display: flex;             
-                    i {
-                        color : #ffffff;
-                        font-size: 2.1em;
-                        margin-left: 1px;
-                        margin-top: 3px;
-                        cursor: not-allowed;
-                    }
-                }
+                
             }
         }
         .fm-other-fiches-achat {
@@ -295,6 +309,7 @@ $modificationColor: #FFB64D;
             margin-bottom : 30px;
             min-height: 800px;
             .fm-content {
+                margin-bottom: 10px;
                 .sections {
                     padding: 20px;
                     margin: 10px;
@@ -703,4 +718,103 @@ $modificationColor: #FFB64D;
     margin: 40px 0 0 !important;
 }
 
+@media only screen and (max-width: 991px) {
+    .fm-details {
+        .card {
+            .state-content {
+                padding-left: 15px;
+                .state {
+                    justify-content: flex-start;
+                }
+            }
+            .fm-detail-body {
+                .fm-content {
+                    .acces-vf {
+                        margin-bottom: 180px;
+                        .form-group {
+                            width: 95%;
+                        }
+                    }
+                    .sections {
+                        &.ori {
+                            max-height: max-content;
+                        }
+                    }
+
+                }
+            }
+            .top {
+                .title {
+                    padding-top: 20px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 1106px) {
+    .fm-details {
+        .card {
+            .state-content {
+                .step {
+                    .step-status-icons {
+                        margin-left: 40px;
+                    }
+                }
+            }
+        }
+    }
+}
+@media only screen and (max-width: 1600px) {
+
+    label {
+        &.inline-label {
+            min-width: 100%;
+        }
+    }
+    .inline-group {
+        min-width: 100%;
+    }
+    input, select {
+        &.inline-input {
+            min-width: 60%;
+            max-width: 250px;
+            margin-left: 15px;
+        }
+    }
+    .right-details {
+        margin-left: 25px;
+    }
+    .textarea-inline {
+        margin-left: 0;
+    }
+    .inline-datepicker {
+        min-width: 70%;
+    }
+    .fm-details {
+        .card {
+            .fm-detail-body {
+                .fm-content {
+                    .sections.livraison {
+                        .livraison-date {
+                            .history-delivery-date {
+                                display: flex;
+                                flex-wrap: wrap;
+                                min-width: 100%;
+                                padding: 0 0 30px 20px;
+                                margin-top: -20px;
+                            }
+                        }
+                    }
+                }
+            }
+            .state-content {
+                padding-left: 15px;
+                .state {
+                    // justify-content: flex-start;
+                }
+            }
+        }
+    }
+}
 

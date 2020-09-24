@@ -6,7 +6,7 @@
     }
     .table-top {
         display : flex;
-        padding-left: 0;
-        padding-top: 5px;
+        padding: 5px;
+        flex-wrap: wrap;
     }
 }
