@@ -31,6 +31,7 @@ export class SearchFormComponent implements OnInit {
   @Input() showAllDataBtnOption: boolean;
   @Input() showOnlyInProgressBtn?: boolean;
   @Input() showIsUrgenceBtn?: boolean;
+  @Input() allficheMateriel?: boolean;
 
   @Output() dataResult = new EventEmitter<FicheMateriel[]>();
   @Output() reloadOriginalData = new EventEmitter<boolean>();
@@ -92,7 +93,9 @@ export class SearchFormComponent implements OnInit {
     if ((typeof this.previousUrl !== 'undefined') || (this.previousUrl)) {
       if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
         this.complexSearchModel = this.storeSearchHistoryFormData;
-        // this.displayDefaultFields();
+        if (!this.allficheMateriel) {
+          this.displayDefaultFields();
+        }
         if ((this.showOnlyInProgressBtn) || (this.showIsUrgenceBtn)) {
           if (this.showOnlyInProgressBtn) {
             if (this.complexSearchModel.isarchived === 0) {
@@ -104,6 +107,7 @@ export class SearchFormComponent implements OnInit {
               this.isUrgenceChecked = true;
             }
           }
+          console.log('this.inProgressChecked => ', this.inProgressChecked);
           console.log('this.isUrgenceChecked -> ', this.isUrgenceChecked);
           console.log('this.complexSearchModel.Isurgence -> ', this.complexSearchModel.Isurgence);
           this.displaySearchForm();

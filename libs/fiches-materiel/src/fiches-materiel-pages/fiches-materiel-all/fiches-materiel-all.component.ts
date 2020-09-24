@@ -28,6 +28,7 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
   public tableTitle = 'Toutes les fiches Matériel';
   public tableTheme: string = 'default theme';
   public daysNumber = 100;
+  public allficheMateriel: boolean = true;
   public isArchived = 2;
   public changeView;
   public multiColumnsOrderExist: boolean = true;
