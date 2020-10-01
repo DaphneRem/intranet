@@ -4,6 +4,7 @@ export class WorkorderBacklog {
     AzaNumGroupe: number;
     CodeRessourceSalle: number;
     Commentaire_Planning: string;
+    Commentaire_Planning_rtf:string;
     ConsultantID: number;
     Container: boolean;
     DepartmentID: number;

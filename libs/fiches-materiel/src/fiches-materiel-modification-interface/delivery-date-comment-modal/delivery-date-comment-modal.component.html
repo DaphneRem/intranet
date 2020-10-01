@@ -15,3 +15,6 @@
     <button type="button" class="btn btn-light btn-close-modal" (click)="c('Close click')">Aucun commentaire</button>
   </div>
 </ng-template> -->
+<button class="add-just-delivery-comment" [disabled]="disabledAddComment()" [placement]="'right'" [ngbTooltip]="'Ajouter un commentaire'" (click)="openSwal()">
+  <i class="icofont icofont-comment"></i>
+</button>

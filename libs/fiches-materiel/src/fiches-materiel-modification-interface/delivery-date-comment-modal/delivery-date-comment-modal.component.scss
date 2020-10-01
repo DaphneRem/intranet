@@ -1,0 +1,25 @@
+@import "../../../fiches-materiel-common-theme";
+
+.add-just-delivery-comment {
+    height: 40px;
+    min-width: 40px;
+    background-color: $main-color;
+    border-radius: 100%;
+    color: #ffffff;
+    display: flex;
+    border: 0px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 15px;
+    &:hover {
+        background-color: $main-color-hover;
+        cursor: pointer;
+    }
+    &:disabled {
+        background-color: #b7b7b7;
+        &:hover {
+            background-color: #cacaca;
+            cursor: default;
+        }
+    }
+}

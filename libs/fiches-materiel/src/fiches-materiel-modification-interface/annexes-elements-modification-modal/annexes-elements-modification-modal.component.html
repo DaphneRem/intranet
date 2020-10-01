@@ -17,8 +17,8 @@
         <div class="details row form-group" *ngIf="selectionType === 'one'">
             <div class="col-lg-12" class="categories row">
                 <div *ngFor="let category of annexElementsCategories; let i = index" class="category col-lg-6">
-                    <label class="badge badge-lg bg-info">{{category.Libelle}} :</label>
-                    <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="checkbox-color checkbox-info">
+                    <label class="badge badge-lg">{{category.Libelle}} :</label>
+                    <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="checkbox-color checkbox-success">
                         <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
                             <input id="{{item.IdLibElementAnnexes}}" 
                             name="{{item.Libelle}}" 
@@ -69,8 +69,8 @@
             </div>
             <div class="col-lg-12" class="categories row">
                 <div *ngFor="let category of annexElementsCategories; let i = index" class="category col-lg-6">
-                <label class="badge badge-lg bg-info">{{category.Libelle}} :</label>
-                <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="checkbox-color checkbox-info">
+                <label class="badge badge-lg">{{category.Libelle}} :</label>
+                <div *ngFor="let item of annexElementsAllSubCategories; let ind = index" class="checkbox-color checkbox-success">
                     <div *ngIf="item.IdCategorie === category.IdLibCategorieElementsAnnexes">
                         <i class="icofont icofont-close-line not-valid" [ngClass]="checkIfValueIsNotValid(item.IdLibElementAnnexes) ? 'itemNotValid' : 'itemValid' " ></i>
                         <input 

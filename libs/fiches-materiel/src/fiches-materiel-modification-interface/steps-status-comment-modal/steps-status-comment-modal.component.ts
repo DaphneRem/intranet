@@ -10,6 +10,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import swal from 'sweetalert2';
+import { mainColor, maintColorHover } from '../../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'steps-status-comment-modal',
@@ -23,6 +24,8 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
   @Input() newObject;
   @Input() allFichesMateriel;
   @Input() valueNotToChangeLibelle;
+  @Input() acceptedStatusIsPossible;
+
 
   @Output() lastStatus = new EventEmitter<string>();
   @Output() lastStep = new EventEmitter<number>();
@@ -117,8 +120,11 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
           // console.log('dateAcceptationIsOk => ', dateAcceptationIsOk);
           if (!statusIsOk || (!renouvellementIsOk && !dateAcceptationIsOk)) {
             // console.log('warning modal call');
-            this.openWarningSwalModal = true;
-            this.openWarningSwal();
+            console.log('acceptedStatusIsPossible => ', this.acceptedStatusIsPossible);
+            if (!this.acceptedStatusIsPossible || !statusIsOk) {
+              this.openWarningSwalModal = true;
+              this.openWarningSwal(); // ICI !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            }
             // } else if (this.allFichesMateriel.length > 1) {
             //   const arrayIdStatutElementsAnnexes = [];
             //   const arrayRenouvellementDateAcceptation = [];
@@ -224,16 +230,21 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
       html: `<button id="backToOldValue" class="btn swal-btn-cancel" >Annuler</button>`,
       showCancelButton: true,
       cancelButtonText: 'Aucun commentaire',
+      cancelButtonColor: mainColor,
       allowOutsideClick: false,
       allowEscapeKey: false,
       reverseButtons: true,
       confirmButtonText: 'Valider',
-      confirmButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
       onBeforeOpen: () => {
         const content = swal.getContent();
         const $ = content.querySelector.bind(content);
+        console.log('content = ', content);
         const backToOldValue = $('#backToOldValue');
+        console.log('backToOldValue => ', backToOldValue);
+        
         backToOldValue.addEventListener('click', () => {
+          console.log('cancel btn click !!!!!');
           // this.lastStep.emit(this.previousValueStep);
           // this.previousValueStep = undefined;
           // this.previousValueStatus = undefined;
@@ -306,7 +317,7 @@ export class StepsStatusCommentModalComponent implements OnInit, OnChanges {
         les éléments annexes doivent être marqués comme traités et une date
         d’acceptation doit être renseignée (si différent de renouvellement).
         Vérifiez que ces conditions soient remplies et réessayez.`,
-      confirmButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
     }).then((result) => {
       if (this.changeStatus) {
         console.log('event send is status');

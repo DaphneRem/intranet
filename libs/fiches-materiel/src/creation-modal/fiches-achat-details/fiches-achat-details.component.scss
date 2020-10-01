@@ -1,5 +1,6 @@
+@import "../../../fiches-materiel-common-theme";
+
 $navbarColor : #3b4650;
-$creationBtnColor :  #17AAB2;
 $cancelBtnColor : #989797;
 $importantColor : #fd5f5f;
 
@@ -21,7 +22,7 @@ $importantColor : #fd5f5f;
             .number {
                 height: 25px;
                 width: 25px;
-                background: $creationBtnColor;
+                background: $main-color;
                 color: #ffffff;
                 border-radius : 100%;
                 display: flex;

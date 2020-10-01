@@ -318,7 +318,8 @@ export class CreationFichesMaterielComponent implements OnInit, OnDestroy {
             DateCreation: new Date().toJSON().slice(0, 19),
             UserCreation: this.user,
             SuiviPar: this.user,
-            RetourOri: retourOriOeuvre
+            RetourOri: retourOriOeuvre,
+            duree_du_pret: oeuvreFicheDetail.duree_du_pret
           })
         );
       }

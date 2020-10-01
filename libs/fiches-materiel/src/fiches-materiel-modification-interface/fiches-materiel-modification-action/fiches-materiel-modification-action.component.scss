@@ -4,6 +4,20 @@
         display: flex;
         justify-content: flex-end;
     }
+    .buttons {
+        button {
+            margin-bottom: 5px;
+            &.cancel-btn {
+                color: #a8a8a8;
+                border-color: #a8a8a8;
+                &:hover {
+                    background-color: #a8a8a8;
+                    color: #ffffff;
+                }
+            }
+        }
+
+    }
 }
 
 /deep/ .swal2-popup {

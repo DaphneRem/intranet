@@ -23,6 +23,7 @@ export class Workorder {
     idplanningprec: number;
     Regroup: number;
     Commentaire_Planning: string;
+    Commentaire_Planning_rtf:string;
     DateMaj: string | Date;
     UserMaj: string;
     Id_Planning_Container: number;

@@ -79,27 +79,43 @@
     <p>{{errorMesssage}}</p>
   </div>
 </div>
-<div *ngIf="showOnlyInProgressBtn" class="row data-row">
-  <div class="col-lg-12 data-message">
-    <div class="checkbox-color checkbox-info">
-      <input [checked]="inProgressChecked" id="checkbox14" type="checkbox" (click)="checkOnlyInprogressChecked()">
-      <label for="checkbox14">
-        N'afficher que les fiches en cours
-      </label>
+<div class="row all-checkbox">
+  <div *ngIf="showOnlyInProgressBtn" class="data-row">
+    <div class="data-message">
+      <div class="checkbox-color checkbox-info">
+        <input [checked]="inProgressChecked" id="checkbox14" type="checkbox" (click)="checkOnlyInprogressChecked()">
+        <label for="checkbox14">
+          N'afficher que les fiches en cours
+        </label>
+      </div>
+    </div>
+  </div>
+<div *ngIf="showIsUrgenceBtn" class="data-row">
+    <div class="data-message">
+      <div class="checkbox-color checkbox-warning">
+        <input [checked]="isUrgenceChecked" id="checkbox15" type="checkbox" (click)="checkOnlyIsUrgenceChecked()">
+        <label for="checkbox15">
+          N'afficher que les fiches mises en évidence
+        </label>
+      </div>
     </div>
   </div>
 </div>
+
 <!--{{oldComplexSearch | json}}-->
 <!--changeOldComplexSearchArchived : {{changeOldComplexSearchArchived | json}}-->
-<div *ngIf="displayOldComplexSearch" class="row data-row">
-  <div class="col-lg-12 data-message">
-    <p>Résultat de la recherche dans {{title | lowercase}} : 
+<div *ngIf="displayOldComplexSearch" class="row data-row search-message">
+  <div class="col-lg-12 search-data-message">
+    <p>Résultat de la recherche dans {{title | lowercase}} : </p>
+    <div>
       <span *ngIf="oldComplexSearch.isarchived === 0 && showOnlyInProgressBtn"><i class="icofont icofont-tick-boxed"></i> Fiches en cours</span>
+      <span *ngIf="oldComplexSearch.Isurgence === true && showIsUrgenceBtn"><i class="icofont icofont-tick-boxed"></i> Fiches mises en évidence</span>
       <span *ngIf="oldComplexSearch.TitreEpisodeVO !== ''"><i class="icofont icofont-tick-boxed"></i> Titre VO : {{oldComplexSearch.TitreEpisodeVO}}</span>
       <span *ngIf="oldComplexSearch.TitreEpisodeVF !== ''"><i class="icofont icofont-tick-boxed"></i> Titre VF : {{oldComplexSearch.TitreEpisodeVF}}</span>
       <span *ngIf="oldComplexSearch.SuiviPar !== ''"><i class="icofont icofont-tick-boxed"></i> Suivi par : {{oldComplexSearch.SuiviPar}}</span>
       <span *ngIf="oldComplexSearch.distributeur !== ''"><i class="icofont icofont-tick-boxed"></i> Distributeur : {{oldComplexSearch.distributeur}}</span>
       <span *ngIf="oldComplexSearch.numficheachat !== ''"><i class="icofont icofont-tick-boxed"></i> N° fiche Achat : {{oldComplexSearch.numficheachat}}</span>
+    </div>
   </div>
 </div>
 <!--{{fmParameterToPost | json}}-->

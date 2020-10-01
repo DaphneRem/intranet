@@ -281,20 +281,20 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
       }-${day}T00:00:00`;
       console.log('newObject.DateRetourOri => ', newObject.DateRetourOri);
     }
-    if (
-      newObject.RetourOriDernierDelai !== null &&
-      newObject.RetourOriDernierDelai !== this.valueNotToChangeLibelle &&
-      newObject.RetourOriDernierDelai !== 'dd-mm-yyyy'
-    ) {
-      let day = this.addZeroToDate(newObject.RetourOriDernierDelai.day);
-      let month = this.addZeroToDate(newObject.RetourOriDernierDelai.month);
-      newObject.RetourOriDernierDelai = `${
-        newObject.RetourOriDernierDelai.year
-      }-${month}-${
-        day
-      }T00:00:00`;
-      console.log('newObject.RetourOriDernierDelai => ', newObject.RetourOriDernierDelai);
-    }
+    // if (
+    //   newObject.RetourOriDernierDelai !== null &&
+    //   newObject.RetourOriDernierDelai !== this.valueNotToChangeLibelle &&
+    //   newObject.RetourOriDernierDelai !== 'dd-mm-yyyy'
+    // ) {
+    //   let day = this.addZeroToDate(newObject.RetourOriDernierDelai.day);
+    //   let month = this.addZeroToDate(newObject.RetourOriDernierDelai.month);
+    //   newObject.RetourOriDernierDelai = `${
+    //     newObject.RetourOriDernierDelai.year
+    //   }-${month}-${
+    //     day
+    //   }T00:00:00`;
+    //   console.log('newObject.RetourOriDernierDelai => ', newObject.RetourOriDernierDelai);
+    // }
     console.log('after resetDateFormat : this.newObject => ', this.newObject);
   }
 
@@ -555,13 +555,13 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
     // console.log(allId);
     // console.log(this.newObject);
     this.resetDateFormat(this.newObject);
-    // console.log(this.newObject);
+    console.log('checkChanges this.newObject => ', this.newObject);
     for (let key in this.newObject) {
       if (this.newObject[key] !== this.valueNotToChangeLibelle) {
         if (typeof this.newObject[key] !== 'object') {
           // IF value is Object
           this.changedValues[key] = this.newObject[key];
-          console.log(this.changedValues);
+          console.log('this.changedValues 1 => ', this.changedValues);
         } else if (this.newObject[key] === null) {
           this.changedValues[key] = this.newObject[key];
         } else if (
@@ -571,7 +571,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           for (let i in this.newObject[key]) {
             if (this.newObject[key][i] !== this.valueNotToChangeLibelle) {
               this.changedValues[key] = this.newObject[key];
-              console.log(this.changedValues);
+              console.log('this.changedValues 2 => ', this.changedValues);
             }
           }
         } else if (
@@ -586,7 +586,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
           });
           if (arrayChangedValues.length > 0) {
             this.changedValues[key] = this.newObject[key];
-            // console.log(this.changedValues);
+            console.log('this.changedValues 3 => ', this.changedValues);
           }
         }
       } else {
@@ -690,6 +690,7 @@ export class FichesMaterielModificationActionComponent implements OnInit, OnDest
   patchFichesMateriel(fichesMateriel) { // 7/ MULTI
     // console.log('patch FM function => fichesMateriel (args) : ', fichesMateriel);
     // console.log('patch FM function => this.annexElementsNgModel : ', this.annexElementsNgModel);
+    console.log('fichesMatériel PATCH => ', fichesMateriel);
     this.fichesMaterielService
       .patchFicheMateriel(fichesMateriel)
       .pipe(takeUntil(this.onDestroy$))
@@ -996,7 +997,8 @@ public qualityRecording = false;
     let commentsToUpdate = [];
     let commentToCreate = [];
     this.comments.map(item => {
-      if (item.IdCategorieElementsAnnexesCommentaire === 0 && item.Commentaire !== '') {
+      // if (item.IdCategorieElementsAnnexesCommentaire === 0 && item.Commentaire !== '') {
+      if (item.IdCategorieElementsAnnexesCommentaire === 0) {
         commentToCreate.push(item);
       } else if (item.IdCategorieElementsAnnexesCommentaire !== 0) {
         commentsToUpdate.push(item);

@@ -22,10 +22,13 @@ import {
   urlFicheAchatPatch,
   urlImportMaterielPatch,
   urlImportOeuvrePatch,
+  urlFicheMateriel,
+  urlAllFichesAchatForOeuvre
 } from '../../../../.privates-url';
 
 import { FicheAchat } from '../models/fiche-achat';
 import { FicheAchatDetails } from '../models/fiche-achat-details';
+import { FicheAchat2Exist } from '../models/fiche-achat-2-exist';
 import { identifierModuleUrl } from '@angular/compiler';
 
 @Injectable()
@@ -105,6 +108,17 @@ export class FichesAchatService {
         console.log(res);
         console.log(urlFicheAchat + urlFicheAchatDetailByIdFicheDetail + idFicheDetail);
         return res as FicheAchatDetails[];
+      })
+      .catch(this.handleError);
+  }
+
+  getAllFichesAchatFOrOeuvre(numProgram: string): Observable<FicheAchat2Exist[]> {
+    console.log('getAllFichesAchatFOrOeuvre => ', urlFicheMateriel + urlAllFichesAchatForOeuvre + numProgram);
+    return this.http
+      .get(urlFicheMateriel + urlAllFichesAchatForOeuvre + numProgram)
+      .map((res: any) => {
+        console.log(res);
+        return res as FicheAchat2Exist[];
       })
       .catch(this.handleError);
   }

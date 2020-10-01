@@ -20,6 +20,29 @@ i {
     background: $backgroundHeader;
     .navbar-wrapper {
         .navbar-logo {
+            .mediawan-logo {
+                display: flex;
+                color: $iconsHeader;
+                img {
+                    height : 40px;
+                }
+                p {
+                    font-size: 1.3em;
+                    margin: auto;
+                    padding-left: 10px;
+                }
+            }
+            .mediawan-black-logo {
+                color: $iconsHeader;
+                img {
+                    height : 40px;
+                }
+                p {
+                    font-size: 1em;
+                    margin: auto;
+                    margin-top: -14px;
+                }
+            }
             img {
                 height : 40px;
             }

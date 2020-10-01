@@ -1,9 +1,8 @@
 <div *ngIf="dataGloralReady && dataDetailsReady && dataMaterielReady" class="row fm-details">
   <div class="card col-lg-12">
     <div class="row top">
-      <div class="col-lg-3 left-infos">
-        <p class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
-          <!-- ajouter une condition en fonction de la deadline (si proche ou lointaine) -->
+      <div class="col-lg-3 left-infos" [ngClass]="myFicheMateriel.Isurgence ? 'urgent-deadline' : ''">
+      <!--  <p class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
           <i *ngIf="displayDeadlineIcon()" class="warning-icon icofont icofont-warning"></i>
           Deadline :
           <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
@@ -11,7 +10,15 @@
               {{myFicheMateriel.Deadline | date}}
             </span>
           </span>
-        </p>
+        </p> -->
+        <div class="deadline" *ngIf="myFicheMateriel.Deadline !== null">
+          <i *ngIf="displayDeadlineIcon()" class="warning-icon icofont icofont-warning"></i>
+          <p>Deadline : 
+            <span [ngClass]="!myFicheMateriel.Deadline ? 'empty-field' : ''">
+                {{myFicheMateriel.Deadline | date}}
+            </span>
+          </p>
+        </div>
         <p class="user" 
           [ngClass]="!displayDeadlineIcon() ? 'no-warning' : ''" 
           [ngStyle]="myFicheMateriel.Deadline === null ? {'margin-top': '25px'} : {'margin-top': 0}" >
@@ -38,6 +45,7 @@
         </p>
       </div>
       <div class="col-lg-6 title">
+        <div *ngIf="myFicheMateriel.Isurgence" class="urgent-warning"><i class="icon icofont icofont-warning-alt"></i><p>Fiche urgente</p></div>
         <h1 [ngClass]="!myFicheMateriel.TitreEpisodeVF ? 'empty-field' : ''">
           {{myFicheMateriel.TitreEpisodeVF}}
         </h1>
@@ -62,13 +70,13 @@
       </div>
     </div>
     <div class="row state-content">
-      <div class="col-lg-6 state">
+      <div class="col-lg-6 col-md-6 state">
         <label for="">Statut : </label>
         <span *ngIf="statusActiveExist" [ngClass]="displayStatusClassColor(statusActive)">
           {{statusActive.Libelle}}
         </span>
       </div>
-      <div class="col-lg-6 step">
+      <div class="col-lg-6 col-md-6 step">
         <label for="">Etape : </label>
         <span *ngIf="stepActiveExist" [ngClass]="displayStepClassColor(statusActive, stepActive)">
           {{stepActive.Libelle}}
@@ -79,6 +87,38 @@
           [stepLib]="stepLib" 
           *ngIf="myFicheMaterielExist"
           ></history-steps-status-modal>
+      </div>
+    </div>
+    <div class="row fm-other-fiches-achat" 
+      *ngIf="allFichesAchatForOeuvreReady 
+        && otherFichesAchatForOeuvreExist
+        && checkOeuvreInAllFicheAchatForOeuvre(myFicheAchatDetails, allFichesAchatForOeuvre)">
+      <div class="col-lg-12 other-fiches-achat-content">
+        <div class="other-fiches-achat">L'oeuvre apparait dans plusieurs fiches Achat :
+          <span *ngFor="let item of allFichesAchatForOeuvre">
+            <label class="label label-inverse-danger">{{item.Numero_fiche}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row fm-other-fiches-achat"
+      *ngIf="allFichesAchatForOeuvreReady 
+        && !checkOeuvreInAllFicheAchatForOeuvre(myFicheAchatDetails, allFichesAchatForOeuvre)">
+      <div class="col-lg-12 other-fiches-achat-content">
+        <div class="other-fiches-achat">
+          <i class="icofont icofont-minus-circle warning"></i>
+          L'oeuvre a été retirée de la fiche Achat mais elle apparait dans d'autres fiches :
+          <span *ngFor="let item of allFichesAchatForOeuvre">
+            <label class="label label-inverse-danger">{{item.Numero_fiche}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row error-fiche-achat-details" *ngIf="errorFicheAchatDetails">
+      <div class="col-lg-12 error-message-fad-content">
+        <div class="error-message">
+          {{ errorMessageFicheAchatDetails }}
+        </div>
       </div>
     </div>
     <div class="row fm-detail-body">
@@ -121,13 +161,16 @@
             </p>
             <p *ngIf="!myFicheAchatGlobalExist">Distributeur : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
 
-            <p *ngIf="myFicheAchatGlobalExist">Année prod : 
+            <p *ngIf="myFicheAchatDetailsExist">Année prod : 
               <span [ngClass]="!myFicheAchatDetails.annee ? 'empty-field' : ''">
                 {{myFicheAchatDetails.annee ? myFicheAchatDetails.annee : messageEmptyField}}
               </span>
             </p>
-            <p *ngIf="!myFicheAchatGlobalExist">Année prod : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-
+            <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Année prod : <i class="icofont icofont-minus-circle warning"></i><span>{{messageNoFicheAchatDetail}}</span></p>
+            <p *ngIf="!myFicheAchatGlobalExist">Année prod :
+              <i class="icofont icofont-ban ban"></i>
+              <span>{{messageNoFicheAchat}}</span>
+            </p>
             <p>N° Episode Prod : {{myFicheMateriel.NumEpisodeProd ? myFicheMateriel.NumEpisodeProd : '/'}}</p>
             <p>N° Episode AB : {{myFicheMateriel.NumEpisodeAB ? myFicheMateriel.NumEpisodeAB : '/'}}</p>
             <p>N° œuvre : {{myFicheMateriel.NumProgram ? myFicheMateriel.NumProgram : '/'}}</p>
@@ -136,7 +179,7 @@
                 {{myFicheAchatDetails.nombre_episodes ? myFicheAchatDetails.nombre_episodes + ' épisode(s)' : '/'}}
               </span>
               <span *ngIf="!myFicheAchatDetails.nombre_episodes">
-                /
+                épisodes non renseignés
               </span>
               <span 
                 [placement]="'right'" 
@@ -145,7 +188,14 @@
                 de {{displayDurCom(myFicheAchatDetails.DurCom)}}
               </span>
             </p>
-            <p *ngIf="!myFicheAchatDetailsExist">Format œuvre : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Format œuvre : 
+              <i class="icofont icofont-minus-circle warning"></i>
+              <span>{{messageNoFicheAchatDetail}}</span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Format œuvre :
+              <i class="icofont icofont-ban ban"></i>
+              <span>{{messageNoFicheAchat}}</span>
+            </p>
 
             <p>Titre épisode VF : {{myFicheMateriel.TitreEpisodeVF ? myFicheMateriel.TitreEpisodeVF : messageEmptyField}}</p>
             <p>Titre épisode VO : {{myFicheMateriel.TitreEpisodeVO ? myFicheMateriel.TitreEpisodeVO : messageEmptyField}}</p>
@@ -159,7 +209,7 @@
                 </span>
               </span>
             </p>
-            <p *ngIf="!versionExist.length">Version : /</p>
+            <p *ngIf="!versionExist.length">Version : Aucune</p>
 
             <p *ngIf="qualiteExist.length > 0">Qualité :
               <span *ngFor="let item of qualiteFM">
@@ -170,7 +220,7 @@
                 </span>
               </span>
             </p>
-            <p *ngIf="!qualiteExist.length">Qualité : /</p>
+            <p *ngIf="!qualiteExist.length">Qualité : Aucune</p>
             <p>Support : 
               <span  [ngClass]="!myFicheMateriel.NomSupport ? 'empty-field' : ''">
                 {{myFicheMateriel.NomSupport ? myFicheMateriel.NomSupport : messageEmptyField}}
@@ -214,10 +264,11 @@
                 </span>
               </span>
             </p> -->
-            <p *ngIf="!myFicheAchatDetailsExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Date déb droits : <i class="icofont icofont-minus-circle warning"></i><span>{{messageNoFicheAchatDetail}}</span></p>
+            <p *ngIf="!myFicheAchatGlobalExist">Date déb droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
             <p *ngIf="myFicheAchatDetailsExist">Date déb droits :
               <span *ngIf="myFicheAchatDetails.debut_des_droits">{{myFicheAchatDetails.debut_des_droits | date}}</span>
-              <span *ngIf="!myFicheAchatDetails.debut_des_droits">/</span>
+              <span *ngIf="!myFicheAchatDetails.debut_des_droits">{{messageEmptyField}}</span>
             </p>
             <p *ngIf="myFicheAchatDetails.duree_droits_annee">Fin des droits : {{myFicheAchatDetails.duree_droits_annee}} an(s)</p>
             <p *ngIf="myFicheAchatDetails.duree_droits_mois">Fin des droits : {{myFicheAchatDetails.duree_droits_mois}} mois</p>
@@ -225,7 +276,14 @@
             <p *ngIf="!myFicheAchatDetails.duree_droits_annee && !myFicheAchatDetails.duree_droits_mois && !myFicheAchatDetails.expiration_droits && myFicheAchatDetailsExist">Fin des droits : 
               <span class="empty-field">{{messageEmptyField}}</span>
             </p>
-            <p *ngIf="!myFicheAchatDetailsExist">Fin des droits : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
+            <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Fin des droits : 
+              <i class="icofont icofont-minus-circle warning"></i>
+              <span>{{messageNoFicheAchatDetail}}</span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Fin des droits :
+              <i class="icofont icofont-ban ban"></i>
+              <span>{{messageNoFicheAchat}}</span>
+            </p>
           </div>
         </div>
         <div class="sections">
@@ -275,8 +333,14 @@
                 {{myFicheAchatDetails.delai_verification ? myFicheAchatDetails.delai_verification+' jours' : messageEmptyField}}
               </span>
             </p>
-            <p *ngIf="!myFicheAchatDetailsExist">Délai de vérif : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-
+            <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Délai de vérif : 
+              <i class="icofont icofont-minus-circle warning"></i>
+              <span>{{messageNoFicheAchatDetail}}</span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Délai de vérif :
+              <i class="icofont icofont-ban ban"></i>
+              <span>{{messageNoFicheAchat}}</span>
+            </p>
             <p>Date Acceptation : 
               <span [ngClass]="!myFicheMateriel.DateAcceptation ? 'empty-field' : ''">
                 <span 
@@ -357,13 +421,19 @@
             </p>
             <!-- Retour Ori => ajouter libellé plutot que number -->
 
-            <p *ngIf="myFicheAchatDetailsExist">Durée du prêt : 
-              <span [ngClass]="myFicheAchatDetails.duree_du_pret === null ? 'empty-field' : ''">
-                {{myFicheAchatDetails.duree_du_pret !== null ? myFicheAchatDetails.duree_du_pret + ' jour(s)' : messageEmptyField}}
+            <p>Durée du prêt :
+              <span [ngClass]="myFicheMateriel.duree_du_pret === null ? 'empty-field' : ''">
+                {{myFicheMateriel.duree_du_pret !== null ? myFicheMateriel.duree_du_pret + ' jour(s)' : messageEmptyField}}
               </span>
             </p>
-            <p *ngIf="!myFicheAchatDetailsExist">Durée du prêt : <i class="icofont icofont-ban ban"></i><span>{{messageNoFicheAchat}}</span></p>
-            
+            <!-- <p *ngIf="!myFicheAchatDetailsExist && myFicheAchatGlobalExist">Durée du prêt : 
+              <i class="icofont icofont-minus-circle warning"></i>
+              <span>{{messageNoFicheAchatDetail}}</span>
+            </p>
+            <p *ngIf="!myFicheAchatGlobalExist">Durée du prêt :
+              <i class="icofont icofont-ban ban"></i>
+              <span>{{messageNoFicheAchat}}</span>
+            </p> -->
             <p>Retour Ori dernier délai : 
               <span [ngClass]="!myFicheMateriel.RetourOriDernierDelai ? 'empty-field' : ''">
                 <span *ngIf="myFicheMateriel.RetourOriDernierDelai !== null">
@@ -382,7 +452,7 @@
       <div class="col-lg-12 comment">
         <p>Commentaire :</p>
         <div class="comment-content" [ngClass]="!myFicheMateriel.Commentaires ? 'empty-field' : ''">
-          {{myFicheMateriel.Commentaires ? myFicheMateriel.Commentaires : messageEmptyField}}
+          <pre>{{myFicheMateriel.Commentaires ? myFicheMateriel.Commentaires : messageEmptyField}}</pre>
         </div>
       </div>
     </div>

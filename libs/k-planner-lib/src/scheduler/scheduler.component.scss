@@ -133,9 +133,9 @@ $InfoBtnHoverColor :  #2eced6;
 }
 
 /deep/ .schedule-drag-drop .e-quick-popup-wrapper .e-event-popup .e-popup-content .e-sub-object-list div{
-    margin: 5px;
+    margin: 5px !important;
     // background-color: #008ba6;
-    padding: 10px;
+    padding: 10px !important;
     border: 1px solid #ffffff;
     border-radius: 3px;
     color: #ffffff;
@@ -155,7 +155,7 @@ $InfoBtnHoverColor :  #2eced6;
     height : 88vh;
 
     .schedule-header {
-        display: flex;
+        display: flex;      // flex-direction: row;
         width: 90%;
         table {
             margin-left: 10px;
@@ -263,17 +263,17 @@ $InfoBtnHoverColor :  #2eced6;
     height: 55px;
 }
 
-.treeview-external-drag .e-list-item.e-hover>.e-fullrow,
-.treeview-external-drag .e-list-item.e-active>.e-fullrow,
-.treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow,
-.e-bigger .treeview-external-drag .e-list-item.e-hover>.e-fullrow,
-.e-bigger .treeview-external-drag .e-list-item.e-active>.e-fullrow,
-.e-bigger .treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow {
-    background-color: transparent;
-    border-color: transparent;
-    box-shadow: none !important;
+// .treeview-external-drag .e-list-item.e-hover>.e-fullrow,
+// .treeview-external-drag .e-list-item.e-active>.e-fullrow,
+// .treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow,
+// .e-bigger .treeview-external-drag .e-list-item.e-hover>.e-fullrow,
+// .e-bigger .treeview-external-drag .e-list-item.e-active>.e-fullrow,
+// .e-bigger .treeview-external-drag .e-list-item.e-active.e-hover>.e-fullrow {
+    // background-color: transparent;
+    // border-color: transparent;
+    // box-shadow: none !important;
    
-}
+//}
 
 .treeview-external-drag .e-text-content,
 .e-bigger .treeview-external-drag .e-text-content,
@@ -348,6 +348,7 @@ $InfoBtnHoverColor :  #2eced6;
     margin-top: 10px;
     margin-right: 10px;
 }
+
 
 .e-schedule.schedule-drag-drop .e-resource-cells.e-parent-node .specialist-category {
     padding-left: 30px
@@ -562,6 +563,24 @@ $InfoBtnHoverColor :  #2eced6;
     width:2.5em;
 
 }
+/deep/ .delete::before{
+    content:'\e94a';  
+    color:black;
+    margin-top:8px;
+    height:2.5em;
+    width:2.5em;
+}
+
+/deep/ .M_PV_Redo::before{
+    content:'\ec21';  
+    color:black;
+    margin-top:8px;
+    height:2.5em;
+    width:2.5em;
+}
+/deep/ .e-icons .RowDragMove:before{
+    content:'\e905'
+}
 
 /deep/ .e-quick-popup-wrapper .e-delete-icon::before {
     content: '\e354';
@@ -685,12 +704,14 @@ $InfoBtnHoverColor :  #2eced6;
 // BACLOG SELECTION ITEM
 /deep/ .e-treeview .e-list-item.e-active {
     .e-text-content {
-        border: 1px red solid;
-
+        border: 2px red solid;
+        // box-shadow: -24em 8em 2em #a5a5a5; 
+      
+        // , -1px -1px 2px white
     }
     &:hover {
         .e-text-content {
-            border: 1px blue solid;
+            border: 2px red solid;
         }
     }
 }
@@ -773,10 +794,71 @@ padding: 0
 /deep/ .e-editor{
     display : none;
 }
- .btn-keyboard{
+ .color-icons{
     font-size:25px;
      padding:0; 
      color:$InfoBtnColor;
      left:0
 }
 
+.badge{
+font-size: 12px
+}
+
+
+/deep/ .e-calendar .e-content tr.e-month-hide { /* csslint allow: adjoining-classes*/
+    display: table-row;
+}
+
+/* csslint ignore:start */
+/deep/ .e-calendar .e-content td.e-other-month>span.e-day {
+/* csslint ignore:end */
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    pointer-events: auto !important;
+    touch-action: auto !important;
+}
+
+// /deep/ .e-calendar .e-content td.e-month-hide, /* csslint allow: adjoining-classes*/
+// .e-calendar .e-content td.e-other-month { /* csslint allow: adjoining-classes*/
+//     // pointer-events: inherit;
+//     // touch-action: auto;
+    
+   
+
+/deep/ .e-gridheader {
+    .e-hide{
+        display : none
+    }
+}
+/deep/ .special {
+    background-color : red 1px solid  !important
+}
+/deep/ .defile:hover{
+    animation:linear marqueelike 5s infinite  ;
+    -webkit-animation:linear marqueelike 5s infinite   ;
+// -moz-animation:linear marqueelike 10s infinite ;
+// -o-animation:linear marqueelike 10s infinite ;
+// -ms-animation:linear marqueelike 10s infinite ;
+// animation:linear marqueelike 10s infinite ;
+
+
+}
+
+@-webkit-keyframes marqueelike {
+    0%, 100% {margin-left:0;
+        width: 100%}
+    100% {margin-left:-100%;
+        width: 500%}
+ 
+}
+
+@keyframes marqueelike {
+    0%, 100% {margin-left:0;
+    width: 100%}
+    100% {margin-left:-100%;
+    width:500%}
+  
+
+}

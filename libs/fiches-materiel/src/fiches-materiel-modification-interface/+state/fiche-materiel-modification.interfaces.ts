@@ -2,6 +2,8 @@ export interface FicheMaterielModification {
   modificationType: string;
   multiFicheAchat: boolean;
   multiOeuvre: boolean;
+  allOeuvres: number[];
+  allFichesAchat: number[];
   selectedFichesMateriel: FichesMaterielSelectioned[];
 }
 

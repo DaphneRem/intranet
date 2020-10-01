@@ -10,6 +10,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import swal from 'sweetalert2';
+import { mainColor, maintColorHover } from '../../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'delivery-date-comment-modal',
@@ -23,12 +24,14 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
   @Input() deliveryDate;
   @Input() livraisonIsValid;
   @Input() selectionType;
+  @Input() valueNotToChangeLibelle;
   @Output() newComment = new EventEmitter<string>();
 
   @ViewChild('commentDeliveryDate') modalTemplate;
 
   public init = 0;
   public deliveryComment: string;
+  public deliveryDateChangeExist: boolean = false;
 
   constructor() { }
 
@@ -36,34 +39,60 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const changeDeliveryDate: SimpleChange = changes.deliveryDate;
-    console.log(changeDeliveryDate);
-    console.log(changes);
-    console.log(typeof changeDeliveryDate.currentValue);
-    console.log('this.livraisonIsValid => ', this.livraisonIsValid);
-    console.log('this.intit in deliveryDate => ', this.init);
     setTimeout(() => {
-      if (this.livraisonIsValid) {
-        if (changeDeliveryDate) {
-          if ((this.init > 0) && (typeof changeDeliveryDate.currentValue === 'string') && (typeof changeDeliveryDate.previousValue === 'object')) {
-            this.init = -1;
-          } else if (this.init && (typeof changeDeliveryDate.currentValue !== 'string')) {
-            console.log('openSwal in delivery date. this.intit = >', this.init);
-            if (this.selectionType === 'multi') {
-              this.openSwal();
-            } else if (this.selectionType !== 'multi') {
-              this.openSwal();
-            }
-          }
-          this.init++;
-        }
+      if (this.init > 0) {
+        this.deliveryDateChangeExist = true;
+      } else {
+        this.deliveryDateChangeExist = false;
+        this.init++;
       }
     }, 1000);
-
   }
+//  ngOnChanges(changes: SimpleChanges) { // OLD FONCTIONALITY FOR OPEN MODAL ONCHANGE
+//    const changeDeliveryDate: SimpleChange = changes.deliveryDate;
+//    console.log(changeDeliveryDate);
+//    console.log(changes);
+//    console.log(typeof changeDeliveryDate.currentValue);
+//    console.log('this.livraisonIsValid => ', this.livraisonIsValid);
+//    console.log('this.intit in deliveryDate => ', this.init);
+//    setTimeout(() => {
+//      if (this.livraisonIsValid) {
+//        if (changeDeliveryDate) {
+//          if ((this.init > 0) && (typeof changeDeliveryDate.currentValue === 'string') && (typeof changeDeliveryDate.previousValue === 'object')) {
+//            this.init = -1;
+//          } else if (this.init && (typeof changeDeliveryDate.currentValue !== 'string')) {
+//            console.log('openSwal in delivery date. this.intit = >', this.init);
+//            if (this.selectionType === 'multi') {
+//              this.openSwal();
+//            } else if (this.selectionType !== 'multi') {
+//              this.openSwal();
+//            }
+//          }
+//          this.init++;
+//        }
+//      }
+//    }, 1000);
+//
+//  }
 
   onCommentChange(comment: string) {
     this.newComment.emit(comment);
+  }
+
+  disabledAddComment(): boolean {
+    if (this.livraisonIsValid) {
+      if (
+        this.deliveryDate !== 'dd-mm-yyyy'
+        && this.deliveryDate !== this.valueNotToChangeLibelle
+        && this.deliveryDateChangeExist
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
   }
 
   openSwal() {
@@ -73,8 +102,9 @@ export class DeliveryDateCommentModalComponent implements OnInit, OnChanges {
       input: 'textarea',
       showCancelButton: true,
       cancelButtonText: 'Aucun commentaire',
+      cancelButtonColor: mainColor,
       confirmButtonText: 'Valider',
-      confirmButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
     }).then((result) => {
       if (result.value) {
         this.deliveryComment = result.value;

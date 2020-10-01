@@ -1,15 +1,15 @@
-$creationBtnColor :  #17AAB2;
-$creationBtnHoverColor :  #2eced6;
+@import "../../../fiches-materiel-common-theme";
+
 $importantColor : #fd5f5f;
 $iconColor : #7f7f7f;
 
 .open-btn {
-    background-color: #17AAB2;
-    border-color: #17AAB2;
+    background-color: $main-color;
+    border-color: $main-color;
     color: #ffffff;
     &:hover {
-        background-color: #2eced6;
-        border-color: #2eced6;
+        background-color: $main-color-hover;
+        border-color: $main-color-hover;
     }
     &:focus, &:active, &:visited {
         outline: none;
@@ -33,16 +33,30 @@ button {
         padding-left: 0;
         margin-bottom: 15px;
         .clear {
-                margin-right: 10px;
+            margin-right: 10px;
+            background-color: $main-color;
+            border-color: $main-color;
+            color: #ffffff;
             i {
                 font-size: 15px;
                 margin-right: 10px;
             }
+            &:hover {
+                background-color: $main-color-hover;
+                border-color: $main-color-hover;
+            }
         }
         .reset {
+            background-color: $main-color;
+            border-color: $main-color;
+            color: #ffffff;
             i {
                 margin-right: 10px;
                 font-size: 13px;
+            }
+            &:hover {
+                background-color: $main-color-hover;
+                border-color: $main-color-hover;
             }
         }
     }
@@ -50,6 +64,9 @@ button {
         width: 100%;
         .badge {
             width: 90%;
+            background-color: $main-color;
+            border-color: $main-color;
+            color: #ffffff;
         }
         .category {
             display: flex;

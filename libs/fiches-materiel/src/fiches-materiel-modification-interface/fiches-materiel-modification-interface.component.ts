@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, ViewChild, AfterViewInit } from '@angular/core';
 import { identifierModuleUrl } from '@angular/compiler';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -48,6 +48,8 @@ import { CustomDatepickerI18n, I18n } from '../services/custom-datepicker-i18n';
 // import { browserRefresh } from '../../../../apps/fiches-materiel/src/app/app.component';
 import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
 import { NewObject, objectNoChanged } from './fiche-materiel-new-object';
+import { mainColor, maintColorHover } from '../../fiches-materiel-common-theme';
+import { InformationsKaiService } from '@ab/trace-segment/src/services/informations-kai.service';
 
 
 @Component({
@@ -73,7 +75,7 @@ import { NewObject, objectNoChanged } from './fiche-materiel-new-object';
     { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter }
   ]
 })
-export class FichesMaterielModificationInterfaceComponent implements OnInit, OnDestroy {
+export class FichesMaterielModificationInterfaceComponent implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
 
   private onDestroy$: Subject<any> = new Subject();
 
@@ -81,7 +83,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
 
   // annexes elements :
   public comments: AnnexElementCommentsFicheMAteriel[];
-  public annexElementsStatus: any;
+  public annexElementsStatus: any = []; // push pro issue
   public annexElementsReady: Boolean = false;
   public annexElementsCategories;
   public initAnnexElements: Boolean = true;
@@ -98,6 +100,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public ficheAchatReady: Boolean = false;
   public ficheAchatDetail: FicheAchatDetails;
   public ficheAchatDetailReady: Boolean = false;
+  public ficheAchatDetailsExist: Boolean = false;
   public multiFichesAchat: boolean;
   // store informations :
   public user;
@@ -139,6 +142,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public valueNotToChangeLibelle = 'Valeur d\'origine';
   public resetTooltipMessage = 'Vider le champs';
   public replyTooltipMessage = 'Retour aux valeurs d\'origines';
+  public messageNoFicheAchatDetail = ' œuvre retirée de la fiche Achat';
   // qualite :
   public qualiteLib: any;
   public qualiteReady: Boolean = false;
@@ -172,7 +176,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public versionMultiReady: Boolean = false;
   public originVersionValues;
   // retour ori :
-  public retourOri: any;
+  public retourOri: any = []; // push pro issue
   public retourOriReady: Boolean = false;
   public initValueRetourOri: Boolean = true;
   // multi selection :
@@ -191,6 +195,17 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   public oriIsValid: Boolean = true;
   public newObject: NewObject;
   public allUsersRightsInApp: UsersInAppRights[];
+
+  // sections height
+  public infoSectionHeightMulti;
+
+  public droitsSectionHeightMulti: number;
+  public livraisonSectionHeightMulti: number;
+  public accesVFSectionHeightMulti: number;
+
+  public annexesSectionHeightMulti: number;
+  public oriSectionHeightMulti: number;
+  public laboSectionHeightMulti: number;
 
 
   constructor(
@@ -227,6 +242,96 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.displaySelectionMode(this.storeFichesToModif);
     this.getAllFichesMateriel(this.storeFichesToModif.selectedFichesMateriel);
     console.log('this.newObject onInit end => ', this.newObject);
+  }
+
+  calculRetourOriDernierDelai(dateLivraison, dureeDuPret) {
+    console.log('dateLivraison => ', dateLivraison);
+  }
+
+  displayIsUrgence() {
+    if (this.newObject.Isurgence === this.valueNotToChangeLibelle) {
+      this.newObject.Isurgence = true;
+    } else {
+      this.newObject.Isurgence = !this.newObject.Isurgence;
+    }
+    console.log('newObject.Isurgence => ', this.newObject.Isurgence);
+  }
+
+  displayCheckedIsUrgence() {
+    if (this.newObject.Isurgence === this.valueNotToChangeLibelle || !this.newObject.Isurgence) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  public oldIsUrgence: boolean; // ICI 06/03/2020 !!!!!!!!!!
+  public disabledOptionIsUrgence: boolean = false;
+  disabledUrgence() {
+    console.log('this.newObject.Isurgence => ', this.newObject.Isurgence);
+    console.log('this.newObject.IdLibstatut => ', this.newObject.IdLibstatut);
+    console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
+    // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
+    // this.oldIsUrgence = this.newObject.Isurgence;
+    if (!this.disabledOptionIsUrgence) {
+      this.oldIsUrgence = this.newObject.Isurgence;
+    }
+    if (
+      this.newObject.IdLibEtape === 20 || // Terminé (accepté)
+      this.newObject.IdLibEtape === 21 || // Terminé (annulé)
+      this.newObject.IdLibEtape === 24 // traité par un autre service
+    ) {
+      console.log('this.oldIsUrgence1 => ', this.oldIsUrgence);
+      this.newObject.Isurgence = false;
+      this.disabledOptionIsUrgence = true;
+      console.log('this.oldIsUrgence2 => ', this.oldIsUrgence);
+      return true;
+    } else {
+      console.log('this.oldIsUrgence3 => ', this.oldIsUrgence);
+        this.disabledOptionIsUrgence = false;
+        this.newObject.Isurgence = this.oldIsUrgence;
+        return false;
+      
+    }
+  }
+
+  // disabledDeadline() {
+  //   console.log('this.newObject.Deadline in disabledDeadline function => ', this.newObject.Deadline);
+  //   // A MODIFIER PAR LA SUITE => LA CONDITION CHANGE CAR LES ID CHANGENT
+  //   // console.log('this.newObject.IdLibEtape => ', this.newObject.IdLibEtape);
+  //   if (this.selectionType === 'multi' && this.newObject.Deadline !== 'dd-mm-yyyy') {
+  //     this.oldDeadline = this.newObject.Deadline;
+  //   }
+  //   if (
+  //     this.newObject.IdLibEtape === 20 || // Terminé (accepté)
+  //     this.newObject.IdLibEtape === 21 || // Terminé (annulé)
+  //     this.newObject.IdLibEtape === 24 // traité par un autre service
+  //   ) {
+  //     if (this.selectionType === 'multi') {
+  //       this.newObject.Deadline = 'dd-mm-yyyy';
+  //     }
+  //     return true;
+  //   } else {
+  //     if (this.selectionType === 'multi') {
+  //       console.log('oldDeadline => ', this.oldDeadline);
+  //       if (this.oldDeadline) {
+  //         this.newObject.Deadline = this.oldDeadline;
+  //       }
+  //     }
+  //     return false;
+  //   }
+  // }
+  checkHeightSection() {
+    let ok = document.getElementById('info');
+    let oo = ok;
+    console.log('height of section info is => ', oo);
+  }
+  ngAfterViewChecked() {
+    this.checkHeightSection();
+  }
+
+  ngAfterViewInit() {
+    
   }
 
   ngOnDestroy() {
@@ -266,18 +371,19 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
             this.getCommentaireAnnexElementsFicheMateriel(id);
             this.getQualiteFicheMateriel(id);
             this.getVersionFicheMateriel(id);
-            if (index === length - 1) {
+            if (index === length - 1) { // SELECTION TYPE = ONE
               // console.log('call displayNewObject function !!!!!!!!!');
               this.displayNewObjectSelectionTypeOne(length, data[0]);
               // this.dataIdFicheMaterielReady = true;
             }
-          } else {
+          } else { // SELECTION TYPE = MULTI
             this.getAnnexElementsFicheMateriel(id, index, length);
             // this.getCommentaireAnnexElementsFicheMateriel(id);
             // this.getQualiteFicheMateriel(id);
             // this.getVersionFicheMateriel(id);
           }
-          if (index === length - 1) {
+          if (this.allFichesMateriel.length === length - 1) {
+            this.checkOeuvresAndFichesAchat();
             // console.log('call displayNewObject function !!!!!!!!!');
             // this.displayNewObject(length, data[0]);
             // this.dataIdFicheMaterielReady = true;
@@ -322,22 +428,217 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
   }
 
   getFicheAchatDetail(id, ficheMateriel) {
+    let numProgramOeuvres = [];
+    this.ficheAchatDetailsExist = false;
     this.fichesAchatService.getFichesAchatDetails(id)
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(data => {
-        if (data.length > 1) {
-          data.map(item => {
-            if (item.id_fiche_det === ficheMateriel.IdFicheDetail) {
-              this.ficheAchatDetail = item;
+        console.log('fiche achat detail => ', data);
+        if (data !== null) {
+          if (data.length > 1) {
+            // data.map(item => {
+            //   if (item.id_fiche_det === ficheMateriel.IdFicheDetail) {
+            //     this.ficheAchatDetail = item;
+            //     this.ficheAchatDetailsExist = true;
+            //   }
+            // });
+            let oeuvre = data.filter(item => item.id_fiche_det === ficheMateriel.IdFicheDetail);
+            console.log('getFicheAchatDetail : oeuvre => ', oeuvre);
+            this.ficheAchatDetail = oeuvre[0];
+            if (oeuvre.length) {
+              numProgramOeuvres = [{
+                numProgram: this.ficheAchatDetail.numprogram,
+                oeuvreNotExist: false,
+                titleFMvF: ficheMateriel.TitreEpisodeVF
+              }];
+              this.ficheAchatDetailsExist = true;
+            } else {
+              numProgramOeuvres = [{
+                numProgram: ficheMateriel.NumProgram,
+                oeuvreNotExist: true,
+                titleFMvF: ficheMateriel.TitreEpisodeVF
+              }];
+              this.ficheAchatDetailsExist = false;
             }
-          });
+            console.log('numProgramOeuvres => ', numProgramOeuvres);
+            this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
+          } else if (data.length) {
+            this.ficheAchatDetail = data[0];
+            this.ficheAchatDetailsExist = true;
+            numProgramOeuvres = [{
+              numProgram: data[0].numprogram,
+              oeuvreNotExist: false,
+              titleFMvF: ficheMateriel.TitreEpisodeVF
+            }];
+            console.log('numProgramOeuvres => ', numProgramOeuvres);
+            this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
+          } else {
+            numProgramOeuvres = [{
+              numProgram: '',
+              oeuvreNotExist: true
+            }];
+            console.log('numProgramOeuvres => ', numProgramOeuvres);
+            this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
+            this.ficheAchatDetailsExist = false;
+          }
         } else {
-          this.ficheAchatDetail = data[0];
+          this.ficheAchatDetailsExist = false;
+          console.log('here');
         }
         console.log('ficheAchatDetail => ', this.ficheAchatDetail);
         this.ficheAchatDetailReady = true;
-        this.displayOriLastDeadline(this.livraisonDateNgFormat);
+        // this.displayOriLastDeadline(this.livraisonDateNgFormat);
+        console.log('ficheAchatDetailReady => ', this.ficheAchatDetailReady);
       });
+  }
+
+  public allOeuvresId;
+  public allFichesAchatId;
+  checkOeuvresAndFichesAchat() {
+    this.allOeuvresId = this.storeFichesToModif.allOeuvres;
+    this.allFichesAchatId = this.storeFichesToModif.allFichesAchat;
+    this.getFicheAchatForMultiSelection(this.allFichesAchatId);
+    this.getFicheAchatDetailForMultiSelection(this.allOeuvresId);
+  }
+
+  getFicheAchatDetailForMultiSelection(idFicheAchatDetailArray) { // MULTI
+    console.log('getFicheAchatDetailForMultiSelection(idFicheAchatDetailArray) => ', idFicheAchatDetailArray);
+    console.log('this.ficheAchatDetailMulti => ', this.ficheAchatDetailMulti);
+    console.log('this.multiOeuvre => ', this.multiOeuvre);
+    this.ficheAchatDetailsExist = false;
+    let oeuvreMultiSelection = [];
+    let numProgramOeuvres = [];
+    idFicheAchatDetailArray.map((item, index) => {
+      this.fichesAchatService.getFichesAchatDetailByIdDetail(item)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(data => {
+          if (data) { // OEUVRE EXISTE
+            console.log('oeuvre data => ', data);
+            oeuvreMultiSelection.push(data);
+            console.log('oeuvreMultiSelection => ', oeuvreMultiSelection);
+            // numProgramOeuvres.push(data.numprogram);
+            numProgramOeuvres.push({
+              numProgram : data.numprogram,
+              oeuvreNotExist: false,
+              titleFMvF: data.titre_vf
+            });
+            console.log('oeuvreMultiSelection => ', oeuvreMultiSelection);
+            if (index === idFicheAchatDetailArray.length - 1) { // APPEL DE LA DERNIERE OEUVRE
+              if (idFicheAchatDetailArray.length > 1) { // SI MULTI OEUVRE
+                // action qui détermine les valeurs communes
+                let oeuvreNoFicheAchat = numProgramOeuvres.filter(oeuvre => oeuvre.oeuvreNotExist);
+                console.log('oeuvreNoFicheAchat = >', oeuvreNoFicheAchat);
+                if (oeuvreNoFicheAchat.length === 0) {
+                  this.ficheAchatDetailMulti = this.compareSameValues(oeuvreMultiSelection);
+                  console.log('this.ficheAchatDetailMulti after filter => ', this.ficheAchatDetailMulti);
+                }
+                this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
+                // this.ficheAchatDetailReady = true;
+                console.log('this.ficheAchatDetailMulti => ', this.ficheAchatDetailMulti);
+              } else { // SI UNE SUELE OEUVRE
+                this.ficheAchatDetail = oeuvreMultiSelection[0];
+                console.log('this.ficheAchatDetail !!! => ', this.ficheAchatDetail);
+                console.log('this.ficheAchatDetail.numprogram !!! => ', this.ficheAchatDetail['numprogram']);
+                this.ficheAchatDetailsExist = true;
+                this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
+                // this.ficheAchatDetailReady = true;
+                // ICI METTRE APPEL POUR MULTI OEUVRE !!!!!!!!!!!!!!!!!!!!
+                console.log('une seule oeuvre => ', this.ficheAchat);
+              }
+            }
+          } else { // OEUVRE N'EXISTE PLUS
+            console.log('no data for ficheAchatDetail => ', data);
+            console.log('no data for ficheAchatDetail this.newObject => ', this.newObject);
+            console.log('this.allFichesMateriel => ', this.allFichesMateriel);
+            console.log('this.allFichesMateriel[0].NumProgram => ', this.allFichesMateriel[0].NumProgram);
+            if (!this.multiOeuvre) {
+              numProgramOeuvres.push({
+                numProgram: this.allFichesMateriel[0].NumProgram,
+                oeuvreNotExist: true,
+                titleFMvF: this.allFichesMateriel[0].TitreEpisodeVF
+              });
+            } else {
+              let fichesMaterielsForOeuvre = this.allFichesMateriel.filter(fm => fm.IdFicheDetail === item);
+              let ficheMateriel = fichesMaterielsForOeuvre[0];
+              console.log('fichesMaterielsForOeuvre => ', fichesMaterielsForOeuvre);
+                numProgramOeuvres.push({
+                  numProgram: ficheMateriel.NumProgram,
+                  oeuvreNotExist: true,
+                  titleFMvF: ficheMateriel.TitreEpisodeVF
+                });
+            }
+            if (index === idFicheAchatDetailArray.length - 1) { // DERNIERE OEUVRE N'EXISTE PAS
+              // let oeuvreNotExist = true;
+              this.ficheAchatDetailsExist = false;
+              console.log('numProgramOeuvres => ', numProgramOeuvres);
+              this.getAllFichesAchatFOrOeuvre(numProgramOeuvres);
+              if (this.multiOeuvre) {
+                this.ficheAchatDetailMulti = {};
+              }
+            }
+          }
+          console.log('index =====> ', index);
+          console.log('idFicheAchatDetailArray.length - 1 => ', idFicheAchatDetailArray.length - 1);
+          console.log('this.ficheAchatDetailReady ==> ', this.ficheAchatDetailReady);
+          if (index === idFicheAchatDetailArray.length - 1) {
+            this.ficheAchatDetailReady = true;
+          }
+        }
+      );
+    });
+  }
+public ficheAchatMulti;
+public ficheAchatDetailMulti = {};
+  getFicheAchatForMultiSelection(idFicheAchatArray) { // MULTI
+    let ficheAchatMultiSelection = [];
+    idFicheAchatArray.map(item => {
+      this.fichesAchatService.getGlobalFIcheAchat(item)
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(data => {
+          ficheAchatMultiSelection.push(data);
+          console.log('ficheAchatMultiSelection => ', ficheAchatMultiSelection);
+          if (ficheAchatMultiSelection.length === idFicheAchatArray.length) {
+            if (ficheAchatMultiSelection.length > 1) {
+              // action qui détermine les valeurs communes
+              this.ficheAchatMulti = this.compareSameValues(ficheAchatMultiSelection);
+              console.log('this.ficheAchatMulti => ', this.ficheAchatMulti);
+              this.ficheAchatReady = true;
+            } else {
+              this.ficheAchat = ficheAchatMultiSelection[0];
+              this.ficheAchatReady = true;
+              console.log('une seule fiche achat => ', this.ficheAchat);
+            }
+          }
+        });
+    });
+  }
+
+  compareSameValues(dataArrayToCompare) {
+    let multiValues = {};
+    let sameValues = {};
+    dataArrayToCompare.map((item, index) => {
+      for (let key in item) {
+        if (item[key] === dataArrayToCompare[0][key]) {
+          console.log('kjnfods');
+          if (multiValues[key]) {
+            multiValues[key].push(item[key]);
+          } else {
+            multiValues[key] = [];
+            multiValues[key].push(item[key]);
+          }
+
+        }
+      }
+    });
+    for (let value in multiValues) {
+      if (multiValues[value].length === dataArrayToCompare.length) {
+        // sameValues[value] = [];
+        sameValues[value] = multiValues[value][0];
+      }
+    }
+    console.log('multiValues => ', multiValues);
+    console.log('sameValues => ', sameValues);
+    return sameValues;
   }
 
   displayDurCom(durCom: string): string {
@@ -491,12 +792,195 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     this.changeDateFormat('arg');
     // this.arrayDateFicheMateriel.forEach(item => this.changeDateFormat(item));
     // this.fmInRecording = false;
+    this.displayOriLastDeadline(this.newObject.DateLivraison, this.newObject.duree_du_pret);
     this.dataIdFicheMaterielReady = true;
     this.displayNewObjectReady = true;
   }
 
+  public allFichesAchatForOeuvre = [];
+  public allFichesAchatsForAllOeuvres = [];
+  public allFichesAchatForOeuvreReady: boolean = false;
+  public otherFichesAchatForOeuvreExist: boolean = false;
+  public messageOthersFichesAchatForOeuvre: any = [];
+
+  getAllFichesAchatFOrOeuvre(numProgram) {
+    // numProgram = [{
+    //   numProgram: this.newObject.NumProgram,
+    //   oeuvreNotExist: false
+    // }]
+    console.log('getAllFichesAchatFOrOeuvre() call for oeuvre => ', numProgram);
+    console.log('this.allFichesAchatForOeuvre first => ', this.allFichesAchatForOeuvre);
+    // if (numProgram.length > 0 || numProgram !== '') {
+      let oeuvreChecked = [];
+      this.allFichesAchatsForAllOeuvres = [];
+      this.otherFichesAchatForOeuvreExist = false;
+      numProgram.map(item => {
+        console.log('item.numProgram => ', item.numProgram);
+        if (item.numProgram !== '' || item.numProgram.length !== 0 || item.numProgram) {
+          console.log('item =======> ',  item);
+          this.fichesAchatService.getAllFichesAchatFOrOeuvre(item.numProgram)
+            .pipe(takeUntil(this.onDestroy$))
+            .subscribe(data => {
+              this.allFichesAchatForOeuvre = [];
+              oeuvreChecked.push(item.numProgram);
+              console.log('res for allFichesAchatFoOeuvre => ', data);
+              // for test :
+              // if (item.oeuvreNotExist) {
+                // data = [
+                //   {
+                //     id_fiche: 1066,
+                //     Numero_fiche: 'FA-2020-00030',
+                //     NumProgram: '2020-00112'
+                //   }
+                // ];
+              // } else {
+                // data = [
+                //   {
+                //     id_fiche: 1096,
+                //     Numero_fiche: 'FA-2020-00039',
+                //     NumProgram: '2020-00119'
+                //   },
+                //   {
+                //     id_fiche: 1080,
+                //     Numero_fiche: 'FA-2020-00880',
+                //     NumProgram: '2020-00888'
+                //   },
+                // ];
+                // }
+
+              console.log('oeuvreChecked.length => ', oeuvreChecked.length);
+              console.log('numProgram.length => ', numProgram.length);
+              // if (oeuvreChecked.length === 1) {
+              //   console.log('push data => ', data);
+              //   // data.push({
+              //   //   id_fiche: 1066,
+              //   //   Numero_fiche: 'FA-2020-00030',
+              //   //   NumProgram: '2020-00112'
+              //   // });
+              // }
+              // if (oeuvreChecked.length === 2) {
+              //   console.log('push data => ', data);
+              //   // data.push(
+              //   //  {
+              //   //    id_fiche: 1066,
+              //   //    Numero_fiche: 'FA-2020-00031',
+              //   //     NumProgram: '2020-00113'
+              //   //  }
+              //   // );
+              // }
+              this.allFichesAchatsForAllOeuvres.push(data);
+              console.log('oeuvreChecked => ', oeuvreChecked);
+              console.log('numProgram => ', numProgram);
+              if ((data.length > 1 && !item.oeuvreNotExist) || (data.length === 1 && item.oeuvreNotExist)) {
+                console.log('data length > 1');
+                console.log('this.allFichesAchatForOeuvre before => ', this.allFichesAchatForOeuvre);
+                this.allFichesAchatForOeuvre.push(data);
+                console.log('this.allFichesAchatForOeuvre after => ', this.allFichesAchatForOeuvre);
+
+                this.otherFichesAchatForOeuvreExist = true;
+                if (item.oeuvreNotExist) {
+                  this.messageOthersFichesAchatForOeuvre.push({
+                    oeuvre: item.numProgram,
+                    text: `L'œuvre ${item.numProgram} a été retirée de la fiche Achat mais apparaît dans d'autres fiches Achat : `,
+                    fichesAchat: this.allFichesAchatForOeuvre
+                  });
+                } else {
+                  this.messageOthersFichesAchatForOeuvre.push({
+                    oeuvre: item.numProgram,
+                    text: `L'œuvre ${item.numProgram} apparaît dans plusieurs fiches Achat : `,
+                    fichesAchat: this.allFichesAchatForOeuvre
+                  });
+                }
+                console.log('this.allFichesAchatForOeuvre => ', this.allFichesAchatForOeuvre);
+                if (oeuvreChecked.length === numProgram.length) {
+                  this.allFichesAchatForOeuvreReady = true;
+                }
+                console.log('this.messageOthersFichesAchatForOeuvre => ', this.messageOthersFichesAchatForOeuvre);
+              } else {
+                if (oeuvreChecked.length === numProgram.length) {
+                  if (item.oeuvreNotExist) {
+                    this.allFichesAchatForOeuvre.push(data);
+                    console.log('this.allFichesAchatForOeuvre if fmdNotExist => ', this.allFichesAchatForOeuvre);
+                    this.messageOthersFichesAchatForOeuvre.push({
+                      oeuvre: item.numProgram,
+                      text: `L'œuvre ${item.numProgram} a été retirée de la fiche Achat mais apparaît dans d'autres fiches Achat : `,
+                      fichesAchat: this.allFichesAchatForOeuvre
+                    });
+                    console.log('this.messageOthersFichesAchatForOeuvre => ', this.messageOthersFichesAchatForOeuvre);
+                    this.otherFichesAchatForOeuvreExist = true;
+                  }
+                  this.allFichesAchatForOeuvreReady = true;
+                }
+              }
+              console.log('final this.allFichesAchatForOeuvre => ', this.allFichesAchatForOeuvre);
+            },
+            error => {
+              swal({
+                html:
+                  'Aucun n° d’œuvre renseigné sur cette fiche.</br> ' +
+                  'Impossible de rechercher la correspondance de l\'œuvre avec d\'autres fiches Achats.',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: mainColor,
+              });
+            });
+          } else {
+            this.messageOthersFichesAchatForOeuvre.push({
+              oeuvre: '',
+              text: `Impossible de rechercher la correspondance de l\'œuvre ${item.titleFMvF} avec d\'autres fiches Achats car le n° oeuvre est inconnu.`,
+              fichesAchat: ''
+            });
+            this.otherFichesAchatForOeuvreExist = true;
+            this.allFichesAchatForOeuvreReady = true;
+          }
+        }
+      );
+    // } else {
+    //   this.messageOthersFichesAchatForOeuvre.push({
+    //     oeuvre: '',
+    //     text: `Impossible de rechercher la correspondance de l\'oeuvre ${item.titleFMvF} avec d\'autres fiches Achats`,
+    //     fichesAchat: '',
+    //   });
+    // }
+  }
+
+  checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allOeuvres): boolean {
+    console.log('ficheAchatDetail ! => ', ficheAchatDetail);
+    if (ficheAchatDetail === undefined) {
+      ficheAchatDetail = {};
+    }
+    let currentOeuvre = [];
+    let othersOeuvres = [];
+    let oeuvreExistInAllFichesAchatForOeuvre = false;
+    allOeuvres.map((item, i) => {
+      if (item.NumProgram === ficheAchatDetail.numprogram) {
+        currentOeuvre.push(item);
+      } else {
+        othersOeuvres.push(item);
+      }
+      if (i === (allOeuvres.length - 1)) {
+        if (currentOeuvre.length) {
+          oeuvreExistInAllFichesAchatForOeuvre = true;
+        }
+      }
+    });
+    return oeuvreExistInAllFichesAchatForOeuvre;
+  }
+
+  checkAcceptedStatusIsPossible(acceptationDate, renouvellement) {
+    if (acceptationDate === null && (renouvellement === null || !renouvellement)) {
+      this.acceptedStatusIsPossible = false;
+    }
+    console.log('this.acceptedStatusIsPossible => ', this.acceptedStatusIsPossible);
+  }
+
   public displayNewObjectReady = false;
+  public acceptedStatusIsPossible = true;
+
   displayNewObjectSelectionTypeMulti() {
+    console.log('this.acceptedStatusIsPossible first => ', this.acceptedStatusIsPossible);
+    this.acceptedStatusIsPossible = true;
     this.newObject = objectNoChanged;
     for (let key in this.newObject) {
       if (key) {
@@ -512,6 +996,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     console.log('fiches matériel ==> ', this.allFichesMateriel);
     this.allFichesMateriel.map(item => {
       let index = this.allFichesMateriel.indexOf(item);
+      this.checkAcceptedStatusIsPossible(item.DateAcceptation, item.Renouvellement);
       for (let key in item) {
         if ((index + 1) < this.allFichesMateriel.length) {
           if (item[key] === this.allFichesMateriel[index + 1][key]) {
@@ -545,6 +1030,7 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
     console.log('equalObject ==> ', this.equalObject);
     this.displayLibValueNotToChange();
     // this.fmInRecording = false;
+    this.displayOriLastDeadline(this.newObject.DateLivraison, this.newObject.duree_du_pret);
     this.dataIdFicheMaterielReady = true;
     this.displayNewObjectReady = true;
   }
@@ -709,17 +1195,20 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         // console.log(this.steps['id' + this.newObject.IdLibstatut]);
         if (this.newObject.IdLibstatut === 2) {
           // STATUT ANNULEE
+          console.log('this.newObject.RetourOri &&&& => ', this.newObject.RetourOri);
           if (this.newObject.RetourOri === 1) {
             // retour ori à faire (1)
             this.newObject.IdLibEtape = this.steps[
               'id' + this.newObject.IdLibstatut
-            ][1].IdLibEtape; // IdLibEtape: 15, Libelle: 'Retour Ori'
-            // console.log('accepté et retour ori a faire ===> ');
+            ][0].IdLibEtape; // IdLibEtape: 15, Libelle: 'Retour Ori'
+            console.log('accepté et retour ori a faire ===> this.newObject.IdLibEtape : ', this.newObject.IdLibEtape);
           } else {
             // retour ori !== 'à faire'
+            console.log('this.newObject.IdLibstatut @@ => ', this.newObject.IdLibstatut);
+            console.log('this.steps["id" + this.newObject.IdLibstatut] => ', this.steps['id' + this.newObject.IdLibstatut]);
             this.newObject.IdLibEtape = this.steps[
               'id' + this.newObject.IdLibstatut
-            ][3].IdLibEtape; // IdLibEtape: 20, Libelle: 'Terminé'
+            ][1].IdLibEtape; // IdLibEtape: 20, Libelle: 'Terminé'
             console.log('this.newObject.IdLibEtape firstClick => ', this.newObject.IdLibEtape);
           }
         } else if (this.newObject.IdLibstatut === 3) {
@@ -795,8 +1284,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
       allowEscapeKey: false,
       reverseButtons: true,
       confirmButtonText: 'Valider',
-      confirmButtonColor: 'rgb(23, 170, 178)',
-      cancelButtonColor: 'rgb(23, 170, 178)',
+      confirmButtonColor: mainColor,
+      cancelButtonColor: mainColor,
       onBeforeOpen: () => {
         const content = swal.getContent();
         const $ = content.querySelector.bind(content);
@@ -875,7 +1364,8 @@ export class FichesMaterielModificationInterfaceComponent implements OnInit, OnD
         // console.log(this.steps);
       });
   }
-public firtsClickStep = true;
+
+  public firtsClickStep = true;
   clickStepOptions() {
     this.initValueSteps = false;
 
@@ -1151,33 +1641,49 @@ public firtsClickStep = true;
       return false;
     }
   }
-
-  displayOriLastDeadline(deliveryDate) {
-    // console.log(deliveryDate);
-    if (deliveryDate !== null && deliveryDate !== undefined) {
-      const duree = this.ficheAchatDetail.duree_du_pret;
-      let month, day;
-      if (deliveryDate.month < 10) {
-        month = `0${deliveryDate.month}`;
-      } else {
-        month = deliveryDate.month;
-      }
-      if (deliveryDate.day < 10) {
-        day = `0${deliveryDate.day}`;
-      } else {
-        day = deliveryDate.day;
-      }
-
-      const dateString = new Date(deliveryDate.year + '-' + month + '-' + day);
-      const addDureeLendingDuration = dateString.setDate(
-        dateString.getDate() + duree
-      );
-      this.lendingDurationDate = new Date(addDureeLendingDuration);
-      this.newObject.RetourOriDernierDelai = {
-        year: new Date(this.lendingDurationDate).getFullYear(),
-        month: new Date(this.lendingDurationDate).getMonth() + 1,
-        day: new Date(this.lendingDurationDate).getDate()
-      };
+  public displayRetourOriDernierDelai: Boolean = false;
+  displayOriLastDeadline(deliveryDate, dureeDupret) {
+    console.log('displayOriLastDeadline => ', deliveryDate);
+    this.displayRetourOriDernierDelai = false;
+    if (this.checkValidDate(deliveryDate)
+      && deliveryDate !== 'dd-mm-yyyy' 
+      && deliveryDate !== this.valueNotToChangeLibelle
+      && dureeDupret !== this.valueNotToChangeLibelle
+      && dureeDupret !== null
+      && dureeDupret !== ''
+    ) {
+      console.log('deliveryDate => ', deliveryDate);
+      console.log('dureeDupret => ', dureeDupret);
+      let retourOriDernierDelai = moment([deliveryDate.year, deliveryDate.month - 1, deliveryDate.day]).add(dureeDupret, 'd').format('YYYY-MM-DD') + 'T00:00';
+      console.log('retourOriDernierDelai => ', retourOriDernierDelai);
+      this.newObject.RetourOriDernierDelai = retourOriDernierDelai;
+      console.log('this.newObject.RetourOriDernierDelai => ', this.newObject.RetourOriDernierDelai);
+      this.displayRetourOriDernierDelai = true;
+      // let month, day;
+      // if (deliveryDate.month < 10) {
+      //   month = `0${deliveryDate.month}`;
+      // } else {
+      //   month = deliveryDate.month;
+      // }
+      // if (deliveryDate.day < 10) {
+      //   day = `0${deliveryDate.day}`;
+      // } else {
+      //   day = deliveryDate.day;
+      // }
+      // const dateString = new Date(deliveryDate.year + '-' + month + '-' + day);
+      // console.log('dateString => ', dateString);
+      // const duree = this.newObject.duree_du_pret;
+      // const addDureeLendingDuration = dateString.setDate(
+      //   dateString.getDate() + duree
+      // );
+      // this.lendingDurationDate = new Date(addDureeLendingDuration);
+      // this.newObject.RetourOriDernierDelai = {
+      //   year: new Date(this.lendingDurationDate).getFullYear(),
+      //   month: new Date(this.lendingDurationDate).getMonth() + 1,
+      //   day: new Date(this.lendingDurationDate).getDate()
+      // };
+    } else {
+      this.displayRetourOriDernierDelai = false;
     }
   }
 
@@ -1298,6 +1804,7 @@ public firtsClickStep = true;
           // console.log('i => ', i);
           // console.log('object => ', object);
           // console.log(object);
+          // PROBLEME LAURENT 06/03/2020 modification multiple fiche 1490
             if (object.IsValid === this.allAnnexElementsFicheMateriel[0][i].IsValid) { // remplacer par this.allAnnexElementsFicheMateriel[index+1][i].IsValid
               let key = object.IdPackageAttendu;
               if (!this.sameValueElementsAnnexes[key] || this.sameValueElementsAnnexes[key].length === 0) {
@@ -2069,8 +2576,8 @@ public categoriesReady: Boolean = false;
 
   displayDeliveryDateModelComment(comment) {
     this.newObject.CommentairesDateLivraison = comment;
-    // console.log(`Delivery Date Comment : '${this.newObject.CommentairesDateLivraison}'`);
-    // console.log(this.newObject);
+    console.log(`Delivery Date Comment : '${this.newObject.CommentairesDateLivraison}'`);
+    console.log(this.newObject);
   }
 
   propertyExist(property, object): boolean {
@@ -2082,6 +2589,16 @@ public categoriesReady: Boolean = false;
         return false;
       }
     }
+  }
+
+  checkInputNumberOnly(event) {
+    console.log('event keypress durée du pret => ', event);
+    console.log('event.key.match(/^[0-9]+$/) => ', event.key.match(/^[0-9]+$/));
+     if (event.key.match(/^[0-9]+$/)) {
+       return true;
+     } else {
+       return false;
+     }
   }
 
   /*************************************************************************************************************/

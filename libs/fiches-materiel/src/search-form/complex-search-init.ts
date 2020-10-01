@@ -43,5 +43,7 @@ export const complexSearchInit: FicheMaterielComplexSearch = {
     numficheachat: '',
     TitreOeuvre: '',
     NomSupport: '',
-    chaines: ''
+    chaines: '',
+    Isdeal: 2,
+    Isurgence: false
 }

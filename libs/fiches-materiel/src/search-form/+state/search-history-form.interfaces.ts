@@ -5,4 +5,6 @@ export interface SearchHistoryFormInterface {
   isarchived: number;
   distributeur: string;
   numficheachat: string;
+  Isdeal: number;
+  Isurgence: boolean;
 }

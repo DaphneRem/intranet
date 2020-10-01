@@ -45,7 +45,9 @@ export class NewObject {
     Fiche_Mat_Version?: any;
     debut_des_droits: any;
     expiration_droit: any;
-
+    Isurgence: any;
+    Isdeal: any;
+    duree_du_pret: any;
 }
 
  export class FichesElementsAnnexes {
@@ -96,5 +98,8 @@ export const objectNoChanged: NewObject = {
     CommentairesStatutEtape: valueNoChanged,
     isarchived: valueNoChanged,
     debut_des_droits: valueNoChanged,
-    expiration_droit: valueNoChanged
+    expiration_droit: valueNoChanged,
+    Isurgence: valueNoChanged,
+    Isdeal: valueNoChanged,
+    duree_du_pret: valueNoChanged,
   };

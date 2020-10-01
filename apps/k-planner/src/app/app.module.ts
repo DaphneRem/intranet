@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NxModule } from '@nrwl/nx';
 import { Adal5Service, Adal5HTTPService } from 'adal-angular5';
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
-import { OAuthSettings } from './../../../../.privates-url';
+import { OAuthSettings, config } from './../../../../.privates-url';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from './auth/auth.service';
 
@@ -35,6 +35,7 @@ registerLocaleData(localeFr, 'fr');
     AppRoutingModule,
     MsalModule.forRoot({
       clientID: OAuthSettings.appId,
+    
       // protectedResourceMap : OAuthSettings.protectedResourceMap,
       authority: OAuthSettings.authority,
       // validateAuthority: true,
@@ -51,7 +52,7 @@ registerLocaleData(localeFr, 'fr');
     RouterStateModule.forRoot(),
     EffectsModule.forRoot([]),
     HttpClientModule,
-    CustomDatatablesModule,
+
     NxModule.forRoot(),
     StoreRouterConnectingModule,
     StoreModule.forRoot(

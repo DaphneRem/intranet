@@ -4,6 +4,7 @@ export { FichesAchatLibModule } from './src/fiches-achat-lib.module';
 // services export :
 export { FicheAchat } from './src/models/fiche-achat';
 export { FicheAchatDetails } from './src/models/fiche-achat-details';
+export { FicheAchat2Exist } from './src/models/fiche-achat-2-exist';
 export { FichesAchatService } from './src/services/fiches-achat.service';
 export { FicheAchatStatutMaterielService } from './src/services/fiche-achat-statut-materiel.service';
 export { FicheAchatStatutMateriel } from './src/models/fiche-achat-statut-materiel';
