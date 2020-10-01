@@ -18,8 +18,10 @@
   <div class="col-lg-11 search-form">
     <search-form 
       [autofields]="autofields"
+      [allficheMateriel]="allficheMateriel"
       [title]="tableTitle"
       [showAllDataBtnOption]="false"
+      [showIsUrgenceBtn]="true"
       [showOnlyInProgressBtn]="true"
       (reloadOriginalData)="displayReloadOriginalData($event)" 
       (dataResult)="displayNewDataFromComplexSearch($event)">
@@ -38,7 +40,8 @@
 <fiches-materiel-table 
   *ngIf="dataReady"
   [headerTableLinkExist]="headerTableLinkExist"
-  [multiColumnsOrderExist]="true"
+  [multiColumnsOrderExist]="multiColumnsOrderExist"
+  [multiColumnsOrder]="multiColumnsOrder"
   [data]="data"
   [tableTheme]="tableTheme"
   [responsive]="true"

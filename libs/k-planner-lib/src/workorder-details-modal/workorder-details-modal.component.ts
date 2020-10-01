@@ -30,6 +30,7 @@ export class WorkorderDetailsModalComponent {
       // containerModal[i].className += 'hidden';
       containerModal[i]['style'].display='none'
     }
+    this.dialogRef.close();
   }
 
 }

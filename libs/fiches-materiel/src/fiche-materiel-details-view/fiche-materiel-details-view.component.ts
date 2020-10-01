@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import swal from 'sweetalert2';
 
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
@@ -15,6 +16,7 @@ import {
 
 import { FichesAchatService } from '@ab/fiches-achat';
 import { FicheAchat } from '@ab/fiches-achat';
+import { FicheAchat2Exist } from '@ab/fiches-achat';
 
 import { FichesMaterielService } from '../services/fiches-materiel.service';
 import { FicheMateriel } from '../models/fiche-materiel';
@@ -36,6 +38,7 @@ import { StatusLibService } from '../services/status-lib.service';
 import { Status } from '../models/status';
 
 import { CustomIconBadge } from '@ab/custom-icons';
+import { mainColor, maintColorHover } from '../../fiches-materiel-common-theme';
 
 @Component({
   selector: 'fiche-materiel-details-view',
@@ -98,6 +101,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   public dataDetailsReady: boolean = false;
 
   public messageNoFicheAchat = ' pas de fiche Achat rattachée';
+  public messageNoFicheAchatDetail = ' œuvre retirée de la fiche Achat';
   public messageEmptyField = 'donnée non renseignée';
 
   public annexElementsStatus: AnnexElementStatus[];
@@ -146,8 +150,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   public back: CustomIconBadge = {
       bigIcon : {
         icon: 'icofont icofont-exit',
-        circleColor: '#17AAB2',
-        circleColorHover: '#2eced6',
+        circleColor: mainColor,
+        circleColorHover: maintColorHover,
         iconSize: '2.2em'
       },
       link : '../../../../',
@@ -261,7 +265,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   diplayAnnexStatus(IdStatus) {
     let libelleStatusSelected = this.annexElementsStatus.filter(item => item.IdStatutElementsAnnexes === IdStatus);
     console.log('libelleStatusSelected : ', libelleStatusSelected);
-    return `${this.myFicheMateriel.IdStatutElementsAnnexes} - ${libelleStatusSelected[0].Libelle}`;
+    // return `${this.myFicheMateriel.IdStatutElementsAnnexes} - ${libelleStatusSelected[0].Libelle}`;
+    return ` ${libelleStatusSelected[0].Libelle}`;
   }
 
   getRetourOriLib() {
@@ -277,7 +282,8 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
   diplayRetourOri(IdRetourOri) {
     let libelleRetourOriSelected = this.retourOri.filter(item => item.IdLibRetourOri === IdRetourOri);
     console.log('libelleStatusSelected : ', libelleRetourOriSelected);
-    return `${this.myFicheMateriel.RetourOri} - ${libelleRetourOriSelected[0].Libelle}`;
+    // return `${this.myFicheMateriel.RetourOri} - ${libelleRetourOriSelected[0].Libelle}`;
+    return ` ${libelleRetourOriSelected[0].Libelle}`;
   }
   /*********************** GET LIBS ******************/
 
@@ -361,6 +367,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
           this.getVersionLib();
           this.getQualiteFicheMateriel(id);
           this.getVersionFicheMateriel(id);
+          this.getAllFichesAchatFOrOeuvre(this.myFicheMateriel.NumProgram);
         } else {
           this.myFicheMateriel = {};
           this.myFicheMaterielExist = false;
@@ -370,6 +377,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
 
 
   getFicheAchatDetails(id: number) {
+    console.log('getFicheAchatDetails');
     this.fichesAchatService
       .getFichesAchatDetailByIdDetail(id)
       .pipe(takeUntil(this.onDestroy$))
@@ -377,6 +385,7 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         console.log(data);
         if (data !== null) {
           // this.myFicheAchatDetails = data[0];
+          console.log('res for getFicheAchatDetails => ', data);
           this.myFicheAchatDetails = data;
           this.dataDetailsReady = true;
           this.myFicheAchatDetailsExist = true;
@@ -387,6 +396,72 @@ export class FicheMaterielDetailsViewComponent implements OnInit, OnDestroy {
         }
         console.log(this.myFicheAchatDetails);
       });
+  }
+
+  public allFichesAchatForOeuvre: FicheAchat2Exist[] = [];
+  public allFichesAchatForOeuvreReady: boolean = false;
+  public otherFichesAchatForOeuvreExist: boolean = false;
+  public errorFicheAchatDetails: boolean = false;
+  public errorMessageFicheAchatDetails: string = '';
+  getAllFichesAchatFOrOeuvre(numProgram) {
+    this.fichesAchatService.getAllFichesAchatFOrOeuvre(numProgram)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => {
+        console.log('res for allFichesAchatFoOeuvre => ', data);
+//        data = [
+//          {
+//            id_fiche: 1066,
+//            Numero_fiche: 'FA-2020-00030',
+//            NumProgram: '2020-00112'
+//          },
+//          {
+//            id_fiche: 1064,
+//            Numero_fiche: 'FA-2020-00031',
+//            NumProgram: '2020-00113'
+//          }];
+        if (data.length > 1) {
+          this.allFichesAchatForOeuvre = data;
+          this.allFichesAchatForOeuvreReady = true;
+          this.otherFichesAchatForOeuvreExist = true;
+        } else {
+          this.allFichesAchatForOeuvre = data;
+          this.allFichesAchatForOeuvreReady = true;
+          this.otherFichesAchatForOeuvreExist = false;
+        }
+      },
+    error => {
+      this.errorFicheAchatDetails = true;
+      this.errorMessageFicheAchatDetails = 'Impossible de rechercher la correspondance de l\'oeuvre avec d\'autres fiches Achats.';
+      if (numProgram === null || numProgram === '' || !numProgram) {
+        this.errorMessageFicheAchatDetails += ' L\'information n° œuvre est manquante.';
+      }
+      // swal({
+      //   text: 'Impossible de rechercher la correspondance de l\'oeuvre avec d\'autres fiches Achats',
+      //   type: 'warning',
+      //   showCancelButton: false,
+      //   confirmButtonText: 'Ok',
+      //   confirmButtonColor: mainColor,
+      // });
+    });
+  }
+
+  checkOeuvreInAllFicheAchatForOeuvre(ficheAchatDetail, allOeuvres): boolean {
+    let currentOeuvre = [];
+    let othersOeuvres = [];
+    let oeuvreExistInAllFichesAchatForOeuvre = false;
+    allOeuvres.map((item, i) => {
+      if (item.NumProgram === ficheAchatDetail.numprogram) {
+        currentOeuvre.push(item);
+      } else {
+        othersOeuvres.push(item);
+      }
+      if (i === (allOeuvres.length - 1)) {
+        if (currentOeuvre.length) {
+          oeuvreExistInAllFichesAchatForOeuvre = true;
+        }
+      }
+    });
+    return oeuvreExistInAllFichesAchatForOeuvre;
   }
 
   displayDurCom(durCom: string): string {

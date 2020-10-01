@@ -41,9 +41,12 @@ registerLocaleData(localeFr, 'fr');
   declarations: [AppComponent],
   imports: [
     AppRoutingModule,
-    MsalModule.forRoot({
-      clientID: OAuthSettings.appId
-    }),
+    MsalModule.forRoot(
+      {
+       clientID: OAuthSettings.appId,
+       authority: OAuthSettings.authority
+      }
+  ),
     BrowserModule,
     EffectsModule.forRoot([]),
     ErrorPagesModule,

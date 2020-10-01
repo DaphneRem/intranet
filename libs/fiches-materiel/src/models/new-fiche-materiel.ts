@@ -31,7 +31,7 @@ export class NewFicheMateriel {
     isarchived: number;
     DateDebutDroit: Date | string;
     DateFinDroit: Date | string;
-
+    duree_du_pret: number | string;
         constructor(
             {
                 IdFicheAchat: IdFicheAchat,
@@ -47,7 +47,8 @@ export class NewFicheMateriel {
                 DateCreation: DateCreation,
                 UserCreation: UserCreation,
                 SuiviPar: SuiviPar,
-                RetourOri: RetourOri
+                RetourOri: RetourOri,
+                duree_du_pret: duree_du_pret
             }
         ) {
             this.IdFicheAchat = IdFicheAchat,
@@ -64,6 +65,7 @@ export class NewFicheMateriel {
             this.UserCreation = UserCreation,
             this.SuiviPar = SuiviPar,
             this.RetourOri = RetourOri,
+            this.duree_du_pret = duree_du_pret,
 
             // this.SuiviPar = 'User1', // par défaut : moi
             this.IdLibstatut = 1, // par défaut : 'en cours' (1)

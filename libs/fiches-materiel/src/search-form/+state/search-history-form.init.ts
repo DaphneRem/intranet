@@ -6,5 +6,7 @@ export const SearchHistoryFormInitialState: SearchHistoryFormInterface = {
   TitreEpisodeVF: '',
   isarchived: 2,
   distributeur: '',
-  numficheachat: ''
+  numficheachat: '',
+  Isdeal: 2,
+  Isurgence: false
 };

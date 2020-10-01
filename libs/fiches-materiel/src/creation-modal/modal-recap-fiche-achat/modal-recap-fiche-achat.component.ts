@@ -110,13 +110,13 @@ export class ModalRecapFicheAchatComponent implements OnInit, OnChanges, OnDestr
 
   checkFmImportForOeuvre() {
     this.faMajExist = false;
-    // let importFmOeuvre = this.detailsFicheAchat.filter(item => item.Import_FM === 1);
-    // console.log('importFmOeuvre => ', importFmOeuvre);
-    // if (importFmOeuvre.length > 0) {
-    //   this.faMajExist = true;
-    // } else {
-    //   this.faMajExist = false;
-    // }
+    let importFmOeuvre = this.detailsFicheAchat.filter(item => item.Import_FM === 1);
+    console.log('importFmOeuvre => ', importFmOeuvre);
+    if (importFmOeuvre.length > 0) {
+      this.faMajExist = true;
+    } else {
+      this.faMajExist = false;
+    }
   }
 
 

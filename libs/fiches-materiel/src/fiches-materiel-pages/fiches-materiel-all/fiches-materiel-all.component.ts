@@ -28,8 +28,15 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
   public tableTitle = 'Toutes les fiches Matériel';
   public tableTheme: string = 'default theme';
   public daysNumber = 100;
+  public allficheMateriel: boolean = true;
   public isArchived = 2;
   public changeView;
+  public multiColumnsOrderExist: boolean = true;
+  public multiColumnsOrder = [
+    [10, 'desc'], // n°FA du plus récent au plus ancien
+    [5, 'asc'], // TF par ordre alphabétique
+    [7, 'asc'], // n° épidose AB par ordre croissant
+  ];
 
   public data: FicheMateriel[];
   public dataReady: boolean;
@@ -75,7 +82,9 @@ export class FichesMaterielAllComponent implements OnInit, OnDestroy {
       TitreEpisodeVF: '',
       isarchived: this.isArchived,
       distributeur: '',
-      numficheachat: ''
+      numficheachat: '',
+      Isdeal: 2,
+      Isurgence: false
   };
   public globalStore;
   public userModifRights: boolean;

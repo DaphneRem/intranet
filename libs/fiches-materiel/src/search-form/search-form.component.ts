@@ -30,6 +30,8 @@ export class SearchFormComponent implements OnInit {
   @Input() getDataOnInit?: boolean;
   @Input() showAllDataBtnOption: boolean;
   @Input() showOnlyInProgressBtn?: boolean;
+  @Input() showIsUrgenceBtn?: boolean;
+  @Input() allficheMateriel?: boolean;
 
   @Output() dataResult = new EventEmitter<FicheMateriel[]>();
   @Output() reloadOriginalData = new EventEmitter<boolean>();
@@ -49,13 +51,16 @@ export class SearchFormComponent implements OnInit {
   public errorMesssage: string;
   public displayOldComplexSearch: boolean = false;
   public inProgressChecked: boolean = false;
+  public isUrgenceChecked: boolean = false;
   public oldComplexSearch = {
     SuiviPar: '',
     TitreEpisodeVO: '',
     TitreEpisodeVF: '',
     isarchived: 2,
     distributeur: '',
-    numficheachat: ''
+    numficheachat: '',
+    Isdeal: 2,
+    Isurgence: false
   };
   public complexSearchModel = {
     SuiviPar: '',
@@ -63,7 +68,9 @@ export class SearchFormComponent implements OnInit {
     TitreEpisodeVF: '',
     isarchived: 2,
     distributeur: '',
-    numficheachat: ''
+    numficheachat: '',
+    Isdeal: 2,
+    Isurgence: false
   };
 
   ngOnInit() {
@@ -86,11 +93,23 @@ export class SearchFormComponent implements OnInit {
     if ((typeof this.previousUrl !== 'undefined') || (this.previousUrl)) {
       if (this.previousUrl.includes(detailUrl) || this.previousUrl.includes(modifUrl)) {
         this.complexSearchModel = this.storeSearchHistoryFormData;
-        // this.displayDefaultFields();
-        if (this.showOnlyInProgressBtn) {
-          if (this.complexSearchModel.isarchived === 0) {
-            this.inProgressChecked = true;
+        if (!this.allficheMateriel) {
+          this.displayDefaultFields();
+        }
+        if ((this.showOnlyInProgressBtn) || (this.showIsUrgenceBtn)) {
+          if (this.showOnlyInProgressBtn) {
+            if (this.complexSearchModel.isarchived === 0) {
+              this.inProgressChecked = true;
+            }
           }
+          if (this.showIsUrgenceBtn) {
+            if (this.complexSearchModel.Isurgence) {
+              this.isUrgenceChecked = true;
+            }
+          }
+          console.log('this.inProgressChecked => ', this.inProgressChecked);
+          console.log('this.isUrgenceChecked -> ', this.isUrgenceChecked);
+          console.log('this.complexSearchModel.Isurgence -> ', this.complexSearchModel.Isurgence);
           this.displaySearchForm();
         } else {
           this.resetSearchFormStore();
@@ -118,13 +137,15 @@ export class SearchFormComponent implements OnInit {
   }
 
   displayDefaultFields() {
+    console.log('this.autofields -> ', this.autofields);
     if (this.autofields) {
       this.complexSearchModel.SuiviPar = this.autofields.SuiviPar;
       this.complexSearchModel.isarchived = this.autofields.isarchived;
+      this.complexSearchModel.Isdeal = this.autofields.Isdeal;
    //   this.oldComplexSearch.SuiviPar = this.autofields.SuiviPar;
     //  this.oldComplexSearch.isarchived = this.autofields.isarchived;
     }
-    console.log('this.complexSearchModel.SuiviPar => ', this.complexSearchModel.SuiviPar);
+    console.log('this.complexSearchModel => ', this.complexSearchModel);
   }
 
   addComplexSearchToStore(storeState) {
@@ -133,7 +154,7 @@ export class SearchFormComponent implements OnInit {
       payload: storeState
     });
   }
-  
+
   resetSearchFormStore() {
     this.store.dispatch({ type: 'RESET_SEARCH_HISTORY-FORM' });
   }
@@ -146,13 +167,16 @@ export class SearchFormComponent implements OnInit {
       TitreEpisodeVF: '',
       isarchived: 2,
       distributeur: '',
-      numficheachat: ''
+      numficheachat: '',
+      Isdeal: 2,
+      Isurgence: false
     };
     for (let property in this.complexSearchModel) {
       if (this.fmParameterToPost[property]) {
         this.fmParameterToPost[property] = this.complexSearchModel[property];
       }
     }
+    this.isUrgenceChecked = false;
     this.displayDefaultFields();
   }
 
@@ -204,7 +228,9 @@ export class SearchFormComponent implements OnInit {
         TitreEpisodeVF: '',
         isarchived: 2,
         distributeur: '',
-        numficheachat: ''
+        numficheachat: '',
+        Isdeal: 2,
+        Isurgence: false
       };
     }
     if (this.showOnlyInProgressBtn && this.inProgressChecked) {
@@ -215,7 +241,15 @@ export class SearchFormComponent implements OnInit {
       console.log('this.oldComplexSearch => ', this.oldComplexSearch);
 
     }
-    console.log('this.oldComplexSearch after show in progress change => ', this.oldComplexSearch);
+    if (this.showIsUrgenceBtn && this.changeOldComplexSearchIsUrgence) {
+      console.log('this.oldComplexSearch => ', this.oldComplexSearch);
+      console.log('this.changeOldComplexSearchIsUrgence => ', this.changeOldComplexSearchIsUrgence);
+
+      this.oldComplexSearch.Isurgence = this.changeOldComplexSearchIsUrgence;
+      console.log('this.oldComplexSearch => ', this.oldComplexSearch);
+    }
+    console.log('@@@@@@@ this.complexSearchModel -> ', this.complexSearchModel);
+    console.log('@@@@@@ this.autofields', this.autofields);
     if (JSON.stringify(this.complexSearchModel) !== JSON.stringify(this.autofields)) {
       for (let property in this.fmParameterToPost) {
         if (this.complexSearchModel.hasOwnProperty(property)) {
@@ -277,5 +311,20 @@ export class SearchFormComponent implements OnInit {
     console.log('inProgressChecked => ', this.inProgressChecked);
     console.log('showOnlyInProgressBtd => ', this.showOnlyInProgressBtn);
     console.log('this.autofields => ', this.autofields);
+  }
+  public changeOldComplexSearchIsUrgence;
+  checkOnlyIsUrgenceChecked() {
+    this.isUrgenceChecked = !this.isUrgenceChecked;
+    console.log('this.isUrgenceChecked after changement => ', this.isUrgenceChecked);
+    if (this.isUrgenceChecked && this.showIsUrgenceBtn) {
+      this.complexSearchModel.Isurgence = true;
+      this.changeOldComplexSearchIsUrgence = true;
+    //  this.autofields.Isurgence = true;
+
+    } else if (!this.isUrgenceChecked && this.showIsUrgenceBtn) {
+      this.complexSearchModel.Isurgence = false;
+      this.changeOldComplexSearchIsUrgence = false;
+    //  this.autofields.Isurgence = false;
+    }
   }
 }

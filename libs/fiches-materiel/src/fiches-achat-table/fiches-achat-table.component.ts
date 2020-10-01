@@ -54,7 +54,7 @@ export class FichesAchatTableComponent implements OnInit,  OnChanges {
     rowsMax: 10,
     lenghtMenu: [5, 10, 15],
     defaultOrder: [[7, 'desc']],
-    theme: 'blue theme',
+    theme: 'light blue theme',
     renderOption: true,
     reRenderOption: true,
     dbClickActionExist: true,

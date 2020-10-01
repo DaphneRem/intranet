@@ -1,0 +1,22 @@
+<!--filter ressources planner -->
+
+<ejs-multiselect id='multiselect-checkbox' #checkbox 
+[dataSource]='this.dataSource' 
+[fields]='checkFields'
+[mode]='CheckBox'  
+[showDropDownIcon]='true'
+[ignoreAccent]='true' 
+(mousedown)="onChange($event)" 
+[allowFiltering]='true'
+locale="fr-CH"
+(close)="onClose($event)"
+(select)="onSelectMul($event)"
+(filtering)="onFiltring($event)"
+(removing)="onRemoveRegieList($event)"
+[placeholder]='placeholderRegie'
+(open)='onOpen($event)'
+[enableGroupCheckBox]= 'true'
+popupHeight='700px'
+>
+
+</ejs-multiselect>

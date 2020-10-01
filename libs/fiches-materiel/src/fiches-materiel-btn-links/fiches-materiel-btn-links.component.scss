@@ -2,6 +2,7 @@
 
 button {
     /****** MES fiches Materiel/deals en cours *****/
+    margin-bottom: 5px;
     &.btn-outline-info {
         color: $fmInProgress;
         border-color: $fmInProgress;

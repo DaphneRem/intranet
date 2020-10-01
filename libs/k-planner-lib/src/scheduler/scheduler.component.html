@@ -15,10 +15,29 @@
         </select>  
     </div>  -->
     <div class="drag-sample-wrapper">
-        <div class="schedule-container">
+        <div class="schedule-container ">
    
             <div class="schedule-header " [hidden]="hiderefresh">
                 <!-- <button #toggleBtn ejs-button id="btn" (click)="displayRegies()" class="btn btn-info btn-outline-dark regie ml-3 mr-3"></button>  -->
+                <div  class="ml-2 mt-3 btn-modal">
+                              
+                    <i  ejs-button id='dlgbtn' #ButtonInstance (click)="BtnClick()" title="Raccourcis Clavier"  class="icofont icofont-keyboard  color-icons " ></i>
+                      <ejs-dialog #Dialog  
+                      [width]='width'
+                      [visible]='false' 
+                      [header]='header'
+                      [animationSettings]='animationSettings'  
+                      [showCloseIcon]='showCloseIcon' 
+                      (open)="dialogOpen()" 
+                      (close)="dialogClose()" 
+                       [target]='targetModal' 
+                      >
+                      <ng-template #content>
+                         <app-keyboard-shortcut></app-keyboard-shortcut>
+                      </ng-template>
+                  </ejs-dialog>
+                    
+                </div>
                 <button  
                   #btnrefresh
                     class="btn btn-info regie refresh-btn ml-3 mr-3 mt-3 btn-refresh " 
@@ -55,29 +74,19 @@
                 value=""
                 style="width: 15%" > -->
                 <div style="width: 15%"  class =" mt-3 mr-3" > 
-                <ejs-multiselect id='multiselect-checkbox' #checkbox 
-                [dataSource]='listeRegies' 
-                [fields]='checkFields'
-                [mode]='CheckBox'  
-                [showDropDownIcon]='true'
-                [ignoreAccent]='true' 
-                (mousedown)="onChange($event)" 
-                [allowFiltering]='true'
-                locale="fr-CH"
-                (close)="onClose($event)"
-                (select)="onSelectMul($event)"
-                (filtering)="onFiltring($event)"
-                (removing)="onRemoveRegieList($event)"
-                [placeholder]='placeholderRegie'
-                (open)='onOpen($event)'
-                [enableGroupCheckBox]= 'true'
-                popupHeight='700px'
-                ></ejs-multiselect>
+              <display-data-source-planner [placeholderRegie]='placeholderRegie' [checkFields]="checkFields"  [dataSource]="dataSourcePlanner"  (selectChipsClose)="onClickChipsClose($event)" (resultSearch)="displayResultSearch($event,mulObj)"></display-data-source-planner>
             </div>
+        
                 <table class="table-light table-sm " id="property" title="Properties"    >
                     <tbody>
                         <tr style="height: 40px">
-                          
+                            <!-- <td style="width: 5%">
+                                <div style="text-align:center" *ngIf="scheduleObj.currentView != 'TimelineMonth'  "> Intervalle <br> (Minutes)</div>          
+                            </td> -->
+                            <td>
+                                <search-events [regie]="departmentDataSource" [timelineRessourceData]="timelineResourceDataOut" [scheduleObj]='scheduleObj' [IdGroupe]="idGroupeCoordinateur" (selectItemInGrid)="selectItemInGrid($event)"  ></search-events>
+                            </td>
+                         
                            
                             <td  style="width: 5%">
                                 <ejs-checkbox  #reel cssClass="reel" label="Temps <br> réel" value="1" [checked]="false" (change)="onChangeDataSource()" >
@@ -87,42 +96,57 @@
                                 <ejs-checkbox  #theorique cssClass="theorique" label="Temps <br> théorique" value="0" [checked]="true" [disabled]="true" (change)="onChangeDataSource()">
                                 </ejs-checkbox>
                             </td>
-                            <td style="width: 5%">
-                                <div style="text-align:center" *ngIf="scheduleObj.currentView != 'TimelineMonth'  "> Intervalle <br> (Minutes)</div>          
+                            <!-- <td  style="width: 5%"  class="checkbox-control">
+                                <ejs-checkbox  #workorder cssClass="workorder" label="Lecture"   [disabled]="true" [checked]="false"  (change)="onChangeDataSourceEvents()">
+                                </ejs-checkbox>
+                            </td> -->
+                            <td  style="width: 5%"  class="checkbox-control">
+                                <ejs-checkbox  #Ecriture cssClass="Ecriture" label="Affichage <br> workorders "  [checked]="false"  (change)="onChangeDataSourceEvents()">
+                                </ejs-checkbox>
                             </td>
-                            <td  style="width: 10%"  *ngIf="scheduleObj.currentView !='TimelineMonth'   ">
-                                <div style="width: 100%">
-                                    <ejs-dropdownlist  class =" mt-2 ml-3" [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px"></ejs-dropdownlist>
+                            <td  style="width: 15%"  class="checkbox-control">
+                                <ejs-checkbox   #operateur cssClass="operateur mr-2" label="Containers sans <br> opérateur"  [checked]="false"  (change)="onChangeDataSourceOperateur()"> 
+                                     </ejs-checkbox>                    
+                                </td> 
+                                <div *ngIf="comptContainerWithoutOperateur > 0 " class="badge badge-danger ml-1 " title="Nombre de tâches sans opérateur"> {{comptContainerWithoutOperateur}}</div>
+                     
+                             <td  style="width: 5%"  class="checkbox-control">
+                                
+                                    <i ejs-button  #ButtonInstance class=" icofont  icofont-redo color-icons mt-2 ml-2"  (click)="remiseMultiselectionBacklog()" title="Remise multiple au backLog" *ngIf="scheduleObj.currentView !='TimelineMonth'"></i> 
+                                              
+                                </td> 
+                        
+                                <td  style="width: 5%"  class="checkbox-control">
+                            
+                                        <i ejs-button  #ButtonInstance class=" icofont icofont-ui-delete color-icons mt-2"  (click)="suppressionDefinitive()" title="Suppression définitive" *ngIf="scheduleObj.currentView !='TimelineMonth'"></i>
+                                                  
+                                    </td> 
+                                  
+                                    <!--" -->
+                                    <td  style="width: 5%" >
+                                  <app-multiselect-workorder   [eventSelect]="eventSelecte" (clickBtnDeplacement)="clickBtnDeplacement()"  (selectItemInMulutiselction)="newEventSelecte($event)"  (deplacementMultipleEvent) = "deplacementMultiple($event)" *ngIf="scheduleObj.currentView !='TimelineMonth'" ></app-multiselect-workorder>
+                                    </td>
+                                    <td>
+                                    <div style="width: 50%" >
+                                        <ejs-dropdownlist  id="change-intervalle" class ="  ml-3" [dataSource]='intervalData' [value]='intervalValue'  (change)='changeInterval($event)' popupHeight="200px" [placeholder] = 'intervalle'
+                                        ></ejs-dropdownlist>
+                                    </div>
+                                
+                                <div  >
+                                <ejs-dropdownlist class =" ml-3" id="selectplage" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>        
+                                </div> 
+                                
+                                <div>
+                                    
+                                 <button id="choixPlanning" class="regie " #toggleBtn style ="margin:3px; padding:2px"  (click)="choixPlanning()"  ejs-button > Vue opérateurs</button>
                                 </div>
                             </td>
-                            <td  style="width: 30%" >
-                         <ejs-dropdownlist class =" mt-2 ml-3" #selectplage [dataSource]='plagesHoraires' (change)='onSelectPlageHoraire(selectplage.value)' [value]='selectplage.value' [fields]='fieldPlagesHoraires' [sortOrder]='sorting' [placeholder]='choixPlagesHoraires'  ></ejs-dropdownlist>        
-                             </td>
-                        
-                            
                         </tr>
                      
                     </tbody>
                 </table>
-                <div  class="ml-3 mt-3 btn-modal">
-                              
-                    <i  ejs-button id='dlgbtn' #ButtonInstance (click)="BtnClick()" title="Liste des raccourcis Clavier"  class="icofont icofont-keyboard  btn-keyboard" ></i>
-                      <ejs-dialog #Dialog  
-                      [width]='width'
-                      [visible]='false' 
-                      [header]='header'
-                      [animationSettings]='animationSettings'  
-                      [showCloseIcon]='showCloseIcon' 
-                      (open)="dialogOpen()" 
-                      (close)="dialogClose()" 
-                       [target]='targetModal' 
-                      >
-                      <ng-template #content>
-                         <app-keyboard-shortcut></app-keyboard-shortcut>
-                      </ng-template>
-                  </ejs-dialog>
-                    
-                </div>
+         
+             
             </div>
       
             <div class="schedule" id="schedule">
@@ -133,7 +157,6 @@
                     (eventClick)="onEventClick($event)"
                     (popupOpen)="onPopupOpen($event)" 
                     (popupClose) = "onPopupClose($event)"
-                    
                     cssClass='schedule-drag-drop' 
                     [group]="group" 
                     [currentView]="currentView" 
@@ -143,15 +166,14 @@
                     (actionBegin)="onActionBegin($event)" 
                     (actionComplete)="onActionComplete($event)"
                     (actionFailure)="onActionFailure($event)"
-                    (drag)="onItemDrag($event)"
                     (eventRendered)="onEventRendered($event)"
                     (renderCell)="onRenderCell($event)"
                     (navigating)="onNavigating($event)"
                     (resizeStart)="onResizing($event)"
                     (resizeStop)="onResizingStop($event)"
                     (select)= "onSelectMultipleCell($event)"
-                    (hover) = "onHover($event)"
                     (cellClick) = "cellClick($event) "
+                    (cellDoubleClick) = "cellDoubleClick($event)"
                     [enablePersistence]="false"
                     [allowKeyboardInteraction]=true
                     [firstDayOfWeek]="1"
@@ -159,15 +181,26 @@
                     [showHeaderBar]='true'
                     timezone="Europe/Paris"
                     height ='100%'
+                    (drag)="onItemDrag($event)"
+     
                     >
+                    <!-- (hover) = "onHover($event)" -->
+                  
+
+                     <!-- (drag)="onItemDrag($event)"-->
                     <!-- (created)="onCreated($event)" -->
-                    <!-- (renderCell)="onRenderCell($event)" -->
+                    <!-- (renderCell)="onRenderCell($event)" 
+                    eventDragArea='body'
+                    
+                    -->
                     <e-resources>
+
                         <e-resource 
-                            field='DepartmentID' 
+                        *ngIf='displayRessourceMonteur'
+                            field='CodeRessourceOperateur' 
                             title='Regie'
                             name='Departments' 
-                            [dataSource]='departmentDataSource'
+                            [dataSource]='operateurDataSource'
                             textField='Text' 
                             idField='Id' 
                             colorField='Color' 
@@ -175,7 +208,21 @@
                             [allowMultiple]='allowMultiple'
                             >
                         </e-resource>
-                    </e-resources>                
+                    
+                        <e-resource 
+                        *ngIf='!displayRessourceMonteur'
+                        field='DepartmentID' 
+                        title='Regie'
+                        name='Departments' 
+                        [dataSource]='departmentDataSource'
+                        textField='Text' 
+                        idField='Id' 
+                        colorField='Color' 
+                        groupIDField="Id" 
+                        [allowMultiple]='allowMultiple'
+                        >
+                    </e-resource>
+                    </e-resources>                   
                     <!-- <ng-template #resourceHeaderTemplate let-data>
                                 <div class="template-wrap">
                                     <div class="specialist-category">
@@ -190,13 +237,16 @@
                     <e-views>
                         <e-view option='TimelineDay'  #scheduleObjDay   >
                             <ng-template #eventTemplate let-data  class="event">
-                                <div class='template-wrap ' style="width: 100%" id="{{data.Id}}" [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}" >
+                                <div class='template-wrap  container{{data.Id}} ' style="width: 100%" id="{{data.Id}}"  [ngStyle]="data.AzaIsPere ? { 'cursor': 'pointer'} : {}"  >
+                                    <!-- -->
                                     <div>
-                                        <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
+                                        <div class="subject  " style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                             <!-- <div class="float-right fixed initiales"   ><p>{{data.coordinateurCreate}}</p></div> -->
-                                            <u class="e-inner-wrap"  id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
+                                            <u class="e-inner-wrap defile"  id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }} / <span style="font-weight: bold" >{{data.coordinateurCreate}}</span>  </u> <br>
                                             <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                            <div *ngIf="data.Operateur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
+                                            <div *ngIf="data.Operateur && !displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
+                                            <div *ngIf="data.Operateur && displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.DepartmentName}}</div>
+
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
                                         </div>
@@ -205,12 +255,13 @@
                                             <!-- <span style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;"   >{{data.Name }} <br> {{data.titreoeuvre}} ep {{data.numepisode}}</span> -->
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br> -->
                                         
-                                            <span class="mt-1 workorders" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
+                                            <span id="{{data.Id}}" class="mt-1 workorders defile" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>   
                                             
                                         </div>
                                     </div>
                                 </div>
                             </ng-template>
+                        
                             <!-- <ng-template #tipContent  > <div *ngFor="let data of timelineResourceDataOut"> 
                                 {{data.typetravail }} {{data.dureecommerciale }} 
                             </div></ng-template> -->
@@ -222,15 +273,17 @@
                                         <div>
                                             <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}">
                                                 <!-- <div class="float-right fixed initiales"><p>{{data.coordinateurCreate}}</p></div> -->
-                                                <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }}/ <span  >{{data.coordinateurCreate}}</span> </u> <br>
+                                                <u  class="e-inner-wrap defile" id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }">{{data.Name }}/ <span  >{{data.coordinateurCreate}}</span> </u> <br>
                                                 <!-- <img *ngIf="data.IconUrl" style="height: 20px; width: 20px;" src="{{data.IconUrl}}" /> -->
-                                                <div *ngIf="data.Operateur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
+                                                <div *ngIf="data.Operateur && !displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.Operateur}}</div>
                                                 <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                     class="float-right  fixed mr-1"> -->
+                                            <div *ngIf="data.Operateur && displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.DepartmentName}}</div>
+
                                             </div>
                                             <div *ngIf="!data.AzaIsPere" class="show-user" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                                 <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span><br> -->
-                                                <span  style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span><br>
+                                                <span  id="{{data.Id}}" class="mt-1 workorders defile" style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }}  <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span><br>
                                                 
                                                 
                                             </div>
@@ -245,15 +298,17 @@
                                     <div >
                                         <div class="subject" style="margin-top: 0px; font-size: 12px;" *ngIf="data.AzaIsPere" id="{{data.Id}}"  >
                                    
-                                            <u id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} / <span  >{{data.coordinateurCreate}}</span> </u> <br> 
+                                            <u class="e-inner-wrap defile" id="{{data.Id}}" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000' }" >{{data.Name }} / <span  >{{data.coordinateurCreate}}</span> </u> <br> 
                                       
-                                            <div *ngIf="data.Operateur " class="operateur mt-1 " [ngStyle]="{'color': user.initials=== data.coordinateurCreate ? ' #FFFFFF':'#000000'}" >{{data.Operateur}}</div>
+                                            <div *ngIf="data.Operateur && !displayRessourceMonteur " class="operateur mt-1 " [ngStyle]="{'color': user.initials=== data.coordinateurCreate ? ' #FFFFFF':'#000000'}" >{{data.Operateur}}</div>
                                             <!-- <img style="height: 30px; width: 30px; margin: 0px" src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png"
                                                 class="float-right  fixed mr-1"> -->
+                                            <div *ngIf="data.Operateur && displayRessourceMonteur" class="mt-1  operateur" [ngStyle]="{'color': user.initials === data.coordinateurCreate ? ' #FFFFFF':'#000000'}">{{data.DepartmentName}}</div>
+
                                         </div>
                                         <div *ngIf="!data.AzaIsPere" class="show-user mb-1" style="height: 40px; width: 100%; position: absolute; bottom: 0; color: rgb(12, 12, 12); display: flex;">
                                             <!-- <span *ngIf="nameService === '1' " style="padding-top: 5px; width: 100%; z-index: 2 !important;  font-size: 12px;" > {{data.titreoeuvre}} ep {{data.numepisode}} <br> {{data.libchaine }}  </span> -->
-                                            <span  style="padding-top: 5px; width: 100%; z-index: 2 !important; text-overflow: ellipsis;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }} <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
+                                            <span id="{{data.Id}}" class="mt-1 workorders defile" style="padding-top: 5px; width: 100%; z-index: 2 !important; text-overflow: ellipsis;  font-size: 11px;" > {{data.titreepisode}} ep {{data.numepisode}} <br> {{data.libtypeWO }} <span *ngIf="data.isTempsReel === 1"> - {{data.Operateur}}</span>  </span>
                                         </div>
                                     </div>
                                 </div>
@@ -268,27 +323,33 @@
                 </e-views>
                 
             </ejs-schedule>
-        
+            <div id="grid" class="mt-4  ml-3"></div>
         </div>
     </div>
 
-    
-        
+    <ejs-contextmenu #contentmenutree cssClass='schedule-context-menu' target='.e-schedule' [items]='menuItemsSchedule' (beforeOpen)='beforeopen($event,3)'
+    (select)='menuclick($event,3)' ></ejs-contextmenu>
+  
+
    <!--************************************** tabItem ***********************************************************************-->
-   <div class="sidebar"  *ngIf="!isnotMyGroup " [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
+   <div class="sidebar"  *ngIf="!isnotMyGroup" [ngStyle]="{'display':scheduleObj.currentView =='TimelineMonth' ? 'none':'block' }"  >
   <ejs-sidebar id="default-sidebar" #sidebar [type]='type' [target]='target'    >
       
         <ejs-tab id="element" #element  class="content"  (selecting)="selectTabWitoutSwip($event)" >
             <e-tabitems>
-  
-                <e-tabitem [header]='headerText[0]' id="{{headerText[0]}}" (click)="alert('ok')">
+             
+                 
+                <e-tabitem [header]='headerText[0]' id="{{headerText[0]}}"    >
                     <ng-template #content>
+                            <div *ngIf="!containerWithoutOperateurIsCheched">
                         <div class="treeview-container">
                             <div class="title-container">
                                 <button id="btn-refreshWo" (click)="refreshWorkordersBacklog()" class="btn btn-info regie refresh-btn-workorder " [disabled]="disabledrefreshBacklog"   >
                                     <i class="icofont icofont-refresh"></i>
                                     Rafraichir
                                 </button>
+                                <i ejs-button  #ButtonInstance class=" icofont icofont-ui-delete color-icons mt-2 ml-4"  (click)="suppressionDefinitiveWorkOrderBacklog()" title="Suppression définitive"></i>
+                                <div class="badge badge-info ml-1 mb-3"> {{workorderSelectedInBacklog.length}}</div>
                             </div>
                             <div class="input-group" style="width: 500px" >
                                 <input type="text" id="searchwo" class="form-control recherche recherche-wo" placeholder="Rechercher..." #search  [(ngModel)]="search.value"  (keyup)="onFilter(search.value,0,$event)" value="{{this.searchString}}" > 
@@ -350,7 +411,7 @@
                                >
                                 <ng-template #nodeTemplate="" let-dataWorkOrder=""   id="treeEvents-template">
                                     <div id="waiting"   class="workorder-backlog" [ngStyle]="{'background-color': itemCoordinateur.Username === dataWorkOrder.coordinateurCreate ? ' #F3BE09':'#FFFFFF' }">
-                                        <div id="dataWorkOrder.Id"     >
+                                        <div id="{{dataWorkOrder.Id}}"     >
                                             <div id="waitlist">  {{dataWorkOrder.titreoeuvre}} &nbsp;/ &nbsp;{{dataWorkOrder.titreepisode}}   </div>
                                             <div id="waitcategory"> ep: {{dataWorkOrder.numepisode}} -- {{dataWorkOrder.libtypeWO}} - {{dataWorkOrder.typetravail}} <br>
                                                  {{dataWorkOrder.libchaine}}  -  {{dataWorkOrder.dureecommerciale}} 
@@ -364,6 +425,7 @@
                         <!-- </ejs-tooltip> -->
 
                             <ejs-contextmenu
+                            #treeViewContextMenu
                             id='contentmenutree'
                              target='#treeEvents'
                               [items]='menuItems' 
@@ -375,9 +437,11 @@
                    
 
                         </div>
-                    
+                    </div>
                     </ng-template>
                 </e-tabitem>
+
+          
                 <e-tabitem [header]='headerText[1]'>
                     <ng-template #content>
                         <div class="treeview-container" >
@@ -405,13 +469,13 @@
                                     (nodeDragStart)="onTreeDragStart($event)"
                                     (nodeDragStop)="onTreeDragStopMonteur($event)"   
                                     (nodeDragging)="onItemDrag($event, 1)"
-                                    
+                                    (nodeClicked)="onNodeClicked($event)" 
                                     >
 
                                <ng-template #nodeTemplate="" #selectedNodes="" let-dataMon=""  class="ngtemplate-Monteur">
                                       
                                    <div id="waiting" [ngStyle]="{'color': getColor(dataMon.Username, dataMon.codegroupe), 'background-color': getBackgroundColor(dataMon.Username, dataMon.codegroupe)}">
-                                        <div id="waitdetails" class="monteurs">
+                                        <div id="{{dataMon.Id}}" class="monteurs">
                                            <div id="waitlist" class=" {{dataMon.Username}} " >{{dataMon.Username}}.   </div> 
                                             <div id="waitcategory">   {{dataMon.libelletype }}<span *ngFor = "let libelle of statutMonteur ">  
                                               <span *ngIf="libelle.Name === dataMon.Username  ">   - {{libelle.Libelle }}</span></span> 
@@ -423,6 +487,7 @@
                             </ejs-treeview>
                         </div>
                         <ejs-contextmenu
+                        #treeViewContextMenu
                         id='contentmenutree'
                          target='#treeMonteur'
                           [items]='menuItems' 
@@ -458,3 +523,4 @@
         </div>
     </div>
 </div>  
+

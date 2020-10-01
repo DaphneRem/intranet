@@ -32,7 +32,12 @@ export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
   public data: FicheMateriel[];
   public dataReady: boolean;
   public user: string;
-
+  public multiColumnsOrderExist: boolean = true;
+  public multiColumnsOrder = [
+    [10, 'desc'], // n°FA du plus récent au plus ancien
+    [5, 'asc'], // TF par ordre alphabétique
+    [7, 'asc'], // n° épidose AB par ordre croissant
+  ];
   public widgetLink = '/';
   public icons = [];
   public fichesMaterielCreation: CustomIconBadge = {
@@ -74,8 +79,10 @@ export class MyFichesMaterielArchivedComponent implements OnInit, OnDestroy {
       TitreEpisodeVF: '',
       isarchived: this.isArchived,
       distributeur: '',
-      numficheachat: ''
-  };
+      numficheachat: '',
+      Isdeal : 2,
+      Isurgence: false
+  }; 
 
   constructor(
     private fichesMaterielService: FichesMaterielService,

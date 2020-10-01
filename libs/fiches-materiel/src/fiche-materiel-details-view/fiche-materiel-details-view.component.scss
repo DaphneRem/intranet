@@ -6,6 +6,7 @@ $creationBtnHoverColor :  #2eced6;
 $cancelBtnColor : #c9c9c9;
 $importantColor : #fd5f5f;
 $iconColor : #7f7f7f;
+$warningColor: #FFB64D;
 
 // $label-color: #ffffff;
 // $in-progress-color-background:  #0040FF;
@@ -26,6 +27,9 @@ $iconColor : #7f7f7f;
                 justify-content: flex-end;
             }
             .left-infos {
+                &.urgent-deadline {
+                    color:  $importantColor;
+                }
                 p {
                     font-size: 1.1em;
                     margin-left: 20px;
@@ -54,10 +58,45 @@ $iconColor : #7f7f7f;
                         }
                     }
                 }
+                .deadline {
+                        font-size: 18px;
+                        font-weight: bold;
+                        display: flex;
+                        margin-top: 20px;
+                        i {
+                            font-size: 2.2em;
+                            color: $importantColor;
+                            margin-right : 10px;
+                            margin-left: 10px;
+                        }
+                        p {
+                            display: flex;
+                            flex-wrap: wrap;
+                            span {
+                                margin-left: 3px;
+                                &.empty-field {
+                                    color : $creationBtnColor;
+                                }
+                            }
+                        }
+                    }
             }
             .title {
                 text-align: center;
                 margin-top: 20px;
+                .urgent-warning {
+                    display: flex;
+                    justify-content: center;
+                    color: $importantColor;
+                    font-weight: bold;
+                    i {
+                        font-size: 2.2em;
+                    }
+                    p {
+                        font-size: 1.3em;
+                        padding: 5px 0 0 5px;
+                    }
+                }
                 h1 {
                     font-size: 2em;
                     &.empty-field {
@@ -127,14 +166,46 @@ $iconColor : #7f7f7f;
                 }
             }
         }
+        .fm-other-fiches-achat {
+            margin-top: 20px;
+            margin-bottom: -20px;
+            .other-fiches-achat-content {
+                padding-left: 30px;
+                .other-fiches-achat {
+                    label {
+                        font-size: 1em;
+                    }
+                    .warning {
+                        color: $warningColor;
+                    }
+                }
+            }
+        }
+        .error-fiche-achat-details {
+            margin-top: 20px;
+            margin-bottom: -20px;
+            .error-message-fad-content {
+                padding-left: 30px;
+                .error-message {
+                    font-size: 1em;
+                }
+            }
+        }
         .fm-detail-body {
             margin-top : 30px;
             .fm-content {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: space-between;
                 .sections {
                     padding: 20px;
                     margin: 10px;
                     padding-bottom : 10px;
                     border : 1px solid $iconColor;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
                     .section-content {
                         display: flex;
                         flex-direction: column;
@@ -147,7 +218,8 @@ $iconColor : #7f7f7f;
                         }
                         &.livraison {
                             min-height: 195px;
-                            max-height: 195px;
+                            margin-top: 25px;
+                            // max-height: 195px;
                         }
                         &.acces-vf {
                             min-height: 150px;
@@ -165,6 +237,7 @@ $iconColor : #7f7f7f;
                     .section-icon {
                         color: grey;
                         float: right;
+                        align-self: flex-end;
                         font-size: 2em;
                     }
                     p {
@@ -188,6 +261,9 @@ $iconColor : #7f7f7f;
                         }
                         .ban {
                             color : $importantColor;
+                        }
+                        .warning  {
+                            color : $warningColor;
                         }
                         span {
                             &.empty-field {
@@ -248,12 +324,22 @@ $iconColor : #7f7f7f;
                     margin-left : 10px;
                 }
                 .comment-content {
-                    height: 100px;
+                    // height: 100px;
+                    min-height: 100px;
                     border : solid 1px $iconColor;
                     margin: 10px;
                     padding : 10px;
                     &.empty-field {
                         color : $creationBtnColor;
+                    }
+                    pre {
+                        white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+                        white-space: -pre-wrap; /* Opera */
+                        white-space: -o-pre-wrap; /* Opera */
+                        white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+                        word-wrap: break-word; /* IE 5.5+ */ 
+                        font-family: Arial, Helvetica, sans-serif;
+                        font-size: 1.1em;
                     }
                 }
             }
@@ -322,4 +408,23 @@ $iconColor : #7f7f7f;
     background-color: #ffffff !important;
     color: $label-waitEA-color-backgroud !important;
     border: 1px solid $label-waitEA-color-backgroud;
+}
+
+/deep/ .label-inverse-danger {
+    background: #ffffff;
+    background-color: #ffffff !important;
+    color: $importantColor !important;
+    border: 1px solid $importantColor;
+}
+
+@media only screen and (max-width: 768px) {
+    .fm-details {
+        .card {
+            .state-content {
+                .state {
+                    text-align: left;
+                }
+            }
+        }
+    }
 }

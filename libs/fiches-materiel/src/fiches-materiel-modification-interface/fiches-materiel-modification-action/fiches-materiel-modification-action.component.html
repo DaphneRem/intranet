@@ -7,14 +7,14 @@
     <affected-episodes-modal *ngIf="(allFichesMateriel.length > 1) && showAffectedEps" [allFichesMateriel]="allFichesMateriel"></affected-episodes-modal>
   </div>
   <div class="col-lg-6"></div>
-  <div class="col-lg-4">
+  <div class="col-lg-4 buttons">
     <button class="btn btn-warning" (click)="modifFichesMateriel('dontClose')">
       Enregistrer
     </button>
     <button class="btn btn-warning" (click)="modifFichesMateriel('close')">
       Enregistrer et Fermer
     </button>
-    <button class="btn" (click)="goBack()">
+    <button class="btn btn-inverse btn-outline-inverse cancel-btn" (click)="goBack()">
       Annuler
     </button>
     <!-- <button (click)="updateVersionFM()">

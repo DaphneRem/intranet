@@ -251,6 +251,7 @@ public test = 'ookok';
         pageLength : options.rowsMax,
         lengthMenu : options.lenghtMenu,
         responsive : options.responsive,
+
         dom: 'Bfrtip',
         search: {
           search: options.searchRecordedOption ? options.searchRecordedData : ''
@@ -428,6 +429,7 @@ public test = 'ookok';
         this.finalData.push({
           title: item.title.toUpperCase(),
           data: item.data,
+          type: item.type,
           className: item.className
         })
       );
