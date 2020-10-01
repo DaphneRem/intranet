@@ -402,6 +402,27 @@ $disabledColor : rgb(189, 189, 189);
     }
 }
 
+@media only screen and (max-width: 1250px) {
+
+    /deep/ div.dataTables_wrapper div.dataTables_info {
+        .select-info {
+            display: none;
+        }
+    }
+
+    .custom-datatables {
+        .card {
+            .datatables-header {
+                height: 110px;
+                .header-title {
+                    margin-top : 25px;
+                }
+            }
+        }
+    }
+}
+
+
 @media only screen and (max-width: 1024px) {
 
     /deep/ .dataTables_wrapper .dt-buttons {
@@ -420,16 +441,6 @@ $disabledColor : rgb(189, 189, 189);
 
 }
 
-@media only screen and (max-width: 1250px) {
-
-    /deep/ div.dataTables_wrapper div.dataTables_info {
-        .select-info {
-            display: none;
-        }
-    }
-
-}
-
 @media only screen and (max-width: 768px) {
 
     /deep/ div.dataTables_wrapper div.dataTables_info {
@@ -441,10 +452,17 @@ $disabledColor : rgb(189, 189, 189);
             .datatables-header {
                 height: 140px;
                 .header-title {
-                    margin-top : 60px;
+                    margin-top : 35px;
                 }
             }
         }
     }
+}
 
+
+@media only screen and (max-width: 400px) {
+
+    /deep/ div.dataTables_wrapper div.paging_simple_numbers {
+        padding-left: 70px;
+    }
 }
