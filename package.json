@@ -81,7 +81,7 @@
     "datatables.net-select": "^1.2.5",
     "datatables.net-select-dt": "^1.2.5",
     "font-awesome-scss": "^1.0.0",
-    "jquery": "^3.2.1",
+    "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "mydaterangepicker": "^4.2.1",
     "ng-click-outside": "^3.2.0",
