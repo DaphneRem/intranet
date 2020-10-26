@@ -5,7 +5,7 @@
     position: absolute;
     bottom: 5px;
     left: 0;
-    margin: 0 20px 20px 26px;
+    margin: 0 20px 20px 23px;
     font-weight: 500;
     font-size: 17px;
     border-radius: 5px;
@@ -16,14 +16,14 @@
         color: #ffffff;
     }
 }
-/deep/ .swal2-actions {
+/deep/ .swal2-actions { // ! implique changements sur modal de création des FM
     display: flex;
-    width: 80%;
+    // width: 80%;
     align-self: flex-end;
 }
 
 /deep/ .swal2-popup .swal2-actions {
     align-items: flex-end;
     justify-content: flex-end;
-    margin: 40px 0 0;
+    margin: 40px 0 0; 
 }

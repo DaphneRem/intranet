@@ -21,7 +21,7 @@ $importantColor : #fd5f5f;
             display: flex;
             .number {
                 height: 25px;
-                width: 25px;
+                min-width: 25px;
                 background: $main-color;
                 color: #ffffff;
                 border-radius : 100%;
@@ -33,7 +33,7 @@ $importantColor : #fd5f5f;
             }
             .warning-number {
                 height: 25px;
-                width: 25px;
+                min-width: 25px;
                 background: $importantColor;
                 color: #ffffff;
                 border-radius : 100%;
