@@ -1004,8 +1004,8 @@ public qualityRecording = false;
         commentsToUpdate.push(item);
       }
     });
-    // console.log('commentsToUpdate ==> ', commentsToUpdate);
-    // console.log('commentToCreate ==> ', commentToCreate);
+    console.log('commentsToUpdate ==> ', commentsToUpdate);
+    console.log('commentToCreate ==> ', commentToCreate);
     if (commentToCreate.length > 0) {
       this.postCommentaireAnnexElementsFicheMateriel(commentToCreate);
     }

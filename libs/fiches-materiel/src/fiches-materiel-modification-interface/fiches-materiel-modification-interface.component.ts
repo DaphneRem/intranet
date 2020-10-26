@@ -815,6 +815,9 @@ public ficheAchatDetailMulti = {};
       this.allFichesAchatsForAllOeuvres = [];
       this.otherFichesAchatForOeuvreExist = false;
       numProgram.map(item => {
+        let oldMessages = this.messageOthersFichesAchatForOeuvre.filter(message => message.titrevf === item.titleFMvF);
+        console.log('item 12345 ==> ', item);
+        console.log(oldMessages);
         console.log('item.numProgram => ', item.numProgram);
         if (item.numProgram !== '' || item.numProgram.length !== 0 || item.numProgram) {
           console.log('item =======> ',  item);
@@ -879,17 +882,23 @@ public ficheAchatDetailMulti = {};
 
                 this.otherFichesAchatForOeuvreExist = true;
                 if (item.oeuvreNotExist) {
-                  this.messageOthersFichesAchatForOeuvre.push({
-                    oeuvre: item.numProgram,
-                    text: `L'œuvre ${item.numProgram} a été retirée de la fiche Achat mais apparaît dans d'autres fiches Achat : `,
-                    fichesAchat: this.allFichesAchatForOeuvre
-                  });
+                  if (oldMessages.length === 0) {
+                    this.messageOthersFichesAchatForOeuvre.push({
+                      oeuvre: item.numProgram,
+                      titrevf: item.titleFMvF,
+                      text: `L'œuvre ${item.numProgram} a été retirée de la fiche Achat mais apparaît dans d'autres fiches Achat : `,
+                      fichesAchat: this.allFichesAchatForOeuvre
+                    });
+                  }
                 } else {
-                  this.messageOthersFichesAchatForOeuvre.push({
-                    oeuvre: item.numProgram,
-                    text: `L'œuvre ${item.numProgram} apparaît dans plusieurs fiches Achat : `,
-                    fichesAchat: this.allFichesAchatForOeuvre
-                  });
+                  if (oldMessages.length === 0) {
+                    this.messageOthersFichesAchatForOeuvre.push({
+                      oeuvre: item.numProgram,
+                      titrevf: item.titleFMvF,
+                      text: `L'œuvre ${item.numProgram} apparaît dans plusieurs fiches Achat : `,
+                      fichesAchat: this.allFichesAchatForOeuvre
+                    });
+                  }
                 }
                 console.log('this.allFichesAchatForOeuvre => ', this.allFichesAchatForOeuvre);
                 if (oeuvreChecked.length === numProgram.length) {
@@ -901,11 +910,14 @@ public ficheAchatDetailMulti = {};
                   if (item.oeuvreNotExist) {
                     this.allFichesAchatForOeuvre.push(data);
                     console.log('this.allFichesAchatForOeuvre if fmdNotExist => ', this.allFichesAchatForOeuvre);
-                    this.messageOthersFichesAchatForOeuvre.push({
-                      oeuvre: item.numProgram,
-                      text: `L'œuvre ${item.numProgram} a été retirée de la fiche Achat mais apparaît dans d'autres fiches Achat : `,
-                      fichesAchat: this.allFichesAchatForOeuvre
-                    });
+                    if (oldMessages.length === 0) {
+                      this.messageOthersFichesAchatForOeuvre.push({
+                        oeuvre: item.numProgram,
+                        titrevf: item.titleFMvF,
+                        text: `L'œuvre ${item.numProgram} a été retirée de la fiche Achat mais apparaît dans d'autres fiches Achat : `,
+                        fichesAchat: this.allFichesAchatForOeuvre
+                      });
+                    }
                     console.log('this.messageOthersFichesAchatForOeuvre => ', this.messageOthersFichesAchatForOeuvre);
                     this.otherFichesAchatForOeuvreExist = true;
                   }
@@ -926,11 +938,16 @@ public ficheAchatDetailMulti = {};
               });
             });
           } else {
-            this.messageOthersFichesAchatForOeuvre.push({
-              oeuvre: '',
-              text: `Impossible de rechercher la correspondance de l\'œuvre ${item.titleFMvF} avec d\'autres fiches Achats car le n° oeuvre est inconnu.`,
-              fichesAchat: ''
-            });
+          console.log('item.titleFMvF => ', item.titleFMvF);
+            console.log('oldMessage => ', oldMessages);
+            if (oldMessages.length === 0) {
+              this.messageOthersFichesAchatForOeuvre.push({
+                oeuvre: '',
+                titrevf: item.titleFMvF,
+                text: `Impossible de rechercher la correspondance de l\'œuvre ${item.titleFMvF} avec d\'autres fiches Achats car le n° oeuvre est inconnu.`,
+                fichesAchat: ''
+              });
+            }
             this.otherFichesAchatForOeuvreExist = true;
             this.allFichesAchatForOeuvreReady = true;
           }
