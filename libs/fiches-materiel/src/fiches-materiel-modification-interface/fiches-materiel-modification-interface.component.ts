@@ -50,6 +50,7 @@ import { urlDetailedReportFicheAchat } from '../../../../.privates-url';
 import { NewObject, objectNoChanged } from './fiche-materiel-new-object';
 import { mainColor, maintColorHover } from '../../fiches-materiel-common-theme';
 import { InformationsKaiService } from '@ab/trace-segment/src/services/informations-kai.service';
+import { truncate } from 'fs';
 
 
 @Component({
@@ -993,7 +994,7 @@ public ficheAchatDetailMulti = {};
   }
 
   public displayNewObjectReady = false;
-  public acceptedStatusIsPossible = true;
+  public acceptedStatusIsPossible = false;
 
   displayNewObjectSelectionTypeMulti() {
     console.log('this.acceptedStatusIsPossible first => ', this.acceptedStatusIsPossible);
